@@ -1,5 +1,12 @@
 import Link from "next/link";
 
+const categoryCards = [
+  { title: "Apparel", subtitle: "Layered silhouettes", href: "/shop" },
+  { title: "Home Decor", subtitle: "Ceremonial interiors", href: "/shop" },
+  { title: "Drops", subtitle: "Limited rituals", href: "/shop" },
+  { title: "Best Sellers", subtitle: "Curated icons", href: "/shop" },
+];
+
 const moodCards = [
   "Veilbound Ritual",
   "Obsidian Calm",
@@ -9,10 +16,11 @@ const moodCards = [
   "Eclipse Essentials",
 ];
 
-const apparelSpotlight = [
-  "Midnight Veil Top",
-  "Ritual Knit Layer",
+const bestSellers = [
+  "Ritual Velvet Wrap",
+  "Nocturne Column Dress",
   "Ebon Tailored Pant",
+  "Eclipse Knit Layer",
 ];
 
 const decorSpotlight = [
@@ -24,17 +32,17 @@ const decorSpotlight = [
 export default function Home() {
   return (
     <section className="space-y-16">
-      <div className="space-y-6">
+      <section className="space-y-6">
         <div className="space-y-3">
           <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-            Threshold Storefront
+            Threshold Home
           </p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            Enter the Charmed & Dark Threshold
+            Charmed & Dark sells gothic apparel and gothic home decor.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-white/70">
-            A premium gothic atelier for modern ritual. Explore the drops,
-            curated apparel, and shadowed decor designed for quiet power.
+            A premium gothic atelier for modern ritual. Shop refined silhouettes
+            and shadowed interiors with quiet, intentional design.
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -42,38 +50,28 @@ export default function Home() {
             href="/shop"
             className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90"
           >
-            <span className="px-6 py-3">Shop the Threshold</span>
+            <span className="px-6 py-3">Shop Apparel</span>
           </Link>
           <Link
-            href="/drops"
+            href="/join"
             className="inline-flex items-center justify-center rounded-full border border-white/20 text-sm font-medium text-white/80 transition hover:text-white"
           >
-            <span className="px-6 py-3">View Featured Drops</span>
+            <span className="px-6 py-3">Enter the Sanctuary</span>
           </Link>
         </div>
-      </div>
+      </section>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Mood Gate</h2>
-          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-            06 Curation
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {moodCards.map((mood) => (
+        <h2 className="text-lg font-medium">Shop by Category</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {categoryCards.map((card) => (
             <Link
-              key={mood}
-              href="/shop"
-              className="group rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25"
+              key={card.title}
+              href={card.href}
+              className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25"
             >
-              <p className="text-sm text-white/60">Mood</p>
-              <h3 className="mt-2 text-base font-medium text-white">
-                {mood}
-              </h3>
-              <p className="mt-2 text-xs uppercase tracking-[0.3em] text-white/40">
-                Enter Shop
-              </p>
+              <h3 className="text-base font-medium">{card.title}</h3>
+              <p className="mt-2 text-sm text-white/70">{card.subtitle}</p>
             </Link>
           ))}
         </div>
@@ -92,28 +90,50 @@ export default function Home() {
             The Obsidian Ritual Capsule
           </h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">
-            A quiet arrival of layered silhouettes, midnight textures, and
-            ceremonial detail. Limited release.
+            A limited run of layered silhouettes, midnight textures, and
+            ceremonial detail. Quietly released for the Threshold.
           </p>
         </Link>
       </section>
 
       <section className="space-y-4">
+        <h2 className="text-lg font-medium">Mood Gate</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {moodCards.map((mood) => (
+            <Link
+              key={mood}
+              href="/shop"
+              className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25"
+            >
+              <p className="text-sm text-white/60">Mood Portal</p>
+              <h3 className="mt-2 text-base font-medium text-white">{mood}</h3>
+              <p className="mt-2 text-xs uppercase tracking-[0.3em] text-white/40">
+                Enter Shop
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Apparel Spotlight</h2>
-          <Link href="/shop" className="text-xs uppercase tracking-[0.3em] text-white/50">
+          <h2 className="text-lg font-medium">Best Sellers</h2>
+          <Link
+            href="/shop"
+            className="text-xs uppercase tracking-[0.3em] text-white/50"
+          >
             Shop All
           </Link>
         </div>
         <div className="flex gap-4 overflow-x-auto pb-2">
-          {apparelSpotlight.map((item) => (
+          {bestSellers.map((item) => (
             <Link
               key={item}
               href="/shop"
               className="min-w-[220px] flex-1 rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25 sm:min-w-[240px]"
             >
               <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                Apparel
+                Best Seller
               </p>
               <h3 className="mt-2 text-base font-medium">{item}</h3>
               <p className="mt-2 text-sm text-white/70">Signature cut, matte finish.</p>
@@ -124,8 +144,11 @@ export default function Home() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Decor Spotlight</h2>
-          <Link href="/shop" className="text-xs uppercase tracking-[0.3em] text-white/50">
+          <h2 className="text-lg font-medium">Home Decor Spotlight</h2>
+          <Link
+            href="/shop"
+            className="text-xs uppercase tracking-[0.3em] text-white/50"
+          >
             Shop All
           </Link>
         </div>
@@ -137,7 +160,7 @@ export default function Home() {
               className="min-w-[220px] flex-1 rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25 sm:min-w-[240px]"
             >
               <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                Decor
+                Home Decor
               </p>
               <h3 className="mt-2 text-base font-medium">{item}</h3>
               <p className="mt-2 text-sm text-white/70">Quiet ritual, refined form.</p>
@@ -148,29 +171,58 @@ export default function Home() {
 
       <section className="space-y-5 rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-            Sanctuary Invitation
-          </p>
-          <h2 className="text-xl font-semibold">Join the Inner Circle</h2>
+          <h2 className="text-xl font-semibold">Sanctuary Invitation</h2>
           <p className="text-sm leading-6 text-white/70">
-            Access the quiet side of the Threshold and receive private updates.
+            Join the sanctuary for permanent rituals and private access.
           </p>
         </div>
         <ul className="space-y-2 text-sm text-white/70">
-          <li>Early access to drops and limited rituals.</li>
-          <li>Curated dispatches and atelier notes.</li>
-          <li>Private invitations to shadow releases.</li>
+          <li>10% off always.</li>
+          <li>The Mirror.</li>
+          <li>Resonance (Pulse Windows + Echo Cards).</li>
         </ul>
         <Link
           href="/join"
           className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90"
         >
-          <span className="px-6 py-3">Join the Circle</span>
+          <span className="px-6 py-3">Enter the Sanctuary</span>
         </Link>
       </section>
 
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium">Tonight in Resonance</h2>
+          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+            Locked
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {["Day", "Evening", "Midnight"].map((window) => (
+            <div
+              key={window}
+              className="relative rounded-2xl border border-white/10 bg-white/5 p-5"
+            >
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                {window} Window
+              </p>
+              <p className="mt-3 text-sm text-white/70">
+                Pulse notes and curated echoes.
+              </p>
+              <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/70 text-xs uppercase tracking-[0.3em] text-white/70">
+                Join to Unlock
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <footer className="border-t border-white/10 pt-6 text-xs uppercase tracking-[0.35em] text-white/40">
-        Charmed & Dark — Threshold Public Experience
+        <div className="flex flex-wrap gap-6">
+          <Link href="/about">About</Link>
+          <Link href="/shop">Shop</Link>
+          <Link href="/drops">Drops</Link>
+          <Link href="/join">Join</Link>
+        </div>
       </footer>
     </section>
   );
