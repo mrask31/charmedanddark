@@ -221,6 +221,14 @@ export default function Shop() {
             onClick={() => setActiveProduct(null)}
           />
           <div className="modal-surface relative w-full max-w-xl rounded-2xl border border-white/15 bg-black p-6 text-white shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setActiveProduct(null)}
+              aria-label="Close quick view"
+              className="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 text-xs text-white/70 transition hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            >
+              ✕
+            </button>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-white/50">
@@ -236,14 +244,21 @@ export default function Shop() {
               <p className="text-base font-medium">{activeProduct.price}</p>
             </div>
 
-            <div className="mt-5 h-48 rounded-xl border border-white/10 bg-white/5" />
+            <div className="relative mt-5 h-48 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 via-black/40 to-black/80">
+              <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold text-white/10">
+                C&amp;D
+              </div>
+              <div className="absolute bottom-3 right-4 text-[10px] uppercase tracking-[0.4em] text-white/40">
+                Preview Image
+              </div>
+            </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
                 href={`/product/${activeProduct.slug}`}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
-                View Full Details
+                <span className="text-black">View Full Details</span>
               </Link>
               <button
                 type="button"
