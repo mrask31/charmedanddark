@@ -32,15 +32,35 @@ export default function ProductDetail() {
           <div className="space-y-4">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-white/60">
               <span>Gallery</span>
-              <span className="h-px flex-1 bg-white/10 ml-4" />
+              <span className="ml-4 h-px flex-1 bg-white/10" />
+              <span className="hidden text-[10px] uppercase tracking-[0.35em] text-white/40 md:block">
+                Hover to zoom
+              </span>
             </div>
-            <div className="h-80 rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-black/40 to-black/80 sm:h-[420px]" />
-            <div className="grid grid-cols-3 gap-3">
+            <div className="relative h-80 overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 via-black/60 to-black/90 shadow-[0_18px_40px_rgba(0,0,0,0.35)] sm:h-[420px]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)]" />
+              <div className="absolute inset-4 rounded-2xl border border-white/10" />
+              <div className="absolute inset-0 flex items-center justify-center text-5xl font-semibold tracking-[0.2em] text-white/10">
+                C&amp;D
+              </div>
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),transparent_55%)]" />
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
               {[1, 2, 3].map((item) => (
-                <div
+                <button
                   key={item}
-                  className="h-24 rounded-xl border border-white/10 bg-black/60"
-                />
+                  type="button"
+                  className={`relative h-20 min-w-[96px] flex-1 rounded-xl border bg-black/70 sm:h-24 sm:min-w-0 ${
+                    item === 1
+                      ? "border-white/50 ring-1 ring-white/40"
+                      : "border-white/10"
+                  }`}
+                >
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-black/50 to-black/80" />
+                  <div className="absolute inset-0 flex items-center justify-center text-xs uppercase tracking-[0.3em] text-white/30">
+                    C&amp;D
+                  </div>
+                </button>
               ))}
             </div>
           </div>
