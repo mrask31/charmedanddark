@@ -45,7 +45,7 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <div className="space-y-5 lg:sticky lg:top-24 lg:self-start">
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.3em] text-white/60">
                 {["Apparel", "New", "Limited"].map((chip) => (
@@ -64,22 +64,21 @@ export default function ProductDetail() {
               <p className="text-sm text-white/70">{ritualLine}</p>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-5">
-              <button
-                type="button"
-                disabled
-                className="w-full rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium text-white/60"
+            <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <Link
+                href="/join"
+                className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
-                Checkout coming soon
-              </button>
+                Join the Sanctuary (10% off always)
+              </Link>
               <button
                 type="button"
-                className="w-full rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white"
+                className="w-full rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 Save for Later
               </button>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">
-                Checkout via Shopify
+              <p className="text-xs text-white/50">
+                Checkout opens soon. Members get first access.
               </p>
             </div>
 
@@ -92,7 +91,7 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5">
               <h2 className="text-lg font-medium">Mood Match</h2>
               <p className="text-sm text-white/70">
                 Return to the atelier to align with your next ritual.
@@ -116,16 +115,16 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-sm text-white/70">
                 Sanctuary members receive quiet access to ritual drops and
                 private echoes.
               </p>
               <Link
                 href="/join"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white px-5 py-2 text-xs font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-2 text-xs font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
-                <span className="text-black">Enter the Sanctuary</span>
+                Enter the Sanctuary
               </Link>
             </div>
           </div>
