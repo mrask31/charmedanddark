@@ -65,9 +65,9 @@ export default function ProductDetail() {
             </p>
             <Link
               href="/join"
-              className="mt-4 inline-flex items-center justify-center rounded-full border border-white/20 bg-white px-5 py-2 text-xs font-medium text-black transition hover:bg-white/90"
+              className="mt-4 inline-flex items-center justify-center rounded-full border border-white/20 bg-white px-5 py-2 text-xs font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              Join the Sanctuary
+              <span className="text-black">Enter the Sanctuary</span>
             </Link>
           </div>
         </div>

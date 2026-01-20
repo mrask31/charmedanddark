@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const products = [
   {
@@ -84,20 +84,51 @@ const moods = [
 
 export default function Shop() {
   const [activeProduct, setActiveProduct] = useState(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
+    if (!activeProduct) {
+      return undefined;
+    }
+
+    const scrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+
+    const focusable = modalRef.current?.querySelectorAll(
+      'a,button,textarea,input,select,[tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable?.[0];
+    const last = focusable?.[focusable.length - 1];
+    first?.focus();
+
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setActiveProduct(null);
       }
+
+      if (event.key === "Tab" && focusable?.length) {
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
     };
 
-    if (activeProduct) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, scrollY);
     };
   }, [activeProduct]);
 
@@ -220,7 +251,10 @@ export default function Shop() {
             className="absolute inset-0"
             onClick={() => setActiveProduct(null)}
           />
-          <div className="modal-surface relative w-full max-w-xl rounded-2xl border border-white/15 bg-black p-6 text-white shadow-2xl">
+          <div
+            ref={modalRef}
+            className="modal-surface relative w-full max-w-xl rounded-2xl border border-white/15 bg-black p-6 text-white shadow-2xl"
+          >
             <button
               type="button"
               onClick={() => setActiveProduct(null)}
