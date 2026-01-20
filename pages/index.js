@@ -133,7 +133,13 @@ export default function Home() {
             Shop All
           </Link>
         </div>
-        <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 bg-gradient-to-r from-black via-black/70 to-transparent md:block" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-12 bg-gradient-to-l from-black via-black/70 to-transparent md:block" />
+          <p className="mb-2 hidden text-xs uppercase tracking-[0.3em] text-white/40 md:block">
+            Drag to explore
+          </p>
+          <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
           {bestSellers.map((item) => (
             <Link
               key={item}
@@ -147,6 +153,7 @@ export default function Home() {
               <p className="mt-2 text-sm text-white/70">Signature cut, matte finish.</p>
             </Link>
           ))}
+          </div>
         </div>
       </section>
 
@@ -162,7 +169,13 @@ export default function Home() {
             Shop All
           </Link>
         </div>
-        <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 bg-gradient-to-r from-black via-black/70 to-transparent md:block" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-12 bg-gradient-to-l from-black via-black/70 to-transparent md:block" />
+          <p className="mb-2 hidden text-xs uppercase tracking-[0.3em] text-white/40 md:block">
+            Drag to explore
+          </p>
+          <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
           {decorSpotlight.map((item) => (
             <Link
               key={item}
@@ -176,6 +189,7 @@ export default function Home() {
               <p className="mt-2 text-sm text-white/70">Quiet ritual, refined form.</p>
             </Link>
           ))}
+          </div>
         </div>
       </section>
 
