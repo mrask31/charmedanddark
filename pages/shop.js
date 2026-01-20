@@ -439,79 +439,81 @@ export default function Shop({ products }) {
             >
               ✕
             </button>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                  {activeProduct.category}
-                </p>
-                <h3 className="mt-2 text-xl font-semibold">
-                  {activeProduct.name}
-                </h3>
-                <p className="mt-2 text-sm text-white/70">
-                  {activeProduct.description}
-                </p>
-              </div>
-              <div className="text-right text-sm">
-                {activeProduct.salePrice &&
-                activeProduct.salePrice < activeProduct.price ? (
-                  <>
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                    {activeProduct.category}
+                  </p>
+                  <h3 className="mt-2 text-xl font-semibold">
+                    {activeProduct.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-white/70">
+                    {activeProduct.description}
+                  </p>
+                </div>
+                <div className="text-right text-sm">
+                  {activeProduct.salePrice &&
+                  activeProduct.salePrice < activeProduct.price ? (
+                    <>
+                      <p className="text-white">
+                        {formatCurrency(
+                          activeProduct.salePrice,
+                          activeProduct.currency
+                        )}
+                      </p>
+                      <p className="text-white/40 line-through">
+                        {formatCurrency(
+                          activeProduct.price,
+                          activeProduct.currency
+                        )}
+                      </p>
+                    </>
+                  ) : (
                     <p className="text-white">
-                      {formatCurrency(
-                        activeProduct.salePrice,
-                        activeProduct.currency
-                      )}
-                    </p>
-                    <p className="text-white/40 line-through">
                       {formatCurrency(
                         activeProduct.price,
                         activeProduct.currency
                       )}
                     </p>
-                  </>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative mt-5 h-64 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 via-black/40 to-black/80 sm:h-72">
+                {activeProduct.imageUrls?.[0] ? (
+                  <img
+                    src={activeProduct.imageUrls[0]}
+                    alt={activeProduct.name}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
-                  <p className="text-white">
-                    {formatCurrency(
-                      activeProduct.price,
-                      activeProduct.currency
-                    )}
-                  </p>
+                  <>
+                    <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold text-white/10">
+                      C&amp;D
+                    </div>
+                    <div className="absolute bottom-3 right-4 text-[10px] uppercase tracking-[0.4em] text-white/40">
+                      Preview Image
+                    </div>
+                  </>
                 )}
               </div>
-            </div>
 
-            <div className="relative mt-5 h-48 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 via-black/40 to-black/80">
-              {activeProduct.imageUrls?.[0] ? (
-                <img
-                  src={activeProduct.imageUrls[0]}
-                  alt={activeProduct.name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <>
-                  <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold text-white/10">
-                    C&amp;D
-                  </div>
-                  <div className="absolute bottom-3 right-4 text-[10px] uppercase tracking-[0.4em] text-white/40">
-                    Preview Image
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={`/product/${activeProduct.slug}`}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 shadow-sm transition hover:-translate-y-0.5 hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
-                View Full Details
-              </Link>
-              <button
-                type="button"
-                onClick={() => setActiveProduct(null)}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
-                Close
-              </button>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href={`/product/${activeProduct.slug}`}
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 shadow-sm transition hover:-translate-y-0.5 hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                >
+                  View Full Details
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setActiveProduct(null)}
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

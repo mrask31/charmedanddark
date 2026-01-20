@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import { getProducts } from "@/lib/products";
 
 const formatCurrency = (value, currency = "USD") => {
@@ -31,6 +32,7 @@ export async function getStaticProps({ params }) {
 }
 
 export default function ProductDetail({ product }) {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const productName = product?.name || "Item Sealed Away";
   const ritualLine =
     product?.description ||
@@ -43,7 +45,8 @@ export default function ProductDetail({ product }) {
     product && product.salePrice && product.salePrice < product.price
       ? formatCurrency(product.salePrice, product.currency)
       : null;
-  const previewImage = product?.imageUrls?.[0];
+  const previewImage =
+    product?.imageUrls?.[activeImageIndex] || product?.imageUrls?.[0];
   const galleryImages = product?.imageUrls?.length
     ? product.imageUrls.slice(0, 3)
     : [null, null, null];
@@ -111,8 +114,9 @@ export default function ProductDetail({ product }) {
                     <button
                       key={`${product.sku}-${index}`}
                       type="button"
+                      onClick={() => setActiveImageIndex(index)}
                       className={`relative h-20 min-w-[96px] flex-1 rounded-xl border bg-black/70 sm:h-24 sm:min-w-0 ${
-                        index === 0
+                        index === activeImageIndex
                           ? "border-white/50 ring-1 ring-white/40"
                           : "border-white/10"
                       }`}
