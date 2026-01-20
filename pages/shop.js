@@ -290,9 +290,9 @@ export default function Shop() {
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
                 href={`/product/${activeProduct.slug}`}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 shadow-sm transition hover:-translate-y-0.5 hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
-                <span className="text-black">View Full Details</span>
+                View Full Details
               </Link>
               <button
                 type="button"
