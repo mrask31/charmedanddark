@@ -48,9 +48,9 @@ export default function Home() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             href="/shop"
-            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
-            <span className="px-6 py-3">Shop Apparel</span>
+            <span className="px-6 py-3 text-black">Shop Apparel</span>
           </Link>
           <Link
             href="/join"
@@ -195,9 +195,9 @@ export default function Home() {
         </ul>
         <Link
           href="/join"
-          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
-          <span className="px-6 py-3">Join the Sanctuary</span>
+          <span className="px-6 py-3 text-black">Join the Sanctuary</span>
         </Link>
       </section>
 
