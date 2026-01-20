@@ -1,89 +1,68 @@
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { getProducts } from "@/lib/products";
 
-const products = [
-  {
-    name: "Obsidian Ritual Coat",
-    category: "Apparel",
-    price: "$248",
-    tag: "Limited",
-    slug: "obsidian-ritual-coat",
-    description:
-      "A structured outer layer with a quiet drape, designed for nightly ritual.",
-  },
-  {
-    name: "Nocturne Column Dress",
-    category: "Apparel",
-    price: "$198",
-    tag: "New",
-    slug: "nocturne-column-dress",
-    description:
-      "A long, minimal silhouette with a soft weight and refined presence.",
-  },
-  {
-    name: "Eclipse Knit Layer",
-    category: "Apparel",
-    price: "$164",
-    tag: "Essential",
-    slug: "eclipse-knit-layer",
-    description:
-      "Midweight knit designed to anchor the Threshold wardrobe.",
-  },
-  {
-    name: "Midnight Veil Top",
-    category: "Apparel",
-    price: "$128",
-    tag: "New",
-    slug: "midnight-veil-top",
-    description:
-      "A sheer layered piece with a subtle sheen and quiet movement.",
-  },
-  {
-    name: "Smoke Glass Vessel",
-    category: "Home Decor",
-    price: "$68",
-    tag: "Essential",
-    slug: "smoke-glass-vessel",
-    description: "A smoked glass form for incense, stems, or ritual objects.",
-  },
-  {
-    name: "Blackened Brass Tray",
-    category: "Home Decor",
-    price: "$82",
-    tag: "Limited",
-    slug: "blackened-brass-tray",
-    description: "A grounded surface for offerings, candles, or collections.",
-  },
-  {
-    name: "Incense Stone Set",
-    category: "Home Decor",
-    price: "$54",
-    tag: "New",
-    slug: "incense-stone-set",
-    description: "A trio of stones designed to hold scent and intention.",
-  },
-  {
-    name: "Ritual Velvet Wrap",
-    category: "Apparel",
-    price: "$142",
-    tag: "Essential",
-    slug: "ritual-velvet-wrap",
-    description:
-      "A velvet layer with quiet drape and tonal depth for evening wear.",
-  },
+const categoryOptions = [
+  "All Categories",
+  "Drinkware",
+  "Dining & Serveware",
+  "Candles & Scent",
+  "Wall Art",
+  "Decor Objects",
+  "Textiles",
+  "Home Decor (Other)",
 ];
 
-const moods = [
-  "Veilbound",
-  "Obsidian",
-  "Nocturne",
-  "Cathedral",
-  "Shadow",
-  "Eclipse",
+const tabs = [
+  "All",
+  "Apparel (Coming Soon)",
+  "Home Decor",
+  "Drops (Coming Soon)",
 ];
 
-export default function Shop() {
+const collectionConfigs = {
+  bestSellers: {
+    label: "Best Sellers",
+    description:
+      "A curated selection of high-demand pieces, limited in stock and rich in ritual.",
+  },
+  giftsUnder30: {
+    label: "Gifts Under $30",
+    description:
+      "Small offerings with gothic charm, ready for gifting or quiet indulgence.",
+  },
+};
+
+const formatCurrency = (value, currency = "USD") => {
+  if (value === null || Number.isNaN(value)) return "";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: value % 1 === 0 ? 0 : 2,
+  }).format(value);
+};
+
+const getEffectivePrice = (product) => {
+  if (product.salePrice && product.salePrice < product.price) {
+    return product.salePrice;
+  }
+  return product.price;
+};
+
+export async function getStaticProps() {
+  const products = getProducts();
+  return { props: { products } };
+}
+
+export default function Shop({ products }) {
   const [activeProduct, setActiveProduct] = useState(null);
+  const [activeTab, setActiveTab] = useState("Home Decor");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("Featured");
+  const [inStockOnly, setInStockOnly] = useState(true);
+  const [activeCollection, setActiveCollection] = useState(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -132,25 +111,180 @@ export default function Shop() {
     };
   }, [activeProduct]);
 
+  const visibleProducts = useMemo(() => {
+    const base = products.filter((product) => !product.hidden);
+    let filtered = base;
+
+    if (activeTab === "Home Decor") {
+      filtered = base;
+    }
+
+    if (selectedCategory !== "All Categories") {
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
+    }
+
+    if (searchQuery.trim()) {
+      const term = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (product) =>
+          product.name.toLowerCase().includes(term) ||
+          product.description.toLowerCase().includes(term)
+      );
+    }
+
+    if (inStockOnly) {
+      filtered = filtered.filter((product) => product.qty > 0);
+    }
+
+    if (activeCollection === "bestSellers") {
+      const inStock = base.filter((product) => product.qty > 0 && !product.hidden);
+      const byPrice = [...inStock].sort((a, b) => b.price - a.price);
+      const saleItems = inStock.filter(
+        (product) => product.salePrice && product.salePrice < product.price
+      );
+      const curated = [];
+      byPrice.slice(0, 6).forEach((item) => curated.push(item));
+      saleItems.slice(0, 4).forEach((item) => {
+        if (!curated.find((entry) => entry.sku === item.sku)) {
+          curated.push(item);
+        }
+      });
+      filtered = curated.slice(0, 12);
+    }
+
+    if (activeCollection === "giftsUnder30") {
+      filtered = filtered.filter((product) => {
+        const price = getEffectivePrice(product);
+        return price <= 30 && product.qty > 0;
+      });
+    }
+
+    if (sortOption === "Price: Low to High") {
+      filtered = [...filtered].sort(
+        (a, b) => getEffectivePrice(a) - getEffectivePrice(b)
+      );
+    }
+
+    if (sortOption === "Price: High to Low") {
+      filtered = [...filtered].sort(
+        (a, b) => getEffectivePrice(b) - getEffectivePrice(a)
+      );
+    }
+
+    if (sortOption === "Featured" || sortOption === "Newest") {
+      filtered = [...filtered].sort((a, b) => a.index - b.index);
+    }
+
+    return filtered;
+  }, [
+    activeCollection,
+    activeTab,
+    inStockOnly,
+    products,
+    searchQuery,
+    selectedCategory,
+    sortOption,
+  ]);
+
+  const handleCollectionToggle = (collectionKey) => {
+    setActiveCollection((current) => (current === collectionKey ? null : collectionKey));
+  };
+
+  const FiltersPanel = ({ isMobile }) => (
+    <div
+      className={
+        isMobile ? "space-y-4" : "grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_auto]"
+      }
+    >
+      <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
+        Search
+        <input
+          type="text"
+          placeholder="Search the atelier"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+        />
+      </label>
+      <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
+        Category
+        <select
+          value={selectedCategory}
+          onChange={(event) => setSelectedCategory(event.target.value)}
+          className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+        >
+          {categoryOptions.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+      </label>
+      <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
+        Sort
+        <select
+          value={sortOption}
+          onChange={(event) => setSortOption(event.target.value)}
+          className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+        >
+          {[
+            "Featured",
+            "Price: Low to High",
+            "Price: High to Low",
+            "Newest",
+          ].map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+      </label>
+      <div className="flex flex-col justify-end gap-3">
+        <label className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-white/50">
+          <input
+            type="checkbox"
+            checked={inStockOnly}
+            onChange={(event) => setInStockOnly(event.target.checked)}
+            className="h-4 w-4 rounded border border-white/20 bg-black text-white/80"
+          />
+          In Stock Only
+        </label>
+        {isMobile ? (
+          <button
+            type="button"
+            onClick={() => setIsFilterOpen(false)}
+            className="rounded-full border border-white/20 px-5 py-2 text-xs uppercase tracking-[0.3em] text-white/80 transition hover:border-white/40 hover:text-white"
+          >
+            Apply Filters
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+
   return (
     <section className="space-y-10">
       <section className="space-y-4">
         <p className="text-xs uppercase tracking-[0.35em] text-white/60">Shop</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Shop
+          Shop Gothic Home Decor
         </h1>
         <p className="max-w-2xl text-base leading-7 text-white/70">
-          A curated boutique of gothic apparel and home decor, designed for
-          quiet ritual and refined presence.
+          A curated boutique of dark home décor designed for quiet ritual and
+          refined presence—crafted to feel timeless, tactile, and rare.
         </p>
         <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
-          {["Apparel", "Home Decor", "Drops"].map((tab) => (
-            <span
+          {tabs.map((tab) => (
+            <button
               key={tab}
-              className="rounded-full border border-white/10 px-4 py-2"
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`rounded-full border px-4 py-2 transition ${
+                activeTab === tab
+                  ? "border-white/40 text-white"
+                  : "border-white/10 text-white/60 hover:border-white/30 hover:text-white"
+              }`}
             >
               {tab}
-            </span>
+            </button>
           ))}
         </div>
       </section>
@@ -158,83 +292,125 @@ export default function Shop() {
       <div className="h-px bg-white/10" />
 
       <section className="space-y-4">
-        <div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_auto]">
-          <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
-            Search
-            <input
-              type="text"
-              placeholder="Search the atelier"
-              className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-            />
-          </label>
-          <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
-            Category
-            <select className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50">
-              <option>All</option>
-              <option>Apparel</option>
-              <option>Home Decor</option>
-              <option>Drops</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
-            Sort
-            <select className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50">
-              <option>Newest</option>
-              <option>Best Sellers</option>
-              <option>Price</option>
-            </select>
-          </label>
-          <button
-            type="button"
-            className="mt-6 h-[46px] rounded-full border border-white/20 px-6 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          >
-            Filter
-          </button>
+        <h2 className="text-lg font-medium">Shop by Category</h2>
+        <div className="hidden md:block">
+          <FiltersPanel />
         </div>
+        <button
+          type="button"
+          onClick={() => setIsFilterOpen(true)}
+          className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-2 text-xs uppercase tracking-[0.3em] text-white/80 transition hover:border-white/40 hover:text-white md:hidden"
+        >
+          Filter
+        </button>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-medium">Boutique Catalog</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product) => (
+        <h2 className="text-lg font-medium">Featured Collections</h2>
+        <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.3em] text-white/60">
+          {Object.entries(collectionConfigs).map(([key, config]) => (
             <button
-              key={product.name}
+              key={key}
               type="button"
-              onClick={() => setActiveProduct(product)}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition hover:border-white/25"
+              onClick={() => handleCollectionToggle(key)}
+              className={`rounded-full border px-4 py-2 transition ${
+                activeCollection === key
+                  ? "border-white/40 text-white"
+                  : "border-white/10 text-white/60 hover:border-white/30 hover:text-white"
+              }`}
             >
-              <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-white/50">
-                <span>{product.tag}</span>
-                <span>{product.category}</span>
-              </div>
-              <div className="mt-4 h-32 rounded-xl border border-white/10 bg-black/60" />
-              <h3 className="mt-4 text-base font-medium text-white">
-                {product.name}
-              </h3>
-              <p className="mt-2 text-sm text-white/70">{product.price}</p>
-              <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/40">
-                Quick View
-              </p>
+              {config.label}
             </button>
           ))}
         </div>
+        {activeCollection ? (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              {collectionConfigs[activeCollection].label}
+            </p>
+            <p className="mt-2">{collectionConfigs[activeCollection].description}</p>
+          </div>
+        ) : null}
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-sm uppercase tracking-[0.35em] text-white/60">
-          Shop by Mood
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {moods.map((mood) => (
+      <section className="space-y-4">
+        <h2 className="text-lg font-medium">Results</h2>
+        {(activeTab === "Apparel (Coming Soon)" ||
+          activeTab === "Drops (Coming Soon)") ? (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              Coming Soon
+            </p>
+            <p className="mt-2">
+              These releases are being prepared for the Threshold. The Sanctuary
+              receives early access when they arrive.
+            </p>
             <Link
-              key={mood}
-              href="/shop"
-              className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/70 transition hover:border-white/30"
+              href="/join"
+              className="mt-4 inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-2 text-xs font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md"
             >
-              {mood}
+              Enter the Sanctuary
             </Link>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {visibleProducts.map((product) => {
+              const isSoldOut = product.qty <= 0;
+              const hasSale =
+                product.salePrice && product.salePrice < product.price;
+              const displayPrice = formatCurrency(product.price, product.currency);
+              const displaySale = hasSale
+                ? formatCurrency(product.salePrice, product.currency)
+                : null;
+              const previewImage = product.imageUrls?.[0];
+
+              return (
+                <button
+                  key={product.sku}
+                  type="button"
+                  onClick={() => setActiveProduct(product)}
+                  className="group rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition hover:border-white/25"
+                >
+                  <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-white/50">
+                    <span>{product.category}</span>
+                    <span>{isSoldOut ? "Sold Out" : "In Stock"}</span>
+                  </div>
+                  <div className="mt-4 h-32 overflow-hidden rounded-xl border border-white/10 bg-black/60">
+                    {previewImage ? (
+                      <img
+                        src={previewImage}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.3em] text-white/40">
+                        C&amp;D
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="mt-4 text-base font-medium text-white">
+                    {product.name}
+                  </h3>
+                  <div className="mt-2 flex items-center gap-2 text-sm text-white/70">
+                    {displaySale ? (
+                      <>
+                        <span className="text-white">{displaySale}</span>
+                        <span className="text-white/40 line-through">
+                          {displayPrice}
+                        </span>
+                      </>
+                    ) : (
+                      <span>{displayPrice}</span>
+                    )}
+                  </div>
+                  <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/40">
+                    Quick View
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       <footer className="border-t border-white/10 pt-6 text-xs uppercase tracking-[0.35em] text-white/40">
@@ -245,7 +421,7 @@ export default function Shop() {
         </div>
       </footer>
 
-      {activeProduct ? (
+          {activeProduct ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm">
           <div
             className="absolute inset-0"
@@ -266,7 +442,7 @@ export default function Shop() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                  {activeProduct.category} • {activeProduct.tag}
+                  {activeProduct.category}
                 </p>
                 <h3 className="mt-2 text-xl font-semibold">
                   {activeProduct.name}
@@ -275,16 +451,51 @@ export default function Shop() {
                   {activeProduct.description}
                 </p>
               </div>
-              <p className="text-base font-medium">{activeProduct.price}</p>
+              <div className="text-right text-sm">
+                {activeProduct.salePrice &&
+                activeProduct.salePrice < activeProduct.price ? (
+                  <>
+                    <p className="text-white">
+                      {formatCurrency(
+                        activeProduct.salePrice,
+                        activeProduct.currency
+                      )}
+                    </p>
+                    <p className="text-white/40 line-through">
+                      {formatCurrency(
+                        activeProduct.price,
+                        activeProduct.currency
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-white">
+                    {formatCurrency(
+                      activeProduct.price,
+                      activeProduct.currency
+                    )}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="relative mt-5 h-48 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 via-black/40 to-black/80">
-              <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold text-white/10">
-                C&amp;D
-              </div>
-              <div className="absolute bottom-3 right-4 text-[10px] uppercase tracking-[0.4em] text-white/40">
-                Preview Image
-              </div>
+              {activeProduct.imageUrls?.[0] ? (
+                <img
+                  src={activeProduct.imageUrls[0]}
+                  alt={activeProduct.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <>
+                  <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold text-white/10">
+                    C&amp;D
+                  </div>
+                  <div className="absolute bottom-3 right-4 text-[10px] uppercase tracking-[0.4em] text-white/40">
+                    Preview Image
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -301,6 +512,28 @@ export default function Shop() {
               >
                 Close
               </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isFilterOpen ? (
+        <div className="fixed inset-0 z-50 flex items-end bg-black/70 backdrop-blur-sm md:hidden">
+          <div className="w-full rounded-t-3xl border border-white/10 bg-black p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                Filters
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsFilterOpen(false)}
+                className="text-xs uppercase tracking-[0.3em] text-white/60"
+              >
+                Close
+              </button>
+            </div>
+            <div className="mt-4">
+              <FiltersPanel isMobile />
             </div>
           </div>
         </div>
