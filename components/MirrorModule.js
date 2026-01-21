@@ -66,15 +66,20 @@ export default function MirrorModule({ products, isMember }) {
   };
 
   return (
-    <section className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6">
-      <div className="space-y-2 text-center">
-        <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-          The Mirror
+    <section className="space-y-5 rounded-3xl border border-white/20 bg-gradient-to-br from-white/10 via-black/40 to-black/80 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+      <div className="space-y-2">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/50">
+          01 Confess · 02 Receive · 03 Keep
         </p>
-        <h2 className="text-xl font-semibold">
+        <p className="text-sm text-white/70">
+          A Reading Card: validation, one prescription, and quiet resonance.
+        </p>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-xl font-semibold">
           The noise is overwhelming. Tell the Mirror: How does your shadow feel
           right now?
-        </h2>
+        </h3>
         <p className="text-sm text-white/70">{reading?.prescription}</p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-3">

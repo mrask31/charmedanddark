@@ -37,6 +37,71 @@ a {
   display: none;
 }
 
+.fog-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.fog-blob {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  top: -20%;
+  left: -20%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 60%);
+  filter: blur(40px);
+  opacity: 0.6;
+  animation: fogDriftOne 28s ease-in-out infinite;
+}
+
+.fog-blob-alt {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  bottom: -30%;
+  right: -20%;
+  background: radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.06), transparent 65%);
+  filter: blur(50px);
+  opacity: 0.5;
+  animation: fogDriftTwo 36s ease-in-out infinite;
+}
+
+@keyframes fogDriftOne {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, -2%, 0) scale(1.03);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes fogDriftTwo {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-2%, 2%, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fog-blob,
+  .fog-blob-alt {
+    animation: none;
+    transform: none;
+    opacity: 0.35;
+  }
+}
+
 .modal-surface {
   animation: modalFade 200ms ease-out;
 }
