@@ -1,191 +1,232 @@
+import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 
-const archiveDrops = [
+const pulseWindows = [
   {
-    name: "Eclipse I",
-    season: "Winter Ritual 2024",
-    description: "Opening the Threshold with core essentials and relic tones.",
+    title: "Day",
+    detail: "Soft light, open ritual, slow invitations.",
   },
   {
-    name: "Eclipse II",
-    season: "Silent Spring 2024",
-    description: "Expanded silhouettes, shadowed metallics, and refined cuts.",
+    title: "Evening",
+    detail: "Quiet escalation, curated silhouettes, calm pulse.",
   },
   {
-    name: "Eclipse III",
-    season: "Nocturne Autumn 2024",
-    description: "Reserved for members. Private access layered in quiet form.",
-  },
-  {
-    name: "Eclipse IV",
-    season: "Midwinter 2025",
-    description: "A capsule of ceremony, matte textures, and sculpted shapes.",
+    title: "Midnight",
+    detail: "Private access, shadowed objects, the room stills.",
   },
 ];
 
-export default function Drops() {
-  return (
-    <section className="space-y-12">
-      <section className="space-y-5">
-        <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-          Drops
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Drops
-        </h1>
-        <p className="max-w-2xl text-base leading-7 text-white/70">
-          Limited releases of gothic apparel and dark home décor—curated in
-          small runs, then sealed away.
-        </p>
-      </section>
+const archiveTiles = ["Obsidian Archive", "Eclipse Vault", "Nocturne Shelf"];
 
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.35em] text-white/50">
-              The Mirror
-            </p>
+export default function Drops() {
+  const [isAlertsOpen, setIsAlertsOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleAlertsSubmit = (event) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    setSubmitted(true);
+    console.log("Drop alerts signup:", email);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Drops | Charmed & Dark</title>
+        <meta
+          name="description"
+          content="Limited gothic home décor drops released in quiet windows. Join the Sanctuary for early access and Sanctuary pricing."
+        />
+        <meta property="og:title" content="Drops | Charmed & Dark" />
+        <meta
+          property="og:description"
+          content="Limited gothic home décor drops released in quiet windows. Join the Sanctuary for early access and Sanctuary pricing."
+        />
+        <meta name="twitter:title" content="Drops | Charmed & Dark" />
+        <meta
+          name="twitter:description"
+          content="Limited gothic home décor drops released in quiet windows. Join the Sanctuary for early access and Sanctuary pricing."
+        />
+      </Head>
+
+      <section className="space-y-12">
+        <section className="space-y-5">
+          <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+            DROPS
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Limited releases. Quiet power.
+          </h1>
+          <p className="max-w-2xl text-base leading-7 text-white/70">
+            Small runs of gothic home décor and ritual objects—released in
+            windows, then gone.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/join"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            >
+              Join the Sanctuary
+            </Link>
+            <button
+              type="button"
+              onClick={() => setIsAlertsOpen(true)}
+              className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            >
+              Get drop alerts
+            </button>
+          </div>
+          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+            Members unlock Sanctuary pricing and early access.
+          </p>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-medium">Next Drop: Coming Soon</h2>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <p className="text-sm text-white/70">
-              Ask the Mirror what the House recommends tonight.
+              When the window opens, the Threshold shifts. Join to be notified
+              first.
             </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              {[
+                { label: "Preview Window", value: "TBA" },
+                { label: "Release Window", value: "TBA" },
+                { label: "Sanctuary Early Access", value: "TBA" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-white/10 bg-black/60 p-4 text-center"
+                >
+                  <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-sm text-white/80">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-medium">How Drops Work</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                title: "Limited run",
+                body: "Once it closes, it doesn’t return the same.",
+              },
+              {
+                title: "Timed windows",
+                body: "Released in Day / Evening / Midnight windows.",
+              },
+              {
+                title: "Member access",
+                body: "Sanctuary members see it first and pay less.",
+              },
+            ].map((card) => (
+              <div
+                key={card.title}
+                className="rounded-2xl border border-white/10 bg-white/5 p-5"
+              >
+                <h3 className="text-base font-medium">{card.title}</h3>
+                <p className="mt-2 text-sm text-white/70">{card.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-medium">Pulse Windows</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {pulseWindows.map((window) => (
+              <div
+                key={window.title}
+                className="rounded-2xl border border-white/10 bg-white/5 p-5"
+              >
+                <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                  {window.title}
+                </p>
+                <p className="mt-2 text-sm text-white/70">{window.detail}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+            Echo Cards reset each window. The room stays quiet—never crowded.
+          </p>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-medium">Archive (Locked)</h2>
+          <p className="text-sm text-white/70">
+            Past drops, preserved in the dark. Join to unlock the archive.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {archiveTiles.map((title) => (
+              <div
+                key={title}
+                className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6"
+              >
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                <p className="relative text-xs uppercase tracking-[0.3em] text-white/50">
+                  {title}
+                </p>
+                <div className="relative mt-4 h-28 rounded-xl border border-white/10 bg-black/60" />
+              </div>
+            ))}
           </div>
           <Link
-            href="/"
-            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-2 text-xs font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            href="/join"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
-            Go to the Mirror
+            Unlock the Archive
           </Link>
-        </div>
+        </section>
       </section>
 
-      <section className="space-y-4">
-        <div className="text-xs uppercase tracking-[0.35em] text-white/50">
-          Current Drop
-        </div>
-        <h2 className="text-lg font-medium">The Obsidian Ritual Capsule</h2>
-        <div className="grid gap-6 rounded-2xl border border-white/10 bg-white/5 p-6 lg:grid-cols-[1fr_1.1fr]">
-          <div className="relative min-h-[220px] rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-black/60 to-black/90 p-6">
-            <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold text-white/10">
-              C&amp;D
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/60">
-              <span className="rounded-full border border-white/20 px-3 py-1">
-                Sanctuary Early Access
-              </span>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-white/50">
-                Current Drop
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold">
-                The Obsidian Ritual Capsule
-              </h3>
-            </div>
-            <p className="text-sm leading-6 text-white/70">
-              A restrained collection built for modern ritual—heavy cotton,
-              sharp silhouettes, and pieces that hold their shape in the dark.
-              When it closes, it doesn’t return the same way.
+      {isAlertsOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm">
+          <button
+            type="button"
+            aria-label="Close alerts"
+            onClick={() => setIsAlertsOpen(false)}
+            className="absolute inset-0"
+          />
+          <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-black p-6 text-white">
+            <h3 className="text-lg font-medium">Get drop alerts</h3>
+            <p className="mt-2 text-sm text-white/70">
+              Be the first to know when the window opens.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/drops"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            <form onSubmit={handleAlertsSubmit} className="mt-4 space-y-3">
+              <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
+                Email
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@darkhouse.com"
+                  className="rounded-full border border-white/15 bg-black px-4 py-3 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                  required
+                />
+              </label>
+              <button
+                type="submit"
+                className="w-full rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
-                Enter Drop
-              </Link>
-              <Link
-                href="/join"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
-                Join the Sanctuary
-              </Link>
-            </div>
-            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-              Sanctuary members receive early access and 10% off always.
-            </p>
+                Notify Me
+              </button>
+              <p className="text-xs text-white/50">No spam. Only drops.</p>
+              {submitted ? (
+                <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+                  You are on the list.
+                </p>
+              ) : null}
+            </form>
           </div>
         </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-lg font-medium">Sealed Drops</h2>
-        <p className="max-w-2xl text-sm text-white/70">
-          These releases are closed, but the memory remains. Browse past
-          capsules, artifacts, and limited designs that shaped the House.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {archiveDrops.map((drop) => (
-            <div
-              key={drop.name}
-              className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-5"
-            >
-              <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-white/50">
-                <span>{drop.name}</span>
-                <span>Sealed</span>
-              </div>
-              <h3 className="text-base font-medium">{drop.season}</h3>
-              <p className="text-sm text-white/70">{drop.description}</p>
-              <Link
-                href="/drops"
-                className="text-xs uppercase tracking-[0.3em] text-white/50 transition hover:text-white"
-              >
-                View Archive
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-lg font-medium">How Drops Work</h2>
-        <p className="max-w-3xl text-sm text-white/70">
-          Charmed & Dark Drops are released in limited runs. Some are open to
-          all. Others arrive quietly for Sanctuary members first. If you miss a
-          Drop, it may never return—at least not unchanged.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {[
-            "Released in small runs.",
-            "Available for a short window.",
-            "Then sealed into the archive.",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/70"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="text-lg font-medium">The Sanctuary</h2>
-        <p className="text-sm text-white/70">
-          For those who return often. For those who want the House to remember
-          them.
-        </p>
-        <ul className="space-y-2 text-sm text-white/70">
-          <li>10% off every purchase, always.</li>
-          <li>Early access to Drops.</li>
-          <li>The Mirror + Resonance (member-only experiences).</li>
-        </ul>
-        <Link
-          href="/join"
-          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-        >
-          Enter the Sanctuary
-        </Link>
-        <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-          No noise. No feeds. No performance—only presence.
-        </p>
-      </section>
-
-      <p className="text-xs uppercase tracking-[0.3em] text-white/40">
-        New Drops arrive without warning. The best way to know is to return.
-      </p>
-    </section>
+      ) : null}
+    </>
   );
 }
