@@ -69,6 +69,23 @@ a {
   animation: fogDriftTwo 36s ease-in-out infinite;
 }
 
+.portal-noise {
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
 @keyframes fogDriftOne {
   0% {
     transform: translate3d(0, 0, 0) scale(1);

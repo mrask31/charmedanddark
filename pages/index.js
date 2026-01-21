@@ -32,6 +32,14 @@ const decorSpotlight = [
   "Incense Stone Set",
 ];
 
+const SectionDivider = () => (
+  <div className="flex items-center gap-3 text-white/20">
+    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+    <div className="h-1.5 w-1.5 rotate-45 border border-white/30" />
+    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+  </div>
+);
+
 export async function getStaticProps() {
   const products = getProducts();
   return { props: { products } };
@@ -39,129 +47,163 @@ export async function getStaticProps() {
 
 export default function Home({ products }) {
   return (
-    <section className="space-y-12">
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/70 px-6 py-10 sm:px-10">
+    <section className="space-y-14">
+      <div className="relative min-h-[420px] overflow-hidden rounded-3xl border border-white/10 px-6 py-12 sm:min-h-[520px] sm:px-10">
         <div className="fog-layer" aria-hidden="true">
           <div className="fog-blob" />
           <div className="fog-blob-alt" />
         </div>
-        <div className="relative z-10 space-y-10">
-          <section className="space-y-5">
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-                Threshold
-              </p>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Enter the Threshold.
-              </h1>
-              <p className="max-w-2xl text-base leading-7 text-white/70">
-                A quiet storefront for the corporate goth—uniforms for the
-                world, rituals for the home.
-              </p>
-              <p className="text-sm text-white/60">
-                No noise. No performance. Just atmosphere.
+        <div className="absolute inset-0">
+          <img
+            src="/brand/hero-threshold.jpg"
+            alt=""
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
+        </div>
+        <div className="relative z-10 space-y-12">
+          <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div className="order-last space-y-5 lg:order-none">
+              <div className="space-y-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+                  Threshold
+                </p>
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Enter the Threshold.
+                </h1>
+                <p className="text-base text-white/70">
+                  Uniforms for the world. Rituals for the home.
+                </p>
+                <p className="text-sm text-white/60">
+                  No noise. No performance. Just atmosphere.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link
+                  href="#mirror"
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                >
+                  <span className="px-6 py-3">Reveal My Reading</span>
+                </Link>
+                <Link
+                  href="/join"
+                  className="text-xs uppercase tracking-[0.3em] text-white/60 transition hover:text-white"
+                >
+                  Enter the Sanctuary
+                </Link>
+              </div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                Sanctuary members unlock 10% off always.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link
-                href="#mirror"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
-                <span className="px-6 py-3">Reveal My Reading</span>
-              </Link>
-              <Link
-                href="/join"
-                className="text-xs uppercase tracking-[0.3em] text-white/60 transition hover:text-white"
-              >
-                Enter the Sanctuary
-              </Link>
+            <div className="order-first flex justify-center lg:order-none">
+              <div className="relative flex h-56 w-56 items-center justify-center rounded-full border border-white/20 bg-black/80 text-center text-3xl font-semibold tracking-[0.2em] text-white/80 shadow-[0_0_80px_rgba(255,255,255,0.08)] sm:h-64 sm:w-64">
+                <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_65%)]" />
+                <div className="absolute inset-0 rounded-full blur-2xl opacity-60" />
+                <span className="relative">C&amp;D</span>
+              </div>
             </div>
-            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-              Sanctuary members unlock 10% off always.
-            </p>
           </section>
 
           <section id="mirror" className="space-y-4">
             <div className="space-y-2">
-              <h2 className="text-lg font-medium">The Mirror</h2>
+              <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+                THE MIRROR
+              </p>
+              <div className="h-px w-full bg-gradient-to-r from-white/30 via-white/10 to-transparent" />
               <p className="text-sm text-white/70">
-                Tell the Mirror how the shadow feels. Receive a Reading Card:
-                validation, one prescription, and a quiet resonance.
+                A Reading Card: validation, one prescription, and quiet resonance.
               </p>
             </div>
-            <div className="rounded-3xl border border-white/15 bg-white/5 p-1 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
+            <div className="rounded-3xl border border-white/20 bg-white/5 p-1 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
               <MirrorModule products={products} isMember={isMember} />
             </div>
           </section>
         </div>
       </div>
 
-      <div className="h-px bg-white/10" />
-
-      <section className="grid gap-6 rounded-2xl border border-white/10 bg-white/5 p-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-3">
-          <h2 className="text-lg font-medium">The Sanctuary (Members Only)</h2>
-          <p className="text-sm text-white/70">
-            A private realm designed for daily return—quiet by design.
-          </p>
-          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-            No feeds. No followers. No performance.
-          </p>
-        </div>
-        <div className="space-y-4">
-          <ul className="space-y-2 text-sm text-white/70">
-            <li>10% off always (Sanctuary Price on every item)</li>
-            <li>Save Mirror readings in your Grimoire (placeholder for now)</li>
-            <li>A calmer realm—no feeds, no noise, no performance</li>
-          </ul>
-          <Link
-            href="/join"
-            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          >
-            Enter the Sanctuary
-          </Link>
-        </div>
-      </section>
-
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="space-y-4">
-        <h2 className="text-lg font-medium">Mood Gate</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {moodCards.map((mood) => (
+        <h2 className="text-lg font-medium">Choose Your Entrance</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          {[
+            {
+              title: "The Uniform",
+              subtitle: "Structured silhouettes. Midnight restraint.",
+              href: "/shop",
+              image: "/brand/portal-uniform.jpg",
+            },
+            {
+              title: "The Ritual",
+              subtitle: "Objects for quiet nights and softer rooms.",
+              href: "/shop",
+              image: "/brand/portal-ritual.jpg",
+            },
+          ].map((portal) => (
             <Link
-              key={mood}
-              href="/shop"
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25"
+              key={portal.title}
+              href={portal.href}
+              className="group relative overflow-hidden rounded-3xl border border-white/15 bg-black/80 transition hover:-translate-y-1 hover:border-white/40 hover:shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
             >
-              <p className="text-sm text-white/60">Mood Portal</p>
-              <h3 className="mt-2 text-base font-medium text-white">{mood}</h3>
-              <p className="mt-2 text-xs uppercase tracking-[0.3em] text-white/40">
-                Enter Shop
+              <img
+                src={portal.image}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+              <div className="relative flex h-full flex-col justify-end gap-2 p-6">
+                <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+                  {portal.title}
+                </p>
+                <h3 className="text-lg font-semibold text-white">
+                  {portal.subtitle}
+                </h3>
+                <span className="text-xs uppercase tracking-[0.3em] text-white/60">
+                  Enter {portal.title} →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h2 className="text-lg font-medium">The Sanctuary (Members Only)</h2>
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 p-6">
+          <img
+            src="/brand/sanctuary-bg.jpg"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover blur-sm"
+          />
+          <div className="absolute inset-0 bg-black/70" />
+          <div className="relative space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm text-white/70">
+                A private realm designed for daily return—quiet by design.
               </p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-          Shop by Category
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {categoryCards.map((card) => (
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                No feeds. No followers. No performance.
+              </p>
+            </div>
+            <ul className="space-y-2 text-sm text-white/70">
+              <li>10% off always (Sanctuary Price on every item)</li>
+              <li>Save Mirror readings in your Grimoire (placeholder for now)</li>
+              <li>A calmer realm—no feeds, no noise, no performance</li>
+            </ul>
             <Link
-              key={card.title}
-              href={card.href}
-              className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/70 transition hover:border-white/30 hover:text-white"
+              href="/join"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              {card.title}
+              Enter the Sanctuary
             </Link>
-          ))}
+          </div>
         </div>
       </section>
 
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="space-y-4">
         <div className="space-y-1">
@@ -187,7 +229,7 @@ export default function Home({ products }) {
         </div>
       </section>
 
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
@@ -208,7 +250,7 @@ export default function Home({ products }) {
         </div>
       </section>
 
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
@@ -255,7 +297,7 @@ export default function Home({ products }) {
         </div>
       </section>
 
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
@@ -300,7 +342,7 @@ export default function Home({ products }) {
         </div>
       </section>
 
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="space-y-2">
@@ -312,7 +354,7 @@ export default function Home({ products }) {
         </div>
       </section>
 
-      <div className="h-px bg-white/10" />
+      <SectionDivider />
 
       <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-lg font-medium">
