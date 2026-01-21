@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getProducts } from "@/lib/products";
+import TwoPrice from "@/components/TwoPrice";
+import { isMember } from "@/lib/membership";
 
 const categoryOptions = [
   "All Categories",
@@ -31,15 +33,6 @@ const collectionConfigs = {
     description:
       "Small offerings with gothic charm, ready for gifting or quiet indulgence.",
   },
-};
-
-const formatCurrency = (value, currency = "USD") => {
-  if (value === null || Number.isNaN(value)) return "";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: value % 1 === 0 ? 0 : 2,
-  }).format(value);
 };
 
 const getEffectivePrice = (product) => {
@@ -139,7 +132,9 @@ export default function Shop({ products }) {
     }
 
     if (activeCollection === "bestSellers") {
-      const inStock = base.filter((product) => product.qty > 0 && !product.hidden);
+      const inStock = base.filter(
+        (product) => product.qty > 0 && !product.hidden
+      );
       const byPrice = [...inStock].sort((a, b) => b.price - a.price);
       const saleItems = inStock.filter(
         (product) => product.salePrice && product.salePrice < product.price
@@ -189,7 +184,9 @@ export default function Shop({ products }) {
   ]);
 
   const handleCollectionToggle = (collectionKey) => {
-    setActiveCollection((current) => (current === collectionKey ? null : collectionKey));
+    setActiveCollection((current) =>
+      current === collectionKey ? null : collectionKey
+    );
   };
 
   const FiltersPanel = ({ isMobile }) => (
@@ -356,12 +353,6 @@ export default function Shop({ products }) {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleProducts.map((product) => {
               const isSoldOut = product.qty <= 0;
-              const hasSale =
-                product.salePrice && product.salePrice < product.price;
-              const displayPrice = formatCurrency(product.price, product.currency);
-              const displaySale = hasSale
-                ? formatCurrency(product.salePrice, product.currency)
-                : null;
               const previewImage = product.imageUrls?.[0];
 
               return (
@@ -391,17 +382,15 @@ export default function Shop({ products }) {
                   <h3 className="mt-4 text-base font-medium text-white">
                     {product.name}
                   </h3>
-                  <div className="mt-2 flex items-center gap-2 text-sm text-white/70">
-                    {displaySale ? (
-                      <>
-                        <span className="text-white">{displaySale}</span>
-                        <span className="text-white/40 line-through">
-                          {displayPrice}
-                        </span>
-                      </>
-                    ) : (
-                      <span>{displayPrice}</span>
-                    )}
+                  <div className="mt-3">
+                    <TwoPrice
+                      price={product.price}
+                      salePrice={product.salePrice}
+                      currency={product.currency}
+                      isMember={isMember}
+                      showGate
+                      variant="compact"
+                    />
                   </div>
                   <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/40">
                     Quick View
@@ -452,32 +441,23 @@ export default function Shop({ products }) {
                     {activeProduct.description}
                   </p>
                 </div>
-                <div className="text-right text-sm">
-                  {activeProduct.salePrice &&
-                  activeProduct.salePrice < activeProduct.price ? (
-                    <>
-                      <p className="text-white">
-                        {formatCurrency(
-                          activeProduct.salePrice,
-                          activeProduct.currency
-                        )}
-                      </p>
-                      <p className="text-white/40 line-through">
-                        {formatCurrency(
-                          activeProduct.price,
-                          activeProduct.currency
-                        )}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-white">
-                      {formatCurrency(
-                        activeProduct.price,
-                        activeProduct.currency
-                      )}
-                    </p>
-                  )}
-                </div>
+              </div>
+              <div className="mt-4">
+                <TwoPrice
+                  price={activeProduct.price}
+                  salePrice={activeProduct.salePrice}
+                  currency={activeProduct.currency}
+                  isMember={isMember}
+                  showGate
+                />
+                {!isMember ? (
+                  <Link
+                    href="/join"
+                    className="mt-3 inline-flex items-center justify-center rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/70 transition hover:border-white/40 hover:text-white"
+                  >
+                    Join the Sanctuary
+                  </Link>
+                ) : null}
               </div>
 
               <div className="relative mt-5 h-64 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 via-black/40 to-black/80 sm:h-72">

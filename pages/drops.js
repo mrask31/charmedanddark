@@ -39,6 +39,25 @@ export default function Drops() {
         </p>
       </section>
 
+      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.35em] text-white/50">
+              The Mirror
+            </p>
+            <p className="text-sm text-white/70">
+              Ask the Mirror what the House recommends tonight.
+            </p>
+          </div>
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-2 text-xs font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          >
+            Go to the Mirror
+          </Link>
+        </div>
+      </section>
+
       <section className="space-y-4">
         <div className="text-xs uppercase tracking-[0.35em] text-white/50">
           Current Drop

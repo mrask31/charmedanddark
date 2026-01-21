@@ -1,4 +1,7 @@
 import Link from "next/link";
+import MirrorModule from "@/components/MirrorModule";
+import { getProducts } from "@/lib/products";
+import { isMember } from "@/lib/membership";
 
 const categoryCards = [
   { title: "Apparel", subtitle: "Layered silhouettes", href: "/shop" },
@@ -29,7 +32,12 @@ const decorSpotlight = [
   "Incense Stone Set",
 ];
 
-export default function Home() {
+export async function getStaticProps() {
+  const products = getProducts();
+  return { props: { products } };
+}
+
+export default function Home({ products }) {
   return (
     <section className="space-y-10">
       <section className="space-y-6">
@@ -60,6 +68,8 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      <MirrorModule products={products} isMember={isMember} />
 
       <div className="h-px bg-white/10" />
 

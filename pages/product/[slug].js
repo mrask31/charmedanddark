@@ -1,16 +1,9 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import TwoPrice, { formatCurrency, getPublicPrice } from "@/components/TwoPrice";
 import { getProducts } from "@/lib/products";
-
-const formatCurrency = (value, currency = "USD") => {
-  if (value === null || Number.isNaN(value)) return "";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: value % 1 === 0 ? 0 : 2,
-  }).format(value);
-};
+import { isMember } from "@/lib/membership";
 
 export async function getStaticPaths() {
   const products = getProducts();
@@ -40,11 +33,10 @@ export default function ProductDetail({ product }) {
   const canonicalUrl = product
     ? `https://charmedanddark.com/product/${product.slug}`
     : "https://charmedanddark.com/product";
-  const price = product ? formatCurrency(product.price, product.currency) : "";
-  const salePrice =
-    product && product.salePrice && product.salePrice < product.price
-      ? formatCurrency(product.salePrice, product.currency)
-      : null;
+  const price = product?.price || null;
+  const salePrice = product?.salePrice || null;
+  const publicPrice = product ? getPublicPrice(price, salePrice) : null;
+  const sanctuaryPrice = publicPrice ? publicPrice * 0.9 : null;
   const previewImage =
     product?.imageUrls?.[activeImageIndex] || product?.imageUrls?.[0];
   const galleryImages = product?.imageUrls?.length
@@ -160,18 +152,12 @@ export default function ProductDetail({ product }) {
                   <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                     {product.name}
                   </h1>
-                  <p className="text-lg text-white/80">
-                    {salePrice ? (
-                      <>
-                        <span className="text-white">{salePrice}</span>
-                        <span className="ml-2 text-white/40 line-through">
-                          {price}
-                        </span>
-                      </>
-                    ) : (
-                      price
-                    )}
-                  </p>
+                  <TwoPrice
+                    price={price}
+                    salePrice={salePrice}
+                    currency={product.currency}
+                    isMember={isMember}
+                  />
                   <p className="text-sm text-white/70">{ritualLine}</p>
                 </div>
 
@@ -246,10 +232,10 @@ export default function ProductDetail({ product }) {
             <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                  Price
+                  Sanctuary
                 </p>
                 <p className="text-base font-medium text-white">
-                  {salePrice || price}
+                  {formatCurrency(sanctuaryPrice, product?.currency)}
                 </p>
               </div>
               <button
