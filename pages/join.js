@@ -4,42 +4,42 @@ import { useState } from "react";
 const benefits = [
   {
     title: "Sanctuary Pricing",
-    body: "10% off, permanently. Two prices appear on every piece.",
+    body: "Two prices appear across the House. Members unlock the Sanctuary Price automatically.",
   },
   {
     title: "Early Drop Windows",
-    body: "Preview and access before the Threshold opens.",
+    body: "Preview and access new drops before the Threshold opens to the public.",
   },
   {
     title: "The Grimoire",
-    body: "Your saved Mirror readings—private, timestamped.",
+    body: "Your saved Mirror readings—private, timestamped, and always yours.",
   },
   {
     title: "Quiet Signals",
-    body: "Optional weekly dispatch. No feed. No noise.",
+    body: "Optional weekly dispatch. No feed. No noise. Only what matters.",
   },
   {
     title: "Private Echoes",
-    body: "Resonance is subtle—candles, roses, quiet proof of presence.",
+    body: "Resonance stays symbolic—candles, roses, and quiet proof of presence.",
   },
 ];
 
 const faqs = [
   {
     question: "Is it really free?",
-    answer: "Yes—joining is free; purchases are separate.",
+    answer: "Yes—joining is free. Purchases are separate.",
   },
   {
     question: "How does Sanctuary pricing work?",
-    answer: "Two prices appear. Members unlock the Sanctuary price.",
+    answer: "Two prices appear. Members unlock the Sanctuary Price automatically.",
   },
   {
     question: "Do I have to buy anything?",
-    answer: "No. Membership only opens access and pricing.",
+    answer: "No. Membership simply unlocks access and pricing.",
   },
   {
     question: "What is The Mirror?",
-    answer: "A private reflection and recommendation experience.",
+    answer: "A private reflection and recommendation experience—quiet, personal, and on-brand.",
   },
   {
     question: "When is checkout live?",
@@ -61,15 +61,15 @@ export default function Join() {
   return (
     <>
       <Head>
-        <title>Join the Sanctuary | Charmed & Dark</title>
+        <title>Join the Sanctuary | Charmed & Dark — Save 10% Forever</title>
         <meta
           name="description"
-          content="Join free to unlock Sanctuary pricing, early access drops, and private Mirror readings."
+          content="Step into the Sanctuary at Charmed & Dark to unlock permanent 10% off, early access to Drops, and a private archive of your Mirror readings. Join free in seconds."
         />
         <meta property="og:title" content="Join the Sanctuary | Charmed & Dark" />
         <meta
           property="og:description"
-          content="Join free to unlock Sanctuary pricing, early access drops, and private Mirror readings."
+          content="Step into the Sanctuary at Charmed & Dark to unlock permanent 10% off, early access to Drops, and a private archive of your Mirror readings. Join free in seconds."
         />
         <meta
           name="twitter:title"
@@ -77,7 +77,7 @@ export default function Join() {
         />
         <meta
           name="twitter:description"
-          content="Join free to unlock Sanctuary pricing, early access drops, and private Mirror readings."
+          content="Step into the Sanctuary at Charmed & Dark to unlock permanent 10% off, early access to Drops, and a private archive of your Mirror readings. Join free in seconds."
         />
       </Head>
 
@@ -94,12 +94,12 @@ export default function Join() {
           </p>
           <ul className="space-y-2 text-sm text-white/70">
             <li>10% off always (Sanctuary Price)</li>
-            <li>Early access to Drops</li>
-            <li>Keep your Mirror readings</li>
+            <li>Early access windows before the Threshold opens</li>
+            <li>Save your Mirror readings privately in your Grimoire</li>
           </ul>
           <form onSubmit={handleSubmit} className="space-y-3">
             <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
-              Email
+              EMAIL
               <input
                 type="email"
                 value={email}
@@ -109,12 +109,15 @@ export default function Join() {
                 required
               />
             </label>
+            <p className="text-xs text-white/50">
+              No spam. No noise. Only drops + quiet signals.
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="submit"
                 className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
-                Join Free
+                Enter the Sanctuary
               </button>
               <a
                 href="#member-benefits"
@@ -123,6 +126,9 @@ export default function Join() {
                 See member benefits
               </a>
             </div>
+            <p className="text-xs text-white/60">
+              Free to join. Purchases are separate.
+            </p>
             {submitted ? (
               <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                 You’re in. Check your email soon.
@@ -144,6 +150,9 @@ export default function Join() {
               </div>
             ))}
           </div>
+          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+            The Circle grows quietly each night.
+          </p>
         </section>
 
         <section className="space-y-4">
@@ -207,9 +216,12 @@ export default function Join() {
 
         <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-lg font-medium">Join Free. Save 10% forever.</h2>
+          <p className="text-sm text-white/70">
+            Your Circle entry is instant. You can leave anytime.
+          </p>
           <form onSubmit={handleSubmit} className="space-y-3">
             <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-white/50">
-              Email
+              EMAIL
               <input
                 type="email"
                 value={email}
@@ -223,7 +235,7 @@ export default function Join() {
               type="submit"
               className="w-full rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              Join Free
+              Enter the Sanctuary
             </button>
             <p className="text-xs text-white/50">
               No spam. Only drops and quiet signals.
