@@ -39,26 +39,26 @@ export async function getStaticProps() {
 
 export default function Home({ products }) {
   return (
-    <section className="space-y-10">
-      <section className="space-y-6">
+    <section className="space-y-12">
+      <section className="space-y-5">
         <div className="space-y-3">
           <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-            Threshold Home
+            Threshold
           </p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            Charmed & Dark sells gothic apparel and gothic home decor.
+            Enter the Threshold.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-white/70">
-            A premium gothic atelier for modern ritual. Shop refined silhouettes
-            and shadowed interiors with quiet, intentional design.
+            A quiet storefront for the corporate goth—uniforms for the world,
+            rituals for the home.
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/shop"
-            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            href="#mirror"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
-            <span className="px-6 py-3 text-black">Shop Apparel</span>
+            <span className="px-6 py-3">Reveal My Reading</span>
           </Link>
           <Link
             href="/join"
@@ -67,11 +67,38 @@ export default function Home({ products }) {
             <span className="px-6 py-3">Enter the Sanctuary</span>
           </Link>
         </div>
+        <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+          Sanctuary members unlock 10% off always.
+        </p>
       </section>
 
-      <MirrorModule products={products} isMember={isMember} />
+      <section id="mirror" className="space-y-4">
+        <div className="space-y-2">
+          <h2 className="text-lg font-medium">The Mirror</h2>
+          <p className="text-sm text-white/70">
+            Tell the Mirror how the shadow feels. Receive a Reading Card:
+            validation, one prescription, and a quiet resonance.
+          </p>
+        </div>
+        <MirrorModule products={products} isMember={isMember} />
+      </section>
 
       <div className="h-px bg-white/10" />
+
+      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h2 className="text-lg font-medium">The Sanctuary (Members Only)</h2>
+        <ul className="space-y-2 text-sm text-white/70">
+          <li>10% off always (Sanctuary Price on every item)</li>
+          <li>Save Mirror readings in your Grimoire (placeholder for now)</li>
+          <li>A calmer realm—no feeds, no noise, no performance</li>
+        </ul>
+        <Link
+          href="/join"
+          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          Enter the Sanctuary
+        </Link>
+      </section>
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium">Shop by Category</h2>
@@ -92,7 +119,12 @@ export default function Home({ products }) {
       <div className="h-px bg-white/10" />
 
       <section className="space-y-4">
-        <h2 className="text-lg font-medium">Featured Drop</h2>
+        <div className="space-y-1">
+          <h2 className="text-lg font-medium">Drops</h2>
+          <p className="text-sm text-white/70">
+            Limited releases. Kept intentional. Archived with care.
+          </p>
+        </div>
         <Link
           href="/drops"
           className="block rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-black/50 to-black/90 p-6 transition hover:border-white/25"
@@ -106,6 +138,9 @@ export default function Home({ products }) {
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">
             A limited run of layered silhouettes, midnight textures, and
             ceremonial detail. Quietly released for the Threshold.
+          </p>
+          <p className="mt-4 text-xs uppercase tracking-[0.3em] text-white/50">
+            Explore Drops
           </p>
         </Link>
       </section>
@@ -171,7 +206,7 @@ export default function Home({ products }) {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Home Decor Spotlight</h2>
+          <h2 className="text-lg font-medium">For the Home</h2>
           <Link
             href="/shop"
             className="text-xs uppercase tracking-[0.3em] text-white/50"
@@ -205,52 +240,58 @@ export default function Home({ products }) {
 
       <div className="h-px bg-white/10" />
 
-      <section className="space-y-5 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold">Sanctuary Invitation</h2>
-          <p className="text-sm leading-6 text-white/70">
-            Join the sanctuary for permanent rituals and private access.
+          <h2 className="text-lg font-medium">Resonance</h2>
+          <p className="text-sm text-white/70">Silence is rising tonight.</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+            Members sometimes leave a trace—never names, never noise.
           </p>
         </div>
-        <ul className="space-y-2 text-sm text-white/70">
-          <li>10% off always.</li>
-          <li>The Mirror.</li>
-          <li>Resonance (Pulse Windows + Echo Cards).</li>
-        </ul>
-        <Link
-          href="/join"
-          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white text-sm font-medium text-black transition hover:bg-white/90 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-        >
-          <span className="px-6 py-3 text-black">Join the Sanctuary</span>
-        </Link>
       </section>
 
       <div className="h-px bg-white/10" />
 
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Tonight in Resonance</h2>
-          <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-            Locked
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {["Day", "Evening", "Midnight"].map((window) => (
-            <div
-              key={window}
-              className="relative rounded-2xl border border-white/10 bg-white/5 p-5"
-            >
-              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                {window} Window
-              </p>
-              <p className="mt-3 text-sm text-white/70">
-                Pulse notes and curated echoes.
-              </p>
-              <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/70 text-xs uppercase tracking-[0.3em] text-white/70">
-                Join to Unlock
-              </div>
-            </div>
-          ))}
+      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h2 className="text-lg font-medium">
+          Keep the Reading. Unlock the Sanctuary Price.
+        </h2>
+        <p className="text-sm leading-6 text-white/70">
+          The Mirror is the entry. The Sanctuary is where it stays. Members keep
+          their readings, unlock the Sanctuary Price, and return with quiet
+          intent.
+        </p>
+        <Link
+          href="/join"
+          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          Enter the Sanctuary
+        </Link>
+        <div className="grid gap-3 text-sm text-white/70 sm:grid-cols-3">
+          <div className="rounded-2xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              Is this a subscription?
+            </p>
+            <p className="mt-2">
+              Not yet. For now it’s membership access + Sanctuary Price.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              Do I need social features?
+            </p>
+            <p className="mt-2">
+              No. No profiles, no comments, no threads.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              What happens to my readings?
+            </p>
+            <p className="mt-2">
+              Saved to your Grimoire—placeholder now, real saving later.
+            </p>
+          </div>
         </div>
       </section>
 
