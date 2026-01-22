@@ -97,14 +97,13 @@ export default function Home({ products }) {
               </p>
             </div>
             <div className="order-first flex justify-center lg:order-none">
-              <div className="relative flex h-56 w-56 items-center justify-center rounded-full border border-white/20 bg-black/80 text-center text-3xl font-semibold tracking-[0.2em] text-white/80 shadow-[0_0_80px_rgba(255,255,255,0.08)] sm:h-64 sm:w-64">
-                <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_65%)]" />
-                <div className="absolute inset-0 rounded-full blur-2xl opacity-60" />
+              <div className="relative flex h-56 w-56 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black/90 text-center text-3xl font-semibold tracking-[0.2em] text-white/80 shadow-[0_0_80px_rgba(255,255,255,0.08)] sm:h-64 sm:w-64">
                 <img
                   src="/brand/Charmed%20and%20Dark%20Logo.png"
                   alt="Charmed & Dark"
-                  className="relative h-32 w-32 object-contain sm:h-36 sm:w-36"
+                  className="absolute inset-0 h-full w-full object-cover object-center"
                 />
+                <div className="absolute inset-0 rounded-full ring-1 ring-white/10" />
               </div>
             </div>
           </section>
