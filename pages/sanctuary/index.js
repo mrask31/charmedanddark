@@ -1,11 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
-import { Candle, Lock, Moon, Rose, Star } from "lucide-react";
+import { Flame, Lock, Moon, Rose, Star } from "lucide-react";
 
 const isMemberDemo = false;
 
 const resonanceItems = [
-  { label: "Candle", count: 12, Icon: Candle },
+  { label: "Candle", count: 12, Icon: Flame },
   { label: "Rose", count: 7, Icon: Rose },
   { label: "Moon", count: 4, Icon: Moon },
   { label: "Star", count: 9, Icon: Star },
