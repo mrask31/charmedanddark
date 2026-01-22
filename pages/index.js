@@ -326,32 +326,32 @@ export default function Home({ products }) {
 
       <SectionDivider />
 
-      <section className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <section className="space-y-8 rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="relative overflow-hidden rounded-2xl border border-white/10 p-6">
           <img
             src="/brand/Black%20crushed%20velvet%20comforter%20set%20with%20a%20diamond-quilted%20pattern%20and%20a%20moon%20phase%20accent%20pillow,%20styled%20on%20a%20four-poster%20bed%20in%20a%20dark,%20luxurious%20gothic.png"
             alt=""
             className="absolute inset-0 h-full w-full object-cover blur-[2px]"
           />
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="relative space-y-6">
+          <div className="absolute inset-0 bg-black/70" />
+          <div className="relative space-y-8">
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.35em] text-white/50">
                 Members Only
               </p>
-              <h2 className="text-xl font-semibold">The Sanctuary</h2>
-              <p className="text-sm text-white/70">
+              <h2 className="text-xl font-semibold text-white">The Sanctuary</h2>
+              <p className="text-sm text-white/80">
                 A private realm designed for daily return—quiet by design.
               </p>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                 No feeds. No followers. No performance.
               </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25">
+              <div className="group rounded-2xl border border-white/15 bg-white/10 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/30 hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
                 <div className="flex items-start gap-3">
-                  <span className="rounded-full border border-white/10 bg-black/40 p-2 text-white/70">
+                  <span className="rounded-full border border-white/15 bg-black/50 p-2 text-white/80">
                     <svg
                       aria-hidden="true"
                       viewBox="0 0 24 24"
@@ -368,17 +368,19 @@ export default function Home({ products }) {
                     </svg>
                   </span>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">Sanctuary Price</p>
-                    <p className="text-xs text-white/70">
+                    <p className="text-sm font-medium text-white">
+                      Sanctuary Price
+                    </p>
+                    <p className="text-xs text-white/80">
                       10% off always—shown on every item.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25">
+              <div className="group rounded-2xl border border-white/15 bg-white/10 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/30 hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
                 <div className="flex items-start gap-3">
-                  <span className="rounded-full border border-white/10 bg-black/40 p-2 text-white/70">
+                  <span className="rounded-full border border-white/15 bg-black/50 p-2 text-white/80">
                     <svg
                       aria-hidden="true"
                       viewBox="0 0 24 24"
@@ -396,8 +398,10 @@ export default function Home({ products }) {
                     </svg>
                   </span>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">Grimoire Archive</p>
-                    <p className="text-xs text-white/70">
+                    <p className="text-sm font-medium text-white">
+                      Grimoire Archive
+                    </p>
+                    <p className="text-xs text-white/80">
                       Keep your Mirror readings in one private place.
                     </p>
                     <p className="text-[11px] uppercase tracking-[0.25em] text-white/40">
@@ -407,9 +411,9 @@ export default function Home({ products }) {
                 </div>
               </div>
 
-              <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25">
+              <div className="group rounded-2xl border border-white/15 bg-white/10 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/30 hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
                 <div className="flex items-start gap-3">
-                  <span className="rounded-full border border-white/10 bg-black/40 p-2 text-white/70">
+                  <span className="rounded-full border border-white/15 bg-black/50 p-2 text-white/80">
                     <svg
                       aria-hidden="true"
                       viewBox="0 0 24 24"
@@ -426,9 +430,57 @@ export default function Home({ products }) {
                     </svg>
                   </span>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">Early Drops</p>
-                    <p className="text-xs text-white/70">
+                    <p className="text-sm font-medium text-white">Early Drops</p>
+                    <p className="text-xs text-white/80">
                       Limited releases, available to members first.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/20 bg-white/10 p-5 shadow-[0_22px_55px_rgba(0,0,0,0.45)] backdrop-blur-md">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm font-medium text-white">
+                  Grimoire Preview
+                </p>
+                <span className="rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-white/70">
+                  Locked
+                </span>
+              </div>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-start gap-3 text-sm text-white/80">
+                  <span className="mt-2 h-2 w-2 rounded-full bg-white/30" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">
+                      Reading Card #001
+                    </p>
+                    <p className="text-xs text-white/70">
+                      Silence is rising tonight.
+                    </p>
+                  </div>
+                </div>
+                <div className="h-px w-full bg-white/10" />
+                <div className="flex items-start gap-3 text-sm text-white/80">
+                  <span className="mt-2 h-2 w-2 rounded-full bg-white/30" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">
+                      Saved privately.
+                    </p>
+                    <p className="text-xs text-white/70">
+                      Timestamped. Always yours.
+                    </p>
+                  </div>
+                </div>
+                <div className="h-px w-full bg-white/10" />
+                <div className="flex items-start gap-3 text-sm text-white/80">
+                  <span className="mt-2 h-2 w-2 rounded-full bg-white/30" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">
+                      Unlock by joining
+                    </p>
+                    <p className="text-xs text-white/70">
+                      Enter the Sanctuary to keep your readings.
                     </p>
                   </div>
                 </div>
@@ -446,6 +498,10 @@ export default function Home({ products }) {
                 Unlock Sanctuary Price + keep your readings.
               </p>
             </div>
+
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              Join free. Save 10% always.
+            </p>
 
             <p className="text-xs uppercase tracking-[0.3em] text-white/40">
               Membership is calm by design. Nothing public. Nothing performative.
