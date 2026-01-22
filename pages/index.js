@@ -114,13 +114,13 @@ export default function Home({ products }) {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Link
                   href="/shop"
-                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                  className="btn-primary inline-flex items-center justify-center rounded-full text-sm font-medium"
                 >
                   <span className="px-6 py-3">Shop The Threshold</span>
                 </Link>
                 <Link
                   href="/join"
-                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-transparent px-6 py-3 text-xs uppercase tracking-[0.3em] text-white/60 transition hover:border-white/40 hover:text-white"
+                  className="btn-secondary inline-flex items-center justify-center rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]"
                 >
                   Enter The Sanctuary (10% off always)
                 </Link>
@@ -488,10 +488,10 @@ export default function Home({ products }) {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <Link
-                href="/join"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
+            <Link
+              href="/join"
+              className="btn-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
+            >
                 Enter the Sanctuary
               </Link>
               <p className="text-xs uppercase tracking-[0.3em] text-white/50">
@@ -561,7 +561,7 @@ export default function Home({ products }) {
         </p>
         <Link
           href="/join"
-          className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          className="btn-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
         >
           Enter the Sanctuary
         </Link>

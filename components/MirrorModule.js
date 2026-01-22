@@ -96,7 +96,7 @@ export default function MirrorModule({ products, isMember }) {
         />
         <button
           type="submit"
-          className="w-full rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
+          className="btn-primary w-full rounded-full px-6 py-3 text-sm font-medium sm:w-auto"
         >
           Receive Reading
         </button>

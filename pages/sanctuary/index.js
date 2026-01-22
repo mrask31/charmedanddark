@@ -13,7 +13,7 @@ const resonanceItems = [
 
 const TileBadge = ({ children, className = "" }) => (
   <span
-    className={`rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-white/70 ${className}`}
+    className={`badge rounded-full bg-black/50 px-3 py-1 text-[10px] uppercase tracking-[0.35em] ${className}`}
   >
     {children}
   </span>
@@ -64,8 +64,7 @@ export default function Sanctuary() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/15 p-5 shadow-[0_26px_70px_rgba(0,0,0,0.55)] backdrop-blur-md">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent opacity-80" />
+          <div className="tile-mirror rounded-2xl bg-white/10 p-5 backdrop-blur-md">
             <div className="relative flex items-start justify-between gap-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold text-white">The Mirror</h2>
@@ -75,14 +74,12 @@ export default function Sanctuary() {
                 </p>
               </div>
               {!isMemberDemo ? (
-                <TileBadge className="border-white/30 bg-white/10 text-white/80">
-                  Preview
-                </TileBadge>
+                <TileBadge className="badge--preview">Preview</TileBadge>
               ) : null}
             </div>
             <Link
               href={mirrorCta.href}
-              className="relative mt-5 inline-flex w-full items-center justify-center rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:border-white/70 hover:bg-white/15 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
+              className="btn-primary relative mt-5 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium sm:w-auto"
             >
               {mirrorCta.label}
             </Link>
@@ -100,11 +97,13 @@ export default function Sanctuary() {
                   Your saved readings—private, timestamped, and always yours.
                 </p>
               </div>
-              {!isMemberDemo ? <TileBadge>Locked</TileBadge> : null}
+              {!isMemberDemo ? (
+                <TileBadge className="badge--locked">Locked</TileBadge>
+              ) : null}
             </div>
             <Link
               href={grimoireCta.href}
-              className="mt-5 inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
+              className="btn-secondary mt-5 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium sm:w-auto"
             >
               {grimoireCta.label}
             </Link>
@@ -124,11 +123,13 @@ export default function Sanctuary() {
                   10% off always—shown on every item.
                 </p>
               </div>
-              {!isMemberDemo ? <TileBadge>Locked</TileBadge> : null}
+              {!isMemberDemo ? (
+                <TileBadge className="badge--locked">Locked</TileBadge>
+              ) : null}
             </div>
             <Link
               href={priceCta.href}
-              className="mt-5 inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
+              className="btn-secondary mt-5 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium sm:w-auto"
             >
               {priceCta.label}
             </Link>
@@ -149,7 +150,7 @@ export default function Sanctuary() {
               {resonanceItems.map(({ label, count, Icon }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs uppercase tracking-[0.28em] text-white/70"
+                  className="resonance-pill flex items-center gap-2 rounded-full px-3 py-2 text-xs uppercase tracking-[0.28em]"
                 >
                   <ResonanceIcon Icon={Icon} />
                   <span>{label}</span>
@@ -165,7 +166,9 @@ export default function Sanctuary() {
             <h3 className="text-lg font-medium text-white">
               Recent in your Grimoire
             </h3>
-            {!isMemberDemo ? <TileBadge>Locked</TileBadge> : null}
+            {!isMemberDemo ? (
+              <TileBadge className="badge--locked">Locked</TileBadge>
+            ) : null}
           </div>
           {isMemberDemo ? (
             <div className="mt-4 space-y-3 text-sm text-white/70">
@@ -207,9 +210,9 @@ export default function Sanctuary() {
                 ].map((row) => (
                   <div
                     key={row.title}
-                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/40 px-4 py-3"
+                    className="grimoire-ghost flex items-center justify-between rounded-2xl px-4 py-3"
                   >
-                    <div className="space-y-1 text-white/60 blur-[1px]">
+                    <div className="grimoire-ghost__text space-y-1">
                       <p className="text-sm font-medium">{row.title}</p>
                       <p className="text-xs">{row.detail}</p>
                     </div>
@@ -219,7 +222,7 @@ export default function Sanctuary() {
               </div>
               <Link
                 href="/join"
-                className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
+                className="btn-primary inline-flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-medium sm:w-auto"
               >
                 Join Free
               </Link>

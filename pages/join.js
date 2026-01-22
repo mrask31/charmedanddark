@@ -115,13 +115,13 @@ export default function Join() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="btn-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
               >
                 Enter the Sanctuary
               </button>
               <a
                 href="#member-benefits"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="btn-secondary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
               >
                 See member benefits
               </a>
@@ -233,7 +233,7 @@ export default function Join() {
             </label>
             <button
               type="submit"
-              className="w-full rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              className="btn-primary w-full rounded-full px-6 py-3 text-sm font-medium"
             >
               Enter the Sanctuary
             </button>
