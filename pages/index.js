@@ -57,9 +57,9 @@ export default function Home({ products }) {
           <img
             src="/brand/Female_signature_hoodie_3.png"
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-[center_top]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/90" />
         </div>
         <div className="relative z-10 space-y-12">
           <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -100,7 +100,11 @@ export default function Home({ products }) {
               <div className="relative flex h-56 w-56 items-center justify-center rounded-full border border-white/20 bg-black/80 text-center text-3xl font-semibold tracking-[0.2em] text-white/80 shadow-[0_0_80px_rgba(255,255,255,0.08)] sm:h-64 sm:w-64">
                 <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_65%)]" />
                 <div className="absolute inset-0 rounded-full blur-2xl opacity-60" />
-                <span className="relative">C&amp;D</span>
+                <img
+                  src="/brand/Charmed%20and%20Dark%20Logo.png"
+                  alt="Charmed & Dark"
+                  className="relative h-32 w-32 object-contain sm:h-36 sm:w-36"
+                />
               </div>
             </div>
           </section>
@@ -132,7 +136,7 @@ export default function Home({ products }) {
               title: "The Uniform",
               subtitle: "Structured silhouettes. Midnight restraint.",
               href: "/shop",
-              image: "/brand/Hoodie.jpg",
+              image: "/brand/1000018547.png",
             },
             {
               title: "The Ritual",
@@ -176,9 +180,9 @@ export default function Home({ products }) {
           <img
             src="/brand/Black%20crushed%20velvet%20comforter%20set%20with%20a%20diamond-quilted%20pattern%20and%20a%20moon%20phase%20accent%20pillow,%20styled%20on%20a%20four-poster%20bed%20in%20a%20dark,%20luxurious%20gothic.png"
             alt=""
-            className="absolute inset-0 h-full w-full object-cover blur-sm"
+            className="absolute inset-0 h-full w-full object-cover blur-[2px]"
           />
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative space-y-4">
             <div className="space-y-2">
               <p className="text-sm text-white/70">
@@ -226,27 +230,6 @@ export default function Home({ products }) {
           >
             Explore Drops →
           </Link>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
-          <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-            The Uniform
-          </p>
-          <h2 className="mt-4 text-xl font-semibold">
-            Structured silhouettes for the world outside.
-          </h2>
-        </div>
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
-          <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-            The Ritual
-          </p>
-          <h2 className="mt-4 text-xl font-semibold">
-            Objects that soften the room and quiet the mind.
-          </h2>
         </div>
       </section>
 
