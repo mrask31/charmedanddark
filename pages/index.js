@@ -326,8 +326,7 @@ export default function Home({ products }) {
 
       <SectionDivider />
 
-      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="text-lg font-medium">The Sanctuary (Members Only)</h2>
+      <section className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="relative overflow-hidden rounded-2xl border border-white/10 p-6">
           <img
             src="/brand/Black%20crushed%20velvet%20comforter%20set%20with%20a%20diamond-quilted%20pattern%20and%20a%20moon%20phase%20accent%20pillow,%20styled%20on%20a%20four-poster%20bed%20in%20a%20dark,%20luxurious%20gothic.png"
@@ -335,8 +334,12 @@ export default function Home({ products }) {
             className="absolute inset-0 h-full w-full object-cover blur-[2px]"
           />
           <div className="absolute inset-0 bg-black/60" />
-          <div className="relative space-y-4">
+          <div className="relative space-y-6">
             <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.35em] text-white/50">
+                Members Only
+              </p>
+              <h2 className="text-xl font-semibold">The Sanctuary</h2>
               <p className="text-sm text-white/70">
                 A private realm designed for daily return—quiet by design.
               </p>
@@ -344,17 +347,109 @@ export default function Home({ products }) {
                 No feeds. No followers. No performance.
               </p>
             </div>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li>10% off always (Sanctuary Price on every item)</li>
-              <li>Save Mirror readings in your Grimoire (placeholder for now)</li>
-              <li>A calmer realm—no feeds, no noise, no performance</li>
-            </ul>
-            <Link
-              href="/join"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-            >
-              Enter the Sanctuary
-            </Link>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25">
+                <div className="flex items-start gap-3">
+                  <span className="rounded-full border border-white/10 bg-black/40 p-2 text-white/70">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M7.5 12h9" />
+                      <path d="M12 7.5v9" />
+                    </svg>
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Sanctuary Price</p>
+                    <p className="text-xs text-white/70">
+                      10% off always—shown on every item.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25">
+                <div className="flex items-start gap-3">
+                  <span className="rounded-full border border-white/10 bg-black/40 p-2 text-white/70">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 6.5c0-1.1.9-2 2-2h8a3 3 0 0 1 3 3v10.5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" />
+                      <path d="M7.5 8.5h6" />
+                      <path d="M7.5 12h6" />
+                      <path d="M7.5 15.5h4" />
+                    </svg>
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Grimoire Archive</p>
+                    <p className="text-xs text-white/70">
+                      Keep your Mirror readings in one private place.
+                    </p>
+                    <p className="text-[11px] uppercase tracking-[0.25em] text-white/40">
+                      Saving is placeholder for now.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25">
+                <div className="flex items-start gap-3">
+                  <span className="rounded-full border border-white/10 bg-black/40 p-2 text-white/70">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M4.5 12.5l7.5-7.5 7.5 7.5" />
+                      <path d="M7 12v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-6" />
+                      <path d="M9.5 12.5h5" />
+                    </svg>
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Early Drops</p>
+                    <p className="text-xs text-white/70">
+                      Limited releases, available to members first.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Link
+                href="/join"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              >
+                Enter the Sanctuary
+              </Link>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                Unlock Sanctuary Price + keep your readings.
+              </p>
+            </div>
+
+            <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+              Membership is calm by design. Nothing public. Nothing performative.
+            </p>
           </div>
         </div>
       </section>
