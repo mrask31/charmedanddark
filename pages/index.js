@@ -55,7 +55,7 @@ export default function Home({ products }) {
         </div>
         <div className="absolute inset-0">
           <img
-            src="/brand/hero-threshold.jpg"
+            src="/brand/Female_signature_hoodie_3.png"
             alt=""
             className="h-full w-full object-cover"
           />
@@ -132,13 +132,13 @@ export default function Home({ products }) {
               title: "The Uniform",
               subtitle: "Structured silhouettes. Midnight restraint.",
               href: "/shop",
-              image: "/brand/portal-uniform.jpg",
+              image: "/brand/Hoodie.jpg",
             },
             {
               title: "The Ritual",
               subtitle: "Objects for quiet nights and softer rooms.",
               href: "/shop",
-              image: "/brand/portal-ritual.jpg",
+              image: "/brand/Deep%20red%20anatomical%20heart%20vase%20holding%20a%20bouquet%20of%20red%20and%20black%20roses,%20placed%20on%20a%20stone%20gothic%20fireplace%20mantel%20next%20to%20dripping%20wax%20candles%20and%20an.png",
             },
           ].map((portal) => (
             <Link
@@ -174,7 +174,7 @@ export default function Home({ products }) {
         <h2 className="text-lg font-medium">The Sanctuary (Members Only)</h2>
         <div className="relative overflow-hidden rounded-2xl border border-white/10 p-6">
           <img
-            src="/brand/sanctuary-bg.jpg"
+            src="/brand/Black%20crushed%20velvet%20comforter%20set%20with%20a%20diamond-quilted%20pattern%20and%20a%20moon%20phase%20accent%20pillow,%20styled%20on%20a%20four-poster%20bed%20in%20a%20dark,%20luxurious%20gothic.png"
             alt=""
             className="absolute inset-0 h-full w-full object-cover blur-sm"
           />
