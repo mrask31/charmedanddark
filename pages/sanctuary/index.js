@@ -1,24 +1,27 @@
 import Head from "next/head";
 import Link from "next/link";
+import { Candle, Lock, Moon, Rose, Star } from "lucide-react";
 
 const isMemberDemo = false;
 
 const resonanceItems = [
-  { label: "Candle", count: 12 },
-  { label: "Rose", count: 7 },
-  { label: "Moon", count: 4 },
-  { label: "Star", count: 9 },
+  { label: "Candle", count: 12, Icon: Candle },
+  { label: "Rose", count: 7, Icon: Rose },
+  { label: "Moon", count: 4, Icon: Moon },
+  { label: "Star", count: 9, Icon: Star },
 ];
 
-const TileBadge = ({ children }) => (
-  <span className="rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-white/70">
+const TileBadge = ({ children, className = "" }) => (
+  <span
+    className={`rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-white/70 ${className}`}
+  >
     {children}
   </span>
 );
 
-const ResonanceIcon = ({ label }) => (
-  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs uppercase tracking-[0.2em] text-white/60">
-    {label.slice(0, 1)}
+const ResonanceIcon = ({ Icon }) => (
+  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/80">
+    <Icon className="h-4 w-4" aria-hidden="true" />
   </span>
 );
 
@@ -61,20 +64,25 @@ export default function Sanctuary() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-md">
-            <div className="flex items-start justify-between gap-4">
+          <div className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/15 p-5 shadow-[0_26px_70px_rgba(0,0,0,0.55)] backdrop-blur-md">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent opacity-80" />
+            <div className="relative flex items-start justify-between gap-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold text-white">The Mirror</h2>
-                <p className="text-sm text-white/80">
+                <p className="text-sm text-white/85">
                   A private reflection and recommendation—quiet, personal,
                   on-brand.
                 </p>
               </div>
-              {!isMemberDemo ? <TileBadge>Preview</TileBadge> : null}
+              {!isMemberDemo ? (
+                <TileBadge className="border-white/30 bg-white/10 text-white/80">
+                  Preview
+                </TileBadge>
+              ) : null}
             </div>
             <Link
               href={mirrorCta.href}
-              className="mt-5 inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-5 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
+              className="relative mt-5 inline-flex w-full items-center justify-center rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:border-white/70 hover:bg-white/15 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
             >
               {mirrorCta.label}
             </Link>
@@ -138,13 +146,14 @@ export default function Sanctuary() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              {resonanceItems.map((item) => (
+              {resonanceItems.map(({ label, count, Icon }) => (
                 <div
-                  key={item.label}
-                  className="flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-2 text-xs uppercase tracking-[0.3em] text-white/60"
+                  key={label}
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs uppercase tracking-[0.28em] text-white/70"
                 >
-                  <ResonanceIcon label={item.label} />
-                  {item.count}
+                  <ResonanceIcon Icon={Icon} />
+                  <span>{label}</span>
+                  <span className="text-white/60">{count}</span>
                 </div>
               ))}
             </div>
@@ -181,6 +190,33 @@ export default function Sanctuary() {
               <p className="text-sm text-white/70">
                 Your Grimoire appears when you join.
               </p>
+              <div className="space-y-3">
+                {[
+                  {
+                    title: "Reading Card #001",
+                    detail: "Silence is rising tonight.",
+                  },
+                  {
+                    title: "Reading Card #002",
+                    detail: "Softness is not surrender.",
+                  },
+                  {
+                    title: "Reading Card #003",
+                    detail: "You don’t need to be bright to be seen.",
+                  },
+                ].map((row) => (
+                  <div
+                    key={row.title}
+                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/40 px-4 py-3"
+                  >
+                    <div className="space-y-1 text-white/60 blur-[1px]">
+                      <p className="text-sm font-medium">{row.title}</p>
+                      <p className="text-xs">{row.detail}</p>
+                    </div>
+                    <Lock className="h-4 w-4 text-white/40" aria-hidden="true" />
+                  </div>
+                ))}
+              </div>
               <Link
                 href="/join"
                 className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
