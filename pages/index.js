@@ -95,45 +95,48 @@ export default function Home({ products }) {
         </div>
         <div className="relative z-10 space-y-12">
           <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div className="order-last space-y-5 lg:order-none">
-              <div className="space-y-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-white/60">
-                  Threshold
-                </p>
-                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Elegant gothic goods for the life you actually live.
-                </h1>
-                <p className="text-base text-white/70">
-                  Apparel for the world. Home rituals for the quiet hours.
-                </p>
-                <p className="text-sm text-white/60">
-                  Charmed & Dark is an elegant gothic store for apparel and home
-                  decor — with a private members sanctuary.
+            <div className="order-last space-y-5 lg:order-none relative">
+              <div className="pointer-events-none absolute inset-y-0 -left-6 right-0 hidden sm:block bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+              <div className="relative z-10 space-y-5">
+                <div className="space-y-3">
+                  <p className="text-xs uppercase tracking-[0.35em] text-white/70">
+                    Threshold
+                  </p>
+                  <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                    Elegant gothic goods for the life you actually live.
+                  </h1>
+                  <p className="text-base text-white/80">
+                    Apparel for the world. Home rituals for the quiet hours.
+                  </p>
+                  <p className="text-sm text-white/75">
+                    Charmed & Dark is an elegant gothic store for apparel and home
+                    decor — with a private members sanctuary.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Link
+                    href="/shop"
+                    className="btn-primary inline-flex items-center justify-center rounded-full text-sm font-medium"
+                  >
+                    <span className="px-6 py-3">Shop The Threshold</span>
+                  </Link>
+                  <Link
+                    href="/join"
+                    className="btn-secondary inline-flex items-center justify-center rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]"
+                  >
+                    Enter The Sanctuary (10% off always)
+                  </Link>
+                </div>
+                <Link
+                  href="#mirror"
+                  className="text-xs uppercase tracking-[0.3em] text-white/60 transition hover:text-white"
+                >
+                  Or take a quiet reading from The Mirror →
+                </Link>
+                <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+                  Quiet by design. No feeds. No noise. No performance.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  href="/shop"
-                  className="btn-primary inline-flex items-center justify-center rounded-full text-sm font-medium"
-                >
-                  <span className="px-6 py-3">Shop The Threshold</span>
-                </Link>
-                <Link
-                  href="/join"
-                  className="btn-secondary inline-flex items-center justify-center rounded-full px-6 py-3 text-xs uppercase tracking-[0.3em]"
-                >
-                  Enter The Sanctuary (10% off always)
-                </Link>
-              </div>
-              <Link
-                href="#mirror"
-                className="text-xs uppercase tracking-[0.3em] text-white/50 transition hover:text-white"
-              >
-                Or take a quiet reading from The Mirror →
-              </Link>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-                Quiet by design. No feeds. No noise. No performance.
-              </p>
             </div>
             <div className="order-first flex justify-center lg:order-none lg:justify-end">
               <div className="relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black/90 text-center text-3xl font-semibold tracking-[0.2em] text-white/80 shadow-[0_0_60px_rgba(255,255,255,0.08)] sm:h-40 sm:w-40">
@@ -178,15 +181,16 @@ export default function Home({ products }) {
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
               <div className="relative flex h-full flex-col justify-end gap-2 p-6">
-                <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+                <p className="text-xs uppercase tracking-[0.35em] text-white/70">
                   {portal.title}
                 </p>
                 <h3 className="text-lg font-semibold text-white">
                   {portal.subtitle}
                 </h3>
-                <span className="text-xs uppercase tracking-[0.3em] text-white/60">
+                <span className="text-xs uppercase tracking-[0.3em] text-white/70">
                   Enter {portal.title} →
                 </span>
               </div>
@@ -201,24 +205,24 @@ export default function Home({ products }) {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-medium">Best Sellers</h2>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-white/75">
               Curated icons for the Threshold.
             </p>
           </div>
           <Link
             href="/shop"
-            className="text-xs uppercase tracking-[0.3em] text-white/50"
+            className="text-xs uppercase tracking-[0.3em] text-white/60"
           >
             Shop All
           </Link>
         </div>
-        <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+        <p className="text-xs uppercase tracking-[0.3em] text-white/65">
           Sanctuary members see the true price.
         </p>
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 bg-gradient-to-r from-black via-black/70 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-12 bg-gradient-to-l from-black via-black/70 to-transparent md:block" />
-          <p className="mb-2 hidden text-xs uppercase tracking-[0.3em] text-white/40 md:block">
+          <p className="mb-2 hidden text-xs uppercase tracking-[0.3em] text-white/60 md:block">
             Drag to explore
           </p>
           <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
@@ -226,25 +230,31 @@ export default function Home({ products }) {
               <Link
                 key={item.name}
                 href="/shop"
-                className="group relative min-w-[220px] flex-1 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25 sm:min-w-[240px]"
+                className="group relative min-w-[220px] flex-1 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-0.5 hover:border-white/25 sm:min-w-[240px]"
               >
                 <img
                   src={item.image}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
                 <div className="relative">
-                  <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                  <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                     Best Seller
                   </p>
-                  <h3 className="mt-2 text-base font-medium">{item.name}</h3>
-                  <p className="mt-2 text-sm text-white/70">
+                  <h3 className="mt-2 text-lg font-semibold text-white">
+                    {item.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-white/75">
                     Signature cut, matte finish.
                   </p>
-                  <div className="mt-4 hidden text-xs uppercase tracking-[0.3em] text-white/50 md:block">
+                  <div className="mt-4 text-xs uppercase tracking-[0.3em] text-white/70">
                     Public Price · Sanctuary Price
                   </div>
+                  <span className="mt-3 inline-flex text-xs uppercase tracking-[0.3em] text-white/70 opacity-0 transition group-hover:opacity-100">
+                    Shop →
+                  </span>
                 </div>
               </Link>
             ))}
@@ -258,22 +268,22 @@ export default function Home({ products }) {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-medium">For the Home</h2>
-            <p className="text-sm text-white/60">Objects that quiet the room.</p>
+            <p className="text-sm text-white/75">Objects that quiet the room.</p>
           </div>
           <Link
             href="/shop"
-            className="text-xs uppercase tracking-[0.3em] text-white/50"
+            className="text-xs uppercase tracking-[0.3em] text-white/60"
           >
             Shop All
           </Link>
         </div>
-        <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+        <p className="text-xs uppercase tracking-[0.3em] text-white/65">
           Sanctuary members see the true price.
         </p>
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 bg-gradient-to-r from-black via-black/70 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-12 bg-gradient-to-l from-black via-black/70 to-transparent md:block" />
-          <p className="mb-2 hidden text-xs uppercase tracking-[0.3em] text-white/40 md:block">
+          <p className="mb-2 hidden text-xs uppercase tracking-[0.3em] text-white/60 md:block">
             Drag to explore
           </p>
           <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
@@ -281,25 +291,31 @@ export default function Home({ products }) {
               <Link
                 key={item.name}
                 href="/shop"
-                className="group relative min-w-[220px] flex-1 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25 sm:min-w-[240px]"
+                className="group relative min-w-[220px] flex-1 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-0.5 hover:border-white/25 sm:min-w-[240px]"
               >
                 <img
                   src={item.image}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
                 <div className="relative">
-                  <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                  <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                     Home Decor
                   </p>
-                  <h3 className="mt-2 text-base font-medium">{item.name}</h3>
-                  <p className="mt-2 text-sm text-white/70">
+                  <h3 className="mt-2 text-lg font-semibold text-white">
+                    {item.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-white/75">
                     Quiet ritual, refined form.
                   </p>
-                  <div className="mt-4 hidden text-xs uppercase tracking-[0.3em] text-white/50 md:block">
+                  <div className="mt-4 text-xs uppercase tracking-[0.3em] text-white/70">
                     Public Price · Sanctuary Price
                   </div>
+                  <span className="mt-3 inline-flex text-xs uppercase tracking-[0.3em] text-white/70 opacity-0 transition group-hover:opacity-100">
+                    Shop →
+                  </span>
                 </div>
               </Link>
             ))}
@@ -311,11 +327,11 @@ export default function Home({ products }) {
 
       <section id="mirror" className="space-y-4">
         <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+          <p className="text-xs uppercase tracking-[0.35em] text-white/70">
             THE MIRROR
           </p>
           <div className="h-px w-full bg-gradient-to-r from-white/30 via-white/10 to-transparent" />
-          <p className="text-sm text-white/70">
+          <p className="text-sm text-white/80">
             A quiet reading: one validation, one prescription.
           </p>
         </div>
@@ -336,14 +352,14 @@ export default function Home({ products }) {
           <div className="absolute inset-0 bg-black/70" />
           <div className="relative space-y-8">
             <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.35em] text-white/50">
+              <p className="text-xs uppercase tracking-[0.35em] text-white/60">
                 Members Only
               </p>
               <h2 className="text-xl font-semibold text-white">The Sanctuary</h2>
-              <p className="text-sm text-white/80">
+              <p className="text-sm text-white/85">
                 A private realm designed for daily return—quiet by design.
               </p>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/70">
                 No feeds. No followers. No performance.
               </p>
             </div>
@@ -371,7 +387,7 @@ export default function Home({ products }) {
                     <p className="text-sm font-medium text-white">
                       Sanctuary Price
                     </p>
-                    <p className="text-xs text-white/80">
+                    <p className="text-xs text-white/85">
                       10% off always—shown on every item.
                     </p>
                   </div>
@@ -401,7 +417,7 @@ export default function Home({ products }) {
                     <p className="text-sm font-medium text-white">
                       Grimoire Archive
                     </p>
-                    <p className="text-xs text-white/80">
+                    <p className="text-xs text-white/85">
                       Keep your Mirror readings in one private place.
                     </p>
                     <p className="text-[11px] uppercase tracking-[0.25em] text-white/40">
@@ -431,7 +447,7 @@ export default function Home({ products }) {
                   </span>
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-white">Early Drops</p>
-                    <p className="text-xs text-white/80">
+                    <p className="text-xs text-white/85">
                       Limited releases, available to members first.
                     </p>
                   </div>
@@ -494,16 +510,16 @@ export default function Home({ products }) {
             >
                 Enter the Sanctuary
               </Link>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                 Unlock Sanctuary Price + keep your readings.
               </p>
             </div>
 
-            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/60">
               Join free. Save 10% always.
             </p>
 
-            <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/55">
               Membership is calm by design. Nothing public. Nothing performative.
             </p>
           </div>

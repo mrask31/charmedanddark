@@ -69,14 +69,14 @@ export default function MirrorModule({ products, isMember }) {
   return (
     <section className="space-y-4 rounded-3xl border border-white/20 bg-gradient-to-br from-white/10 via-black/40 to-black/80 p-5 shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
       <div className="space-y-2">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/50">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/60">
           The Mirror
         </p>
-        <p className="text-sm text-white/70">
+        <p className="text-sm text-white/80">
           A quiet reading card: one validation, one prescription.
         </p>
         {reading ? (
-          <p className="text-sm text-white/70">{reading.prescription}</p>
+          <p className="text-sm text-white/80">{reading.prescription}</p>
         ) : null}
       </div>
       <form
@@ -111,7 +111,7 @@ export default function MirrorModule({ products, isMember }) {
       ) : null}
 
       {!reading && isActive ? (
-        <p className="text-xs uppercase tracking-[0.35em] text-white/40">
+        <p className="text-xs uppercase tracking-[0.35em] text-white/55">
           Receive your reading, then keep it in the Sanctuary.
         </p>
       ) : null}
