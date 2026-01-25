@@ -181,8 +181,7 @@ export default function Home({ products }) {
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
               <div className="relative flex h-full flex-col justify-end gap-2 p-6">
                 <p className="text-xs uppercase tracking-[0.35em] text-white/70">
                   {portal.title}
@@ -237,8 +236,7 @@ export default function Home({ products }) {
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
                 <div className="relative">
                   <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                     Best Seller
@@ -246,10 +244,10 @@ export default function Home({ products }) {
                   <h3 className="mt-2 text-lg font-semibold text-white">
                     {item.name}
                   </h3>
-                  <p className="mt-2 text-sm text-white/75">
+                  <p className="mt-2 text-sm text-white/70">
                     Signature cut, matte finish.
                   </p>
-                  <div className="mt-4 text-xs uppercase tracking-[0.3em] text-white/70">
+                  <div className="mt-3 inline-flex items-center rounded-lg border border-white/10 bg-black/45 px-3 py-2 text-xs uppercase tracking-[0.3em] text-white/70 backdrop-blur-md">
                     Public Price · Sanctuary Price
                   </div>
                   <span className="mt-3 inline-flex text-xs uppercase tracking-[0.3em] text-white/70 opacity-0 transition group-hover:opacity-100">
@@ -298,8 +296,7 @@ export default function Home({ products }) {
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
                 <div className="relative">
                   <p className="text-xs uppercase tracking-[0.3em] text-white/60">
                     Home Decor
@@ -307,10 +304,10 @@ export default function Home({ products }) {
                   <h3 className="mt-2 text-lg font-semibold text-white">
                     {item.name}
                   </h3>
-                  <p className="mt-2 text-sm text-white/75">
+                  <p className="mt-2 text-sm text-white/70">
                     Quiet ritual, refined form.
                   </p>
-                  <div className="mt-4 text-xs uppercase tracking-[0.3em] text-white/70">
+                  <div className="mt-3 inline-flex items-center rounded-lg border border-white/10 bg-black/45 px-3 py-2 text-xs uppercase tracking-[0.3em] text-white/70 backdrop-blur-md">
                     Public Price · Sanctuary Price
                   </div>
                   <span className="mt-3 inline-flex text-xs uppercase tracking-[0.3em] text-white/70 opacity-0 transition group-hover:opacity-100">
