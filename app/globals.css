@@ -23,6 +23,10 @@
   --btn-red-hover: #3D1010;
   --btn-red-border: rgba(139, 0, 0, 0.3);
   
+  /* Button Colors - Lighter red for paired buttons */
+  --btn-red-light: #3D1010;
+  --btn-red-light-hover: #2A0A0A;
+  
   /* Edge Highlights - Subtle definition */
   --edge-subtle: rgba(255, 255, 255, 0.03);
   --edge-hover: rgba(255, 255, 255, 0.06);
@@ -223,6 +227,21 @@ body::after {
   border-color: rgba(139, 0, 0, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(139, 0, 0, 0.2);
+}
+
+/* Lighter red for paired buttons */
+.hero-ctas .btn-primary,
+.final-actions .btn-primary,
+.reading-actions .btn-primary {
+  background: var(--btn-red-light);
+  border-color: rgba(139, 0, 0, 0.4);
+}
+
+.hero-ctas .btn-primary:hover,
+.final-actions .btn-primary:hover,
+.reading-actions .btn-primary:hover {
+  background: var(--btn-red-light-hover);
+  border-color: rgba(139, 0, 0, 0.6);
 }
 
 .btn-secondary {
