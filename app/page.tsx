@@ -38,6 +38,12 @@ export default function HomePage() {
       <main className="landing">
         {/* SECTION 1: HERO (Emotional Hook + SEO) */}
         <section className="hero">
+          <div className="hero-background">
+            <img 
+              src="/images/dark hair female burning sage with crystal candles.png" 
+              alt="Atmospheric ritual scene"
+            />
+          </div>
           <div className="hero-content">
             <h1 className="hero-h1">
               The world is loud.<br />
@@ -201,11 +207,19 @@ export default function HomePage() {
           </p>
           
           <div className="drop-card">
-            <div className="drop-status">Coming Soon</div>
-            <h3 className="drop-name">The Winter Sanctuary Collection</h3>
-            <Link href="/drops" className="drop-cta">
-              View Drops →
-            </Link>
+            <div className="drop-card-image">
+              <img 
+                src="/images/Black and Gold Stars on real wall set up - BEST.png" 
+                alt="Black and gold star wall art"
+              />
+            </div>
+            <div className="drop-card-content">
+              <div className="drop-status">Coming Soon</div>
+              <h3 className="drop-name">The Winter Sanctuary Collection</h3>
+              <Link href="/drops" className="drop-cta">
+                View Drops →
+              </Link>
+            </div>
           </div>
           
           <p className="drops-note">

@@ -159,6 +159,38 @@ body::after {
   justify-content: center;
   padding: 80px 40px;
   position: relative;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.15;
+  filter: blur(2px);
+}
+
+.hero-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    rgba(0, 0, 0, 0.7) 0%, 
+    rgba(0, 0, 0, 0.85) 50%,
+    rgba(0, 0, 0, 0.9) 100%);
 }
 
 .hero-content {
@@ -624,18 +656,46 @@ body::after {
 }
 
 .drop-card {
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto 24px;
-  padding: 64px 48px;
+  padding: 0;
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
   transition: all 300ms ease;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  align-items: center;
 }
 
 .drop-card:hover {
   border-color: var(--edge-hover);
   transform: translateY(-4px);
+}
+
+.drop-card-image {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.drop-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 500ms ease;
+}
+
+.drop-card:hover .drop-card-image img {
+  transform: scale(1.02);
+}
+
+.drop-card-content {
+  padding: 48px;
+  text-align: left;
 }
 
 .drop-status {
@@ -772,6 +832,8 @@ body::after {
   .house-grid { grid-template-columns: 1fr; }
   .value-grid { grid-template-columns: 1fr; }
   .hero-ctas { flex-direction: column; align-items: stretch; }
+  .drop-card { grid-template-columns: 1fr; }
+  .drop-card-image { min-height: 250px; }
 }
 
 @media (max-width: 768px) {
