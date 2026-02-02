@@ -64,14 +64,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 2: THE MIRROR (Reframed for Clarity) */}
+        {/* SECTION 2: THE MIRROR */}
         <section className="mirror-section">
           <div className="mirror-container">
-            <h2 className="mirror-headline">The Mirror — A Quiet Recommendation Ritual</h2>
+            <h2 className="mirror-headline">The Mirror</h2>
             
             <p className="mirror-description">
-              Tell the Mirror how you feel, and receive a private reflection—paired with an object 
-              designed to support that mood.
+              Tell us how you feel. We'll show you what you need.
             </p>
             
             <p className="mirror-note">
@@ -85,12 +84,12 @@ export default function HomePage() {
                     type="text"
                     value={feeling}
                     onChange={(e) => setFeeling(e.target.value)}
-                    placeholder="I feel overwhelmed. I need stillness. I want my space to feel calm."
+                    placeholder="I feel..."
                     className="mirror-input"
                     autoFocus
                   />
                   <button type="submit" className="mirror-submit">
-                    Receive Reflection
+                    Reflect
                   </button>
                 </form>
               ) : (
@@ -100,7 +99,7 @@ export default function HomePage() {
                   </div>
                   
                   <div className="reading-prescription">
-                    <p className="reading-product">Recommended: Midnight Candle</p>
+                    <p className="reading-product">Midnight Candle</p>
                     <p className="reading-ritual">Light it when the noise becomes too much.</p>
                   </div>
                   
@@ -110,12 +109,9 @@ export default function HomePage() {
                   
                   <div className="reading-actions">
                     <Link href="/join" className="btn-primary">
-                      Unlock Sanctuary Price
+                      Join to Save This
                     </Link>
-                    <Link href="/join" className="btn-secondary">
-                      Keep this Reading
-                    </Link>
-                    <Link href="/shop" className="btn-tertiary">
+                    <Link href="/shop" className="btn-secondary">
                       Shop the House
                     </Link>
                   </div>
@@ -125,25 +121,23 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 3: WHAT YOU OFFER (Immediate Clarity) */}
+        {/* SECTION 3: THE HOUSE */}
         <section className="house">
           <div className="house-grid">
             <div className="house-card">
-              <h2 className="house-card-title">Apparel — The Uniform</h2>
+              <h2 className="house-card-title">Apparel</h2>
               <p className="house-card-description">
-                Quiet silhouettes for those who carry presence without noise. Subtle. Intentional. 
-                Designed for daily rituals.
+                Black basics. Quiet layers. Pieces that feel like armor without looking like costume.
               </p>
               <Link href="/shop?category=apparel" className="house-card-cta">
-                Explore Apparel →
+                Shop Apparel →
               </Link>
             </div>
             
             <div className="house-card">
-              <h2 className="house-card-title">Home Décor — The Ritual</h2>
+              <h2 className="house-card-title">Home Décor</h2>
               <p className="house-card-description">
-                Objects that shift the atmosphere of a room. Candles, wall art, vessels, and décor 
-                designed for calm and intention.
+                Candles, vessels, wall art, and objects that shift the atmosphere of a room.
               </p>
               <Link href="/shop?category=home" className="house-card-cta">
                 Shop Home Décor →
@@ -152,29 +146,29 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 4: WHY JOIN (Conversion Engine) */}
+        {/* SECTION 4: JOIN THE SANCTUARY */}
         <section className="sanctuary-value">
-          <h2 className="sanctuary-headline">The Sanctuary — Membership Without Noise</h2>
+          <h2 className="sanctuary-headline">Join the Sanctuary</h2>
           
           <div className="value-grid">
             <div className="value-card">
               <h3 className="value-title">Sanctuary Pricing</h3>
               <p className="value-description">
-                10% off every piece, always. Two prices—members unlock the lower one.
+                10% off everything, always. Members see both prices.
               </p>
             </div>
             
             <div className="value-card">
-              <h3 className="value-title">Early Access to Drops</h3>
+              <h3 className="value-title">Early Access</h3>
               <p className="value-description">
-                Limited collections released quietly. Members enter first.
+                Enter Drops before they open to the public.
               </p>
             </div>
             
             <div className="value-card">
               <h3 className="value-title">The Grimoire</h3>
               <p className="value-description">
-                Your saved Mirror reflections—private, timestamped, and personal.
+                Save your Mirror readings. Private and permanent.
               </p>
             </div>
           </div>
@@ -187,53 +181,35 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 5: DROPS (Scarcity Without Pressure) */}
+        {/* SECTION 5: DROPS */}
         <section className="drops">
           <h2 className="drops-title">Drops</h2>
           <p className="drops-description">
-            Limited runs. Quiet releases. Sealed when complete.
+            Limited runs. Quiet releases. Gone when sold out.
           </p>
           
           <div className="drop-card">
             <div className="drop-status">Coming Soon</div>
-            <h3 className="drop-name">The Winter Sanctuary Collection opens soon.</h3>
+            <h3 className="drop-name">The Winter Sanctuary Collection</h3>
             <Link href="/drops" className="drop-cta">
               View Drops →
             </Link>
           </div>
           
           <p className="drops-note">
-            Sanctuary members receive early access.
+            Members enter first.
           </p>
         </section>
 
-        {/* SECTION 6: SOCIAL PROOF (Subtle, Not Cringe) */}
-        <section className="resonance">
-          <div className="resonance-content">
-            <p className="resonance-statement">Some feelings are shared.</p>
-            <p className="resonance-statement">Resonance is quiet.</p>
-            
-            <div className="resonance-rules">
-              <span>No comments</span>
-              <span>No profiles</span>
-              <span>Only presence</span>
-            </div>
-            
-            <Link href="/join" className="btn-secondary">
-              Enter the Sanctuary
-            </Link>
-          </div>
-        </section>
-
-        {/* SECTION 7: FINAL CTA (Warm Exit) */}
+        {/* SECTION 6: FINAL CTA */}
         <section className="final-invitation">
           <h2 className="final-title">
-            You don't have to be loud to belong.
+            You belong here.
           </h2>
           
           <div className="final-actions">
             <Link href="/join" className="btn-primary">
-              Enter the Sanctuary
+              Join the Sanctuary
             </Link>
             <Link href="/shop" className="btn-secondary">
               Shop the House
