@@ -51,8 +51,8 @@ export default function HomePage() {
             </h1>
             
             <p className="hero-description">
-              Gothic home décor, ritual objects, and understated apparel for those seeking 
-              calm, presence, and atmosphere in their sanctuary.
+              An elegant gothic lifestyle. Refined objects, understated apparel, and ritual essentials 
+              for those seeking calm, presence, and atmosphere in everyday living.
             </p>
 
             <div className="hero-ctas">
@@ -150,15 +150,15 @@ export default function HomePage() {
               <div className="house-card-image">
                 <img 
                   src="/images/BEST trinket dish, table top mirror, and sage.png" 
-                  alt="Charmed & Dark home décor - trinket dish, mirror, and sage"
+                  alt="Charmed & Dark objects - trinket dish, mirror, and sage"
                 />
               </div>
-              <h2 className="house-card-title">Home Décor</h2>
+              <h2 className="house-card-title">Objects</h2>
               <p className="house-card-description">
-                Candles, vessels, wall art, and objects that shift the atmosphere of a room.
+                Candles, vessels, wall art, and ritual essentials that shift the atmosphere of a space.
               </p>
               <Link href="/shop?category=home" className="house-card-cta">
-                Shop Home Décor →
+                Shop Objects →
               </Link>
             </div>
           </div>
