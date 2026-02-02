@@ -16,283 +16,200 @@ export default function HomePage() {
   };
 
   return (
-    <div style={styles.container}>
+    <>
       {/* Navigation */}
-      <nav style={styles.nav}>
-        <Link href="/threshold" style={styles.navLink}>
-          Threshold
-        </Link>
-        <Link href="/drops" style={styles.navLink}>
-          Drops
-        </Link>
-        <Link href="/about" style={styles.navLink}>
-          About
-        </Link>
-        <Link href="/join" style={styles.navLink}>
-          Join
-        </Link>
+      <nav className="nav">
+        <div className="nav-container">
+          <Link href="/" className="nav-brand">Charmed & Dark</Link>
+          <div className="nav-links">
+            <Link href="/shop">Shop</Link>
+            <Link href="/drops">Drops</Link>
+            <Link href="/join">Join</Link>
+          </div>
+        </div>
       </nav>
 
-      {/* Hero Section */}
-      <section style={styles.hero}>
-        <h1 style={styles.brandName}>Charmed & Dark</h1>
-        <p style={styles.tagline}>The Sanctuary for the Modern Shadow</p>
-        <p style={styles.positioning}>
-          Elegant gothic for those who function in bright worlds but feel internally darker, quieter, more introspective.
-        </p>
-      </section>
+      <main className="landing">
+        {/* 1. HERO: THE MIRROR */}
+        <section className="hero">
+          <div className="hero-content">
+            <h1 className="hero-title">
+              The world is loud.<br />Your home should be quiet.
+            </h1>
+            <p className="hero-subtitle">
+              Charmed & Dark is a gothic boutique and private Sanctuary<br />
+              for the modern shadow.
+            </p>
 
-      {/* The Mirror Section */}
-      <section style={styles.mirrorSection}>
-        <div style={styles.mirrorContainer}>
-          <h2 style={styles.mirrorTitle}>The Mirror</h2>
-          <p style={styles.mirrorDescription}>
-            A quiet place to reflect. Enter what you're feeling.
-          </p>
+            <div className="mirror">
+              <label className="mirror-label">
+                Tell the Mirror how your shadow feels right now.
+              </label>
+              
+              {!showReading ? (
+                <form onSubmit={handleMirrorSubmit} className="mirror-form">
+                  <input
+                    type="text"
+                    value={feeling}
+                    onChange={(e) => setFeeling(e.target.value)}
+                    placeholder="I am feeling..."
+                    className="mirror-input"
+                    autoFocus
+                  />
+                  <button type="submit" className="mirror-submit">
+                    Reflect
+                  </button>
+                </form>
+              ) : (
+                <div className="reading-card">
+                  <div className="reading-validation">
+                    <p>The Mirror sees you.</p>
+                  </div>
+                  
+                  <div className="reading-prescription">
+                    <p className="reading-product">Recommended: Midnight Candle</p>
+                    <p className="reading-ritual">Light it when the noise becomes too much.</p>
+                  </div>
+                  
+                  <div className="reading-resonance">
+                    <p>Silence is rising tonight.</p>
+                  </div>
+                  
+                  <div className="reading-actions">
+                    <Link href="/join" className="btn-primary">
+                      Unlock Sanctuary Price
+                    </Link>
+                    <Link href="/join" className="btn-secondary">
+                      Keep this Reading
+                    </Link>
+                    <Link href="/shop" className="btn-tertiary">
+                      Shop the House
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
 
-          {!showReading ? (
-            <form onSubmit={handleMirrorSubmit} style={styles.mirrorForm}>
-              <input
-                type="text"
-                value={feeling}
-                onChange={(e) => setFeeling(e.target.value)}
-                placeholder="I am feeling..."
-                style={styles.mirrorInput}
-                autoFocus
-              />
-              <button type="submit" style={styles.mirrorButton}>
-                Reflect
-              </button>
-            </form>
-          ) : (
-            <div style={styles.readingCard}>
-              <p style={styles.readingText}>
-                Your reading is being prepared. The Mirror sees you.
+        {/* 2. THE HOUSE */}
+        <section className="house">
+          <div className="house-grid">
+            <div className="house-card">
+              <h2 className="house-card-title">Apparel — The Uniform</h2>
+              <p className="house-card-description">
+                Quiet silhouettes for those who carry presence without noise.
               </p>
-              <p style={styles.readingNote}>
-                Join the Sanctuary to save your readings and unlock deeper reflections.
-              </p>
-              <Link href="/join" style={styles.joinLink}>
-                Enter the Sanctuary
+              <Link href="/shop?category=apparel" className="house-card-cta">
+                Shop Apparel →
               </Link>
             </div>
-          )}
-        </div>
-      </section>
+            
+            <div className="house-card">
+              <h2 className="house-card-title">Home Décor — The Ritual</h2>
+              <p className="house-card-description">
+                Objects that shift the atmosphere of a room.
+              </p>
+              <Link href="/shop?category=home" className="house-card-cta">
+                Shop Home →
+              </Link>
+            </div>
+          </div>
+        </section>
 
-      {/* Invitation Section */}
-      <section style={styles.invitationSection}>
-        <div style={styles.invitationCard}>
-          <h3 style={styles.invitationTitle}>Enter the Threshold</h3>
-          <p style={styles.invitationText}>
-            Discover objects for the quietly introspective. Apparel and décor that honor depth over display.
-          </p>
-          <Link href="/threshold" style={styles.primaryCTA}>
-            Discover
-          </Link>
-        </div>
+        {/* 3. SANCTUARY VALUE */}
+        <section className="sanctuary-value">
+          <div className="value-grid">
+            <div className="value-card">
+              <h3 className="value-title">Sanctuary Pricing</h3>
+              <p className="value-description">
+                10% off always. Two prices appear across the House.
+              </p>
+            </div>
+            
+            <div className="value-card">
+              <h3 className="value-title">Early Drop Windows</h3>
+              <p className="value-description">
+                Limited releases arrive quietly. Members enter first.
+              </p>
+            </div>
+            
+            <div className="value-card">
+              <h3 className="value-title">The Grimoire</h3>
+              <p className="value-description">
+                Your saved Mirror readings—private and archived.
+              </p>
+            </div>
+          </div>
+          
+          <div className="value-cta">
+            <Link href="/join" className="btn-primary">
+              Enter the Sanctuary
+            </Link>
+            <p className="value-trust">Free to join. No spam. No noise.</p>
+          </div>
+        </section>
 
-        <div style={styles.invitationCard}>
-          <h3 style={styles.invitationTitle}>Join the Sanctuary</h3>
-          <p style={styles.invitationText}>
-            A private space for return visits. Sanctuary pricing, saved reflections, quiet presence.
+        {/* 4. DROPS */}
+        <section className="drops">
+          <h2 className="drops-title">Drops</h2>
+          <p className="drops-description">
+            Limited runs. Quiet releases. Sealed when complete.
           </p>
-          <Link href="/join" style={styles.secondaryCTA}>
-            Learn More
-          </Link>
-        </div>
-      </section>
+          
+          <div className="drop-card">
+            <div className="drop-status">Coming Soon</div>
+            <h3 className="drop-name">Winter Sanctuary Collection</h3>
+            <Link href="/drops" className="drop-cta">
+              View Drops →
+            </Link>
+          </div>
+          
+          <p className="drops-note">
+            Sanctuary members receive early access.
+          </p>
+        </section>
+
+        {/* 5. RESONANCE */}
+        <section className="resonance">
+          <div className="resonance-content">
+            <p className="resonance-statement">Some feelings are shared.</p>
+            <p className="resonance-statement">Resonance is quiet.</p>
+            
+            <div className="resonance-rules">
+              <span>No comments</span>
+              <span>No profiles</span>
+              <span>Only presence</span>
+            </div>
+            
+            <Link href="/join" className="btn-secondary">
+              Enter the Sanctuary
+            </Link>
+          </div>
+        </section>
+
+        {/* 6. FINAL INVITATION */}
+        <section className="final-invitation">
+          <h2 className="final-title">
+            You don't have to be loud to belong.
+          </h2>
+          <p className="final-subtitle">Enter when you're ready.</p>
+          
+          <div className="final-actions">
+            <Link href="/join" className="btn-primary">
+              Enter the Sanctuary
+            </Link>
+            <Link href="/shop" className="btn-secondary">
+              Shop the House
+            </Link>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer style={styles.footer}>
-        <p style={styles.footerText}>
-          Not loud. Not viral. Enduring.
-        </p>
+      <footer className="footer">
+        <p>Not loud. Not viral. Enduring.</p>
       </footer>
-    </div>
+    </>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#0A0A0A',
-    color: '#E5E5E5',
-  },
-  
-  // Navigation
-  nav: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '48px',
-    padding: '24px',
-    borderBottom: '1px solid #1A1A1A',
-  },
-  navLink: {
-    fontSize: '14px',
-    color: '#8B7355',
-    textDecoration: 'none',
-    transition: 'color 300ms ease-in-out',
-  } as React.CSSProperties,
-
-  // Hero Section
-  hero: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '96px 24px',
-    textAlign: 'center' as const,
-  },
-  brandName: {
-    fontSize: '56px',
-    fontWeight: 300,
-    marginBottom: '24px',
-    color: '#E5E5E5',
-    letterSpacing: '0.02em',
-  },
-  tagline: {
-    fontSize: '20px',
-    color: '#8B7355',
-    marginBottom: '24px',
-    fontStyle: 'italic',
-  },
-  positioning: {
-    fontSize: '16px',
-    color: '#999',
-    lineHeight: '1.8',
-    maxWidth: '600px',
-    margin: '0 auto',
-  },
-
-  // Mirror Section
-  mirrorSection: {
-    maxWidth: '600px',
-    margin: '96px auto',
-    padding: '0 24px',
-  },
-  mirrorContainer: {
-    border: '1px solid #2D1B3D',
-    padding: '48px',
-    backgroundColor: '#0F0F0F',
-  },
-  mirrorTitle: {
-    fontSize: '32px',
-    fontWeight: 300,
-    marginBottom: '16px',
-    color: '#E5E5E5',
-    textAlign: 'center' as const,
-  },
-  mirrorDescription: {
-    fontSize: '16px',
-    color: '#999',
-    marginBottom: '32px',
-    textAlign: 'center' as const,
-  },
-  mirrorForm: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '24px',
-  },
-  mirrorInput: {
-    padding: '16px',
-    fontSize: '16px',
-    backgroundColor: '#1A1A1A',
-    border: '1px solid #333',
-    color: '#E5E5E5',
-    outline: 'none',
-    transition: 'border-color 300ms ease-in-out',
-  },
-  mirrorButton: {
-    padding: '16px 32px',
-    fontSize: '16px',
-    backgroundColor: '#0A0A0A',
-    border: '1px solid #8B7355',
-    color: '#8B7355',
-    cursor: 'pointer',
-    transition: 'all 300ms ease-in-out',
-  },
-  readingCard: {
-    padding: '24px',
-    backgroundColor: '#1A1A1A',
-    border: '1px solid #2D1B3D',
-  },
-  readingText: {
-    fontSize: '16px',
-    color: '#E5E5E5',
-    marginBottom: '16px',
-    lineHeight: '1.8',
-  },
-  readingNote: {
-    fontSize: '14px',
-    color: '#999',
-    marginBottom: '24px',
-    lineHeight: '1.6',
-  },
-  joinLink: {
-    display: 'inline-block',
-    fontSize: '14px',
-    color: '#8B7355',
-    textDecoration: 'none',
-    borderBottom: '1px solid #8B7355',
-    transition: 'color 300ms ease-in-out',
-  } as React.CSSProperties,
-
-  // Invitation Section
-  invitationSection: {
-    maxWidth: '1000px',
-    margin: '96px auto',
-    padding: '0 24px',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '48px',
-  },
-  invitationCard: {
-    padding: '48px',
-    border: '1px solid #1A1A1A',
-    backgroundColor: '#0F0F0F',
-    textAlign: 'center' as const,
-  },
-  invitationTitle: {
-    fontSize: '24px',
-    fontWeight: 300,
-    marginBottom: '16px',
-    color: '#E5E5E5',
-  },
-  invitationText: {
-    fontSize: '14px',
-    color: '#999',
-    lineHeight: '1.8',
-    marginBottom: '32px',
-  },
-  primaryCTA: {
-    display: 'inline-block',
-    padding: '12px 32px',
-    fontSize: '14px',
-    backgroundColor: '#4A0E0E',
-    color: '#E5E5E5',
-    textDecoration: 'none',
-    transition: 'all 300ms ease-in-out',
-    border: '1px solid #4A0E0E',
-  } as React.CSSProperties,
-  secondaryCTA: {
-    display: 'inline-block',
-    padding: '12px 32px',
-    fontSize: '14px',
-    backgroundColor: 'transparent',
-    color: '#8B7355',
-    textDecoration: 'none',
-    transition: 'all 300ms ease-in-out',
-    border: '1px solid #8B7355',
-  } as React.CSSProperties,
-
-  // Footer
-  footer: {
-    padding: '96px 24px 48px',
-    textAlign: 'center' as const,
-    borderTop: '1px solid #1A1A1A',
-  },
-  footerText: {
-    fontSize: '14px',
-    color: '#666',
-    fontStyle: 'italic',
-  },
-};
