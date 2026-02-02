@@ -76,11 +76,11 @@ export default function HomePage() {
             <h2 className="mirror-headline">The Mirror</h2>
             
             <p className="mirror-description">
-              Tell us how you feel. We'll show you what you need.
+              Your mood. Your object. The Mirror recommends what you need.
             </p>
             
             <p className="mirror-note">
-              No feeds. No performance. Just presence.
+              Not random. Not a feed. Just you and the recommendation.
             </p>
 
             <div className="mirror">
@@ -90,13 +90,16 @@ export default function HomePage() {
                     type="text"
                     value={feeling}
                     onChange={(e) => setFeeling(e.target.value)}
-                    placeholder="I feel..."
+                    placeholder="I feel overwhelmed..."
                     className="mirror-input"
                     autoFocus
                   />
                   <button type="submit" className="mirror-submit">
                     Reflect
                   </button>
+                  <p className="mirror-examples">
+                    Try: "I need stillness" · "I feel restless" · "I want my space to feel calm"
+                  </p>
                 </form>
               ) : (
                 <div className="reading-card">

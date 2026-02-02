@@ -417,6 +417,15 @@ body::after {
   box-shadow: 0 4px 16px rgba(139, 0, 0, 0.2);
 }
 
+.mirror-examples {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+  text-align: center;
+  font-style: italic;
+  margin-top: -8px;
+}
+
 /* Reading Card - Minimal Reveal */
 .reading-card {
   padding: 48px;
