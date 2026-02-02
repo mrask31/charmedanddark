@@ -176,36 +176,39 @@ export default function HomePage() {
 
         {/* SECTION 4: JOIN THE SANCTUARY */}
         <section className="sanctuary-value">
-          <h2 className="sanctuary-headline">Join the Sanctuary</h2>
+          <h2 className="sanctuary-headline">Join Free. Save Always.</h2>
+          <p className="sanctuary-subhead">
+            Sanctuary membership costs nothing. Gives you everything.
+          </p>
           
           <div className="value-grid">
             <div className="value-card">
               <h3 className="value-title">Sanctuary Pricing</h3>
               <p className="value-description">
-                10% off everything, always. Members see both prices.
+                10% off every purchase, forever. No codes. No expiration.
               </p>
             </div>
             
             <div className="value-card">
               <h3 className="value-title">Early Access</h3>
               <p className="value-description">
-                Enter Drops before they open to the public.
+                Enter Drops first. Before anyone else.
               </p>
             </div>
             
             <div className="value-card">
               <h3 className="value-title">The Grimoire</h3>
               <p className="value-description">
-                Save your Mirror readings. Private and permanent.
+                Your Mirror readings, saved. Private and permanent.
               </p>
             </div>
           </div>
           
           <div className="value-cta">
             <Link href="/join" className="btn-primary">
-              Join Free
+              Join the Sanctuary
             </Link>
-            <p className="value-trust">Free to join. Purchases optional.</p>
+            <p className="value-trust">Free forever. Purchases optional.</p>
           </div>
         </section>
 
