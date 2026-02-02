@@ -47,7 +47,7 @@ export default function HomePage() {
           <div className="hero-content">
             <h1 className="hero-h1">
               The world is loud.<br />
-              Your home should be quiet.
+              You don't have to be.
             </h1>
             
             <p className="hero-description">
