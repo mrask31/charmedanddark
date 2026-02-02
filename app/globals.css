@@ -18,6 +18,11 @@
   --accent-purple: rgba(75, 45, 75, 0.12);
   --accent-gold: rgba(180, 150, 100, 0.08);
   
+  /* Button Colors - Deep burgundy/wine red */
+  --btn-red-dark: #2A0A0A;
+  --btn-red-hover: #3D1010;
+  --btn-red-border: rgba(139, 0, 0, 0.3);
+  
   /* Edge Highlights - Subtle definition */
   --edge-subtle: rgba(255, 255, 255, 0.03);
   --edge-hover: rgba(255, 255, 255, 0.06);
@@ -205,8 +210,8 @@ body::after {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
-  background: var(--black-elevated);
-  border: 1px solid var(--edge-subtle);
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
   border-radius: 50px;
   color: var(--text-primary);
   text-decoration: none;
@@ -214,9 +219,10 @@ body::after {
 }
 
 .btn-primary:hover {
-  background: var(--black-card);
-  border-color: var(--edge-hover);
+  background: var(--btn-red-hover);
+  border-color: rgba(139, 0, 0, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(139, 0, 0, 0.2);
 }
 
 .btn-secondary {
@@ -344,8 +350,8 @@ body::after {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-family: inherit;
-  background: var(--black-elevated);
-  border: 1px solid var(--edge-subtle);
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
   border-radius: 50px;
   color: var(--text-primary);
   cursor: pointer;
@@ -354,9 +360,10 @@ body::after {
 }
 
 .mirror-submit:hover {
-  background: var(--black-card);
-  border-color: var(--edge-hover);
+  background: var(--btn-red-hover);
+  border-color: rgba(139, 0, 0, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(139, 0, 0, 0.2);
 }
 
 /* Reading Card - Minimal Reveal */
