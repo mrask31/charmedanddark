@@ -132,6 +132,13 @@ export default function HomePage() {
 
         {/* SECTION 3: THE HOUSE */}
         <section className="house">
+          <div className="house-intro">
+            <h2 className="house-intro-title">The House</h2>
+            <p className="house-intro-description">
+              What we make. What you wear. What fills your space.
+            </p>
+          </div>
+          
           <div className="house-grid">
             <div className="house-card">
               <div className="house-card-image">
@@ -142,10 +149,10 @@ export default function HomePage() {
               </div>
               <h2 className="house-card-title">Apparel</h2>
               <p className="house-card-description">
-                Black basics. Quiet layers. Pieces that feel like armor without looking like costume.
+                T-shirts, hoodies, and layers designed to disappear. No logos. No noise. Just black.
               </p>
               <Link href="/shop?category=apparel" className="house-card-cta">
-                Shop Apparel →
+                See the Collection →
               </Link>
             </div>
             
@@ -158,10 +165,10 @@ export default function HomePage() {
               </div>
               <h2 className="house-card-title">Objects</h2>
               <p className="house-card-description">
-                Candles, vessels, wall art, and ritual essentials that shift the atmosphere of a space.
+                Candles that burn clean. Mirrors that reflect intention. Objects that make a room feel different.
               </p>
               <Link href="/shop?category=home" className="house-card-cta">
-                Shop Objects →
+                Explore Objects →
               </Link>
             </div>
           </div>

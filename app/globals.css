@@ -493,6 +493,27 @@ body::after {
   position: relative;
 }
 
+.house-intro {
+  max-width: 800px;
+  margin: 0 auto 80px;
+  text-align: center;
+}
+
+.house-intro-title {
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.house-intro-description {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
 .house-grid {
   max-width: 1200px;
   margin: 0 auto;
