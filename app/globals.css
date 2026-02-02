@@ -461,12 +461,13 @@ body::after {
 }
 
 .house-card {
-  padding: 80px 60px;
+  padding: 0;
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
   transition: all 300ms ease;
   position: relative;
+  overflow: hidden;
 }
 
 .house-card:hover {
@@ -474,12 +475,33 @@ body::after {
   transform: translateY(-4px);
 }
 
+.house-card-image {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.house-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 500ms ease;
+}
+
+.house-card:hover .house-card-image img {
+  transform: scale(1.02);
+}
+
 .house-card-title {
   font-size: 32px;
   font-weight: 300;
   color: var(--text-primary);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   letter-spacing: -0.01em;
+  padding: 0 40px;
+  margin-top: 32px;
 }
 
 .house-card-description {
@@ -488,6 +510,7 @@ body::after {
   line-height: 1.7;
   color: var(--text-secondary);
   margin-bottom: 32px;
+  padding: 0 40px;
 }
 
 .house-card-cta {
@@ -500,6 +523,7 @@ body::after {
   transition: all 300ms ease;
   position: relative;
   display: inline-block;
+  padding: 0 40px 40px 40px;
 }
 
 .house-card-cta:hover {

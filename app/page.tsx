@@ -125,6 +125,12 @@ export default function HomePage() {
         <section className="house">
           <div className="house-grid">
             <div className="house-card">
+              <div className="house-card-image">
+                <img 
+                  src="/images/Dark-haired woman with tattoos wearing a black 'Charmed and Dark' t-shirt with a small chest logo against a dark patterned wallpaper background..png" 
+                  alt="Charmed & Dark apparel - black t-shirt"
+                />
+              </div>
               <h2 className="house-card-title">Apparel</h2>
               <p className="house-card-description">
                 Black basics. Quiet layers. Pieces that feel like armor without looking like costume.
@@ -135,6 +141,12 @@ export default function HomePage() {
             </div>
             
             <div className="house-card">
+              <div className="house-card-image">
+                <img 
+                  src="/images/BEST trinket dish, table top mirror, and sage.png" 
+                  alt="Charmed & Dark home décor - trinket dish, mirror, and sage"
+                />
+              </div>
               <h2 className="house-card-title">Home Décor</h2>
               <p className="house-card-description">
                 Candles, vessels, wall art, and objects that shift the atmosphere of a room.
