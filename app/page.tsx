@@ -36,30 +36,25 @@ export default function HomePage() {
       </nav>
 
       <main className="landing">
-        {/* SECTION 1: HERO (SEO + Emotional Hook) */}
+        {/* SECTION 1: HERO (Emotional Hook + SEO) */}
         <section className="hero">
           <div className="hero-content">
             <h1 className="hero-h1">
-              Gothic Home Decor & Quiet Rituals<br />
-              for the Modern Sanctuary
+              The world is loud.<br />
+              Your home should be quiet.
             </h1>
             
-            <p className="hero-tagline">
-              The world is loud. Your home should be quiet.
-            </p>
-            
             <p className="hero-description">
-              Charmed & Dark is a gothic boutique and private Sanctuary offering refined home décor, 
-              ritual objects, and understated apparel—designed to bring calm, presence, and atmosphere 
-              back into your space.
+              Gothic home décor, ritual objects, and understated apparel for those seeking 
+              calm, presence, and atmosphere in their sanctuary.
             </p>
 
             <div className="hero-ctas">
               <Link href="/join" className="btn-primary">
                 Enter the Sanctuary
               </Link>
-              <Link href="/shop?category=home" className="btn-secondary">
-                Shop Gothic Home Decor
+              <Link href="/shop" className="btn-secondary">
+                Shop the House
               </Link>
             </div>
             
