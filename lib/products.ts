@@ -91,7 +91,7 @@ function calculateSanctuaryPrice(publicPrice: number): number {
 // ============================================
 
 export const products: Product[] = [
-  // CANDLES & SCENT
+  // CANDLES & SCENT (4 products)
   {
     id: "candle-midnight",
     slug: "midnight-candle",
@@ -119,7 +119,31 @@ export const products: Product[] = [
     ],
     inStock: true,
     mirrorEligible: true,
-    mirrorRole: 'containment'
+    mirrorRole: 'containment',
+    variants: [
+      {
+        id: "candle-midnight-8oz",
+        label: "8 oz",
+        pricePublic: 28.00,
+        priceSanctuary: calculateSanctuaryPrice(28.00),
+        inStock: true,
+        isDefault: true
+      },
+      {
+        id: "candle-midnight-12oz",
+        label: "12 oz",
+        pricePublic: 32.00,
+        priceSanctuary: calculateSanctuaryPrice(32.00),
+        inStock: true
+      },
+      {
+        id: "candle-midnight-16oz",
+        label: "16 oz",
+        pricePublic: 38.00,
+        priceSanctuary: calculateSanctuaryPrice(38.00),
+        inStock: true
+      }
+    ]
   },
   {
     id: "candle-three-star",
@@ -149,10 +173,75 @@ export const products: Product[] = [
     ],
     inStock: true,
     mirrorEligible: true,
-    mirrorRole: 'warmth'
+    mirrorRole: 'warmth',
+    variants: [
+      {
+        id: "candle-three-star-8oz",
+        label: "8 oz",
+        pricePublic: 30.00,
+        priceSanctuary: calculateSanctuaryPrice(30.00),
+        inStock: true,
+        isDefault: true
+      },
+      {
+        id: "candle-three-star-12oz",
+        label: "12 oz",
+        pricePublic: 34.00,
+        priceSanctuary: calculateSanctuaryPrice(34.00),
+        inStock: true
+      }
+    ]
+  },
+  {
+    id: "candle-solstice",
+    slug: "solstice-candle",
+    name: "Solstice Candle",
+    realm: "house",
+    category: "Candles & Scent",
+    status: "core",
+    pricePublic: 36.00,
+    priceSanctuary: calculateSanctuaryPrice(36.00),
+    shortDescription: "A candle for marking the turn of seasons.",
+    description: {
+      ritualIntro: "Light this when the days shift. When darkness lengthens or light returns. The flame marks time without urgency.",
+      objectDetails: [
+        "100% soy wax blend",
+        "Cotton wick, lead-free",
+        "Burn time: 50-55 hours",
+        "Scent: Pine, amber, winter spice",
+        "Hand-poured in small batches"
+      ],
+      whoFor: "For those who honor the turning of seasons."
+    },
+    images: [],
+    inStock: true
+  },
+  {
+    id: "incense-holder",
+    slug: "incense-holder",
+    name: "Incense Holder",
+    realm: "house",
+    category: "Candles & Scent",
+    status: "core",
+    pricePublic: 22.00,
+    priceSanctuary: calculateSanctuaryPrice(22.00),
+    shortDescription: "A simple holder for incense that needs no explanation.",
+    description: {
+      ritualIntro: "Place the stick. Light the tip. Let the smoke rise. This holder catches the ash without ceremony.",
+      objectDetails: [
+        "Cast iron construction",
+        "Length: 10 inches",
+        "Matte black finish",
+        "Ash catch groove",
+        "Wipe clean with damp cloth"
+      ],
+      whoFor: "For those who practice with smoke."
+    },
+    images: [],
+    inStock: true
   },
 
-  // TABLE & DISPLAY
+  // TABLE & DISPLAY (6 products)
   {
     id: "dish-obsidian",
     slug: "obsidian-dish",
@@ -240,7 +329,31 @@ export const products: Product[] = [
     ],
     inStock: true,
     mirrorEligible: true,
-    mirrorRole: 'boundary'
+    mirrorRole: 'boundary',
+    variants: [
+      {
+        id: "board-charcuterie-small",
+        label: "Small (12\")",
+        pricePublic: 48.00,
+        priceSanctuary: calculateSanctuaryPrice(48.00),
+        inStock: true
+      },
+      {
+        id: "board-charcuterie-medium",
+        label: "Medium (16\")",
+        pricePublic: 56.00,
+        priceSanctuary: calculateSanctuaryPrice(56.00),
+        inStock: true,
+        isDefault: true
+      },
+      {
+        id: "board-charcuterie-large",
+        label: "Large (20\")",
+        pricePublic: 68.00,
+        priceSanctuary: calculateSanctuaryPrice(68.00),
+        inStock: true
+      }
+    ]
   },
   {
     id: "tray-two-tier",
@@ -272,8 +385,57 @@ export const products: Product[] = [
     mirrorEligible: true,
     mirrorRole: 'boundary'
   },
+  {
+    id: "coasters-set",
+    slug: "coaster-set",
+    name: "Coaster Set",
+    realm: "house",
+    category: "Table & Display",
+    status: "core",
+    pricePublic: 32.00,
+    priceSanctuary: calculateSanctuaryPrice(32.00),
+    shortDescription: "Four coasters that protect surfaces without commentary.",
+    description: {
+      ritualIntro: "Place your cup. Protect the wood. These coasters do their work quietly.",
+      objectDetails: [
+        "Natural slate stone",
+        "Diameter: 4 inches each",
+        "Cork backing",
+        "Set of 4",
+        "Wipe clean with damp cloth"
+      ],
+      whoFor: "For those who care for their surfaces."
+    },
+    images: [],
+    inStock: true
+  },
+  {
+    id: "candleholder-pillar",
+    slug: "pillar-candleholder",
+    name: "Pillar Candleholder",
+    realm: "house",
+    category: "Table & Display",
+    status: "core",
+    pricePublic: 34.00,
+    priceSanctuary: calculateSanctuaryPrice(34.00),
+    shortDescription: "A weighted holder for pillar candles.",
+    description: {
+      ritualIntro: "Set the candle. Light the wick. This holder keeps the flame steady and the wax contained.",
+      objectDetails: [
+        "Cast iron construction",
+        "Diameter: 5 inches",
+        "Height: 2 inches",
+        "Matte black finish",
+        "Fits 3-4 inch pillar candles",
+        "Wipe clean with damp cloth"
+      ],
+      whoFor: "For those who light candles with intention."
+    },
+    images: [],
+    inStock: true
+  },
 
-  // DECOR OBJECTS
+  // DECOR OBJECTS (5 products)
   {
     id: "bookends-skull",
     slug: "skull-bookends",
@@ -331,7 +493,31 @@ export const products: Product[] = [
     ],
     inStock: true,
     mirrorEligible: true,
-    mirrorRole: 'grounding'
+    mirrorRole: 'grounding',
+    variants: [
+      {
+        id: "vase-black-small",
+        label: "Small (7\")",
+        pricePublic: 36.00,
+        priceSanctuary: calculateSanctuaryPrice(36.00),
+        inStock: true
+      },
+      {
+        id: "vase-black-medium",
+        label: "Medium (9\")",
+        pricePublic: 42.00,
+        priceSanctuary: calculateSanctuaryPrice(42.00),
+        inStock: true,
+        isDefault: true
+      },
+      {
+        id: "vase-black-large",
+        label: "Large (12\")",
+        pricePublic: 52.00,
+        priceSanctuary: calculateSanctuaryPrice(52.00),
+        inStock: true
+      }
+    ]
   },
   {
     id: "vase-heart",
@@ -360,8 +546,75 @@ export const products: Product[] = [
     ],
     inStock: true
   },
+  {
+    id: "frame-photo",
+    slug: "photo-frame",
+    name: "Photo Frame",
+    realm: "house",
+    category: "Decor Objects",
+    status: "core",
+    pricePublic: 38.00,
+    priceSanctuary: calculateSanctuaryPrice(38.00),
+    shortDescription: "A frame for the images that matter.",
+    description: {
+      ritualIntro: "Choose one photo. Frame it. Let it hold the memory without clutter.",
+      objectDetails: [
+        "Black metal frame",
+        "Fits 5x7 inch photos",
+        "Glass front",
+        "Easel back for tabletop display",
+        "Wall mounting hardware included",
+        "Wipe clean with soft cloth"
+      ],
+      whoFor: "For those who display memories with care."
+    },
+    images: [],
+    inStock: true,
+    variants: [
+      {
+        id: "frame-photo-5x7",
+        label: "5x7\"",
+        pricePublic: 38.00,
+        priceSanctuary: calculateSanctuaryPrice(38.00),
+        inStock: true,
+        isDefault: true
+      },
+      {
+        id: "frame-photo-8x10",
+        label: "8x10\"",
+        pricePublic: 48.00,
+        priceSanctuary: calculateSanctuaryPrice(48.00),
+        inStock: true
+      }
+    ]
+  },
+  {
+    id: "bowl-offering",
+    slug: "offering-bowl",
+    name: "Offering Bowl",
+    realm: "house",
+    category: "Decor Objects",
+    status: "core",
+    pricePublic: 46.00,
+    priceSanctuary: calculateSanctuaryPrice(46.00),
+    shortDescription: "A bowl for objects that hold meaning.",
+    description: {
+      ritualIntro: "Stones. Shells. Small tokens. This bowl holds what you choose to keep close.",
+      objectDetails: [
+        "Glazed ceramic",
+        "Diameter: 6 inches",
+        "Depth: 3 inches",
+        "Matte black exterior",
+        "Glossy black interior",
+        "Hand-wash recommended"
+      ],
+      whoFor: "For those who collect with intention."
+    },
+    images: [],
+    inStock: true
+  },
 
-  // WALL OBJECTS
+  // WALL OBJECTS (3 products)
   {
     id: "wall-art-stars",
     slug: "stars-wall-art",
@@ -392,8 +645,57 @@ export const products: Product[] = [
     mirrorEligible: true,
     mirrorRole: 'witness'
   },
+  {
+    id: "wall-art-moon",
+    slug: "moon-wall-art",
+    name: "Moon Wall Art",
+    realm: "house",
+    category: "Wall Objects",
+    status: "core",
+    pricePublic: 78.00,
+    priceSanctuary: calculateSanctuaryPrice(78.00),
+    shortDescription: "Lunar phases rendered in quiet detail.",
+    description: {
+      ritualIntro: "The moon waxes. The moon wanes. This print marks the cycle without urgency.",
+      objectDetails: [
+        "Printed on archival paper",
+        "Size: 18 x 24 inches",
+        "Black background with silver moon phases",
+        "Unframed (frame-ready)",
+        "Shipped flat in protective sleeve"
+      ],
+      whoFor: "For those who track the turning of time."
+    },
+    images: [],
+    inStock: true
+  },
+  {
+    id: "wall-shelf",
+    slug: "wall-shelf",
+    name: "Wall Shelf",
+    realm: "house",
+    category: "Wall Objects",
+    status: "core",
+    pricePublic: 52.00,
+    priceSanctuary: calculateSanctuaryPrice(52.00),
+    shortDescription: "A floating shelf for objects that deserve elevation.",
+    description: {
+      ritualIntro: "Mount this. Place what matters. Let the objects float without clutter beneath.",
+      objectDetails: [
+        "Black metal construction",
+        "Length: 24 inches",
+        "Depth: 6 inches",
+        "Weight capacity: 15 lbs",
+        "Mounting hardware included",
+        "Wipe clean with damp cloth"
+      ],
+      whoFor: "For those who display with intention."
+    },
+    images: [],
+    inStock: true
+  },
 
-  // OBJECTS OF USE
+  // OBJECTS OF USE (4 products)
   {
     id: "sage-bundle",
     slug: "sage-bundle",
@@ -451,8 +753,57 @@ export const products: Product[] = [
     ],
     inStock: true
   },
+  {
+    id: "journal-blank",
+    slug: "blank-journal",
+    name: "Blank Journal",
+    realm: "house",
+    category: "Objects of Use",
+    status: "core",
+    pricePublic: 28.00,
+    priceSanctuary: calculateSanctuaryPrice(28.00),
+    shortDescription: "A journal for thoughts that need no structure.",
+    description: {
+      ritualIntro: "Write what needs to be written. No prompts. No guidance. Just blank pages waiting.",
+      objectDetails: [
+        "Hardcover binding",
+        "200 blank pages",
+        "Acid-free paper",
+        "Size: 5.5 x 8.5 inches",
+        "Black linen cover",
+        "Lay-flat binding"
+      ],
+      whoFor: "For those who write without instruction."
+    },
+    images: [],
+    inStock: true
+  },
+  {
+    id: "matches-long",
+    slug: "long-matches",
+    name: "Long Matches",
+    realm: "house",
+    category: "Objects of Use",
+    status: "core",
+    pricePublic: 12.00,
+    priceSanctuary: calculateSanctuaryPrice(12.00),
+    shortDescription: "Long matches for lighting candles with care.",
+    description: {
+      ritualIntro: "Strike. Light. Let the flame transfer. These matches give you time and distance.",
+      objectDetails: [
+        "Length: 11 inches",
+        "Box of 50 matches",
+        "Strike-anywhere tips",
+        "Black-tipped matches",
+        "Recyclable cardboard box"
+      ],
+      whoFor: "For those who light candles often."
+    },
+    images: [],
+    inStock: true
+  },
 
-  // RITUAL DRINKWARE
+  // RITUAL DRINKWARE (3 products)
   {
     id: "mug-ritual",
     slug: "ritual-mug",
@@ -478,7 +829,80 @@ export const products: Product[] = [
     images: [],
     inStock: true,
     mirrorEligible: true,
-    mirrorRole: 'warmth'
+    mirrorRole: 'warmth',
+    variants: [
+      {
+        id: "mug-ritual-10oz",
+        label: "10 oz",
+        pricePublic: 26.00,
+        priceSanctuary: calculateSanctuaryPrice(26.00),
+        inStock: true
+      },
+      {
+        id: "mug-ritual-12oz",
+        label: "12 oz",
+        pricePublic: 28.00,
+        priceSanctuary: calculateSanctuaryPrice(28.00),
+        inStock: true,
+        isDefault: true
+      },
+      {
+        id: "mug-ritual-16oz",
+        label: "16 oz",
+        pricePublic: 32.00,
+        priceSanctuary: calculateSanctuaryPrice(32.00),
+        inStock: true
+      }
+    ]
+  },
+  {
+    id: "teapot",
+    slug: "teapot",
+    name: "Teapot",
+    realm: "house",
+    category: "Ritual Drinkware",
+    status: "core",
+    pricePublic: 58.00,
+    priceSanctuary: calculateSanctuaryPrice(58.00),
+    shortDescription: "A teapot for brewing with intention.",
+    description: {
+      ritualIntro: "Steep the leaves. Pour the tea. This pot makes the ritual feel deliberate.",
+      objectDetails: [
+        "Cast iron construction",
+        "Capacity: 24 oz",
+        "Matte black exterior",
+        "Enamel interior",
+        "Removable stainless steel infuser",
+        "Hand-wash recommended"
+      ],
+      whoFor: "For those who brew tea as practice."
+    },
+    images: [],
+    inStock: true
+  },
+  {
+    id: "glass-set",
+    slug: "glass-set",
+    name: "Glass Set",
+    realm: "house",
+    category: "Ritual Drinkware",
+    status: "core",
+    pricePublic: 42.00,
+    priceSanctuary: calculateSanctuaryPrice(42.00),
+    shortDescription: "Four glasses for water, wine, or whatever you pour.",
+    description: {
+      ritualIntro: "Fill these. Drink from them. These glasses hold what you choose without judgment.",
+      objectDetails: [
+        "Smoked glass",
+        "Capacity: 12 oz each",
+        "Set of 4",
+        "Dishwasher safe",
+        "Stackable design"
+      ],
+      whoFor: "For those who drink with presence."
+    },
+    images: [],
+    inStock: true
   }
 ];
 
