@@ -124,7 +124,6 @@ export default function HomePage() {
                     onChange={(e) => setFeeling(e.target.value)}
                     placeholder="I feel overwhelmed..."
                     className="mirror-input"
-                    autoFocus
                   />
                   <button type="submit" className="mirror-submit">
                     Reflect

@@ -873,11 +873,11 @@ body::after {
   left: 40px;
   top: 50%;
   transform: translateY(-50%);
-  width: 2px;
+  width: 4px;
   height: 60vh;
   pointer-events: none;
   z-index: 100;
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .candle-flame {
@@ -885,14 +885,14 @@ body::after {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 120px;
+  width: 120px;
+  height: 180px;
   background: radial-gradient(ellipse at center bottom,
-    rgba(201, 139, 97, 0.4) 0%,
-    rgba(201, 139, 97, 0.2) 30%,
-    rgba(201, 139, 97, 0.05) 60%,
+    rgba(201, 139, 97, 0.7) 0%,
+    rgba(201, 139, 97, 0.4) 30%,
+    rgba(201, 139, 97, 0.15) 60%,
     transparent 100%);
-  filter: blur(20px);
+  filter: blur(15px);
   animation: candleFlicker 8s ease-in-out infinite;
 }
 
@@ -923,12 +923,12 @@ body::after {
 
 /* Before illumination - subdued */
 [data-candle-section]:not(.illuminated) {
-  filter: brightness(0.85) contrast(0.95);
+  filter: brightness(0.75) contrast(0.9);
 }
 
 /* After illumination - present */
 [data-candle-section].illuminated {
-  filter: brightness(1) contrast(1.02);
+  filter: brightness(1) contrast(1.05);
 }
 
 /* Subtle gold accent reveal on illumination */
