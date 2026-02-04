@@ -3,6 +3,16 @@
  * 
  * The Mirror is a single-response reflection ritual.
  * One input → one response. No chat. No conversation.
+ * 
+ * PSYCHOLOGICAL MAPPING RULES:
+ * - Overwhelmed → Containment (enclosed, finite, grounding)
+ * - Tired → Warmth (literal warmth, no decisions, stillness)
+ * - Unseen → Witness (static, present, "looks back")
+ * - Restless → Boundary (limits, separation, interrupts pacing)
+ * - Heavy → Grounding (literal weight, solid, anchored)
+ * - Distant → Return (invites approach, suggests ritual, repeatable)
+ * - Quiet → Amplification (minimal, refined, preserves silence)
+ * - Uncertain → Orientation (timeless, neutral, archetypal)
  */
 
 // ============================================
@@ -33,7 +43,8 @@ export interface MirrorReading {
 // ============================================
 
 export const mirrorReadings: MirrorReading[] = [
-  // OVERWHELMED
+  // OVERWHELMED → CONTAINMENT
+  // Eligible: Candles with heavy vessels, lidded containers, drinkware with weight
   {
     id: 'overwhelmed-01',
     state: 'overwhelmed',
@@ -47,11 +58,12 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'overwhelmed',
     validation: 'Nothing is wrong with you.',
     reflection: 'Sometimes the weight is not yours to carry. Set it down.',
-    productSlug: 'ritual-sage-bundle',
-    ritualSuggestion: 'Clear the air. Begin again.'
+    productSlug: 'obsidian-trinket-dish',
+    ritualSuggestion: 'Place what you carry here. Even for a moment.'
   },
 
-  // TIRED
+  // TIRED → WARMTH
+  // Eligible: Candles, soft light, drinkware for heat
   {
     id: 'tired-01',
     state: 'tired',
@@ -65,11 +77,12 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'tired',
     validation: 'Exhaustion is a message, not a failure.',
     reflection: 'The world will keep turning without you for a moment. Let it.',
-    productSlug: 'signature-pullover-hoodie',
-    ritualSuggestion: 'Wear something soft. Close your eyes. Stay still.'
+    productSlug: 'three-star-candle',
+    ritualSuggestion: 'Light this. Close your eyes. Stay still.'
   },
 
-  // UNSEEN
+  // UNSEEN → WITNESS
+  // Eligible: Wall objects, mirrors, figurative decor with quiet gaze
   {
     id: 'unseen-01',
     state: 'unseen',
@@ -83,29 +96,31 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'unseen',
     validation: 'The Mirror sees you.',
     reflection: 'Some things are meant to be quiet. That does not make them small.',
-    productSlug: 'crest-logo-tshirt',
-    ritualSuggestion: 'Wear something that marks you. Even if only you know.'
+    productSlug: 'black-gold-stars-wall-art',
+    ritualSuggestion: 'Hang this where you will see it. Let it see you back.'
   },
 
-  // RESTLESS
+  // RESTLESS → BOUNDARY
+  // Eligible: Trays, table objects, items that mark space
   {
     id: 'restless-01',
     state: 'restless',
     validation: 'The unease is not a flaw.',
     reflection: 'Something in you is trying to move. Let it surface before you act.',
-    productSlug: 'three-star-candle',
-    ritualSuggestion: 'Set three intentions. Write them down. Burn nothing yet.'
+    productSlug: 'two-tier-display-tray',
+    ritualSuggestion: 'Place three things here. Define the edges. Stop there.'
   },
   {
     id: 'restless-02',
     state: 'restless',
     validation: 'Stillness is not the answer. Neither is motion.',
     reflection: 'You are between states. That is where change begins.',
-    productSlug: 'black-ceramic-vase',
-    ritualSuggestion: 'Place one thing where it belongs. Start there.'
+    productSlug: 'ritual-charcuterie-board',
+    ritualSuggestion: 'Mark a boundary. Place one thing inside it. Begin there.'
   },
 
-  // HEAVY
+  // HEAVY → GROUNDING
+  // Eligible: Stone, resin, metal decor, heavy drinkware, anchored objects
   {
     id: 'heavy-01',
     state: 'heavy',
@@ -119,62 +134,65 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'heavy',
     validation: 'You do not have to be lighter.',
     reflection: 'Some days are meant to be heavy. This is one of them.',
-    productSlug: 'obsidian-trinket-dish',
-    ritualSuggestion: 'Put down what you are holding. Even for a moment.'
+    productSlug: 'black-ceramic-vase',
+    ritualSuggestion: 'Fill this with water. Feel the weight. Set it down.'
   },
 
-  // DISTANT
+  // DISTANT → RETURN
+  // Eligible: Candles, ritual tools, objects used repeatedly
   {
     id: 'distant-01',
     state: 'distant',
     validation: 'Disconnection is not permanent.',
     reflection: 'You are not lost. You are somewhere else. That is allowed.',
-    productSlug: 'black-gold-stars-wall-art',
-    ritualSuggestion: 'Look at something far away. Let your eyes rest there.'
+    productSlug: 'midnight-ritual-candle',
+    ritualSuggestion: 'Light this when you are ready to return. Not before.'
   },
   {
     id: 'distant-02',
     state: 'distant',
     validation: 'Numbness is protection.',
     reflection: 'When feeling returns, it will. Until then, you are safe here.',
-    productSlug: 'zip-up-hoodie',
-    ritualSuggestion: 'Cover yourself. Stay warm. Wait.'
+    productSlug: 'ritual-sage-bundle',
+    ritualSuggestion: 'Burn this when you are ready. The smoke will call you back.'
   },
 
-  // QUIET
+  // QUIET → AMPLIFICATION (SUBTLE)
+  // Eligible: Minimal decor, matte surfaces, low contrast objects
   {
     id: 'quiet-01',
     state: 'quiet',
     validation: 'Silence is not emptiness.',
     reflection: 'You are not absent. You are listening.',
-    productSlug: 'ritual-charcuterie-board',
-    ritualSuggestion: 'Prepare something simple. Arrange it with care.'
+    productSlug: 'obsidian-trinket-dish',
+    ritualSuggestion: 'Place one small thing here. Let it rest in the quiet.'
   },
   {
     id: 'quiet-02',
     state: 'quiet',
     validation: 'This is not loneliness.',
     reflection: 'Some moments are meant to be held alone. This is one of them.',
-    productSlug: 'black-beanie',
-    ritualSuggestion: 'Go outside. Say nothing. Return when ready.'
+    productSlug: 'black-ceramic-vase',
+    ritualSuggestion: 'Leave this empty. Let the space speak.'
   },
 
-  // UNCERTAIN
+  // UNCERTAIN → ORIENTATION
+  // Eligible: Core permanent items, simple forms, archetypal shapes
   {
     id: 'uncertain-01',
     state: 'uncertain',
     validation: 'Not knowing is not failing.',
     reflection: 'Clarity will come. Or it will not. Either way, you will move forward.',
-    productSlug: 'red-heart-vase',
-    ritualSuggestion: 'Place something living where you can see it. Watch it change.'
+    productSlug: 'three-star-candle',
+    ritualSuggestion: 'Light this. Watch the flame. It knows where to go.'
   },
   {
     id: 'uncertain-02',
     state: 'uncertain',
     validation: 'The path does not need to be clear yet.',
     reflection: 'You are allowed to wait. You are allowed to not decide.',
-    productSlug: 'two-tier-display-tray',
-    ritualSuggestion: 'Organize one small thing. Let that be enough.'
+    productSlug: 'reflection-tabletop-mirror',
+    ritualSuggestion: 'Look into this. See what remains constant.'
   }
 ];
 
