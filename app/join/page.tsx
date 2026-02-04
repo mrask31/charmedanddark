@@ -50,9 +50,11 @@ export default function JoinPage() {
         return;
       }
 
-      // Set sanctuary status in localStorage
+      // Set sanctuary status and email in localStorage
       if (typeof window !== 'undefined') {
+        const normalizedEmail = email.toLowerCase().trim();
         localStorage.setItem('sanctuary_preview', 'true');
+        localStorage.setItem('sanctuary_email', normalizedEmail);
       }
 
       // Redirect to previous page or shop

@@ -11,17 +11,22 @@ import {
 } from '@/lib/mirrorReadings';
 import { getProductBySlug } from '@/lib/products';
 import { getApparelBySlug, formatPrice } from '@/lib/apparel';
+import { getSupabaseClient } from '@/lib/supabase/client';
 
 export default function MirrorPage() {
   const [selectedState, setSelectedState] = useState<EmotionalState | null>(null);
   const [reading, setReading] = useState<MirrorReading | null>(null);
   const [isSanctuary, setIsSanctuary] = useState(false);
+  const [sanctuaryEmail, setSanctuaryEmail] = useState<string | null>(null);
   const [isRevealing, setIsRevealing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   useEffect(() => {
     // Check sanctuary status on mount
     if (typeof window !== 'undefined') {
       setIsSanctuary(localStorage.getItem('sanctuary_preview') === 'true');
+      setSanctuaryEmail(localStorage.getItem('sanctuary_email'));
     }
   }, []);
 
@@ -34,6 +39,53 @@ export default function MirrorPage() {
     // Trigger reveal animation
     setIsRevealing(true);
     setReading(newReading);
+    setSaveMessage(null); // Clear any previous save message
+  };
+
+  const handleKeepInGrimoire = async () => {
+    if (!reading || !sanctuaryEmail) {
+      setSaveMessage("I can't keep this yet.");
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveMessage(null);
+
+    try {
+      const supabase = getSupabaseClient();
+      
+      // Determine object type
+      const product = getProductBySlug(reading.productSlug);
+      const objectType = product ? 'product' : 'apparel';
+
+      // Insert into grimoire_entries
+      const { error: insertError } = await supabase
+        .from('grimoire_entries')
+        .insert({
+          email: sanctuaryEmail,
+          emotional_state: reading.state,
+          reading_id: reading.id,
+          validation: reading.validation,
+          reflection: reading.reflection,
+          ritual_suggestion: reading.ritualSuggestion,
+          object_type: objectType,
+          object_slug: reading.productSlug
+        });
+
+      if (insertError) {
+        console.error('Grimoire save error:', insertError);
+        setSaveMessage('Something went quiet. Please try again.');
+        setIsSaving(false);
+        return;
+      }
+
+      setSaveMessage('I kept it.');
+      setIsSaving(false);
+    } catch (err) {
+      console.error('Grimoire save error:', err);
+      setSaveMessage('Something went quiet. Please try again.');
+      setIsSaving(false);
+    }
   };
 
   // Get product or apparel details
@@ -160,13 +212,23 @@ export default function MirrorPage() {
             {/* CTA */}
             <div className="reading-cta">
               {isSanctuary ? (
-                <button 
-                  className="reading-cta-button disabled"
-                  disabled
-                  title="Coming soon"
-                >
-                  Keep this in the Grimoire
-                </button>
+                <>
+                  <button 
+                    className="reading-cta-button"
+                    onClick={handleKeepInGrimoire}
+                    disabled={isSaving || !!saveMessage}
+                  >
+                    {isSaving ? 'Keeping...' : 'Keep this in the Grimoire'}
+                  </button>
+                  {saveMessage && (
+                    <p className="reading-save-message">{saveMessage}</p>
+                  )}
+                  {saveMessage === 'I kept it.' && (
+                    <Link href="/grimoire" className="reading-grimoire-link">
+                      Open the Grimoire →
+                    </Link>
+                  )}
+                </>
               ) : (
                 <Link href="/join" className="reading-cta-link">
                   Enter the Sanctuary to keep reflections
