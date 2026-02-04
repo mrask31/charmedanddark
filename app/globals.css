@@ -1667,6 +1667,73 @@ section.section-revealed::before {
   line-height: 1.2;
 }
 
+/* Variant Selector */
+.product-variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.variant-label {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.variant-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.variant-pill {
+  padding: 10px 20px;
+  background: var(--black-elevated);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-reveal-in) ease;
+  outline: none;
+}
+
+.variant-pill:hover {
+  background: var(--black-card);
+  border-color: var(--edge-hover);
+  color: var(--text-primary);
+  box-shadow: 0 0 12px var(--accent-gold-glow);
+}
+
+.variant-pill:focus-visible {
+  border-color: var(--accent-gold-edge);
+  box-shadow: 0 0 0 2px var(--accent-gold-glow);
+}
+
+.variant-pill.active {
+  background: rgba(180, 150, 100, 0.08);
+  border-color: var(--accent-gold-edge);
+  color: var(--text-accent);
+  box-shadow: 0 0 8px var(--accent-gold-glow);
+}
+
+.variant-pill.active:hover {
+  background: rgba(180, 150, 100, 0.12);
+  border-color: var(--accent-gold-edge-strong);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .variant-pill {
+    transition: all var(--transition-reveal-reduced) ease;
+  }
+}
+
 .product-pricing-block {
   display: flex;
   flex-direction: column;

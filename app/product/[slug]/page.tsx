@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getProductBySlug, getProductsByCategory, type Product } from '@/lib/products';
+import { getProductBySlug, getProductsByCategory, type Product, type ProductVariant } from '@/lib/products';
 
 // Format price as USD
 function formatPrice(price: number): string {
@@ -24,6 +24,7 @@ function getRelatedProducts(product: Product): Product[] {
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const [isSanctuary, setIsSanctuary] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const product = getProductBySlug(params.slug);
 
   useEffect(() => {
@@ -33,11 +34,26 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     }
   }, []);
 
+  useEffect(() => {
+    // Set default variant when product loads
+    if (product && product.variants && product.variants.length > 0) {
+      const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
+      setSelectedVariant(defaultVariant);
+    }
+  }, [product]);
+
   if (!product) {
     notFound();
   }
 
   const relatedProducts = getRelatedProducts(product);
+
+  // Determine which price to display (variant or base product)
+  const hasVariants = product.variants && product.variants.length > 1;
+  const displayPricePublic = selectedVariant ? selectedVariant.pricePublic : product.pricePublic;
+  const displayPriceSanctuary = selectedVariant ? selectedVariant.priceSanctuary : product.priceSanctuary;
+  const displayInStock = selectedVariant ? selectedVariant.inStock : product.inStock;
+  const displayImage = (selectedVariant?.image) || (product.images.length > 0 ? product.images[0] : null);
 
   return (
     <div className="product-page">
@@ -47,9 +63,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           {/* Image Gallery */}
           <div className="product-gallery">
             <div className="product-main-image">
-              {product.images.length > 0 ? (
+              {displayImage ? (
                 <img 
-                  src={product.images[0]} 
+                  src={displayImage} 
                   alt={product.name}
                 />
               ) : (
@@ -59,7 +75,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               )}
             </div>
 
-            {product.images.length > 1 && (
+            {product.images.length > 1 && !selectedVariant?.image && (
               <div className="product-thumbnails">
                 {product.images.map((image, index) => (
                   <div key={index} className="product-thumbnail">
@@ -76,28 +92,47 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             
             <h1 className="product-detail-title">{product.name}</h1>
 
+            {/* Variant Selector */}
+            {hasVariants && (
+              <div className="product-variant-selector">
+                <label className="variant-label">Select:</label>
+                <div className="variant-options">
+                  {product.variants!.map((variant) => (
+                    <button
+                      key={variant.id}
+                      className={`variant-pill ${selectedVariant?.id === variant.id ? 'active' : ''}`}
+                      onClick={() => setSelectedVariant(variant)}
+                      type="button"
+                    >
+                      {variant.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Pricing */}
             <div className="product-pricing-block">
               {isSanctuary ? (
                 <>
                   <div className="price-item sanctuary-highlight primary">
                     <span className="price-label-detail sanctuary">Sanctuary Price</span>
-                    <span className="price-value-sanctuary">{formatPrice(product.priceSanctuary)}</span>
+                    <span className="price-value-sanctuary">{formatPrice(displayPriceSanctuary)}</span>
                   </div>
                   <div className="price-item secondary">
                     <span className="price-label-detail">Public Price</span>
-                    <span className="price-value-public">{formatPrice(product.pricePublic)}</span>
+                    <span className="price-value-public">{formatPrice(displayPricePublic)}</span>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="price-item">
                     <span className="price-label-detail">Public Price</span>
-                    <span className="price-value-public">{formatPrice(product.pricePublic)}</span>
+                    <span className="price-value-public">{formatPrice(displayPricePublic)}</span>
                   </div>
                   <div className="price-item sanctuary-highlight">
                     <span className="price-label-detail sanctuary">Sanctuary Price</span>
-                    <span className="price-value-sanctuary">{formatPrice(product.priceSanctuary)}</span>
+                    <span className="price-value-sanctuary">{formatPrice(displayPriceSanctuary)}</span>
                   </div>
                 </>
               )}
@@ -146,7 +181,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
             {/* Availability */}
             <div className="product-availability-detail">
-              {product.inStock ? (
+              {displayInStock ? (
                 <span className="availability-in-stock">In the House</span>
               ) : (
                 <span className="availability-out-of-stock">Gone Quiet</span>

@@ -9,7 +9,9 @@
 // TYPE DEFINITIONS
 // ============================================
 
-export type ProductStatus = "core" | "drop_candidate" | "hold";
+export type ProductStatus = "core" | "drop_candidate" | "hold" | "archive";
+
+export type ProductRealm = "house" | "uniform";
 
 export type ProductCategory =
   | "Candles & Scent"
@@ -29,6 +31,16 @@ export type MirrorRole =
   | 'amplification'
   | 'orientation';
 
+export interface ProductVariant {
+  id: string;
+  label: string; // e.g., "8oz", "12oz", "Matte Black", "Set of 3"
+  pricePublic: number;
+  priceSanctuary: number;
+  inStock: boolean;
+  isDefault?: boolean;
+  image?: string; // Optional variant-specific image
+}
+
 export interface ProductDescription {
   ritualIntro: string;
   objectDetails: string[];
@@ -39,6 +51,7 @@ export interface Product {
   id: string;
   slug: string;
   name: string;
+  realm: ProductRealm;
   category: ProductCategory;
   status: ProductStatus;
   pricePublic: number;
@@ -49,6 +62,7 @@ export interface Product {
   inStock: boolean;
   mirrorEligible?: boolean;
   mirrorRole?: MirrorRole;
+  variants?: ProductVariant[]; // Optional variants
 }
 
 // ============================================
@@ -82,6 +96,7 @@ export const products: Product[] = [
     id: "candle-midnight",
     slug: "midnight-candle",
     name: "Midnight Candle",
+    realm: "house",
     category: "Candles & Scent",
     status: "core",
     pricePublic: 32.00,
@@ -110,6 +125,7 @@ export const products: Product[] = [
     id: "candle-three-star",
     slug: "three-star-candle",
     name: "Three Star Candle",
+    realm: "house",
     category: "Candles & Scent",
     status: "core",
     pricePublic: 34.00,
@@ -141,6 +157,7 @@ export const products: Product[] = [
     id: "dish-obsidian",
     slug: "obsidian-dish",
     name: "Obsidian Dish",
+    realm: "house",
     category: "Table & Display",
     status: "core",
     pricePublic: 24.00,
@@ -169,6 +186,7 @@ export const products: Product[] = [
     id: "mirror-tabletop",
     slug: "tabletop-mirror",
     name: "Tabletop Mirror",
+    realm: "house",
     category: "Table & Display",
     status: "core",
     pricePublic: 38.00,
@@ -198,6 +216,7 @@ export const products: Product[] = [
     id: "board-charcuterie",
     slug: "charcuterie-board",
     name: "Charcuterie Board",
+    realm: "house",
     category: "Table & Display",
     status: "core",
     pricePublic: 56.00,
@@ -227,6 +246,7 @@ export const products: Product[] = [
     id: "tray-two-tier",
     slug: "two-tier-tray",
     name: "Two-Tier Tray",
+    realm: "house",
     category: "Table & Display",
     status: "core",
     pricePublic: 48.00,
@@ -258,6 +278,7 @@ export const products: Product[] = [
     id: "bookends-skull",
     slug: "skull-bookends",
     name: "Skull Bookends",
+    realm: "house",
     category: "Decor Objects",
     status: "core",
     pricePublic: 64.00,
@@ -287,6 +308,7 @@ export const products: Product[] = [
     id: "vase-black",
     slug: "black-vase",
     name: "Black Vase",
+    realm: "house",
     category: "Decor Objects",
     status: "core",
     pricePublic: 42.00,
@@ -315,6 +337,7 @@ export const products: Product[] = [
     id: "vase-heart",
     slug: "heart-vase",
     name: "Heart Vase",
+    realm: "house",
     category: "Decor Objects",
     status: "core",
     pricePublic: 44.00,
@@ -343,6 +366,7 @@ export const products: Product[] = [
     id: "wall-art-stars",
     slug: "stars-wall-art",
     name: "Stars Wall Art",
+    realm: "house",
     category: "Wall Objects",
     status: "core",
     pricePublic: 78.00,
@@ -374,6 +398,7 @@ export const products: Product[] = [
     id: "sage-bundle",
     slug: "sage-bundle",
     name: "Sage Bundle",
+    realm: "house",
     category: "Objects of Use",
     status: "core",
     pricePublic: 18.00,
@@ -402,6 +427,7 @@ export const products: Product[] = [
     id: "cheese-knives",
     slug: "cheese-knives",
     name: "Cheese Knives",
+    realm: "house",
     category: "Objects of Use",
     status: "core",
     pricePublic: 36.00,
@@ -431,6 +457,7 @@ export const products: Product[] = [
     id: "mug-ritual",
     slug: "ritual-mug",
     name: "Ritual Mug",
+    realm: "house",
     category: "Ritual Drinkware",
     status: "core",
     pricePublic: 28.00,
@@ -471,6 +498,15 @@ export function getProductBySlug(slug: string): Product | undefined {
  */
 export function getProductsByCategory(category: ProductCategory): Product[] {
   return products.filter(product => product.category === category);
+}
+
+/**
+ * Get all House products (excludes archived items)
+ */
+export function getHouseProducts(): Product[] {
+  return products.filter(product => 
+    product.realm === 'house' && product.status !== 'archive'
+  );
 }
 
 /**

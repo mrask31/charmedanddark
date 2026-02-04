@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { products, type ProductCategory } from '@/lib/products';
+import { getHouseProducts, type ProductCategory } from '@/lib/products';
 
 // All available categories
 const categories: ProductCategory[] = [
@@ -25,10 +25,13 @@ export default function ShopPage() {
     }
   }, []);
 
+  // Get all House products (realm === 'house' AND status !== 'archive')
+  const houseProducts = getHouseProducts();
+
   // Filter products based on selected category
   const filteredProducts = selectedCategory === 'All' 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+    ? houseProducts 
+    : houseProducts.filter(p => p.category === selectedCategory);
 
   // Format price as USD
   const formatPrice = (price: number) => {
