@@ -10,8 +10,8 @@ This document defines the complete set of mirror-eligible objects. This pool is 
 
 ## The Locked Pool (16 Objects)
 
-### 1. Midnight Ritual Candle
-- **Slug:** `midnight-ritual-candle`
+### 1. Midnight Candle
+- **Slug:** `midnight-candle`
 - **Type:** Product
 - **Mirror Roles:** Containment, Warmth, Return
 - **States:** Overwhelmed, Distant
@@ -24,29 +24,29 @@ This document defines the complete set of mirror-eligible objects. This pool is 
 - **States:** Tired, Uncertain
 - **Why:** Soft light (warmth), archetypal symbol (orientation)
 
-### 3. Obsidian Trinket Dish
-- **Slug:** `obsidian-trinket-dish`
+### 3. Obsidian Dish
+- **Slug:** `obsidian-dish`
 - **Type:** Product
 - **Mirror Roles:** Containment, Amplification
 - **States:** Overwhelmed, Quiet
 - **Why:** Holds/contains, minimal matte surface
 
-### 4. Reflection Tabletop Mirror
-- **Slug:** `reflection-tabletop-mirror`
+### 4. Tabletop Mirror
+- **Slug:** `tabletop-mirror`
 - **Type:** Product
 - **Mirror Roles:** Witness, Orientation
 - **States:** Unseen, Uncertain
 - **Why:** Looks back (witness), constant/neutral (orientation)
 
-### 5. Ritual Charcuterie Board
-- **Slug:** `ritual-charcuterie-board`
+### 5. Charcuterie Board
+- **Slug:** `charcuterie-board`
 - **Type:** Product
 - **Mirror Roles:** Boundary
 - **States:** Restless
 - **Why:** Marks space, creates separation
 
-### 6. Two-Tier Display Tray
-- **Slug:** `two-tier-display-tray`
+### 6. Two-Tier Tray
+- **Slug:** `two-tier-tray`
 - **Type:** Product
 - **Mirror Roles:** Boundary
 - **States:** Restless
@@ -59,29 +59,29 @@ This document defines the complete set of mirror-eligible objects. This pool is 
 - **States:** Heavy
 - **Why:** Literal weight, solid, anchored
 
-### 8. Black Ceramic Vase
-- **Slug:** `black-ceramic-vase`
+### 8. Black Vase
+- **Slug:** `black-vase`
 - **Type:** Product
 - **Mirror Roles:** Grounding, Amplification
 - **States:** Heavy, Quiet
 - **Why:** Weight when filled (grounding), minimal/refined (amplification)
 
-### 9. Black & Gold Stars Wall Art
-- **Slug:** `black-gold-stars-wall-art`
+### 9. Stars Wall Art
+- **Slug:** `stars-wall-art`
 - **Type:** Product
 - **Mirror Roles:** Witness
 - **States:** Unseen
 - **Why:** Static, present, quiet gaze
 
-### 10. Ritual Sage Bundle
-- **Slug:** `ritual-sage-bundle`
+### 10. Sage Bundle
+- **Slug:** `sage-bundle`
 - **Type:** Product
 - **Mirror Roles:** Return
 - **States:** Distant
 - **Why:** Ritual tool, repeatable, invites return
 
-### 11. Black Ceramic Ritual Mug
-- **Slug:** `black-ceramic-ritual-mug`
+### 11. Ritual Mug
+- **Slug:** `ritual-mug`
 - **Type:** Product
 - **Mirror Roles:** Warmth
 - **States:** Tired
@@ -108,14 +108,14 @@ This document defines the complete set of mirror-eligible objects. This pool is 
 
 Each state has exactly 2 readings, using objects from the pool:
 
-- **Overwhelmed:** Midnight Candle, Trinket Dish
+- **Overwhelmed:** Midnight Candle, Obsidian Dish
 - **Tired:** Ritual Mug, Three Star Candle
-- **Unseen:** Mirror, Wall Art
-- **Restless:** Display Tray, Charcuterie Board
-- **Heavy:** Skull Bookends, Ceramic Vase
+- **Unseen:** Tabletop Mirror, Stars Wall Art
+- **Restless:** Two-Tier Tray, Charcuterie Board
+- **Heavy:** Skull Bookends, Black Vase
 - **Distant:** Midnight Candle, Sage Bundle
-- **Quiet:** Trinket Dish, Ceramic Vase
-- **Uncertain:** Three Star Candle, Mirror
+- **Quiet:** Obsidian Dish, Black Vase
+- **Uncertain:** Three Star Candle, Tabletop Mirror
 
 ---
 
@@ -124,10 +124,10 @@ Each state has exactly 2 readings, using objects from the pool:
 ### Excluded: All Apparel
 **Reason:** Apparel introduces size/fit anxiety. The Mirror removes choice.
 
-### Excluded: Red Heart Vase
+### Excluded: Heart Vase
 **Reason:** Too expressive/narrative for Uncertain state. Violates orientation need.
 
-### Excluded: Cheese Knives Set
+### Excluded: Cheese Knives
 **Reason:** Functional/utility. The Mirror suggests presence, not tasks.
 
 ### Excluded: All Uniform Items

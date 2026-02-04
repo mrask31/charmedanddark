@@ -50,7 +50,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'overwhelmed',
     validation: 'The noise is real. You are not failing.',
     reflection: 'The world demands too much, too often. You are allowed to step back.',
-    productSlug: 'midnight-ritual-candle',
+    productSlug: 'midnight-candle',
     ritualSuggestion: 'Light something. Let the room soften around you.'
   },
   {
@@ -58,7 +58,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'overwhelmed',
     validation: 'Nothing is wrong with you.',
     reflection: 'Sometimes the weight is not yours to carry. Set it down.',
-    productSlug: 'obsidian-trinket-dish',
+    productSlug: 'obsidian-dish',
     ritualSuggestion: 'Place what you carry here. Even for a moment.'
   },
 
@@ -69,7 +69,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'tired',
     validation: 'Rest is not weakness.',
     reflection: 'You have been moving for too long. The body remembers what the mind forgets.',
-    productSlug: 'black-ceramic-ritual-mug',
+    productSlug: 'ritual-mug',
     ritualSuggestion: 'Make something warm. Sit with it. Do nothing else.'
   },
   {
@@ -88,7 +88,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'unseen',
     validation: 'You are here. That matters.',
     reflection: 'Visibility is not the same as worth. You exist beyond what others notice.',
-    productSlug: 'reflection-tabletop-mirror',
+    productSlug: 'tabletop-mirror',
     ritualSuggestion: 'Look at yourself. See what is there.'
   },
   {
@@ -96,7 +96,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'unseen',
     validation: 'The Mirror sees you.',
     reflection: 'Some things are meant to be quiet. That does not make them small.',
-    productSlug: 'black-gold-stars-wall-art',
+    productSlug: 'stars-wall-art',
     ritualSuggestion: 'Hang this where you will see it. Let it see you back.'
   },
 
@@ -107,7 +107,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'restless',
     validation: 'The unease is not a flaw.',
     reflection: 'Something in you is trying to move. Let it surface before you act.',
-    productSlug: 'two-tier-display-tray',
+    productSlug: 'two-tier-tray',
     ritualSuggestion: 'Place three things here. Define the edges. Stop there.'
   },
   {
@@ -115,7 +115,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'restless',
     validation: 'Stillness is not the answer. Neither is motion.',
     reflection: 'You are between states. That is where change begins.',
-    productSlug: 'ritual-charcuterie-board',
+    productSlug: 'charcuterie-board',
     ritualSuggestion: 'Mark a boundary. Place one thing inside it. Begin there.'
   },
 
@@ -134,7 +134,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'heavy',
     validation: 'You do not have to be lighter.',
     reflection: 'Some days are meant to be heavy. This is one of them.',
-    productSlug: 'black-ceramic-vase',
+    productSlug: 'black-vase',
     ritualSuggestion: 'Fill this with water. Feel the weight. Set it down.'
   },
 
@@ -145,7 +145,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'distant',
     validation: 'Disconnection is not permanent.',
     reflection: 'You are not lost. You are somewhere else. That is allowed.',
-    productSlug: 'midnight-ritual-candle',
+    productSlug: 'midnight-candle',
     ritualSuggestion: 'Light this when you are ready to return. Not before.'
   },
   {
@@ -153,7 +153,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'distant',
     validation: 'Numbness is protection.',
     reflection: 'When feeling returns, it will. Until then, you are safe here.',
-    productSlug: 'ritual-sage-bundle',
+    productSlug: 'sage-bundle',
     ritualSuggestion: 'Burn this when you are ready. The smoke will call you back.'
   },
 
@@ -164,7 +164,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'quiet',
     validation: 'Silence is not emptiness.',
     reflection: 'You are not absent. You are listening.',
-    productSlug: 'obsidian-trinket-dish',
+    productSlug: 'obsidian-dish',
     ritualSuggestion: 'Place one small thing here. Let it rest in the quiet.'
   },
   {
@@ -172,7 +172,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'quiet',
     validation: 'This is not loneliness.',
     reflection: 'Some moments are meant to be held alone. This is one of them.',
-    productSlug: 'black-ceramic-vase',
+    productSlug: 'black-vase',
     ritualSuggestion: 'Leave this empty. Let the space speak.'
   },
 
@@ -191,7 +191,7 @@ export const mirrorReadings: MirrorReading[] = [
     state: 'uncertain',
     validation: 'The path does not need to be clear yet.',
     reflection: 'You are allowed to wait. You are allowed to not decide.',
-    productSlug: 'reflection-tabletop-mirror',
+    productSlug: 'tabletop-mirror',
     ritualSuggestion: 'Look into this. See what remains constant.'
   }
 ];

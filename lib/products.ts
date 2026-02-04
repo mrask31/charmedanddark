@@ -79,9 +79,9 @@ function calculateSanctuaryPrice(publicPrice: number): number {
 export const products: Product[] = [
   // CANDLES & SCENT
   {
-    id: "candle-midnight-ritual",
-    slug: "midnight-ritual-candle",
-    name: "Midnight Ritual Candle",
+    id: "candle-midnight",
+    slug: "midnight-candle",
+    name: "Midnight Candle",
     category: "Candles & Scent",
     status: "core",
     pricePublic: 32.00,
@@ -102,7 +102,9 @@ export const products: Product[] = [
       "/images/threeStarCandle1.png",
       "/images/threeStarCandle2.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'containment'
   },
   {
     id: "candle-three-star",
@@ -129,14 +131,16 @@ export const products: Product[] = [
       "/images/threeStarCandle1.png",
       "/images/threeStarCandle2.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'warmth'
   },
 
   // TABLE & DISPLAY
   {
-    id: "trinket-dish-obsidian",
-    slug: "obsidian-trinket-dish",
-    name: "Obsidian Trinket Dish",
+    id: "dish-obsidian",
+    slug: "obsidian-dish",
+    name: "Obsidian Dish",
     category: "Table & Display",
     status: "core",
     pricePublic: 24.00,
@@ -157,12 +161,14 @@ export const products: Product[] = [
       "/images/BEST trinket dish, table top mirror, and sage.png",
       "/images/Another trinket dish and table top mirror.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'containment'
   },
   {
-    id: "mirror-tabletop-reflection",
-    slug: "reflection-tabletop-mirror",
-    name: "Reflection Tabletop Mirror",
+    id: "mirror-tabletop",
+    slug: "tabletop-mirror",
+    name: "Tabletop Mirror",
     category: "Table & Display",
     status: "core",
     pricePublic: 38.00,
@@ -184,12 +190,14 @@ export const products: Product[] = [
       "/images/BEST trinket dish, table top mirror, and sage.png",
       "/images/Another trinket dish and table top mirror.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'witness'
   },
   {
-    id: "charcuterie-board-ritual",
-    slug: "ritual-charcuterie-board",
-    name: "Ritual Charcuterie Board",
+    id: "board-charcuterie",
+    slug: "charcuterie-board",
+    name: "Charcuterie Board",
     category: "Table & Display",
     status: "core",
     pricePublic: 56.00,
@@ -211,12 +219,14 @@ export const products: Product[] = [
       "/images/Charcuterie board.png",
       "/images/Cheese knives, charcuterie board, and 2 tier tray combined.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'boundary'
   },
   {
-    id: "two-tier-display-tray",
-    slug: "two-tier-display-tray",
-    name: "Two-Tier Display Tray",
+    id: "tray-two-tier",
+    slug: "two-tier-tray",
+    name: "Two-Tier Tray",
     category: "Table & Display",
     status: "core",
     pricePublic: 48.00,
@@ -238,14 +248,16 @@ export const products: Product[] = [
       "/images/TwoTierPlatter.png",
       "/images/Cheese knives, charcuterie board, and 2 tier tray combined.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'boundary'
   },
 
   // DECOR OBJECTS
   {
-    id: "skull-bookends-pair",
+    id: "bookends-skull",
     slug: "skull-bookends",
-    name: "Skull Bookends (Pair)",
+    name: "Skull Bookends",
     category: "Decor Objects",
     status: "core",
     pricePublic: 64.00,
@@ -267,12 +279,14 @@ export const products: Product[] = [
     images: [
       "/images/Skull bookends.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'grounding'
   },
   {
-    id: "vase-black-ceramic",
-    slug: "black-ceramic-vase",
-    name: "Black Ceramic Vase",
+    id: "vase-black",
+    slug: "black-vase",
+    name: "Black Vase",
     category: "Decor Objects",
     status: "core",
     pricePublic: 42.00,
@@ -293,12 +307,14 @@ export const products: Product[] = [
     images: [
       "/images/black vase.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'grounding'
   },
   {
-    id: "vase-red-heart",
-    slug: "red-heart-vase",
-    name: "Red Heart Vase",
+    id: "vase-heart",
+    slug: "heart-vase",
+    name: "Heart Vase",
     category: "Decor Objects",
     status: "core",
     pricePublic: 44.00,
@@ -324,9 +340,9 @@ export const products: Product[] = [
 
   // WALL OBJECTS
   {
-    id: "wall-art-black-gold-stars",
-    slug: "black-gold-stars-wall-art",
-    name: "Black & Gold Stars Wall Art",
+    id: "wall-art-stars",
+    slug: "stars-wall-art",
+    name: "Stars Wall Art",
     category: "Wall Objects",
     status: "core",
     pricePublic: 78.00,
@@ -348,14 +364,16 @@ export const products: Product[] = [
       "/images/Black and Gold Stars on patterned background - 1.png",
       "/images/Black and Gold Stars on real wall set up - BEST.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'witness'
   },
 
   // OBJECTS OF USE
   {
-    id: "sage-bundle-ritual",
-    slug: "ritual-sage-bundle",
-    name: "Ritual Sage Bundle",
+    id: "sage-bundle",
+    slug: "sage-bundle",
+    name: "Sage Bundle",
     category: "Objects of Use",
     status: "core",
     pricePublic: 18.00,
@@ -376,12 +394,14 @@ export const products: Product[] = [
     images: [
       "/images/BEST trinket dish, table top mirror, and sage.png"
     ],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'return'
   },
   {
-    id: "cheese-knives-set",
-    slug: "ritual-cheese-knives",
-    name: "Ritual Cheese Knives (Set of 3)",
+    id: "cheese-knives",
+    slug: "cheese-knives",
+    name: "Cheese Knives",
     category: "Objects of Use",
     status: "core",
     pricePublic: 36.00,
@@ -408,9 +428,9 @@ export const products: Product[] = [
 
   // RITUAL DRINKWARE
   {
-    id: "mug-black-ceramic",
-    slug: "black-ceramic-ritual-mug",
-    name: "Black Ceramic Ritual Mug",
+    id: "mug-ritual",
+    slug: "ritual-mug",
+    name: "Ritual Mug",
     category: "Ritual Drinkware",
     status: "core",
     pricePublic: 28.00,
@@ -429,7 +449,9 @@ export const products: Product[] = [
       whoFor: "For those who take their mornings seriously."
     },
     images: [],
-    inStock: true
+    inStock: true,
+    mirrorEligible: true,
+    mirrorRole: 'warmth'
   }
 ];
 

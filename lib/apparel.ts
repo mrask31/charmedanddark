@@ -85,9 +85,9 @@ export function formatPrice(price: number): string {
 export const apparelItems: ApparelItem[] = [
   // CORE UNIFORM - T-Shirts
   {
-    id: "tshirt-crest-logo",
-    slug: "crest-logo-tshirt",
-    name: "Crest Logo T-Shirt",
+    id: "tshirt-crest",
+    slug: "crest-tee",
+    name: "Crest Tee",
     category: "T-Shirts",
     cadence: "core",
     pricePublic: 32.00,
@@ -111,8 +111,8 @@ export const apparelItems: ApparelItem[] = [
   },
   {
     id: "tshirt-full-graphic",
-    slug: "full-graphic-tshirt",
-    name: "Full Graphic T-Shirt",
+    slug: "full-graphic-tee",
+    name: "Full Graphic Tee",
     category: "T-Shirts",
     cadence: "core",
     pricePublic: 36.00,
@@ -137,9 +137,9 @@ export const apparelItems: ApparelItem[] = [
 
   // CORE UNIFORM - Hoodies
   {
-    id: "hoodie-signature-pullover",
-    slug: "signature-pullover-hoodie",
-    name: "Signature Pullover Hoodie",
+    id: "hoodie-pullover",
+    slug: "pullover-hoodie",
+    name: "Pullover Hoodie",
     category: "Hoodies",
     cadence: "core",
     pricePublic: 58.00,
@@ -164,9 +164,9 @@ export const apparelItems: ApparelItem[] = [
     active: true
   },
   {
-    id: "hoodie-zip-up",
-    slug: "zip-up-hoodie",
-    name: "Zip-Up Hoodie",
+    id: "hoodie-zip",
+    slug: "zip-hoodie",
+    name: "Zip Hoodie",
     category: "Hoodies",
     cadence: "core",
     pricePublic: 62.00,
@@ -194,9 +194,9 @@ export const apparelItems: ApparelItem[] = [
 
   // CORE UNIFORM - Accessories
   {
-    id: "beanie-black",
-    slug: "black-beanie",
-    name: "Black Beanie",
+    id: "beanie",
+    slug: "beanie",
+    name: "Beanie",
     category: "Accessories",
     cadence: "core",
     pricePublic: 24.00,
@@ -220,9 +220,9 @@ export const apparelItems: ApparelItem[] = [
 
   // SEASONAL DROPS - Valentine's (ACTIVE)
   {
-    id: "tshirt-valentines-2024",
-    slug: "valentines-heart-tshirt",
-    name: "Valentine's Heart T-Shirt",
+    id: "tshirt-valentines",
+    slug: "valentines-tee",
+    name: "Valentine's Tee",
     category: "T-Shirts",
     cadence: "drop",
     dropTag: "valentines",
@@ -245,9 +245,9 @@ export const apparelItems: ApparelItem[] = [
     active: true
   },
   {
-    id: "hoodie-valentines-2024",
-    slug: "valentines-embroidered-hoodie",
-    name: "Valentine's Embroidered Hoodie",
+    id: "hoodie-valentines",
+    slug: "valentines-hoodie",
+    name: "Valentine's Hoodie",
     category: "Hoodies",
     cadence: "drop",
     dropTag: "valentines",
@@ -272,9 +272,9 @@ export const apparelItems: ApparelItem[] = [
 
   // SEASONAL DROPS - Halloween (ACTIVE)
   {
-    id: "tshirt-halloween-2024",
-    slug: "halloween-moon-tshirt",
-    name: "Halloween Moon T-Shirt",
+    id: "tshirt-halloween",
+    slug: "halloween-tee",
+    name: "Halloween Tee",
     category: "T-Shirts",
     cadence: "drop",
     dropTag: "halloween",
@@ -297,9 +297,9 @@ export const apparelItems: ApparelItem[] = [
 
   // SEASONAL DROPS - Winter (INACTIVE - to prove the system)
   {
-    id: "hoodie-winter-2023",
-    slug: "winter-solstice-hoodie",
-    name: "Winter Solstice Hoodie",
+    id: "hoodie-winter",
+    slug: "winter-hoodie",
+    name: "Winter Hoodie",
     category: "Hoodies",
     cadence: "drop",
     dropTag: "winter",
@@ -324,9 +324,9 @@ export const apparelItems: ApparelItem[] = [
 
   // SEASONAL DROPS - Anniversary (INACTIVE)
   {
-    id: "tshirt-anniversary-2023",
-    slug: "anniversary-crest-tshirt",
-    name: "Anniversary Crest T-Shirt",
+    id: "tshirt-anniversary",
+    slug: "anniversary-tee",
+    name: "Anniversary Tee",
     category: "T-Shirts",
     cadence: "drop",
     dropTag: "anniversary",
@@ -350,9 +350,9 @@ export const apparelItems: ApparelItem[] = [
 
   // CORE UNIFORM - Additional pieces
   {
-    id: "tshirt-crop-charmed-dark",
-    slug: "crop-logo-tshirt",
-    name: "Crop Logo T-Shirt",
+    id: "tshirt-crop",
+    slug: "crop-tee",
+    name: "Crop Tee",
     category: "T-Shirts",
     cadence: "core",
     pricePublic: 34.00,
@@ -376,9 +376,9 @@ export const apparelItems: ApparelItem[] = [
     active: true
   },
   {
-    id: "tshirt-gothic-unisex",
-    slug: "gothic-crest-unisex-tshirt",
-    name: "Gothic Crest Unisex T-Shirt",
+    id: "tshirt-gothic",
+    slug: "gothic-tee",
+    name: "Gothic Tee",
     category: "T-Shirts",
     cadence: "core",
     pricePublic: 32.00,
