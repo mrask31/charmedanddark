@@ -1996,3 +1996,768 @@ section.section-revealed::before {
     gap: 24px;
   }
 }
+
+
+/* ============================================
+   THE UNIFORM - APPAREL PAGES
+   ============================================ */
+
+/* Uniform Page Layout */
+.uniform-page {
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
+
+/* Uniform Hero Section */
+.uniform-hero {
+  padding: 6rem 2rem 4rem;
+  text-align: center;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.uniform-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.uniform-title {
+  font-size: 3.5rem;
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.uniform-subhead {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.uniform-intro {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Uniform Section */
+.uniform-section {
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.uniform-section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.uniform-section-title {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.uniform-section-description {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Drops Section */
+.drops-section {
+  background: var(--black-surface);
+  border-top: 1px solid var(--edge-subtle);
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.drop-group {
+  margin-bottom: 4rem;
+}
+
+.drop-group:last-child {
+  margin-bottom: 0;
+}
+
+.drop-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.drop-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.drop-description {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Uniform Grid */
+.uniform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .uniform-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+  }
+}
+
+/* Apparel Card */
+.apparel-card {
+  display: block;
+  background: var(--black-card);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: 
+    border-color var(--transition-reveal-in) ease,
+    transform var(--transition-reveal-in) ease,
+    box-shadow var(--transition-reveal-in) ease;
+  cursor: pointer;
+}
+
+.apparel-card:hover,
+.apparel-card:focus {
+  border-color: var(--accent-gold-edge);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 0 20px var(--accent-red-glow),
+    0 4px 12px var(--accent-purple-shadow);
+  outline: none;
+}
+
+.apparel-card:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+.apparel-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--black-surface);
+  overflow: hidden;
+  position: relative;
+}
+
+.apparel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-reveal-in) ease;
+}
+
+.apparel-card:hover .apparel-image img {
+  transform: scale(1.05);
+}
+
+.apparel-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+.apparel-info {
+  padding: 1.5rem;
+}
+
+.apparel-name {
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.apparel-short-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.apparel-pricing {
+  margin-bottom: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--edge-subtle);
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.apparel-pricing .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.apparel-pricing .price-row:last-child {
+  margin-bottom: 0;
+}
+
+.apparel-pricing .price-row.sanctuary {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--edge-subtle);
+}
+
+.apparel-pricing .price-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+.apparel-pricing .price-public {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.apparel-pricing .price-sanctuary {
+  font-size: 1rem;
+  color: var(--text-accent);
+  font-weight: 400;
+}
+
+.apparel-availability {
+  text-align: center;
+}
+
+.in-wardrobe {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+}
+
+/* Crosslink Section */
+.uniform-crosslink {
+  padding: 4rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.crosslink-card {
+  background: var(--black-card);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  padding: 3rem 2rem;
+  text-align: center;
+  transition: border-color var(--transition-reveal-in) ease;
+}
+
+.crosslink-card:hover {
+  border-color: var(--accent-gold-edge);
+}
+
+.crosslink-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.crosslink-description {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.crosslink-button {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 2px;
+  transition: 
+    background var(--transition-reveal-in) ease,
+    border-color var(--transition-reveal-in) ease,
+    box-shadow var(--transition-reveal-in) ease;
+}
+
+.crosslink-button:hover,
+.crosslink-button:focus {
+  background: var(--btn-red-hover);
+  border-color: var(--accent-gold-edge);
+  box-shadow: 0 0 15px var(--accent-red-glow);
+  outline: none;
+}
+
+.crosslink-button:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   APPAREL DETAIL PAGE
+   ============================================ */
+
+.apparel-detail-page {
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb */
+.apparel-breadcrumb {
+  margin-bottom: 2rem;
+}
+
+.breadcrumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color var(--transition-reveal-in) ease;
+}
+
+.breadcrumb-link:hover,
+.breadcrumb-link:focus {
+  color: var(--text-accent);
+  outline: none;
+}
+
+/* Detail Container */
+.apparel-detail-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+@media (min-width: 1024px) {
+  .apparel-detail-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+/* Gallery */
+.apparel-detail-gallery {
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+}
+
+.apparel-primary-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.apparel-primary-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.apparel-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.apparel-thumbnail {
+  aspect-ratio: 3 / 4;
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--transition-reveal-in) ease;
+}
+
+.apparel-thumbnail:hover {
+  border-color: var(--accent-gold-edge);
+}
+
+.apparel-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.apparel-image-placeholder-large {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  aspect-ratio: 3 / 4;
+}
+
+/* Detail Info */
+.apparel-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.apparel-detail-header {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.apparel-detail-name {
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.apparel-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}
+
+.apparel-category {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.apparel-cadence-separator {
+  color: var(--text-tertiary);
+}
+
+.apparel-cadence {
+  font-style: italic;
+}
+
+/* Pricing Block */
+.apparel-detail-pricing {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.price-block .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.price-block .price-row:last-child {
+  margin-bottom: 0;
+}
+
+.price-block .price-row.sanctuary-highlight {
+  padding-top: 1rem;
+  border-top: 1px solid var(--edge-subtle);
+}
+
+.price-block .price-label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+.price-block .price-public {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.price-block .price-sanctuary {
+  font-size: 1.5rem;
+  color: var(--text-accent);
+  font-weight: 400;
+}
+
+/* Ritual Intro */
+.apparel-ritual-intro {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.apparel-ritual-intro p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Details */
+.apparel-details {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.apparel-details-heading {
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.apparel-details-list {
+  list-style: none;
+  padding: 0;
+}
+
+.apparel-details-list li {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.apparel-details-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--text-tertiary);
+}
+
+/* Who For */
+.apparel-who-for {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.who-for-text {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* CTA */
+.apparel-cta {
+  padding-top: 1.5rem;
+}
+
+.apparel-cta-primary {
+  display: inline-block;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
+  color: var(--text-primary);
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 2px;
+  transition: 
+    background var(--transition-reveal-in) ease,
+    border-color var(--transition-reveal-in) ease,
+    box-shadow var(--transition-reveal-in) ease;
+}
+
+.apparel-cta-primary:hover,
+.apparel-cta-primary:focus {
+  background: var(--btn-red-hover);
+  border-color: var(--accent-gold-edge);
+  box-shadow: 0 0 20px var(--accent-red-glow);
+  outline: none;
+}
+
+.apparel-cta-primary:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+/* Related Items Section */
+.apparel-related-section {
+  padding: 4rem 0;
+  border-top: 1px solid var(--edge-subtle);
+}
+
+.apparel-related-heading {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.apparel-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .apparel-related-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Related Apparel Card */
+.related-apparel-card {
+  display: block;
+  background: var(--black-card);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: 
+    border-color var(--transition-reveal-in) ease,
+    transform var(--transition-reveal-in) ease;
+}
+
+.related-apparel-card:hover,
+.related-apparel-card:focus {
+  border-color: var(--accent-gold-edge);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.related-apparel-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--black-surface);
+  overflow: hidden;
+}
+
+.related-apparel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-reveal-in) ease;
+}
+
+.related-apparel-card:hover .related-apparel-image img {
+  transform: scale(1.05);
+}
+
+.related-apparel-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.related-apparel-info {
+  padding: 1rem;
+}
+
+.related-apparel-name {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.related-apparel-price {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .apparel-card,
+  .apparel-card .apparel-image img,
+  .crosslink-button,
+  .apparel-cta-primary,
+  .related-apparel-card,
+  .related-apparel-card .related-apparel-image img,
+  .apparel-thumbnail,
+  .breadcrumb-link,
+  .crosslink-card {
+    transition-duration: var(--transition-reveal-reduced);
+  }
+  
+  .apparel-card:hover,
+  .related-apparel-card:hover {
+    transform: none;
+  }
+  
+  .apparel-card:hover .apparel-image img,
+  .related-apparel-card:hover .related-apparel-image img {
+    transform: none;
+  }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 767px) {
+  .uniform-title {
+    font-size: 2.5rem;
+  }
+  
+  .uniform-subhead {
+    font-size: 1.25rem;
+  }
+  
+  .uniform-intro {
+    font-size: 1rem;
+  }
+  
+  .uniform-section {
+    padding: 3rem 1rem;
+  }
+  
+  .uniform-hero {
+    padding: 4rem 1rem 3rem;
+  }
+  
+  .apparel-detail-page {
+    padding: 1rem;
+  }
+  
+  .apparel-detail-name {
+    font-size: 2rem;
+  }
+  
+  .apparel-detail-gallery {
+    position: static;
+  }
+}
