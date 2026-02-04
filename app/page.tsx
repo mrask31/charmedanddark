@@ -1,12 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import { initializeSectionReveals } from './utils/sectionReveal';
 
 export default function HomePage() {
   const [feeling, setFeeling] = useState('');
   const [showReading, setShowReading] = useState(false);
+
+  // Initialize section reveal observer
+  useEffect(() => {
+    const cleanup = initializeSectionReveals();
+    return cleanup;
+  }, []);
 
   const handleMirrorSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,7 +146,7 @@ export default function HomePage() {
           </div>
           
           <div className="house-grid">
-            <div className="house-card">
+            <div className="house-card" tabIndex={0}>
               <div className="house-card-image">
                 <img 
                   src="/images/Dark-haired woman with tattoos wearing a black 'Charmed and Dark' t-shirt with a small chest logo against a dark patterned wallpaper background..png" 
@@ -155,7 +162,7 @@ export default function HomePage() {
               </Link>
             </div>
             
-            <div className="house-card">
+            <div className="house-card" tabIndex={0}>
               <div className="house-card-image">
                 <img 
                   src="/images/BEST trinket dish, table top mirror, and sage.png" 
@@ -181,21 +188,21 @@ export default function HomePage() {
           </p>
           
           <div className="value-grid">
-            <div className="value-card">
+            <div className="value-card" tabIndex={0}>
               <h3 className="value-title">Sanctuary Pricing</h3>
               <p className="value-description">
                 10% off every purchase, forever. No codes. No expiration.
               </p>
             </div>
             
-            <div className="value-card">
+            <div className="value-card" tabIndex={0}>
               <h3 className="value-title">Early Access</h3>
               <p className="value-description">
                 Enter Drops first. Before anyone else.
               </p>
             </div>
             
-            <div className="value-card">
+            <div className="value-card" tabIndex={0}>
               <h3 className="value-title">The Grimoire</h3>
               <p className="value-description">
                 Your Mirror readings, saved. Private and permanent.
@@ -218,7 +225,7 @@ export default function HomePage() {
             Limited runs. Quiet releases. Gone when sold out.
           </p>
           
-          <div className="drop-card">
+          <div className="drop-card" tabIndex={0}>
             <div className="drop-card-image">
               <img 
                 src="/images/Black and Gold Stars on real wall set up - BEST.png" 

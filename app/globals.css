@@ -38,6 +38,30 @@
   
   /* Accent Text - Very subtle color */
   --text-accent: rgba(200, 170, 120, 0.9);
+  
+  /* ============================================
+     ACCENT REVEAL SYSTEM
+     ============================================ */
+  
+  /* Gold Accent Tokens - Recognition */
+  --accent-gold-edge: rgba(180, 150, 100, 0.5);
+  --accent-gold-edge-strong: rgba(180, 150, 100, 0.8);
+  --accent-gold-glow: rgba(180, 150, 100, 0.3);
+  
+  /* Red Accent Tokens - Invitation */
+  --accent-red-glow: rgba(139, 0, 0, 0.15);
+  --accent-red-warmth: rgba(139, 0, 0, 0.08);
+  --accent-red-deep: rgba(139, 0, 0, 0.25);
+  
+  /* Purple Accent Tokens - Depth */
+  --accent-purple-shadow: rgba(75, 45, 75, 0.12);
+  --accent-purple-depth: rgba(75, 45, 75, 0.08);
+  
+  /* Transition Duration Tokens */
+  --transition-reveal-in: 300ms;
+  --transition-reveal-out: 500ms;
+  --transition-reveal-fast: 150ms;
+  --transition-reveal-reduced: 120ms;
 }
 
 /* ============================================
@@ -66,8 +90,57 @@ body {
   font-weight: 300;
 }
 
-/* Subtle grain texture only */
+/* Ambient smoke layers - breathing space */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(30, 25, 28, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(25, 20, 25, 0.06) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 80%, rgba(28, 24, 26, 0.07) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: smokeDrift 120s ease-in-out infinite;
+  opacity: 0.6;
+}
+
 body::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 60% 20%, rgba(32, 28, 30, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 70%, rgba(26, 22, 26, 0.06) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+  animation: smokeDrift 180s ease-in-out infinite reverse;
+  opacity: 0.5;
+}
+
+@keyframes smokeDrift {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+  }
+  25% { 
+    transform: translate(3%, -2%) scale(1.02);
+  }
+  50% { 
+    transform: translate(-2%, 3%) scale(0.98);
+  }
+  75% { 
+    transform: translate(2%, -3%) scale(1.01);
+  }
+}
+
+/* Grain texture overlay for smoke texture */
+.landing::before {
   content: '';
   position: fixed;
   top: 0;
@@ -75,9 +148,36 @@ body::after {
   width: 100%;
   height: 100%;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.015;
+  opacity: 0.02;
   pointer-events: none;
-  z-index: 9998;
+  z-index: 0;
+  mix-blend-mode: overlay;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+    opacity: 0.3;
+  }
+  
+  /* Override transition durations for accent reveals */
+  :root {
+    --transition-reveal-in: var(--transition-reveal-reduced);
+    --transition-reveal-out: var(--transition-reveal-reduced);
+    --transition-reveal-fast: var(--transition-reveal-reduced);
+  }
+  
+  /* Disable section entry reveals */
+  section::before {
+    display: none;
+  }
+  
+  /* Disable looping animations */
+  @keyframes smokeDrift {
+    0%, 100% { transform: none; }
+  }
 }
 
 /* ============================================
@@ -251,14 +351,33 @@ body::after {
   border-radius: 50px;
   color: var(--text-primary);
   text-decoration: none;
-  transition: all 300ms ease;
+  will-change: box-shadow, border-color;
+  transition: 
+    background var(--transition-reveal-out) ease,
+    border-color var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus-visible {
   background: var(--btn-red-hover);
-  border-color: rgba(139, 0, 0, 0.5);
+  border-color: var(--accent-gold-edge);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(139, 0, 0, 0.2);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge),
+    0 0 12px var(--accent-red-glow),
+    0 4px 16px rgba(139, 0, 0, 0.2);
+  will-change: auto;
+  transition-duration: var(--transition-reveal-in);
+}
+
+.btn-primary:active {
+  border-color: var(--accent-gold-edge-strong);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge-strong),
+    0 0 16px var(--accent-red-deep);
+  transition-duration: var(--transition-reveal-fast);
 }
 
 /* Lighter red for paired buttons */
@@ -270,10 +389,28 @@ body::after {
 }
 
 .hero-ctas .btn-primary:hover,
+.hero-ctas .btn-primary:focus-visible,
 .final-actions .btn-primary:hover,
-.reading-actions .btn-primary:hover {
+.final-actions .btn-primary:focus-visible,
+.reading-actions .btn-primary:hover,
+.reading-actions .btn-primary:focus-visible {
   background: var(--btn-red-light-hover);
-  border-color: rgba(139, 0, 0, 0.6);
+  border-color: var(--accent-gold-edge);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge),
+    0 0 12px var(--accent-red-glow),
+    0 4px 16px rgba(139, 0, 0, 0.2);
+  transition-duration: var(--transition-reveal-in);
+}
+
+.hero-ctas .btn-primary:active,
+.final-actions .btn-primary:active,
+.reading-actions .btn-primary:active {
+  border-color: var(--accent-gold-edge-strong);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge-strong),
+    0 0 16px var(--accent-red-deep);
+  transition-duration: var(--transition-reveal-fast);
 }
 
 .btn-secondary {
@@ -289,13 +426,33 @@ body::after {
   border-radius: 50px;
   color: var(--text-secondary);
   text-decoration: none;
-  transition: all 300ms ease;
+  will-change: box-shadow, border-color;
+  transition: 
+    background var(--transition-reveal-out) ease,
+    border-color var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease,
+    color var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
 }
 
-.btn-secondary:hover {
-  border-color: var(--edge-hover);
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  border-color: var(--accent-gold-edge);
   color: var(--text-primary);
   transform: translateY(-2px);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge),
+    0 0 12px var(--accent-red-glow);
+  will-change: auto;
+  transition-duration: var(--transition-reveal-in);
+}
+
+.btn-secondary:active {
+  border-color: var(--accent-gold-edge-strong);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge-strong),
+    0 0 16px var(--accent-red-deep);
+  transition-duration: var(--transition-reveal-fast);
 }
 
 .btn-tertiary {
@@ -311,12 +468,32 @@ body::after {
   border-radius: 50px;
   color: var(--text-tertiary);
   text-decoration: none;
-  transition: all 300ms ease;
+  will-change: box-shadow, border-color;
+  transition: 
+    background var(--transition-reveal-out) ease,
+    border-color var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease,
+    color var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
 }
 
-.btn-tertiary:hover {
-  border-color: var(--edge-hover);
+.btn-tertiary:hover,
+.btn-tertiary:focus-visible {
+  border-color: var(--accent-gold-edge);
   color: var(--text-secondary);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge),
+    0 0 12px var(--accent-red-glow);
+  will-change: auto;
+  transition-duration: var(--transition-reveal-in);
+}
+
+.btn-tertiary:active {
+  border-color: var(--accent-gold-edge-strong);
+  box-shadow: 
+    0 0 0 1px var(--accent-gold-edge-strong),
+    0 0 16px var(--accent-red-deep);
+  transition-duration: var(--transition-reveal-fast);
 }
 
 /* ============================================
@@ -380,6 +557,7 @@ body::after {
   border-radius: 50px;
   color: var(--text-primary);
   outline: none;
+  will-change: box-shadow, border-color;
   transition: all 300ms ease;
   letter-spacing: 0.01em;
 }
@@ -390,8 +568,19 @@ body::after {
 }
 
 .mirror-input:focus {
-  border-color: var(--edge-hover);
+  /* Gold focus ring */
+  border-color: var(--accent-gold-edge);
+  outline: 2px solid var(--accent-gold-edge);
+  outline-offset: 2px;
   background: var(--black-elevated);
+  
+  /* Red internal glow */
+  box-shadow: 
+    inset 0 0 20px var(--accent-red-glow),
+    0 0 0 1px var(--accent-gold-edge);
+  
+  will-change: auto;
+  transition-duration: var(--transition-reveal-in);
 }
 
 .mirror-submit {
@@ -429,9 +618,24 @@ body::after {
 /* Reading Card - Minimal Reveal */
 .reading-card {
   padding: 48px;
-  background: var(--black-surface);
-  border: 1px solid var(--edge-subtle);
+  /* Gold border */
+  border: 1px solid var(--accent-gold-edge);
   border-radius: 16px;
+  
+  /* Fallback for browsers without color-mix support */
+  background: var(--black-surface);
+  
+  /* Red background warmth - subtle gradient with red undertone */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--black-surface) 92%, var(--accent-red-warmth)) 0%,
+    var(--black-surface) 100%
+  );
+  
+  /* Purple shadow depth */
+  box-shadow: 
+    0 12px 48px var(--accent-purple-shadow),
+    0 0 0 1px var(--accent-gold-edge);
 }
 
 .reading-validation {
@@ -527,14 +731,42 @@ body::after {
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
-  transition: all 300ms ease;
+  will-change: box-shadow, border-color;
+  /* Coordinated fade-out timing (slower) */
+  transition: 
+    border-color var(--transition-reveal-out) ease,
+    border-bottom-color var(--transition-reveal-out) ease,
+    background var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
   position: relative;
   overflow: hidden;
 }
 
-.house-card:hover {
+.house-card:hover,
+.house-card:focus-visible {
   border-color: var(--edge-hover);
+  border-bottom-color: var(--accent-gold-edge);
   transform: translateY(-4px);
+  /* Fallback for browsers without color-mix support */
+  background: linear-gradient(
+    180deg,
+    var(--black-surface) 0%,
+    var(--black-elevated) 100%
+  );
+  /* Red background undertone using color-mix */
+  background: linear-gradient(
+    180deg,
+    var(--black-surface) 0%,
+    color-mix(in srgb, var(--black-surface) 95%, var(--accent-red-warmth)) 100%
+  );
+  /* Purple shadow depth */
+  box-shadow: 
+    0 8px 32px var(--accent-purple-shadow),
+    0 0 0 1px var(--edge-hover);
+  will-change: auto;
+  /* Coordinated fade-in timing (faster) - all three accents appear simultaneously */
+  transition-duration: 400ms;
 }
 
 .house-card-image {
@@ -552,7 +784,8 @@ body::after {
   transition: transform 500ms ease;
 }
 
-.house-card:hover .house-card-image img {
+.house-card:hover .house-card-image img,
+.house-card:focus-visible .house-card-image img {
   transform: scale(1.02);
 }
 
@@ -633,12 +866,40 @@ body::after {
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
   text-align: center;
-  transition: all 300ms ease;
+  will-change: box-shadow, border-color;
+  /* Coordinated fade-out timing (slower) */
+  transition: 
+    border-color var(--transition-reveal-out) ease,
+    border-bottom-color var(--transition-reveal-out) ease,
+    background var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
 }
 
-.value-card:hover {
+.value-card:hover,
+.value-card:focus-visible {
   border-color: var(--edge-hover);
+  border-bottom-color: var(--accent-gold-edge);
   transform: translateY(-4px);
+  /* Fallback for browsers without color-mix support */
+  background: linear-gradient(
+    180deg,
+    var(--black-surface) 0%,
+    var(--black-elevated) 100%
+  );
+  /* Red background undertone using color-mix */
+  background: linear-gradient(
+    180deg,
+    var(--black-surface) 0%,
+    color-mix(in srgb, var(--black-surface) 95%, var(--accent-red-warmth)) 100%
+  );
+  /* Purple shadow depth */
+  box-shadow: 
+    0 8px 32px var(--accent-purple-shadow),
+    0 0 0 1px var(--edge-hover);
+  will-change: auto;
+  /* Coordinated fade-in timing (faster) - all three accents appear simultaneously */
+  transition-duration: 400ms;
 }
 
 .value-title {
@@ -701,16 +962,44 @@ body::after {
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
-  transition: all 300ms ease;
+  will-change: box-shadow, border-color;
+  /* Coordinated fade-out timing (slower) */
+  transition: 
+    border-color var(--transition-reveal-out) ease,
+    border-bottom-color var(--transition-reveal-out) ease,
+    background var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
   overflow: hidden;
   display: grid;
   grid-template-columns: 400px 1fr;
   align-items: center;
 }
 
-.drop-card:hover {
+.drop-card:hover,
+.drop-card:focus-visible {
   border-color: var(--edge-hover);
+  border-bottom-color: var(--accent-gold-edge);
   transform: translateY(-4px);
+  /* Fallback for browsers without color-mix support */
+  background: linear-gradient(
+    180deg,
+    var(--black-surface) 0%,
+    var(--black-elevated) 100%
+  );
+  /* Red background undertone using color-mix */
+  background: linear-gradient(
+    180deg,
+    var(--black-surface) 0%,
+    color-mix(in srgb, var(--black-surface) 95%, var(--accent-red-warmth)) 100%
+  );
+  /* Purple shadow depth */
+  box-shadow: 
+    0 8px 32px var(--accent-purple-shadow),
+    0 0 0 1px var(--edge-hover);
+  will-change: auto;
+  /* Coordinated fade-in timing (faster) - all three accents appear simultaneously */
+  transition-duration: 400ms;
 }
 
 .drop-card-image {
@@ -728,7 +1017,8 @@ body::after {
   transition: transform 500ms ease;
 }
 
-.drop-card:hover .drop-card-image img {
+.drop-card:hover .drop-card-image img,
+.drop-card:focus-visible .drop-card-image img {
   transform: scale(1.02);
 }
 
@@ -864,6 +1154,39 @@ body::after {
 }
 
 /* ============================================
+   SECTION ENTRY REVEALS
+   ============================================ */
+section {
+  position: relative;
+  opacity: 0.85;
+  transition: opacity var(--transition-reveal-in) ease;
+}
+
+section.section-revealed {
+  opacity: 1;
+}
+
+/* Purple gradient bloom behind section */
+section::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(
+    ellipse at center,
+    var(--accent-purple-depth) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-reveal-in) ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+section.section-revealed::before {
+  opacity: 1;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 1024px) {
@@ -893,4 +1216,83 @@ body::after {
   .final-invitation { padding: 100px 24px; }
   .final-title { font-size: 36px; }
   .final-actions { flex-direction: column; align-items: stretch; }
+}
+
+/* ============================================
+   TOUCH DEVICE SUPPORT
+   ============================================ */
+/* Touch devices: activate accent reveals on focus/press */
+@media (hover: none) and (pointer: coarse) {
+  /* Button accent reveals on touch */
+  .btn-primary:focus,
+  .btn-primary:active {
+    background: var(--btn-red-hover);
+    border-color: var(--accent-gold-edge);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 0 0 1px var(--accent-gold-edge),
+      0 0 12px var(--accent-red-glow),
+      0 4px 16px rgba(139, 0, 0, 0.2);
+    will-change: auto;
+    transition-duration: var(--transition-reveal-in);
+  }
+  
+  .btn-secondary:focus,
+  .btn-secondary:active {
+    border-color: var(--accent-gold-edge);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 0 0 1px var(--accent-gold-edge),
+      0 0 12px var(--accent-red-glow);
+    will-change: auto;
+    transition-duration: var(--transition-reveal-in);
+  }
+  
+  .btn-tertiary:focus,
+  .btn-tertiary:active {
+    border-color: var(--accent-gold-edge);
+    color: var(--text-secondary);
+    box-shadow: 
+      0 0 0 1px var(--accent-gold-edge),
+      0 0 12px var(--accent-red-glow);
+    will-change: auto;
+    transition-duration: var(--transition-reveal-in);
+  }
+  
+  /* Card accent reveals on touch */
+  .house-card:focus-within,
+  .house-card:active,
+  .value-card:focus-within,
+  .value-card:active,
+  .drop-card:focus-within,
+  .drop-card:active {
+    border-color: var(--edge-hover);
+    border-bottom-color: var(--accent-gold-edge);
+    transform: translateY(-4px);
+    background: linear-gradient(
+      180deg,
+      var(--black-surface) 0%,
+      color-mix(in srgb, var(--black-surface) 95%, var(--accent-red-warmth)) 100%
+    );
+    box-shadow: 
+      0 8px 32px var(--accent-purple-shadow),
+      0 0 0 1px var(--edge-hover);
+    will-change: auto;
+    transition-duration: 400ms;
+  }
+  
+  /* Mirror input accent reveals on touch */
+  .mirror-input:focus,
+  .mirror-input:active {
+    border-color: var(--accent-gold-edge);
+    outline: 2px solid var(--accent-gold-edge);
+    outline-offset: 2px;
+    background: var(--black-elevated);
+    box-shadow: 
+      inset 0 0 20px var(--accent-red-glow),
+      0 0 0 1px var(--accent-gold-edge);
+    will-change: auto;
+    transition-duration: var(--transition-reveal-in);
+  }
 }
