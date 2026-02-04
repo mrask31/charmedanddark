@@ -3224,3 +3224,429 @@ section.section-revealed::before {
     padding: 2rem 1.5rem;
   }
 }
+
+
+/* ============================================
+   THE MIRROR - REFLECTION RITUAL
+   ============================================ */
+
+.mirror-page {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mirror-container {
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Mirror Header */
+.mirror-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.mirror-title {
+  font-size: 3rem;
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.mirror-subhead {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.mirror-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mirror-intro p {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+/* Input Section */
+.mirror-input-section {
+  background: var(--black-card);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.mirror-label {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Emotional States */
+.mirror-states {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 767px) {
+  .mirror-states {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.mirror-state-button {
+  padding: 1rem;
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: 
+    border-color var(--transition-reveal-in) ease,
+    color var(--transition-reveal-in) ease,
+    background var(--transition-reveal-in) ease,
+    box-shadow var(--transition-reveal-in) ease;
+}
+
+.mirror-state-button:hover {
+  border-color: var(--edge-hover);
+  color: var(--text-primary);
+}
+
+.mirror-state-button:focus {
+  outline: none;
+  border-color: var(--accent-gold-edge);
+}
+
+.mirror-state-button:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+.mirror-state-button.selected {
+  background: var(--black-elevated);
+  border-color: var(--accent-gold-edge);
+  color: var(--text-primary);
+  box-shadow: 0 0 15px var(--accent-red-glow);
+}
+
+/* Submit Button */
+.mirror-submit {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: 
+    background var(--transition-reveal-in) ease,
+    border-color var(--transition-reveal-in) ease,
+    box-shadow var(--transition-reveal-in) ease;
+}
+
+.mirror-submit:hover:not(:disabled) {
+  background: var(--btn-red-hover);
+  border-color: var(--accent-gold-edge);
+  box-shadow: 0 0 20px var(--accent-red-glow);
+}
+
+.mirror-submit:focus {
+  outline: none;
+}
+
+.mirror-submit:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+.mirror-submit:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Reading Card */
+.mirror-reading-card {
+  background: var(--black-card);
+  border: 1px solid var(--accent-gold-edge);
+  border-radius: 2px;
+  padding: 3rem 2rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 
+    opacity 500ms ease,
+    transform 500ms ease;
+  box-shadow: 
+    0 0 30px var(--accent-red-glow),
+    0 8px 24px var(--accent-purple-shadow);
+}
+
+.mirror-reading-card.revealing {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Validation */
+.reading-validation {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.reading-validation p {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Reflection */
+.reading-reflection {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.reading-reflection p {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* Object Suggestion */
+.reading-object {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--edge-subtle);
+}
+
+.reading-object-heading {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.reading-object-card {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 2px;
+  text-decoration: none;
+  color: inherit;
+  transition: 
+    border-color var(--transition-reveal-in) ease,
+    box-shadow var(--transition-reveal-in) ease;
+}
+
+.reading-object-card:hover,
+.reading-object-card:focus {
+  border-color: var(--accent-gold-edge);
+  box-shadow: 0 0 15px var(--accent-red-glow);
+  outline: none;
+}
+
+.reading-object-card:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+.reading-object-image {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  background: var(--black-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.reading-object-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reading-object-info {
+  flex: 1;
+}
+
+.reading-object-name {
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.reading-object-pricing {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.reading-price.public {
+  color: var(--text-secondary);
+}
+
+.reading-price.sanctuary {
+  color: var(--text-accent);
+}
+
+.reading-price-separator {
+  color: var(--text-tertiary);
+}
+
+/* Ritual Suggestion */
+.reading-ritual {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.reading-ritual p {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* CTA */
+.reading-cta {
+  text-align: center;
+}
+
+.reading-cta-button {
+  padding: 1rem 2rem;
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: 
+    background var(--transition-reveal-in) ease,
+    border-color var(--transition-reveal-in) ease;
+}
+
+.reading-cta-button:not(.disabled):hover,
+.reading-cta-button:not(.disabled):focus {
+  background: var(--btn-red-hover);
+  border-color: var(--accent-gold-edge);
+  outline: none;
+}
+
+.reading-cta-button:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+.reading-cta-button.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.reading-cta-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--text-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-reveal-in) ease;
+}
+
+.reading-cta-link:hover,
+.reading-cta-link:focus {
+  border-bottom-color: var(--accent-gold-edge);
+  outline: none;
+}
+
+.reading-cta-link:focus-visible {
+  outline: 2px solid var(--accent-gold-edge-strong);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .mirror-reading-card {
+    transition-duration: var(--transition-reveal-reduced);
+    transform: none;
+  }
+  
+  .mirror-state-button,
+  .mirror-submit,
+  .reading-object-card,
+  .reading-cta-button,
+  .reading-cta-link {
+    transition-duration: var(--transition-reveal-reduced);
+  }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 767px) {
+  .mirror-page {
+    padding: 3rem 1rem;
+  }
+  
+  .mirror-title {
+    font-size: 2.5rem;
+  }
+  
+  .mirror-subhead {
+    font-size: 1.125rem;
+  }
+  
+  .mirror-input-section {
+    padding: 2rem 1.5rem;
+  }
+  
+  .mirror-reading-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .reading-validation p {
+    font-size: 1.25rem;
+  }
+  
+  .reading-object-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .reading-object-image {
+    width: 120px;
+    height: 120px;
+  }
+}
