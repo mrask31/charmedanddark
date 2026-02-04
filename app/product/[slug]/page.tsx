@@ -1,29 +1,9 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getProductBySlug, getProductsByCategory, type Product } from '@/lib/products';
-import { Metadata } from 'next';
-
-// Generate metadata for SEO
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const product = getProductBySlug(params.slug);
-
-  if (!product) {
-    return {
-      title: 'Product Not Found | Charmed & Dark',
-    };
-  }
-
-  return {
-    title: `${product.name} | Charmed & Dark`,
-    description: `${product.shortDescription} A refined piece from our ${product.category} collection.`,
-    openGraph: {
-      title: `${product.name} | Charmed & Dark`,
-      description: product.shortDescription,
-      images: product.images.length > 0 ? [product.images[0]] : [],
-      type: 'website',
-    }
-  };
-}
 
 // Format price as USD
 function formatPrice(price: number): string {
@@ -43,7 +23,15 @@ function getRelatedProducts(product: Product): Product[] {
 }
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
+  const [isSanctuary, setIsSanctuary] = useState(false);
   const product = getProductBySlug(params.slug);
+
+  useEffect(() => {
+    // Check sanctuary status on mount
+    if (typeof window !== 'undefined') {
+      setIsSanctuary(localStorage.getItem('sanctuary_preview') === 'true');
+    }
+  }, []);
 
   if (!product) {
     notFound();
@@ -90,14 +78,29 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
             {/* Pricing */}
             <div className="product-pricing-block">
-              <div className="price-item">
-                <span className="price-label-detail">Public Price</span>
-                <span className="price-value-public">{formatPrice(product.pricePublic)}</span>
-              </div>
-              <div className="price-item sanctuary-highlight">
-                <span className="price-label-detail sanctuary">Sanctuary Price</span>
-                <span className="price-value-sanctuary">{formatPrice(product.priceSanctuary)}</span>
-              </div>
+              {isSanctuary ? (
+                <>
+                  <div className="price-item sanctuary-highlight primary">
+                    <span className="price-label-detail sanctuary">Sanctuary Price</span>
+                    <span className="price-value-sanctuary">{formatPrice(product.priceSanctuary)}</span>
+                  </div>
+                  <div className="price-item secondary">
+                    <span className="price-label-detail">Public Price</span>
+                    <span className="price-value-public">{formatPrice(product.pricePublic)}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="price-item">
+                    <span className="price-label-detail">Public Price</span>
+                    <span className="price-value-public">{formatPrice(product.pricePublic)}</span>
+                  </div>
+                  <div className="price-item sanctuary-highlight">
+                    <span className="price-label-detail sanctuary">Sanctuary Price</span>
+                    <span className="price-value-sanctuary">{formatPrice(product.priceSanctuary)}</span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Ritual Intro */}
@@ -122,12 +125,23 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
             {/* CTAs */}
             <div className="product-ctas">
-              <Link href="/join" className="btn-primary product-cta-primary">
-                Enter the Sanctuary to Unlock Price
-              </Link>
-              <Link href="/shop" className="btn-secondary product-cta-secondary">
-                Back to Shop
-              </Link>
+              {isSanctuary ? (
+                <>
+                  <p className="sanctuary-recognition">Sanctuary recognition applied.</p>
+                  <Link href="/shop" className="btn-secondary product-cta-secondary">
+                    Back to Shop
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/join" className="btn-primary product-cta-primary">
+                    Enter the Sanctuary to Unlock Price
+                  </Link>
+                  <Link href="/shop" className="btn-secondary product-cta-secondary">
+                    Back to Shop
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Availability */}

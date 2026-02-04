@@ -30,18 +30,6 @@ export default function HomePage() {
         <meta name="description" content="Discover gothic home decor, ritual objects, and quiet luxury apparel. Charmed & Dark is a private Sanctuary for those seeking calm, presence, and intentional living." />
       </Head>
 
-      {/* Navigation */}
-      <nav className="nav">
-        <div className="nav-container">
-          <Link href="/" className="nav-brand">Charmed & Dark</Link>
-          <div className="nav-links">
-            <Link href="/shop">Shop</Link>
-            <Link href="/drops">Drops</Link>
-            <Link href="/join">Join</Link>
-          </div>
-        </div>
-      </nav>
-
       <main className="landing">
         {/* SECTION 1: HERO (Emotional Hook + SEO) */}
         <section className="hero">
@@ -153,11 +141,11 @@ export default function HomePage() {
                   alt="Charmed & Dark apparel - black t-shirt"
                 />
               </div>
-              <h2 className="house-card-title">Apparel</h2>
+              <h2 className="house-card-title">The Uniform</h2>
               <p className="house-card-description">
                 T-shirts, hoodies, and layers designed to disappear. No logos. No noise. Just black.
               </p>
-              <Link href="/shop?category=apparel" className="house-card-cta">
+              <Link href="/uniform" className="house-card-cta">
                 See the Collection →
               </Link>
             </div>

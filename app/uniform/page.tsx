@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   getActiveCoreUniform, 
@@ -8,12 +11,7 @@ import {
   type ApparelItem 
 } from '@/lib/apparel';
 
-export const metadata = {
-  title: 'The Uniform | Charmed & Dark',
-  description: 'Black, structured apparel — quiet exterior pieces with Sanctuary pricing for members.',
-};
-
-function ApparelCard({ item }: { item: ApparelItem }) {
+function ApparelCard({ item, isSanctuary }: { item: ApparelItem; isSanctuary: boolean }) {
   return (
     <Link 
       href={`/uniform/${item.slug}`}
@@ -38,14 +36,29 @@ function ApparelCard({ item }: { item: ApparelItem }) {
         <p className="apparel-short-description">{item.shortDescription}</p>
         
         <div className="apparel-pricing">
-          <div className="price-row">
-            <span className="price-label">Public</span>
-            <span className="price-public">{formatPrice(item.pricePublic)}</span>
-          </div>
-          <div className="price-row sanctuary">
-            <span className="price-label">Sanctuary</span>
-            <span className="price-sanctuary">{formatPrice(item.priceSanctuary)}</span>
-          </div>
+          {isSanctuary ? (
+            <>
+              <div className="price-row sanctuary primary">
+                <span className="price-label">Sanctuary</span>
+                <span className="price-sanctuary">{formatPrice(item.priceSanctuary)}</span>
+              </div>
+              <div className="price-row secondary">
+                <span className="price-label">Public</span>
+                <span className="price-public">{formatPrice(item.pricePublic)}</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="price-row">
+                <span className="price-label">Public</span>
+                <span className="price-public">{formatPrice(item.pricePublic)}</span>
+              </div>
+              <div className="price-row sanctuary">
+                <span className="price-label">Sanctuary</span>
+                <span className="price-sanctuary">{formatPrice(item.priceSanctuary)}</span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="apparel-availability">
@@ -57,8 +70,16 @@ function ApparelCard({ item }: { item: ApparelItem }) {
 }
 
 export default function UniformPage() {
+  const [isSanctuary, setIsSanctuary] = useState(false);
   const coreItems = getActiveCoreUniform();
   const activeDrops = getActiveDrops();
+
+  useEffect(() => {
+    // Check sanctuary status on mount
+    if (typeof window !== 'undefined') {
+      setIsSanctuary(localStorage.getItem('sanctuary_preview') === 'true');
+    }
+  }, []);
 
   return (
     <div className="uniform-page">
@@ -82,7 +103,7 @@ export default function UniformPage() {
         
         <div className="uniform-grid">
           {coreItems.map(item => (
-            <ApparelCard key={item.id} item={item} />
+            <ApparelCard key={item.id} item={item} isSanctuary={isSanctuary} />
           ))}
         </div>
       </section>
@@ -104,7 +125,7 @@ export default function UniformPage() {
               
               <div className="uniform-grid">
                 {items.map(item => (
-                  <ApparelCard key={item.id} item={item} />
+                  <ApparelCard key={item.id} item={item} isSanctuary={isSanctuary} />
                 ))}
               </div>
             </div>

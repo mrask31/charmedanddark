@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { 
@@ -10,21 +13,6 @@ import {
 type Props = {
   params: { slug: string };
 };
-
-export async function generateMetadata({ params }: Props) {
-  const item = getApparelBySlug(params.slug);
-  
-  if (!item) {
-    return {
-      title: 'Item Not Found | The Uniform | Charmed & Dark',
-    };
-  }
-
-  return {
-    title: `${item.name} | The Uniform | Charmed & Dark`,
-    description: `${item.shortDescription} Sanctuary pricing available to members.`,
-  };
-}
 
 function RelatedApparelCard({ item }: { item: ApparelItem }) {
   return (
@@ -54,7 +42,15 @@ function RelatedApparelCard({ item }: { item: ApparelItem }) {
 }
 
 export default function ApparelDetailPage({ params }: Props) {
+  const [isSanctuary, setIsSanctuary] = useState(false);
   const item = getApparelBySlug(params.slug);
+  
+  useEffect(() => {
+    // Check sanctuary status on mount
+    if (typeof window !== 'undefined') {
+      setIsSanctuary(localStorage.getItem('sanctuary_preview') === 'true');
+    }
+  }, []);
   
   if (!item) {
     notFound();
@@ -120,14 +116,29 @@ export default function ApparelDetailPage({ params }: Props) {
           {/* Pricing */}
           <div className="apparel-detail-pricing">
             <div className="price-block">
-              <div className="price-row">
-                <span className="price-label">Public Price</span>
-                <span className="price-public">{formatPrice(item.pricePublic)}</span>
-              </div>
-              <div className="price-row sanctuary-highlight">
-                <span className="price-label">Sanctuary Price</span>
-                <span className="price-sanctuary">{formatPrice(item.priceSanctuary)}</span>
-              </div>
+              {isSanctuary ? (
+                <>
+                  <div className="price-row sanctuary-highlight primary">
+                    <span className="price-label">Sanctuary Price</span>
+                    <span className="price-sanctuary">{formatPrice(item.priceSanctuary)}</span>
+                  </div>
+                  <div className="price-row secondary">
+                    <span className="price-label">Public Price</span>
+                    <span className="price-public">{formatPrice(item.pricePublic)}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="price-row">
+                    <span className="price-label">Public Price</span>
+                    <span className="price-public">{formatPrice(item.pricePublic)}</span>
+                  </div>
+                  <div className="price-row sanctuary-highlight">
+                    <span className="price-label">Sanctuary Price</span>
+                    <span className="price-sanctuary">{formatPrice(item.priceSanctuary)}</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -153,9 +164,13 @@ export default function ApparelDetailPage({ params }: Props) {
 
           {/* CTA */}
           <div className="apparel-cta">
-            <Link href="/join" className="apparel-cta-primary">
-              Enter the Sanctuary to unlock recognition pricing
-            </Link>
+            {isSanctuary ? (
+              <p className="sanctuary-recognition">Sanctuary recognition applied.</p>
+            ) : (
+              <Link href="/join" className="apparel-cta-primary">
+                Enter the Sanctuary to unlock recognition pricing
+              </Link>
+            )}
           </div>
         </div>
       </div>
