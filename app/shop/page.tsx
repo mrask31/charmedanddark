@@ -62,6 +62,7 @@ export default function ShopPage() {
             </button>
           ))}
         </div>
+        <p className="shop-filters-note">Objects chosen to remain.</p>
       </section>
 
       {/* Product Grid */}

@@ -1348,6 +1348,16 @@ section.section-revealed::before {
   margin: 0 auto;
 }
 
+.shop-filters-note {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-tertiary);
+  letter-spacing: 0.02em;
+}
+
 .category-pill {
   padding: 12px 24px;
   font-size: 13px;
