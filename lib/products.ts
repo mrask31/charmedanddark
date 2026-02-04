@@ -19,6 +19,16 @@ export type ProductCategory =
   | "Table & Display"
   | "Objects of Use";
 
+export type MirrorRole =
+  | 'containment'
+  | 'warmth'
+  | 'witness'
+  | 'boundary'
+  | 'grounding'
+  | 'return'
+  | 'amplification'
+  | 'orientation';
+
 export interface ProductDescription {
   ritualIntro: string;
   objectDetails: string[];
@@ -37,6 +47,8 @@ export interface Product {
   description: ProductDescription;
   images: string[];
   inStock: boolean;
+  mirrorEligible?: boolean;
+  mirrorRole?: MirrorRole;
 }
 
 // ============================================

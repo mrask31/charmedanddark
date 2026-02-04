@@ -3,6 +3,9 @@
  * 
  * This module manages apparel items for /uniform route.
  * Supports both core uniform pieces and seasonal drops.
+ * 
+ * MIRROR ELIGIBILITY: Apparel is NEVER mirror-eligible.
+ * Apparel introduces size/fit anxiety. The Mirror removes choice.
  */
 
 // ============================================
@@ -39,6 +42,8 @@ export interface ApparelItem {
   whoFor: string;
   images: string[];
   active: boolean;
+  // Apparel is NEVER mirror-eligible (always false)
+  mirrorEligible?: false;
 }
 
 // ============================================
