@@ -917,18 +917,43 @@ body::after {
 
 /* Section illumination states */
 [data-candle-section] {
-  transition: all 900ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 1000ms cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
 }
 
-/* Before illumination - subdued */
+/* Before illumination - subdued with vignette */
+[data-candle-section]:not(.illuminated)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, 
+    transparent 0%, 
+    rgba(0, 0, 0, 0.3) 100%);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 [data-candle-section]:not(.illuminated) {
-  filter: brightness(0.75) contrast(0.9);
+  opacity: 0.7;
 }
 
 /* After illumination - present */
 [data-candle-section].illuminated {
-  filter: brightness(1) contrast(1.05);
+  opacity: 1;
+}
+
+[data-candle-section].illuminated::before {
+  opacity: 0;
+}
+
+/* Ensure content stays above vignette */
+[data-candle-section] > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* Subtle gold accent reveal on illumination */
@@ -936,6 +961,7 @@ body::after {
 [data-candle-section].illuminated .house-card-cta,
 [data-candle-section].illuminated .drop-cta {
   text-shadow: 0 0 12px rgba(201, 169, 97, 0.3);
+  transition: text-shadow 1000ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* Respect reduced motion */
@@ -948,9 +974,14 @@ body::after {
     animation: none;
   }
   
-  [data-candle-section] {
+  [data-candle-section],
+  [data-candle-section]::before {
     transition: none;
-    filter: none !important;
+    opacity: 1 !important;
+  }
+  
+  [data-candle-section]::before {
+    display: none;
   }
 }
 
