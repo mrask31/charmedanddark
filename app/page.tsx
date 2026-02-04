@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 
 export default function HomePage() {
   const [feeling, setFeeling] = useState('');
   const [showReading, setShowReading] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const handleMirrorSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,12 +17,43 @@ export default function HomePage() {
     }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('[data-candle-section]');
+      
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // Section is active when 30-40% into viewport
+        if (rect.top < viewportHeight * 0.6 && rect.bottom > viewportHeight * 0.3) {
+          const sectionId = section.getAttribute('data-candle-section');
+          if (sectionId !== activeSection) {
+            setActiveSection(sectionId);
+          }
+          // Add illuminated class
+          section.classList.add('illuminated');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
+
   return (
     <>
       <Head>
         <title>Charmed & Dark | Gothic Home Decor & Sanctuary for the Modern Shadow</title>
         <meta name="description" content="Discover gothic home decor, ritual objects, and quiet luxury apparel. Charmed & Dark is a private Sanctuary for those seeking calm, presence, and intentional living." />
       </Head>
+
+      {/* Candle Glow - Fixed Position */}
+      <div className="candle-presence" aria-hidden="true">
+        <div className="candle-flame"></div>
+      </div>
 
       {/* Navigation */}
       <nav className="nav">
@@ -37,7 +69,7 @@ export default function HomePage() {
 
       <main className="landing">
         {/* SECTION 1: HERO (Emotional Hook + SEO) */}
-        <section className="hero">
+        <section className="hero" data-candle-section="hero">
           <div className="hero-background">
             <img 
               src="/images/dark hair female burning sage with crystal candles.png" 
@@ -71,7 +103,7 @@ export default function HomePage() {
         </section>
 
         {/* SECTION 2: THE MIRROR */}
-        <section className="mirror-section">
+        <section className="mirror-section" data-candle-section="mirror">
           <div className="mirror-container">
             <h2 className="mirror-headline">The Mirror</h2>
             
@@ -131,7 +163,7 @@ export default function HomePage() {
         </section>
 
         {/* SECTION 3: THE HOUSE */}
-        <section className="house">
+        <section className="house" data-candle-section="house">
           <div className="house-intro">
             <h2 className="house-intro-title">The House</h2>
             <p className="house-intro-description">
@@ -175,7 +207,7 @@ export default function HomePage() {
         </section>
 
         {/* SECTION 4: JOIN THE SANCTUARY */}
-        <section className="sanctuary-value">
+        <section className="sanctuary-value" data-candle-section="sanctuary">
           <h2 className="sanctuary-headline">Join Free. Save Always.</h2>
           <p className="sanctuary-subhead">
             Sanctuary membership costs nothing. Gives you everything.
@@ -213,7 +245,7 @@ export default function HomePage() {
         </section>
 
         {/* SECTION 5: DROPS */}
-        <section className="drops">
+        <section className="drops" data-candle-section="drops">
           <h2 className="drops-title">Drops</h2>
           <p className="drops-description">
             Limited runs. Quiet releases. Gone when sold out.
@@ -241,7 +273,7 @@ export default function HomePage() {
         </section>
 
         {/* SECTION 6: FINAL CTA */}
-        <section className="final-invitation">
+        <section className="final-invitation" data-candle-section="final">
           <h2 className="final-title">
             You belong here.
           </h2>

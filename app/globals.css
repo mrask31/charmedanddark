@@ -864,6 +864,104 @@ body::after {
 }
 
 /* ============================================
+   CANDLE ILLUMINATION RITUAL
+   ============================================ */
+
+/* Candle presence - fixed position flame glow */
+.candle-presence {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 60vh;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.6;
+}
+
+.candle-flame {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 120px;
+  background: radial-gradient(ellipse at center bottom,
+    rgba(201, 139, 97, 0.4) 0%,
+    rgba(201, 139, 97, 0.2) 30%,
+    rgba(201, 139, 97, 0.05) 60%,
+    transparent 100%);
+  filter: blur(20px);
+  animation: candleFlicker 8s ease-in-out infinite;
+}
+
+@keyframes candleFlicker {
+  0%, 100% { 
+    opacity: 0.8;
+    transform: translateX(-50%) scaleY(1);
+  }
+  25% { 
+    opacity: 0.75;
+    transform: translateX(-50%) scaleY(0.98);
+  }
+  50% { 
+    opacity: 0.85;
+    transform: translateX(-50%) scaleY(1.02);
+  }
+  75% { 
+    opacity: 0.78;
+    transform: translateX(-50%) scaleY(0.99);
+  }
+}
+
+/* Section illumination states */
+[data-candle-section] {
+  transition: all 900ms cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+}
+
+/* Before illumination - subdued */
+[data-candle-section]:not(.illuminated) {
+  filter: brightness(0.85) contrast(0.95);
+}
+
+/* After illumination - present */
+[data-candle-section].illuminated {
+  filter: brightness(1) contrast(1.02);
+}
+
+/* Subtle gold accent reveal on illumination */
+[data-candle-section].illuminated .btn-primary,
+[data-candle-section].illuminated .house-card-cta,
+[data-candle-section].illuminated .drop-cta {
+  text-shadow: 0 0 12px rgba(201, 169, 97, 0.3);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .candle-presence {
+    display: none;
+  }
+  
+  .candle-flame {
+    animation: none;
+  }
+  
+  [data-candle-section] {
+    transition: none;
+    filter: none !important;
+  }
+}
+
+/* Hide candle on mobile */
+@media (max-width: 768px) {
+  .candle-presence {
+    display: none;
+  }
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 1024px) {
