@@ -1,27 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { initializeSectionReveals } from './utils/sectionReveal';
 
 export default function HomePage() {
-  const [feeling, setFeeling] = useState('');
-  const [showReading, setShowReading] = useState(false);
-
   // Initialize section reveal observer
   useEffect(() => {
     const cleanup = initializeSectionReveals();
     return cleanup;
   }, []);
-
-  const handleMirrorSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (feeling.trim()) {
-      setShowReading(true);
-      // TODO: Integrate actual Mirror AI experience
-    }
-  };
 
   return (
     <>
@@ -78,48 +67,16 @@ export default function HomePage() {
               Not random. Not a feed. Just you and the recommendation.
             </p>
 
-            <div className="mirror">
-              {!showReading ? (
-                <form onSubmit={handleMirrorSubmit} className="mirror-form">
-                  <input
-                    type="text"
-                    value={feeling}
-                    onChange={(e) => setFeeling(e.target.value)}
-                    placeholder="I feel overwhelmed..."
-                    className="mirror-input"
-                  />
-                  <button type="submit" className="mirror-submit">
-                    Reflect
-                  </button>
-                  <p className="mirror-examples">
-                    Try: "I need stillness" · "I feel restless" · "I want my space to feel calm"
-                  </p>
-                </form>
-              ) : (
-                <div className="reading-card">
-                  <div className="reading-validation">
-                    <p>The Mirror sees you.</p>
-                  </div>
-                  
-                  <div className="reading-prescription">
-                    <p className="reading-product">Midnight Candle</p>
-                    <p className="reading-ritual">Light it when the noise becomes too much.</p>
-                  </div>
-                  
-                  <div className="reading-resonance">
-                    <p>Silence is rising tonight.</p>
-                  </div>
-                  
-                  <div className="reading-actions">
-                    <Link href="/join" className="btn-primary">
-                      Join to Save This
-                    </Link>
-                    <Link href="/shop" className="btn-secondary">
-                      Shop the House
-                    </Link>
-                  </div>
-                </div>
-              )}
+            <div className="mirror-preview">
+              <p className="mirror-preview-text">
+                The Mirror is a private place to pause. It reflects without fixing.
+              </p>
+              <p className="mirror-preview-examples">
+                "I feel overwhelmed" · "I need stillness" · "I want my space to feel calm"
+              </p>
+              <Link href="/mirror" className="mirror-preview-cta">
+                Enter The Mirror →
+              </Link>
             </div>
           </div>
         </section>

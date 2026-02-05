@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "verify-inventory": "ts-node scripts/verify-counts.ts",
+    "ingest-inventory": "ts-node scripts/ingest-inventory.ts",
+    "ingest-inventory:dry-run": "ts-node scripts/ingest-inventory.ts --dry-run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
