@@ -1436,7 +1436,6 @@ section.section-revealed::before {
 .shop-filters {
   padding: 40px 40px 60px;
   background: var(--black-void);
-  overflow-x: auto;
 }
 
 .category-filters {
@@ -2131,10 +2130,8 @@ section.section-revealed::before {
   }
 
   .category-filters {
-    justify-content: flex-start;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .shop-grid-section {
