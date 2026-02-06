@@ -1233,6 +1233,358 @@ body::after {
 }
 
 /* ============================================
+   HYBRID LANDING PAGE - RESTRAINT-BASED CONVERSION
+   ============================================ */
+
+/* 1. Above the Fold — Immediate Signal */
+.hero-hybrid {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 40px 80px;
+  background: var(--black-void);
+}
+
+.hero-hybrid-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-hybrid-title {
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 48px;
+  letter-spacing: 0.02em;
+}
+
+.hero-hybrid-statement {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-hybrid-paths {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.path-primary,
+.path-secondary {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-reveal-out) ease;
+}
+
+.path-primary {
+  color: var(--text-primary);
+}
+
+.path-primary:hover,
+.path-primary:focus-visible,
+.path-secondary:hover,
+.path-secondary:focus-visible {
+  color: var(--text-accent);
+  transition-duration: var(--transition-reveal-in);
+}
+
+/* 2. Proof of Restraint */
+.proof-section {
+  padding: 120px 40px;
+  background: var(--black-gloss);
+}
+
+.proof-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.proof-statement {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.proof-statement:last-child {
+  margin-bottom: 0;
+}
+
+/* 3. Objects First — Featured Grid */
+.objects-first {
+  padding: 120px 40px;
+  background: var(--black-void);
+}
+
+.objects-first-header {
+  max-width: 1400px;
+  margin: 0 auto 64px;
+  text-align: center;
+}
+
+.objects-first-title {
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.objects-first-subtitle {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.objects-first-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.featured-product-card {
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: 
+    border-color var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
+}
+
+.featured-product-card:hover,
+.featured-product-card:focus-visible {
+  border-color: var(--edge-hover);
+  transform: translateY(-2px);
+  transition-duration: var(--transition-reveal-in);
+}
+
+.featured-product-image {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  background: var(--black-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.featured-product-placeholder {
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.featured-product-info {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featured-product-name {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.featured-product-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.featured-price {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.featured-price.sanctuary {
+  color: var(--text-accent);
+}
+
+.featured-price-label {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* 4. How It Works */
+.how-it-works {
+  padding: 120px 40px;
+  background: var(--black-void);
+}
+
+.how-it-works-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.how-it-works-statement {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.how-it-works-statement:last-child {
+  margin-bottom: 0;
+}
+
+/* 5. Sanctuary Reference */
+.sanctuary-reference {
+  padding: 120px 40px;
+  background: var(--black-gloss);
+}
+
+.sanctuary-reference-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sanctuary-reference-statement {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.sanctuary-reference-invitation {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: 48px;
+  margin-bottom: 32px;
+}
+
+.sanctuary-reference-link {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-reveal-out) ease;
+}
+
+.sanctuary-reference-link:hover,
+.sanctuary-reference-link:focus-visible {
+  color: var(--text-accent);
+  transition-duration: var(--transition-reveal-in);
+}
+
+/* 6. Exit with Agency */
+.exit-section {
+  padding: 160px 40px;
+  background: var(--black-void);
+}
+
+.exit-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.exit-statement {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.exit-paths {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.exit-path {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-reveal-out) ease;
+}
+
+.exit-path:hover,
+.exit-path:focus-visible {
+  color: var(--text-accent);
+  transition-duration: var(--transition-reveal-in);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .hero-hybrid {
+    padding: 100px 24px 60px;
+  }
+
+  .hero-hybrid-title {
+    font-size: 36px;
+  }
+
+  .hero-hybrid-statement {
+    font-size: 18px;
+  }
+
+  .proof-section,
+  .objects-first,
+  .how-it-works,
+  .sanctuary-reference {
+    padding: 80px 24px;
+  }
+
+  .exit-section {
+    padding: 120px 24px;
+  }
+
+  .objects-first-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .objects-first-title {
+    font-size: 32px;
+  }
+}
+
+/* ============================================
    FOOTER - Whisper
    ============================================ */
 .footer {
