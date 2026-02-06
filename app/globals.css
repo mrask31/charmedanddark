@@ -4952,25 +4952,34 @@ section.section-revealed::before {
 
 
 /* ============================================
-   LANDING PAGE V2 - OBJECT-ANCHORED + SUBTLE BACKGROUND
+   PREMIUM ECOMMERCE LANDING - RESTRAINT-COMPLIANT
    ============================================ */
 
-.landing-v2 {
+.ecom-landing {
   background: var(--black-void);
+  min-height: 100vh;
 }
 
-/* SECTION 1 — HERO WITH ANCHOR OBJECT */
-.landing-hero {
-  min-height: 90vh;
+/* Container */
+.ecom-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* A) HERO — VISUAL-FIRST */
+.ecom-hero {
+  min-height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 40px 80px;
+  padding: 140px 40px 100px;
   position: relative;
   overflow: hidden;
+  background: var(--black-void);
 }
 
-.landing-hero-bg {
+.ecom-hero-bg {
   position: absolute;
   top: 0;
   left: 0;
@@ -4985,289 +4994,179 @@ section.section-revealed::before {
   pointer-events: none;
 }
 
-/* Respect reduced motion - make background static */
-@media (prefers-reduced-motion: reduce) {
-  .landing-hero-bg {
-    opacity: 0.06;
-    filter: grayscale(100%) contrast(1.0) brightness(0.8);
-  }
-}
-
-.landing-hero-content {
-  max-width: 1100px;
+.ecom-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  text-align: center;
-  position: relative;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
   z-index: 1;
+  pointer-events: none;
 }
 
-.landing-hero-title {
-  font-size: 64px;
-  font-weight: 300;
+.ecom-hero-content {
+  max-width: 1200px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.ecom-hero-text {
+  max-width: 600px;
+  text-align: left;
+}
+
+.ecom-hero-title {
+  font-size: 72px;
+  font-weight: 200;
   letter-spacing: 0.02em;
   color: var(--text-primary);
   margin-bottom: 24px;
+  line-height: 1.1;
 }
 
-.landing-hero-subhead {
-  font-size: 28px;
+.ecom-hero-subhead {
+  font-size: 24px;
   font-weight: 300;
   color: var(--text-secondary);
-  margin-bottom: 12px;
+  margin-bottom: 32px;
+  line-height: 1.5;
 }
 
-.landing-hero-microline {
+.ecom-hero-rule {
+  width: 60px;
+  height: 1px;
+  background: var(--accent-gold-edge);
+  margin: 32px 0;
+}
+
+.ecom-hero-note {
   font-size: 15px;
   font-weight: 300;
   color: var(--text-tertiary);
-  margin-bottom: 64px;
+  margin-bottom: 48px;
   font-style: italic;
 }
 
-/* Anchor Object Card */
-.landing-anchor {
-  display: block;
-  max-width: 400px;
-  margin: 0 auto 48px;
-  background: var(--black-card);
-  border: 1px solid var(--edge-subtle);
-  border-radius: 16px;
-  overflow: hidden;
+.ecom-hero-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.ecom-btn-primary {
+  display: inline-block;
+  padding: 18px 48px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  background: var(--btn-red-dark);
+  border: 1px solid var(--btn-red-border);
+  border-radius: 50px;
+  color: var(--text-primary);
   text-decoration: none;
   transition: 
+    background var(--transition-reveal-out) ease,
     border-color var(--transition-reveal-out) ease,
-    transform var(--transition-reveal-out) ease,
-    box-shadow var(--transition-reveal-out) ease;
+    box-shadow var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease;
 }
 
-.landing-anchor:hover,
-.landing-anchor:focus-visible {
+.ecom-btn-primary:hover,
+.ecom-btn-primary:focus-visible {
+  background: var(--btn-red-hover);
   border-color: var(--accent-gold-edge);
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: 
-    0 8px 32px var(--accent-purple-shadow),
-    0 0 0 1px var(--accent-gold-edge);
+    0 0 0 1px var(--accent-gold-edge),
+    0 0 12px var(--accent-red-glow),
+    0 4px 16px rgba(139, 0, 0, 0.2);
   transition-duration: var(--transition-reveal-in);
 }
 
-.landing-anchor-image {
-  width: 100%;
-  height: 320px;
-  background: var(--black-elevated);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.landing-anchor-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 500ms ease;
-}
-
-.landing-anchor:hover .landing-anchor-image img,
-.landing-anchor:focus-visible .landing-anchor-image img {
-  transform: scale(1.05);
-}
-
-.landing-anchor-info {
-  padding: 32px 24px;
-  text-align: center;
-}
-
-.landing-anchor-name {
-  font-size: 24px;
+.ecom-link-secondary {
+  font-size: 15px;
   font-weight: 400;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-}
-
-.landing-anchor-price {
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--text-accent);
-}
-
-.landing-hero-links {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-
-.landing-hero-link {
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  color: var(--text-primary);
-  text-decoration: none;
-  transition: color var(--transition-reveal-out) ease;
-}
-
-.landing-hero-link-secondary {
   color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: 
+    color var(--transition-reveal-out) ease,
+    border-color var(--transition-reveal-out) ease;
 }
 
-.landing-hero-link:hover,
-.landing-hero-link:focus-visible {
+.ecom-link-secondary:hover,
+.ecom-link-secondary:focus-visible {
   color: var(--text-accent);
+  border-bottom-color: var(--accent-gold-edge);
   transition-duration: var(--transition-reveal-in);
 }
 
-/* SECTION 2 — PROOF ROW */
-.landing-proof-row {
-  padding: 80px 40px;
+/* B) SECTIONS */
+.ecom-section {
+  padding: 100px 40px;
   background: var(--black-void);
 }
 
-.landing-proof-label {
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  text-align: center;
-  margin-bottom: 48px;
+.ecom-section-alt {
+  background: var(--black-gloss);
 }
 
-.landing-proof-grid {
-  max-width: 1200px;
+.ecom-section-title {
+  font-size: 40px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+/* C) PRODUCT GRID */
+.ecom-product-grid {
+  max-width: 1400px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
 }
 
-.landing-proof-card {
-  background: var(--black-surface);
-  border: 1px solid var(--edge-subtle);
-  border-radius: 12px;
-  overflow: hidden;
-  text-decoration: none;
-  transition: 
-    border-color var(--transition-reveal-out) ease,
-    transform var(--transition-reveal-out) ease;
-}
-
-.landing-proof-card:hover,
-.landing-proof-card:focus-visible {
-  border-color: var(--edge-hover);
-  transform: translateY(-2px);
-  transition-duration: var(--transition-reveal-in);
-}
-
-.landing-proof-image {
-  width: 100%;
-  height: 240px;
-  background: var(--black-elevated);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.landing-proof-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.landing-proof-info {
-  padding: 20px;
-}
-
-.landing-proof-name {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-
-.landing-proof-price {
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--text-secondary);
-}
-
-/* SECTION 3 — RESTRAINT BLOCK */
-.landing-rule {
-  padding: 100px 40px;
-  background: var(--black-gloss);
-  text-align: center;
-}
-
-.landing-rule-content {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.landing-rule-title {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 24px;
-}
-
-.landing-rule-body {
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 1.8;
-  color: var(--text-secondary);
-}
-
-/* SECTION 4 — HOUSE GRID */
-.landing-grid {
-  padding: 100px 40px;
-  background: var(--black-void);
-}
-
-.landing-grid-header {
-  max-width: 1400px;
-  margin: 0 auto 64px;
-  text-align: center;
-}
-
-.landing-grid-intro {
-  font-size: 16px;
-  font-weight: 300;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-.landing-grid-items {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
+.ecom-product-grid-6 {
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
 }
 
-.landing-grid-card {
+.ecom-product-card {
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
   overflow: hidden;
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
   transition: 
     border-color var(--transition-reveal-out) ease,
     transform var(--transition-reveal-out) ease,
     box-shadow var(--transition-reveal-out) ease;
 }
 
-.landing-grid-card:hover,
-.landing-grid-card:focus-visible {
+.ecom-product-card:hover,
+.ecom-product-card:focus-visible {
   border-color: var(--edge-hover);
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--accent-purple-shadow);
+  box-shadow: 
+    0 8px 32px var(--accent-purple-shadow),
+    0 0 0 1px var(--edge-hover);
   transition-duration: var(--transition-reveal-in);
 }
 
-.landing-grid-image {
+.ecom-product-image {
   width: 100%;
   height: 280px;
   background: var(--black-elevated);
@@ -5277,241 +5176,233 @@ section.section-revealed::before {
   overflow: hidden;
 }
 
-.landing-grid-image img {
+.ecom-product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 500ms ease;
 }
 
-.landing-grid-card:hover .landing-grid-image img,
-.landing-grid-card:focus-visible .landing-grid-image img {
-  transform: scale(1.02);
+.ecom-product-card:hover .ecom-product-image img,
+.ecom-product-card:focus-visible .ecom-product-image img {
+  transform: scale(1.05);
 }
 
-.landing-grid-info {
+.ecom-product-info {
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.landing-grid-name {
+.ecom-product-name {
   font-size: 18px;
   font-weight: 400;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin: 0;
   line-height: 1.4;
 }
 
-.landing-grid-price {
+.ecom-product-price {
   font-size: 16px;
   font-weight: 400;
   color: var(--text-secondary);
+  margin: 0;
 }
 
-/* SECTION 5 — SANCTUARY REFERENCE */
-.landing-sanctuary {
-  padding: 100px 40px;
+/* D) SHOP BY SECTION TILES */
+.ecom-section-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.ecom-section-tile {
+  padding: 48px 32px;
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 12px;
+  text-decoration: none;
+  text-align: center;
+  transition: 
+    border-color var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease;
+}
+
+.ecom-section-tile:hover,
+.ecom-section-tile:focus-visible {
+  border-color: var(--edge-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--accent-purple-shadow);
+  transition-duration: var(--transition-reveal-in);
+}
+
+.ecom-section-tile-name {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.ecom-section-tile-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin: 0;
+}
+
+/* E) RESTRAINT NOTE */
+.ecom-restraint {
+  padding: 80px 40px;
   background: var(--black-gloss);
   text-align: center;
 }
 
-.landing-sanctuary-content {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.landing-sanctuary-title {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 24px;
-}
-
-.landing-sanctuary-body {
+.ecom-restraint-text {
   font-size: 17px;
   font-weight: 300;
   line-height: 1.8;
   color: var(--text-secondary);
-  margin-bottom: 32px;
-}
-
-.landing-sanctuary-link {
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: color var(--transition-reveal-out) ease;
-}
-
-.landing-sanctuary-link:hover,
-.landing-sanctuary-link:focus-visible {
-  color: var(--text-accent);
-  transition-duration: var(--transition-reveal-in);
-}
-
-/* SECTION 6 — EXIT */
-.landing-exit {
-  padding: 120px 40px;
-  background: var(--black-void);
-  text-align: center;
-}
-
-.landing-exit-content {
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-.landing-exit-statement {
-  font-size: 20px;
+/* F) FOOTER NOTE */
+.ecom-footer-note {
+  padding: 60px 40px;
+  background: var(--black-void);
+  text-align: center;
+  border-top: 1px solid var(--edge-subtle);
+}
+
+.ecom-footer-text {
+  font-size: 15px;
   font-weight: 300;
-  line-height: 1.8;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.ecom-footer-link {
   color: var(--text-secondary);
-  margin-bottom: 48px;
-}
-
-.landing-exit-links {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-
-.landing-exit-link {
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  color: var(--text-primary);
   text-decoration: none;
-  transition: color var(--transition-reveal-out) ease;
+  border-bottom: 1px solid transparent;
+  transition: 
+    color var(--transition-reveal-out) ease,
+    border-color var(--transition-reveal-out) ease;
 }
 
-.landing-exit-link-secondary {
-  color: var(--text-secondary);
-}
-
-.landing-exit-link:hover,
-.landing-exit-link:focus-visible {
+.ecom-footer-link:hover,
+.ecom-footer-link:focus-visible {
   color: var(--text-accent);
+  border-bottom-color: var(--accent-gold-edge);
   transition-duration: var(--transition-reveal-in);
 }
 
 /* MOBILE RESPONSIVE */
 @media (max-width: 1024px) {
-  .landing-proof-grid {
+  .ecom-product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .ecom-product-grid-6 {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .landing-grid-items {
+  .ecom-section-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .landing-hero {
+  .ecom-hero {
     min-height: auto;
     padding: 100px 24px 60px;
   }
   
-  .landing-hero-title {
+  .ecom-hero-title {
     font-size: 48px;
   }
   
-  .landing-hero-subhead {
-    font-size: 22px;
+  .ecom-hero-subhead {
+    font-size: 20px;
   }
   
-  .landing-hero-microline {
-    font-size: 14px;
+  .ecom-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .ecom-btn-primary,
+  .ecom-link-secondary {
+    text-align: center;
+  }
+  
+  .ecom-section {
+    padding: 80px 24px;
+  }
+  
+  .ecom-section-title {
+    font-size: 32px;
     margin-bottom: 48px;
   }
   
-  .landing-anchor {
-    max-width: 100%;
-  }
-  
-  .landing-anchor-image {
-    height: 280px;
-  }
-  
-  .landing-hero-links {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .landing-proof-row {
-    padding: 60px 24px;
-  }
-  
-  .landing-proof-grid {
+  .ecom-product-grid,
+  .ecom-product-grid-6 {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
   
-  .landing-proof-image {
-    height: 200px;
+  .ecom-product-image {
+    height: 220px;
   }
   
-  .landing-rule {
-    padding: 80px 24px;
-  }
-  
-  .landing-rule-body {
-    font-size: 16px;
-  }
-  
-  .landing-grid {
-    padding: 80px 24px;
-  }
-  
-  .landing-grid-items {
+  .ecom-section-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 16px;
   }
   
-  .landing-sanctuary {
-    padding: 80px 24px;
+  .ecom-section-tile {
+    padding: 36px 24px;
   }
   
-  .landing-sanctuary-body {
+  .ecom-restraint {
+    padding: 60px 24px;
+  }
+  
+  .ecom-restraint-text {
     font-size: 16px;
   }
   
-  .landing-exit {
-    padding: 100px 24px;
-  }
-  
-  .landing-exit-statement {
-    font-size: 18px;
-  }
-  
-  .landing-exit-links {
-    flex-direction: column;
-    gap: 16px;
+  .ecom-footer-note {
+    padding: 48px 24px;
   }
 }
 
 /* REDUCED MOTION SUPPORT */
 @media (prefers-reduced-motion: reduce) {
-  .landing-anchor,
-  .landing-proof-card,
-  .landing-grid-card,
-  .landing-hero-link,
-  .landing-sanctuary-link,
-  .landing-exit-link {
+  .ecom-hero-bg {
+    opacity: 0.06;
+    filter: grayscale(100%) contrast(1.0) brightness(0.8);
+  }
+  
+  .ecom-btn-primary,
+  .ecom-link-secondary,
+  .ecom-product-card,
+  .ecom-section-tile,
+  .ecom-footer-link {
     transition-duration: var(--transition-reveal-reduced);
   }
   
-  .landing-anchor-image img,
-  .landing-grid-image img {
+  .ecom-product-image img {
     transition: none;
   }
   
-  .landing-anchor:hover .landing-anchor-image img,
-  .landing-anchor:focus-visible .landing-anchor-image img,
-  .landing-grid-card:hover .landing-grid-image img,
-  .landing-grid-card:focus-visible .landing-grid-image img {
+  .ecom-product-card:hover .ecom-product-image img,
+  .ecom-product-card:focus-visible .ecom-product-image img {
     transform: none;
   }
 }
