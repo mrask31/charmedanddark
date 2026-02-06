@@ -2,25 +2,51 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
-import { initializeSectionReveals } from './utils/sectionReveal';
 import { getHouseProducts } from '@/lib/products';
 
+// Deterministic selection - no randomness
+const LANDING_SELECTION = [
+  'black-swan-whiskey-glass-set-of-4',
+  'black-wood-board-small',
+  'brass-and-glass-soap-dish',
+  'calming-crystal-candle-with-rough-amethyst',
+  'gothic-halloween-black-spider-teacup',
+  'gothic-striped-bat-wing-halloween-teacup',
+  'large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor',
+  'made-for-each-other-art-print',
+  'midnight-wing-dual-taper-candle-holder-matte-black'
+];
+
+// Anchor object - the hero product
+const ANCHOR_OBJECT_SLUG = 'calming-crystal-candle-with-rough-amethyst';
+
+// Proof row - first 4 items
+const PROOF_ROW_SLUGS = LANDING_SELECTION.slice(0, 4);
+
 export default function HomePage() {
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [anchorProduct, setAnchorProduct] = useState<any>(null);
+  const [proofProducts, setProofProducts] = useState<any[]>([]);
+  const [gridProducts, setGridProducts] = useState<any[]>([]);
   const [isSanctuary, setIsSanctuary] = useState(false);
 
-  // Initialize section reveal observer
   useEffect(() => {
-    const cleanup = initializeSectionReveals();
-    return cleanup;
-  }, []);
-
-  useEffect(() => {
-    // Get 6-9 featured products from the house
     const houseProducts = getHouseProducts();
-    const featured = houseProducts.slice(0, 9);
-    setFeaturedProducts(featured);
+    
+    // Get anchor object
+    const anchor = houseProducts.find(p => p.slug === ANCHOR_OBJECT_SLUG);
+    setAnchorProduct(anchor);
+    
+    // Get proof row products
+    const proof = PROOF_ROW_SLUGS
+      .map(slug => houseProducts.find(p => p.slug === slug))
+      .filter(Boolean);
+    setProofProducts(proof);
+    
+    // Get grid products (all 9)
+    const grid = LANDING_SELECTION
+      .map(slug => houseProducts.find(p => p.slug === slug))
+      .filter(Boolean);
+    setGridProducts(grid);
 
     // Check sanctuary status
     if (typeof window !== 'undefined') {
@@ -28,7 +54,6 @@ export default function HomePage() {
     }
   }, []);
 
-  // Format price as USD
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -38,175 +63,165 @@ export default function HomePage() {
   };
 
   return (
-    <>
-      <Head>
-        <title>Charmed & Dark | Objects made slowly</title>
-        <meta name="description" content="Objects made slowly. Nothing here is optimized to persuade you." />
-      </Head>
+    <main className="landing-v2">
+      {/* SECTION 1 — ABOVE THE FOLD: ANCHOR OBJECT + SUBTLE BACKGROUND */}
+      <section className="landing-hero">
+        <div className="landing-hero-bg" />
+        
+        <div className="landing-hero-content">
+          <h1 className="landing-hero-title">Charmed & Dark</h1>
+          <p className="landing-hero-subhead">Objects made slowly.</p>
+          <p className="landing-hero-microline">A house of pieces chosen to remain.</p>
 
-      <main className="landing">
-        {/* 1. ABOVE THE FOLD — IMMEDIATE SIGNAL */}
-        <section className="hero-hybrid">
-          <div className="hero-hybrid-content">
-            <h1 className="hero-hybrid-title">Charmed & Dark</h1>
-            
-            <p className="hero-hybrid-statement">
-              Objects made slowly. Nothing here is optimized to persuade you.
-            </p>
-            
-            <p className="hero-hybrid-statement">
-              We make pieces for people who already know what they're looking for.
-            </p>
+          {/* Anchor Object Card */}
+          {anchorProduct && (
+            <Link href={`/product/${anchorProduct.slug}`} className="landing-anchor">
+              <div className="landing-anchor-image">
+                {anchorProduct.images[0] && (
+                  <img 
+                    src={anchorProduct.images[0]} 
+                    alt={anchorProduct.name}
+                    loading="eager"
+                  />
+                )}
+              </div>
+              <div className="landing-anchor-info">
+                <h3 className="landing-anchor-name">{anchorProduct.name}</h3>
+                <p className="landing-anchor-price">
+                  {isSanctuary 
+                    ? formatPrice(anchorProduct.priceSanctuary)
+                    : formatPrice(anchorProduct.pricePublic)
+                  }
+                </p>
+              </div>
+            </Link>
+          )}
 
-            <div className="hero-hybrid-paths">
-              <Link href="/shop" className="path-primary">
-                View the Objects
-              </Link>
-              <Link href="#how-it-works" className="path-secondary">
-                Learn how this works
-              </Link>
-            </div>
+          <div className="landing-hero-links">
+            <Link href="/shop" className="landing-hero-link">
+              View the Shop →
+            </Link>
+            <a href="#house-grid" className="landing-hero-link landing-hero-link-secondary">
+              Explore the House →
+            </a>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* 2. PROOF OF RESTRAINT — WHY THIS FEELS DIFFERENT */}
-        <section className="proof-section">
-          <div className="proof-content">
-            <p className="proof-statement">
-              We don't use urgency. We don't personalize pricing or recommendations. We don't track you to convince you later.
-            </p>
-            
-            <p className="proof-statement">
-              Nothing on this site changes based on who you are, what you click, or how long you stay.
-            </p>
-            
-            <p className="proof-statement">
-              You're free to look. You're free to leave. You're free to return later.
-            </p>
-          </div>
-        </section>
+      {/* SECTION 2 — IMMEDIATE COMMERCIAL PROOF ROW */}
+      <section className="landing-proof-row">
+        <p className="landing-proof-label">Inside the House</p>
+        
+        <div className="landing-proof-grid">
+          {proofProducts.map(product => (
+            <Link 
+              href={`/product/${product.slug}`} 
+              key={product.id}
+              className="landing-proof-card"
+            >
+              <div className="landing-proof-image">
+                {product.images[0] && (
+                  <img 
+                    src={product.images[0]} 
+                    alt={product.name}
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              <div className="landing-proof-info">
+                <h3 className="landing-proof-name">{product.name}</h3>
+                <p className="landing-proof-price">
+                  {isSanctuary 
+                    ? formatPrice(product.priceSanctuary)
+                    : formatPrice(product.pricePublic)
+                  }
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-        {/* 3. OBJECTS FIRST — VALUE WITHOUT SELLING */}
-        <section className="objects-first">
-          <div className="objects-first-header">
-            <h2 className="objects-first-title">The House</h2>
-            <p className="objects-first-subtitle">
-              A small selection from the collection. Everything shown is available.
-            </p>
-          </div>
+      {/* SECTION 3 — SINGLE RESTRAINT BLOCK */}
+      <section className="landing-rule">
+        <div className="landing-rule-content">
+          <h2 className="landing-rule-title">A simple rule</h2>
+          <p className="landing-rule-body">
+            No urgency. No personalization.<br />
+            Nothing changes based on who is looking.
+          </p>
+        </div>
+      </section>
 
-          <div className="objects-first-grid">
-            {featuredProducts.map(product => (
-              <Link 
-                href={`/product/${product.slug}`} 
-                key={product.id}
-                className="featured-product-card"
-              >
-                <div className="featured-product-image">
-                  {product.images.length > 0 ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="featured-product-placeholder">
-                      <span>No Image</span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="featured-product-info">
-                  <h3 className="featured-product-name">{product.name}</h3>
-                  
-                  <div className="featured-product-pricing">
-                    {isSanctuary ? (
-                      <>
-                        <span className="featured-price sanctuary">{formatPrice(product.priceSanctuary)}</span>
-                        <span className="featured-price-label">Sanctuary</span>
-                      </>
-                    ) : (
-                      <span className="featured-price">{formatPrice(product.pricePublic)}</span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+      {/* SECTION 4 — THE HOUSE (CURATED GRID) */}
+      <section className="landing-grid" id="house-grid">
+        <div className="landing-grid-header">
+          <p className="landing-grid-intro">
+            A small selection from the collection. Everything shown is available.
+          </p>
+        </div>
 
-        {/* 4. HOW THE SHOP WORKS — CLARITY = CONVERSION */}
-        <section className="how-it-works" id="how-it-works">
-          <div className="how-it-works-content">
-            <p className="how-it-works-statement">
-              The shop is organized by where objects live, not by trend or theme.
-            </p>
-            
-            <p className="how-it-works-statement">
-              Nothing is hidden. Nothing appears or disappears. If it's here, it's for sale.
-            </p>
-            
-            <p className="how-it-works-statement">
-              You'll see the full collection inside.
-            </p>
-          </div>
-        </section>
+        <div className="landing-grid-items">
+          {gridProducts.map(product => (
+            <Link 
+              href={`/product/${product.slug}`} 
+              key={product.id}
+              className="landing-grid-card"
+            >
+              <div className="landing-grid-image">
+                {product.images[0] && (
+                  <img 
+                    src={product.images[0]} 
+                    alt={product.name}
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              <div className="landing-grid-info">
+                <h3 className="landing-grid-name">{product.name}</h3>
+                <p className="landing-grid-price">
+                  {isSanctuary 
+                    ? formatPrice(product.priceSanctuary)
+                    : formatPrice(product.pricePublic)
+                  }
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-        {/* 5. SANCTUARY — DEPTH, NOT A FEATURE */}
-        <section className="sanctuary-reference">
-          <div className="sanctuary-reference-content">
-            <p className="sanctuary-reference-statement">
-              Some visitors choose to enter the Sanctuary.
-            </p>
-            
-            <p className="sanctuary-reference-statement">
-              It's a private space. It doesn't sell anything. It doesn't learn from you. It doesn't remember you.
-            </p>
-            
-            <p className="sanctuary-reference-statement">
-              It exists separately from the shop.
-            </p>
-            
-            <p className="sanctuary-reference-statement">
-              You don't need it to purchase. You don't need to understand it to ignore it.
-            </p>
+      {/* SECTION 5 — SANCTUARY REFERENCE (COLD, OPTIONAL) */}
+      <section className="landing-sanctuary">
+        <div className="landing-sanctuary-content">
+          <h2 className="landing-sanctuary-title">The Sanctuary</h2>
+          <p className="landing-sanctuary-body">
+            Some visitors enter. Others do not.<br />
+            It exists separately from the shop.
+          </p>
+          <Link href="/mirror" className="landing-sanctuary-link">
+            Enter the Sanctuary →
+          </Link>
+        </div>
+      </section>
 
-            <p className="sanctuary-reference-invitation">
-              Those who wish may enter.
-            </p>
-
-            <Link href="/mirror" className="sanctuary-reference-link">
-              Enter the Sanctuary
+      {/* SECTION 6 — FINAL BLOCK (AUTHORITY EXIT) */}
+      <section className="landing-exit">
+        <div className="landing-exit-content">
+          <p className="landing-exit-statement">
+            The objects will be here.<br />
+            Nothing unlocks. Nothing expires.
+          </p>
+          <div className="landing-exit-links">
+            <Link href="/shop" className="landing-exit-link">
+              View the Shop →
+            </Link>
+            <Link href="/" className="landing-exit-link landing-exit-link-secondary">
+              Leave the House →
             </Link>
           </div>
-        </section>
-
-        {/* 6. EXIT WITH AGENCY — PERMISSION TO LEAVE */}
-        <section className="exit-section">
-          <div className="exit-content">
-            <p className="exit-statement">
-              You don't need to decide today.
-            </p>
-            
-            <p className="exit-statement">
-              The objects will be here. Nothing unlocks. Nothing expires.
-            </p>
-            
-            <p className="exit-statement">
-              When you're ready, you'll know.
-            </p>
-
-            <div className="exit-paths">
-              <Link href="/shop" className="exit-path">
-                View the Shop
-              </Link>
-              <Link href="/" className="exit-path">
-                Return Later
-              </Link>
-            </div>
-          </div>
-        </section>
-      </main>
-    </>
+        </div>
+      </section>
+    </main>
   );
 }
