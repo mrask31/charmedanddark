@@ -12,6 +12,8 @@ import {
   getInStockProducts,
   getCategoriesWithCounts,
   searchProducts,
+  validateAllProducts,
+  validateProductCategory,
   type Product,
   type ProductCategory,
   type ProductStatus
@@ -67,7 +69,8 @@ describe('Product Data Foundation', () => {
         "Wall Objects",
         "Decor Objects",
         "Table & Display",
-        "Objects of Use"
+        "Objects of Use",
+        "Holiday"
       ];
 
       products.forEach(product => {
@@ -302,3 +305,28 @@ describe('Product Data Foundation', () => {
     });
   });
 });
+
+
+  describe('Shop Canon Guardrail', () => {
+    it('should validate all products have canonical shop section assignment', () => {
+      // This test enforces the shop canon guardrail
+      // Every product MUST be assigned to a canonical shop section
+      // No inference, no fallbacks, no exceptions
+      expect(() => validateAllProducts()).not.toThrow();
+    });
+
+    it('should validate individual product categories', () => {
+      products.forEach(product => {
+        expect(() => validateProductCategory(product)).not.toThrow();
+      });
+    });
+
+    it('should reject products with invalid categories', () => {
+      const invalidProduct = {
+        ...products[0],
+        category: 'Invalid Category' as ProductCategory
+      };
+      
+      expect(() => validateProductCategory(invalidProduct)).toThrow();
+    });
+  });

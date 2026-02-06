@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getHouseProducts, type ProductCategory, type Product } from '@/lib/products';
 
-// Section configuration - explicit ordering and naming (5 sections only)
+// Section configuration - explicit ordering and naming (7 canonical sections)
 const SECTIONS: { title: string; category: ProductCategory }[] = [
   { title: "Objects of Use", category: "Objects of Use" },
   { title: "Ritual Drinkware", category: "Ritual Drinkware" },
+  { title: "Candles & Candle Holders", category: "Candles & Scent" },
   { title: "Table & Display", category: "Table & Display" },
   { title: "Wall Objects", category: "Wall Objects" },
-  { title: "Decor Objects", category: "Decor Objects" }
+  { title: "Decor Objects", category: "Decor Objects" },
+  { title: "Holiday", category: "Holiday" }
 ];
 
 const ITEMS_PER_PAGE = 8;
@@ -29,14 +31,11 @@ export default function ShopPage() {
   // Get all House products (realm === 'house' AND status !== 'archive')
   const houseProducts = getHouseProducts();
 
-  // Group products by category
+  // Group products by category - ALL products are available for sale
   const productsByCategory = SECTIONS.reduce((acc, section) => {
-    acc[section.category] = houseProducts.filter(p => p.category === section.category && p.inStock);
+    acc[section.category] = houseProducts.filter(p => p.category === section.category);
     return acc;
   }, {} as Record<ProductCategory, Product[]>);
-
-  // Get unavailable products for "Gone Quiet" section
-  const unavailableProducts = houseProducts.filter(p => !p.inStock);
 
   // Format price as USD
   const formatPrice = (price: number) => {
@@ -184,100 +183,6 @@ export default function ShopPage() {
         );
       })}
 
-      {/* Gone Quiet Section */}
-      {unavailableProducts.length > 0 && (
-        <section className="shop-section shop-section-gone-quiet">
-          <div className="shop-section-header">
-            <h2 className="shop-section-title">Gone Quiet</h2>
-            <p className="shop-section-count">{unavailableProducts.length} {unavailableProducts.length === 1 ? 'object' : 'objects'}</p>
-          </div>
-
-          <div className="shop-grid">
-            {getPaginatedProducts(unavailableProducts, 'gone-quiet').map(product => (
-              <Link 
-                href={`/product/${product.slug}`} 
-                key={product.id}
-                className="product-card product-card-unavailable"
-                tabIndex={0}
-              >
-                <div className="product-image">
-                  {product.images.length > 0 ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="product-image-placeholder">
-                      <span>No Image</span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="product-info">
-                  <h2 className="product-name">{product.name}</h2>
-                  <p className="product-short-description">{product.shortDescription}</p>
-                  
-                  <div className="product-pricing">
-                    {isSanctuary ? (
-                      <>
-                        <div className="price-row sanctuary primary">
-                          <span className="price-label">Sanctuary</span>
-                          <span className="price-sanctuary">{formatPrice(product.priceSanctuary)}</span>
-                        </div>
-                        <div className="price-row secondary">
-                          <span className="price-label">Public</span>
-                          <span className="price-public">{formatPrice(product.pricePublic)}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="price-row">
-                          <span className="price-label">Public</span>
-                          <span className="price-public">{formatPrice(product.pricePublic)}</span>
-                        </div>
-                        <div className="price-row sanctuary">
-                          <span className="price-label">Sanctuary</span>
-                          <span className="price-sanctuary">{formatPrice(product.priceSanctuary)}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <div className="product-availability">
-                    <span className="out-of-stock">Gone Quiet</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {/* Pagination for Gone Quiet */}
-          {getTotalPages(unavailableProducts) > 1 && (
-            <div className="shop-section-pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => setPage('gone-quiet', getCurrentPage('gone-quiet') - 1)}
-                disabled={getCurrentPage('gone-quiet') === 1}
-                aria-label="Previous page"
-              >
-                Previous
-              </button>
-              <span className="pagination-info">
-                Page {getCurrentPage('gone-quiet')} / {getTotalPages(unavailableProducts)}
-              </span>
-              <button
-                className="pagination-btn"
-                onClick={() => setPage('gone-quiet', getCurrentPage('gone-quiet') + 1)}
-                disabled={getCurrentPage('gone-quiet') === getTotalPages(unavailableProducts)}
-                aria-label="Next page"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </section>
-      )}
     </div>
   );
 }

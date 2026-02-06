@@ -21,7 +21,8 @@ export type ProductCategory =
   | "Wall Objects"
   | "Decor Objects"
   | "Table & Display"
-  | "Objects of Use";
+  | "Objects of Use"
+  | "Holiday";
 
 export type MirrorRole =
   | 'containment'
@@ -146,7 +147,7 @@ export const products: Product[] = [
     slug: "calming-crystal-candle-with-rough-amethyst",
     name: "The Amethyst Spire",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 15.00,
     priceSanctuary: calculateSanctuaryPrice(15.00),
@@ -182,7 +183,7 @@ export const products: Product[] = [
     slug: "creepy-nun-glass-ornament",
     name: "The Unholy Sister",
     realm: "house",
-    category: "Decor Objects",
+    category: "Holiday",
     status: "core",
     pricePublic: 15.00,
     priceSanctuary: calculateSanctuaryPrice(15.00),
@@ -249,7 +250,7 @@ export const products: Product[] = [
     slug: "frankenstein-glass-ornament",
     name: "Frankenstein's Holiday",
     realm: "house",
-    category: "Decor Objects",
+    category: "Holiday",
     status: "core",
     pricePublic: 15.00,
     priceSanctuary: calculateSanctuaryPrice(15.00),
@@ -303,7 +304,7 @@ export const products: Product[] = [
     slug: "holiday-tree-ornaments",
     name: "The Gothic Legends Collection",
     realm: "house",
-    category: "Decor Objects",
+    category: "Holiday",
     status: "core",
     pricePublic: 11.00,
     priceSanctuary: calculateSanctuaryPrice(11.00),
@@ -352,7 +353,7 @@ export const products: Product[] = [
     slug: "halloween-skeleton-black-and-white-ornaments",
     name: "The Monochrome Macabre",
     realm: "house",
-    category: "Decor Objects",
+    category: "Holiday",
     status: "core",
     pricePublic: 45.00,
     priceSanctuary: calculateSanctuaryPrice(45.00),
@@ -499,9 +500,9 @@ export const products: Product[] = [
   {
     id: "midnight-wing-dual-taper-candle-holder-matte-black",
     slug: "midnight-wing-dual-taper-candle-holder-matte-black",
-    name: "Midnight Wing Dual-Taper Candle Holder - Matte Black",
+    name: "Midnight Wing — Dual-Taper Candle Holder (Matte Black)",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 34.00,
     priceSanctuary: calculateSanctuaryPrice(34.00),
@@ -553,7 +554,7 @@ export const products: Product[] = [
   {
     id: "mesa-18-piece-stoneware-dinnerware-set",
     slug: "mesa-18-piece-stoneware-dinnerware-set",
-    name: "The Mesa Ritual Collection",
+    name: "The Mesa Ritual Table Collection",
     realm: "house",
     category: "Table & Display",
     status: "core",
@@ -571,7 +572,7 @@ export const products: Product[] = [
   {
     id: "matte-black-cheese-knives-book-box",
     slug: "matte-black-cheese-knives-book-box",
-    name: "The Midnight Feast",
+    name: "The Midnight Feast Display Set",
     realm: "house",
     category: "Table & Display",
     status: "core",
@@ -609,7 +610,7 @@ export const products: Product[] = [
     slug: "protection-crystal-candle-with-rough-black-obsidian",
     name: "The Obsidian Tower",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 15.00,
     priceSanctuary: calculateSanctuaryPrice(15.00),
@@ -694,7 +695,7 @@ export const products: Product[] = [
     slug: "set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
     name: "The Shadow Stripe Taper Trio",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 12.00,
     priceSanctuary: calculateSanctuaryPrice(12.00),
@@ -730,7 +731,7 @@ export const products: Product[] = [
     slug: "set-of-3-starry-night-celestial-taper-candles",
     name: "The Starry Night Taper Trio",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 12.00,
     priceSanctuary: calculateSanctuaryPrice(12.00),
@@ -855,7 +856,7 @@ export const products: Product[] = [
     slug: "wicked-witch-crescent-moon-glass-ornament",
     name: "The Midnight Flight",
     realm: "house",
-    category: "Decor Objects",
+    category: "Holiday",
     status: "core",
     pricePublic: 15.00,
     priceSanctuary: calculateSanctuaryPrice(15.00),
@@ -945,7 +946,7 @@ export const products: Product[] = [
     slug: "xn-the-blood-moon-spiral-solid-crimson-taper-set-4-pack-ps38a",
     name: "The Blood Moon Spiral",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 34.00,
     priceSanctuary: calculateSanctuaryPrice(34.00),
@@ -963,7 +964,7 @@ export const products: Product[] = [
     slug: "xn-the-obsidian-twist-glossy-black-spiral-taper-candles-pair-cs61b",
     name: "The Obsidian Twist",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 20.00,
     priceSanctuary: calculateSanctuaryPrice(20.00),
@@ -981,7 +982,7 @@ export const products: Product[] = [
     slug: "xn-the-crimson-fade-spiral-metallic-blood-ombre-tapers-4-pack-fe32b",
     name: "The Crimson Fade Spiral",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 38.00,
     priceSanctuary: calculateSanctuaryPrice(38.00),
@@ -999,7 +1000,7 @@ export const products: Product[] = [
     slug: "xn-the-gloomy-gingerbread-spooky-gothic-creepmas-ornament-qs38a",
     name: "The Gloomy Gingerbread",
     realm: "house",
-    category: "Decor Objects",
+    category: "Holiday",
     status: "core",
     pricePublic: 12.00,
     priceSanctuary: calculateSanctuaryPrice(12.00),
@@ -1089,7 +1090,7 @@ export const products: Product[] = [
     slug: "xn-the-ravens-watch-pillar-stand-gothic-candle-holder-5e75aqi",
     name: "The Raven's Watch Pillar Stand",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 22.00,
     priceSanctuary: calculateSanctuaryPrice(22.00),
@@ -1107,7 +1108,7 @@ export const products: Product[] = [
     slug: "xn-the-shadow-spire-trio-matte-black-3-piece-candlestick-set-jl30b",
     name: "The Shadow Spire Trio",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 58.00,
     priceSanctuary: calculateSanctuaryPrice(58.00),
@@ -1125,7 +1126,7 @@ export const products: Product[] = [
     slug: "xn-the-serpents-coil-sculpted-3d-snake-taper-candles-pair-gl30b",
     name: "The Serpent's Coil",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 24.00,
     priceSanctuary: calculateSanctuaryPrice(24.00),
@@ -1160,7 +1161,7 @@ export const products: Product[] = [
     slug: "xn-the-twilight-blush-ritual-candle-black-rose-cork-8e75a",
     name: "The Twilight Blush Ritual Candle",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 16.00,
     priceSanctuary: calculateSanctuaryPrice(16.00),
@@ -1178,7 +1179,7 @@ export const products: Product[] = [
     slug: "xn-the-verdant-gradient-spiral-taper-candle-set-4-pack-q667a",
     name: "The Verdant Gradient",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 36.00,
     priceSanctuary: calculateSanctuaryPrice(36.00),
@@ -1196,7 +1197,7 @@ export const products: Product[] = [
     slug: "xn-the-witching-hour-ritual-candle-white-sage-cleansing-blend-r690b",
     name: "The Witching Hour Ritual Candle",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 16.00,
     priceSanctuary: calculateSanctuaryPrice(16.00),
@@ -1278,4 +1279,76 @@ export function searchProducts(query: string): Product[] {
     product.description.ritualIntro.toLowerCase().includes(lowerQuery) ||
     product.description.whoFor.toLowerCase().includes(lowerQuery)
   );
+}
+
+
+// ============================================
+// SHOP CANON GUARDRAIL
+// ============================================
+
+/**
+ * Canonical shop sections - these are the ONLY valid sections for the shop page.
+ * Every product MUST be assigned to exactly one of these categories.
+ * 
+ * DO NOT:
+ * - Infer category from product name, tags, or materials
+ * - Create fallback or "misc" categories
+ * - Allow products without explicit category assignment
+ * 
+ * This guardrail prevents future drift from the canonical shop layout.
+ */
+const CANONICAL_SHOP_SECTIONS: readonly ProductCategory[] = [
+  "Objects of Use",
+  "Ritual Drinkware",
+  "Candles & Scent",
+  "Table & Display",
+  "Wall Objects",
+  "Decor Objects",
+  "Holiday"
+] as const;
+
+/**
+ * Validates that a product has a valid shop section assignment.
+ * Throws an error if the product category is not in the canonical list.
+ */
+export function validateProductCategory(product: Product): void {
+  if (!CANONICAL_SHOP_SECTIONS.includes(product.category)) {
+    throw new Error(
+      `Product "${product.name}" (${product.id}) has invalid category "${product.category}". ` +
+      `Must be one of: ${CANONICAL_SHOP_SECTIONS.join(', ')}`
+    );
+  }
+}
+
+/**
+ * Validates all products in the catalog.
+ * Call this during build/test to ensure no products lack valid section assignment.
+ */
+export function validateAllProducts(): void {
+  const errors: string[] = [];
+  
+  products.forEach(product => {
+    try {
+      validateProductCategory(product);
+    } catch (error) {
+      if (error instanceof Error) {
+        errors.push(error.message);
+      }
+    }
+  });
+  
+  if (errors.length > 0) {
+    throw new Error(
+      `Product validation failed:\n${errors.join('\n')}\n\n` +
+      `All products must be explicitly assigned to a canonical shop section.`
+    );
+  }
+}
+
+/**
+ * Gets all canonical shop sections.
+ * Use this to render the shop page sections in the correct order.
+ */
+export function getCanonicalShopSections(): readonly ProductCategory[] {
+  return CANONICAL_SHOP_SECTIONS;
 }
