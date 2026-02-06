@@ -27,13 +27,16 @@ Implemented the Sanctuary Ambience System v1.0 per the locked specification in `
 - Server-safe defaults (defaults to 'day' state)
 - No randomness, no personalization, fully deterministic
 
-### 2. Sanctuary Layout Wrapper
+### 2. Sanctuary Layout Wrapper (Hardened)
 
 **File**: `app/(sanctuary)/layout.tsx`
 
 - Client-side wrapper that applies ambience to all Sanctuary pages
+- **Server-safe**: Renders with 'day' default on server
+- **No flash**: Consistent class on server and initial client render
+- **Smooth reconciliation**: Updates to local time only once after hydration
+- **Proper transitions**: 400ms ease-in-out (within 300-500ms spec)
 - Updates ambience state every 60 seconds
-- Applies CSS class based on current ambient state
 - Handles server-side rendering gracefully
 
 ### 3. Page Structure Reorganization

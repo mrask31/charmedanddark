@@ -4781,7 +4781,14 @@ section.section-revealed::before {
 .sanctuary-wrapper {
   min-height: 100vh;
   position: relative;
-  transition: background 500ms ease;
+  /* Smooth transition between ambience states (300-500ms per spec) */
+  transition: background 400ms ease-in-out;
+}
+
+/* Prevent flash on first paint - wrapper starts with day state variables */
+.sanctuary-wrapper::before {
+  /* Smooth opacity transition when ambience changes */
+  transition: opacity 400ms ease-in-out;
 }
 
 /* Dawn State (5:00 AM - 8:00 AM) */
