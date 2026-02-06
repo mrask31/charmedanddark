@@ -62,6 +62,19 @@
   --transition-reveal-out: 500ms;
   --transition-reveal-fast: 150ms;
   --transition-reveal-reduced: 120ms;
+
+  /* ============================================
+     SANCTUARY AMBIENCE SYSTEM
+     ============================================ */
+  
+  /* Default ambience values (day state) */
+  --ambience-bg: var(--black-surface);
+  --ambience-accent-opacity: 0.5;
+  --ambience-shadow-depth: 0.6;
+  --ambience-glow-intensity: 0.4;
+  --ambience-animation-speed: 0.7;
+  --ambience-animation-frequency: 240s;
+  --ambience-translate-range: 1.5%;
 }
 
 /* ============================================
@@ -4757,4 +4770,175 @@ section.section-revealed::before {
     top: 1.5rem;
     right: 1.5rem;
   }
+}
+
+
+/* ============================================
+   SANCTUARY AMBIENCE STATES
+   ============================================ */
+
+/* Sanctuary wrapper - applies ambience to all sanctuary pages */
+.sanctuary-wrapper {
+  min-height: 100vh;
+  position: relative;
+  transition: background 500ms ease;
+}
+
+/* Dawn State (5:00 AM - 8:00 AM) */
+.sanctuary-ambience-dawn {
+  --ambience-bg: var(--black-gloss);
+  --ambience-accent-opacity: 0.6;
+  --ambience-shadow-depth: 0.7;
+  --ambience-glow-intensity: 0.5;
+  --ambience-animation-speed: 0.8;
+  --ambience-animation-frequency: 180s;
+  --ambience-translate-range: 2%;
+}
+
+.sanctuary-ambience-dawn::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(30, 25, 28, calc(0.08 * var(--ambience-accent-opacity))) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(25, 20, 25, calc(0.06 * var(--ambience-accent-opacity))) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambienceDrift var(--ambience-animation-frequency) ease-in-out infinite;
+  opacity: calc(0.6 * var(--ambience-shadow-depth));
+}
+
+/* Day State (8:00 AM - 5:00 PM) */
+.sanctuary-ambience-day {
+  --ambience-bg: var(--black-surface);
+  --ambience-accent-opacity: 0.5;
+  --ambience-shadow-depth: 0.6;
+  --ambience-glow-intensity: 0.4;
+  --ambience-animation-speed: 0.7;
+  --ambience-animation-frequency: 240s;
+  --ambience-translate-range: 1.5%;
+}
+
+.sanctuary-ambience-day::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(30, 25, 28, calc(0.06 * var(--ambience-accent-opacity))) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(25, 20, 25, calc(0.04 * var(--ambience-accent-opacity))) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambienceDrift var(--ambience-animation-frequency) ease-in-out infinite;
+  opacity: calc(0.5 * var(--ambience-shadow-depth));
+}
+
+/* Dusk State (5:00 PM - 9:00 PM) */
+.sanctuary-ambience-dusk {
+  --ambience-bg: var(--black-gloss);
+  --ambience-accent-opacity: 0.8;
+  --ambience-shadow-depth: 0.85;
+  --ambience-glow-intensity: 0.7;
+  --ambience-animation-speed: 0.9;
+  --ambience-animation-frequency: 150s;
+  --ambience-translate-range: 2.5%;
+}
+
+.sanctuary-ambience-dusk::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(30, 25, 28, calc(0.10 * var(--ambience-accent-opacity))) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(25, 20, 25, calc(0.08 * var(--ambience-accent-opacity))) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambienceDrift var(--ambience-animation-frequency) ease-in-out infinite;
+  opacity: calc(0.7 * var(--ambience-shadow-depth));
+}
+
+/* Night State (9:00 PM - 5:00 AM) */
+.sanctuary-ambience-night {
+  --ambience-bg: var(--black-void);
+  --ambience-accent-opacity: 1.0;
+  --ambience-shadow-depth: 1.0;
+  --ambience-glow-intensity: 0.9;
+  --ambience-animation-speed: 1.0;
+  --ambience-animation-frequency: 120s;
+  --ambience-translate-range: 3%;
+}
+
+.sanctuary-ambience-night::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(30, 25, 28, calc(0.12 * var(--ambience-accent-opacity))) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(25, 20, 25, calc(0.10 * var(--ambience-accent-opacity))) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambienceDrift var(--ambience-animation-frequency) ease-in-out infinite;
+  opacity: calc(0.8 * var(--ambience-shadow-depth));
+}
+
+/* Ambience drift animation - slow, subtle movement */
+@keyframes ambienceDrift {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+  }
+  25% { 
+    transform: translate(var(--ambience-translate-range), calc(var(--ambience-translate-range) * -0.7)) scale(1.01);
+  }
+  50% { 
+    transform: translate(calc(var(--ambience-translate-range) * -0.7), var(--ambience-translate-range)) scale(0.99);
+  }
+  75% { 
+    transform: translate(var(--ambience-translate-range), calc(var(--ambience-translate-range) * -0.8)) scale(1.005);
+  }
+}
+
+/* Respect reduced motion - disable ambience animations */
+@media (prefers-reduced-motion: reduce) {
+  .sanctuary-ambience-dawn::before,
+  .sanctuary-ambience-day::before,
+  .sanctuary-ambience-dusk::before,
+  .sanctuary-ambience-night::before {
+    animation: none;
+    opacity: calc(0.3 * var(--ambience-shadow-depth));
+  }
+  
+  @keyframes ambienceDrift {
+    0%, 100% { transform: none; }
+  }
+}
+
+/* Apply ambience background to sanctuary pages */
+.sanctuary-wrapper .mirror-page,
+.sanctuary-wrapper .grimoire-page,
+.sanctuary-wrapper .grimoire-gate {
+  background: var(--ambience-bg);
+}
+
+/* Adjust accent reveals based on ambience state */
+.sanctuary-wrapper .mirror-reading-card,
+.sanctuary-wrapper .grimoire-page-card:hover {
+  box-shadow: 
+    0 0 calc(30px * var(--ambience-glow-intensity)) var(--accent-red-glow),
+    0 8px calc(24px * var(--ambience-shadow-depth)) var(--accent-purple-shadow);
+}
+
+.sanctuary-wrapper .mirror-state-button.selected,
+.sanctuary-wrapper .reading-object-card:hover {
+  box-shadow: 0 0 calc(15px * var(--ambience-glow-intensity)) var(--accent-red-glow);
 }
