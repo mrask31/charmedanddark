@@ -1018,7 +1018,7 @@ export const products: Product[] = [
     slug: "xn-the-midnight-bloom-tealight-holder-matte-black-resin-rose-wl30b",
     name: "The Midnight Bloom Tealight Holder",
     realm: "house",
-    category: "Table & Display",
+    category: "Candles & Scent",
     status: "core",
     pricePublic: 12.00,
     priceSanctuary: calculateSanctuaryPrice(12.00),
