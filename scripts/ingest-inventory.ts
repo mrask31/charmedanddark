@@ -1,7 +1,7 @@
 /**
  * Inventory Ingestion Script
  * 
- * Reads canonical_products_pass1.csv and product_variants_pass1.csv
+ * Reads data/canonical_products_pass1.csv and data/product_variants_pass1.csv
  * Generates complete TypeScript data modules for lib/products.ts and lib/apparel.ts
  */
 
@@ -621,8 +621,8 @@ function main() {
   
   // Parse CSVs
   console.log('📖 Reading CSV files...');
-  const canonicalProducts = parseProductsCSV('canonical_products_pass1.csv');
-  const variantRows = parseVariantsCSV('product_variants_pass1.csv');
+  const canonicalProducts = parseProductsCSV('data/canonical_products_pass1.csv');
+  const variantRows = parseVariantsCSV('data/product_variants_pass1.csv');
   
   console.log(`✅ Parsed ${canonicalProducts.length} canonical products`);
   console.log(`✅ Parsed ${variantRows.length} variant SKUs\n`);

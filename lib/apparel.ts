@@ -51,16 +51,6 @@ export interface ApparelItem {
 // ============================================
 
 /**
- * Convert name to URL-safe slug
- */
-function createSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-/**
  * Calculate Sanctuary pricing (10% off public price)
  */
 function calculateSanctuaryPrice(publicPrice: number): number {

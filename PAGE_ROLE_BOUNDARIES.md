@@ -62,19 +62,21 @@ This is the north star. Everything else follows from this.
 - ❌ Dynamic recommendations
 - ❌ State-based visual changes
 
-**Current Status**: ⚠️ VIOLATION DETECTED
+**Current Status**: ✅ FIXED (February 5, 2026)
 
-**Issues Found**:
-1. **Mirror Preview on Home Page** (`app/page.tsx` lines 18-30)
-   - Interactive Mirror form that accepts user input
-   - Shows reading based on user feeling
-   - Displays product recommendation
-   - **This is reactive behavior on a commerce-adjacent page**
+**Previous Issues**:
+1. **Mirror Preview on Home Page** (`app/page.tsx` - FIXED)
+   - ~~Interactive Mirror form that accepts user input~~
+   - ~~Shows reading based on user feeling~~
+   - ~~Displays product recommendation~~
+   - ~~This is reactive behavior on a commerce-adjacent page~~
 
-**Required Fix**:
-- Remove Mirror preview from home page
-- Replace with static description and link to `/mirror`
-- Keep Mirror functionality exclusively in `/mirror` (Sanctuary page)
+**Fix Applied**:
+- Removed interactive Mirror preview
+- Replaced with static invitation section (`.mirror-invitation`)
+- No input fields, no previews, no interactivity
+- Ghost-style affordance for navigation only
+- Complies with page-role doctrine
 
 ---
 
@@ -125,9 +127,10 @@ This is the north star. Everything else follows from this.
 - Sanctuary price preview (read-only)
 - No reactive behavior
 
-### ⚠️ `/` (Home Page) - VIOLATION
-**Issue**: Interactive Mirror preview with reactive behavior
-**Fix Required**: Remove Mirror preview, replace with static link
+### ⚠️ `/` (Home Page) - COMPLIANT (Fixed)
+**Previous Issue**: Interactive Mirror preview with reactive behavior  
+**Fix Applied**: Replaced with static invitation section (February 5, 2026)  
+**Current Status**: ✅ Compliant - No interactivity, no AI behavior, quiet invitation only
 
 ### ✅ `/mirror` - COMPLIANT
 - Reactive emotional state selection (allowed in Sanctuary)
@@ -144,11 +147,11 @@ This is the north star. Everything else follows from this.
 
 ## Required Changes
 
-### 1. Remove Mirror Preview from Home Page
+### ~~1. Remove Mirror Preview from Home Page~~ ✅ COMPLETE
 
-**File**: `app/page.tsx`
+**Status**: Fixed on February 5, 2026
 
-**Current Code** (lines 18-30, 48-95):
+**Previous Code** (removed):
 ```typescript
 const [feeling, setFeeling] = useState('');
 const [showReading, setShowReading] = useState(false);
@@ -164,34 +167,46 @@ const handleMirrorSubmit = (e: React.FormEvent) => {
 // ... Mirror section with interactive form
 ```
 
-**Required Change**:
-Replace interactive Mirror preview with static description:
-
+**Current Implementation**:
 ```typescript
-{/* SECTION 2: THE MIRROR */}
-<section className="mirror-section">
-  <div className="mirror-container">
-    <h2 className="mirror-headline">The Mirror</h2>
+{/* SECTION 2: THE MIRROR - Quiet Invitation */}
+<section className="mirror-invitation">
+  <div className="mirror-chamber">
+    <h2 className="mirror-title">The Mirror</h2>
     
-    <p className="mirror-description">
-      Your mood. Your object. The Mirror recommends what you need.
+    <p className="mirror-body">
+      The Mirror exists beyond the shop.
     </p>
     
-    <p className="mirror-note">
-      Not random. Not a feed. Just you and the recommendation.
+    <p className="mirror-body">
+      It is a private, reflective space for members only — a single moment 
+      of response, not a conversation, and never a transaction.
+    </p>
+    
+    <p className="mirror-body">
+      Nothing you say here is used to sell, suggest, or persuade.
     </p>
 
-    <div className="mirror-preview">
-      <p className="mirror-preview-text">
-        The Mirror is a private place to pause. It reflects without fixing.
-      </p>
-      <Link href="/mirror" className="mirror-preview-cta">
-        Enter The Mirror →
-      </Link>
-    </div>
+    <p className="mirror-invitation-line">
+      Those who wish may enter the Sanctuary.
+    </p>
+
+    <a href="/mirror" className="mirror-threshold">
+      Enter the Sanctuary
+    </a>
   </div>
 </section>
 ```
+
+**Changes**:
+- ✅ Removed all interactive elements (useState, forms, inputs)
+- ✅ Replaced with static invitation text
+- ✅ Ghost-style affordance (not a button or blue link)
+- ✅ No functionality language
+- ✅ Serif typography for calm, restrained tone
+- ✅ Subtle hover reveals affordance only
+
+See `docs/implementation/MIRROR_INVITATION_REFINEMENT.md` for complete implementation details.
 
 ---
 
@@ -253,11 +268,18 @@ Before deploying any new feature, verify:
 
 ## Summary
 
-**Compliant Pages**: 5/6
-**Violations**: 1 (Home page Mirror preview)
-**Required Fixes**: 1 (Remove interactive Mirror from home page)
+**Compliant Pages**: 6/6 ✅  
+**Violations**: 0  
+**Status**: All page-role boundaries enforced correctly
 
-Once the home page Mirror preview is removed and replaced with a static link, all page-role boundaries will be enforced correctly.
+All pages now comply with the page-role doctrine:
+- Commerce pages remain static and deterministic
+- Home page has no interactive reactive elements
+- Sanctuary pages are the only place with reactive behavior
+- No emotional interpretation on pages with prices
+
+**Last Updated**: February 5, 2026  
+**Last Violation Fixed**: Mirror preview removed from home page
 
 ---
 

@@ -54,30 +54,30 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 2: THE MIRROR */}
-        <section className="mirror-section">
-          <div className="mirror-container">
-            <h2 className="mirror-headline">The Mirror</h2>
+        {/* SECTION 2: THE MIRROR - Quiet Invitation */}
+        <section className="mirror-invitation">
+          <div className="mirror-chamber">
+            <h2 className="mirror-title">The Mirror</h2>
             
-            <p className="mirror-description">
-              Your mood. Your object. The Mirror recommends what you need.
+            <p className="mirror-body">
+              The Mirror exists beyond the shop.
             </p>
             
-            <p className="mirror-note">
-              Not random. Not a feed. Just you and the recommendation.
+            <p className="mirror-body">
+              It is a private, reflective space for members only — a single moment of response, not a conversation, and never a transaction.
+            </p>
+            
+            <p className="mirror-body">
+              Nothing you say here is used to sell, suggest, or persuade.
             </p>
 
-            <div className="mirror-preview">
-              <p className="mirror-preview-text">
-                The Mirror is a private place to pause. It reflects without fixing.
-              </p>
-              <p className="mirror-preview-examples">
-                "I feel overwhelmed" · "I need stillness" · "I want my space to feel calm"
-              </p>
-              <Link href="/mirror" className="mirror-preview-cta">
-                Enter The Mirror →
-              </Link>
-            </div>
+            <p className="mirror-invitation-line">
+              Those who wish may enter the Sanctuary.
+            </p>
+
+            <a href="/mirror" className="mirror-threshold">
+              Enter the Sanctuary
+            </a>
           </div>
         </section>
 

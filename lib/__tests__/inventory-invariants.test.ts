@@ -107,7 +107,7 @@ describe('Inventory Invariants', () => {
       if (houseCount < 54) {
         throw new Error(
           `REGRESSION DETECTED: House inventory has dropped to ${houseCount} (minimum: 54). ` +
-          `Check canonical_products_pass1.csv and scripts/ingest-inventory.ts for changes.`
+          `Check data/canonical_products_pass1.csv and scripts/ingest-inventory.ts for changes.`
         );
       }
       

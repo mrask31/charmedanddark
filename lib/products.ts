@@ -4,7 +4,7 @@
  * This module serves as the single source of truth for product data
  * until Shopify integration is implemented.
  * 
- * AUTO-GENERATED from canonical_products_pass1.csv and product_variants_pass1.csv
+ * AUTO-GENERATED from data/canonical_products_pass1.csv and data/product_variants_pass1.csv
  */
 
 // ============================================

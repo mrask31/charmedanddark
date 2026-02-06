@@ -69,7 +69,7 @@ If House inventory drops below 54:
 
 ```
 REGRESSION DETECTED: House inventory has dropped to 52 (minimum: 54).
-Check canonical_products_pass1.csv and scripts/ingest-inventory.ts for changes.
+Check data/canonical_products_pass1.csv and scripts/ingest-inventory.ts for changes.
 ```
 
 ---
