@@ -113,7 +113,7 @@ describe('Product Data Foundation', () => {
 
   describe('getProductsByCategory', () => {
     it('should return products in the specified category', () => {
-      const category: ProductCategory = "Candles & Scent";
+      const category: ProductCategory = "Table & Display";
       const result = getProductsByCategory(category);
       
       expect(result.length).toBeGreaterThan(0);

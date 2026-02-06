@@ -4,14 +4,13 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getHouseProducts, type ProductCategory, type Product } from '@/lib/products';
 
-// Section configuration - explicit ordering and naming
+// Section configuration - explicit ordering and naming (5 sections only)
 const SECTIONS: { title: string; category: ProductCategory }[] = [
   { title: "Objects of Use", category: "Objects of Use" },
-  { title: "Table & Display", category: "Table & Display" },
   { title: "Ritual Drinkware", category: "Ritual Drinkware" },
+  { title: "Table & Display", category: "Table & Display" },
   { title: "Wall Objects", category: "Wall Objects" },
-  { title: "Decor Objects", category: "Decor Objects" },
-  { title: "Candles & Scent", category: "Candles & Scent" }
+  { title: "Decor Objects", category: "Decor Objects" }
 ];
 
 const ITEMS_PER_PAGE = 8;
