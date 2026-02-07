@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,8 +26,16 @@ export default function Header() {
   return (
     <header className="global-header">
       <div className="header-container">
-        <Link href="/" className="header-brand">
-          Charmed & Dark
+        {/* Logo */}
+        <Link href="/" className="header-logo-link">
+          <Image
+            src="/images/Charmed and Dark Logo.png"
+            alt="Charmed & Dark"
+            width={160}
+            height={40}
+            className="header-logo"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}

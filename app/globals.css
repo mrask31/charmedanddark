@@ -3365,34 +3365,45 @@ section.section-revealed::before {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: var(--black-gloss);
+  background: #000000;
   border-bottom: 1px solid var(--edge-subtle);
 }
 
 .header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.header-brand {
-  font-size: 1.25rem;
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  color: var(--text-primary);
+/* Logo */
+.header-logo-link {
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  transition: color var(--transition-reveal-in) ease;
-}
-
-.header-brand:hover,
-.header-brand:focus {
-  color: var(--text-accent);
   outline: none;
+  transition: opacity var(--transition-reveal-in) ease;
 }
 
+.header-logo-link:hover {
+  opacity: 0.9;
+}
+
+.header-logo-link:focus-visible {
+  outline: 2px solid var(--accent-gold-edge);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.header-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+/* Desktop Navigation */
 .header-nav {
   display: none;
   gap: 2.5rem;
@@ -3510,6 +3521,17 @@ section.section-revealed::before {
 .mobile-menu-link:focus-visible {
   outline: 2px solid var(--accent-gold-edge-strong);
   outline-offset: -2px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .header-container {
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .header-logo {
+    height: 30px;
+  }
 }
 
 /* Sanctuary Status Indicator */
