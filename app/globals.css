@@ -4952,115 +4952,98 @@ section.section-revealed::before {
 
 
 /* ============================================
-   PREMIUM ECOMMERCE LANDING - RESTRAINT-COMPLIANT
+   FASHION-FIRST LANDING - APPAREL FOCUSED
    ============================================ */
 
-.ecom-landing {
+.fashion-landing {
   background: var(--black-void);
   min-height: 100vh;
 }
 
 /* Container */
-.ecom-container {
+.fashion-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
-/* A) HERO — VISUAL-FIRST */
-.ecom-hero {
-  min-height: 85vh;
+/* HERO — FULL-WIDTH LIFESTYLE IMAGE */
+.fashion-hero {
+  min-height: 90vh;
   display: flex;
   align-items: center;
-  justify-content: center;
   padding: 140px 40px 100px;
   position: relative;
   overflow: hidden;
   background: var(--black-void);
 }
 
-.ecom-hero-bg {
+.fashion-hero-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/BEST trinket dish, table top mirror, and sage.png');
+  background-image: url('/images/Both Models.png');
   background-size: cover;
   background-position: center;
-  opacity: 0.08;
-  filter: grayscale(100%) contrast(1.05) brightness(0.7);
+  opacity: 0.4;
+  filter: grayscale(20%) contrast(1.1) brightness(0.8);
   z-index: 0;
   pointer-events: none;
 }
 
-.ecom-hero-overlay {
+.fashion-hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0.7) 100%
+    90deg,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.85) 100%
   );
   z-index: 1;
   pointer-events: none;
 }
 
-.ecom-hero-content {
-  max-width: 1200px;
+.fashion-hero-content {
+  max-width: 1400px;
   width: 100%;
   position: relative;
   z-index: 2;
 }
 
-.ecom-hero-text {
+.fashion-hero-text {
   max-width: 600px;
-  text-align: left;
 }
 
-.ecom-hero-title {
+.fashion-hero-title {
   font-size: 72px;
   font-weight: 200;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   color: var(--text-primary);
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   line-height: 1.1;
 }
 
-.ecom-hero-subhead {
-  font-size: 24px;
+.fashion-hero-subline {
+  font-size: 22px;
   font-weight: 300;
   color: var(--text-secondary);
-  margin-bottom: 32px;
+  margin-bottom: 48px;
   line-height: 1.5;
 }
 
-.ecom-hero-rule {
-  width: 60px;
-  height: 1px;
-  background: var(--accent-gold-edge);
-  margin: 32px 0;
-}
-
-.ecom-hero-note {
-  font-size: 15px;
-  font-weight: 300;
-  color: var(--text-tertiary);
-  margin-bottom: 48px;
-  font-style: italic;
-}
-
-.ecom-hero-actions {
+.fashion-hero-actions {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   align-items: center;
 }
 
-.ecom-btn-primary {
+.fashion-btn-primary {
   display: inline-block;
   padding: 18px 48px;
   font-size: 14px;
@@ -5080,8 +5063,8 @@ section.section-revealed::before {
     transform var(--transition-reveal-out) ease;
 }
 
-.ecom-btn-primary:hover,
-.ecom-btn-primary:focus-visible {
+.fashion-btn-primary:hover,
+.fashion-btn-primary:focus-visible {
   background: var(--btn-red-hover);
   border-color: var(--accent-gold-edge);
   transform: translateY(-2px);
@@ -5092,7 +5075,7 @@ section.section-revealed::before {
   transition-duration: var(--transition-reveal-in);
 }
 
-.ecom-link-secondary {
+.fashion-link-secondary {
   font-size: 15px;
   font-weight: 400;
   color: var(--text-secondary);
@@ -5103,24 +5086,24 @@ section.section-revealed::before {
     border-color var(--transition-reveal-out) ease;
 }
 
-.ecom-link-secondary:hover,
-.ecom-link-secondary:focus-visible {
+.fashion-link-secondary:hover,
+.fashion-link-secondary:focus-visible {
   color: var(--text-accent);
   border-bottom-color: var(--accent-gold-edge);
   transition-duration: var(--transition-reveal-in);
 }
 
-/* B) SECTIONS */
-.ecom-section {
+/* SECTIONS */
+.fashion-section {
   padding: 100px 40px;
   background: var(--black-void);
 }
 
-.ecom-section-alt {
+.fashion-section-alt {
   background: var(--black-gloss);
 }
 
-.ecom-section-title {
+.fashion-section-title {
   font-size: 40px;
   font-weight: 300;
   letter-spacing: -0.01em;
@@ -5129,8 +5112,8 @@ section.section-revealed::before {
   margin-bottom: 64px;
 }
 
-/* C) PRODUCT GRID */
-.ecom-product-grid {
+/* FEATURED APPAREL GRID */
+.fashion-apparel-grid {
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
@@ -5138,11 +5121,7 @@ section.section-revealed::before {
   gap: 32px;
 }
 
-.ecom-product-grid-6 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.ecom-product-card {
+.fashion-apparel-card {
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
   border-radius: 16px;
@@ -5156,8 +5135,8 @@ section.section-revealed::before {
     box-shadow var(--transition-reveal-out) ease;
 }
 
-.ecom-product-card:hover,
-.ecom-product-card:focus-visible {
+.fashion-apparel-card:hover,
+.fashion-apparel-card:focus-visible {
   border-color: var(--edge-hover);
   transform: translateY(-4px);
   box-shadow: 
@@ -5166,9 +5145,9 @@ section.section-revealed::before {
   transition-duration: var(--transition-reveal-in);
 }
 
-.ecom-product-image {
+.fashion-apparel-image {
   width: 100%;
-  height: 280px;
+  height: 320px;
   background: var(--black-elevated);
   display: flex;
   align-items: center;
@@ -5176,117 +5155,228 @@ section.section-revealed::before {
   overflow: hidden;
 }
 
-.ecom-product-image img {
+.fashion-apparel-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 500ms ease;
 }
 
-.ecom-product-card:hover .ecom-product-image img,
-.ecom-product-card:focus-visible .ecom-product-image img {
+.fashion-apparel-card:hover .fashion-apparel-image img,
+.fashion-apparel-card:focus-visible .fashion-apparel-image img {
   transform: scale(1.05);
 }
 
-.ecom-product-info {
+.fashion-apparel-info {
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.ecom-product-name {
-  font-size: 18px;
+.fashion-apparel-name {
+  font-size: 20px;
   font-weight: 400;
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
-.ecom-product-price {
-  font-size: 16px;
+.fashion-apparel-price {
+  font-size: 18px;
   font-weight: 400;
   color: var(--text-secondary);
   margin: 0;
 }
 
-/* D) SHOP BY SECTION TILES */
-.ecom-section-grid {
+/* CATEGORY GRID WITH IMAGES */
+.fashion-category-grid {
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
-.ecom-section-tile {
-  padding: 48px 32px;
+.fashion-category-card {
+  position: relative;
+  aspect-ratio: 3/4;
   background: var(--black-surface);
   border: 1px solid var(--edge-subtle);
-  border-radius: 12px;
+  border-radius: 16px;
+  overflow: hidden;
   text-decoration: none;
-  text-align: center;
   transition: 
     border-color var(--transition-reveal-out) ease,
     transform var(--transition-reveal-out) ease,
     box-shadow var(--transition-reveal-out) ease;
 }
 
-.ecom-section-tile:hover,
-.ecom-section-tile:focus-visible {
+.fashion-category-card:hover,
+.fashion-category-card:focus-visible {
   border-color: var(--edge-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px var(--accent-purple-shadow);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px var(--accent-purple-shadow);
   transition-duration: var(--transition-reveal-in);
 }
 
-.ecom-section-tile-name {
-  font-size: 20px;
+.fashion-category-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.fashion-category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.fashion-category-card:hover .fashion-category-image img,
+.fashion-category-card:focus-visible .fashion-category-image img {
+  transform: scale(1.05);
+}
+
+.fashion-category-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 24px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  z-index: 1;
+}
+
+.fashion-category-name {
+  font-size: 24px;
   font-weight: 400;
   color: var(--text-primary);
-  margin-bottom: 12px;
-}
-
-.ecom-section-tile-desc {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--text-tertiary);
-  font-style: italic;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
-/* E) RESTRAINT NOTE */
-.ecom-restraint {
+/* BRAND ETHOS */
+.fashion-ethos {
   padding: 80px 40px;
   background: var(--black-gloss);
   text-align: center;
 }
 
-.ecom-restraint-text {
-  font-size: 17px;
+.fashion-ethos-text {
+  font-size: 20px;
   font-weight: 300;
-  line-height: 1.8;
+  line-height: 1.7;
   color: var(--text-secondary);
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
-/* F) FOOTER NOTE */
-.ecom-footer-note {
+/* HOUSE OBJECTS PREVIEW */
+.fashion-house-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.fashion-house-card {
+  background: var(--black-surface);
+  border: 1px solid var(--edge-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: 
+    border-color var(--transition-reveal-out) ease,
+    transform var(--transition-reveal-out) ease,
+    box-shadow var(--transition-reveal-out) ease;
+}
+
+.fashion-house-card:hover,
+.fashion-house-card:focus-visible {
+  border-color: var(--edge-hover);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 8px 32px var(--accent-purple-shadow),
+    0 0 0 1px var(--edge-hover);
+  transition-duration: var(--transition-reveal-in);
+}
+
+.fashion-house-image {
+  width: 100%;
+  height: 240px;
+  background: var(--black-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.fashion-house-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.fashion-house-card:hover .fashion-house-image img,
+.fashion-house-card:focus-visible .fashion-house-image img {
+  transform: scale(1.05);
+}
+
+.fashion-house-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fashion-house-name {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.fashion-house-price {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.fashion-house-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+
+/* THE MIRROR (SECONDARY) */
+.fashion-mirror {
   padding: 60px 40px;
   background: var(--black-void);
   text-align: center;
   border-top: 1px solid var(--edge-subtle);
 }
 
-.ecom-footer-text {
+.fashion-mirror-text {
   font-size: 15px;
   font-weight: 300;
   color: var(--text-tertiary);
   margin: 0;
 }
 
-.ecom-footer-link {
+.fashion-mirror-link {
   color: var(--text-secondary);
   text-decoration: none;
   border-bottom: 1px solid transparent;
@@ -5295,8 +5385,8 @@ section.section-revealed::before {
     border-color var(--transition-reveal-out) ease;
 }
 
-.ecom-footer-link:hover,
-.ecom-footer-link:focus-visible {
+.fashion-mirror-link:hover,
+.fashion-mirror-link:focus-visible {
   color: var(--text-accent);
   border-bottom-color: var(--accent-gold-edge);
   transition-duration: var(--transition-reveal-in);
@@ -5304,105 +5394,116 @@ section.section-revealed::before {
 
 /* MOBILE RESPONSIVE */
 @media (max-width: 1024px) {
-  .ecom-product-grid {
+  .fashion-apparel-grid {
     grid-template-columns: repeat(3, 1fr);
   }
   
-  .ecom-product-grid-6 {
+  .fashion-category-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .ecom-section-grid {
+  .fashion-house-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .ecom-hero {
+  .fashion-hero {
     min-height: auto;
     padding: 100px 24px 60px;
   }
   
-  .ecom-hero-title {
+  .fashion-hero-title {
     font-size: 48px;
   }
   
-  .ecom-hero-subhead {
-    font-size: 20px;
+  .fashion-hero-subline {
+    font-size: 18px;
   }
   
-  .ecom-hero-actions {
+  .fashion-hero-actions {
     flex-direction: column;
     align-items: stretch;
   }
   
-  .ecom-btn-primary,
-  .ecom-link-secondary {
+  .fashion-btn-primary,
+  .fashion-link-secondary {
     text-align: center;
   }
   
-  .ecom-section {
+  .fashion-section {
     padding: 80px 24px;
   }
   
-  .ecom-section-title {
+  .fashion-section-title {
     font-size: 32px;
     margin-bottom: 48px;
   }
   
-  .ecom-product-grid,
-  .ecom-product-grid-6 {
+  .fashion-apparel-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
   
-  .ecom-product-image {
-    height: 220px;
+  .fashion-apparel-image {
+    height: 280px;
   }
   
-  .ecom-section-grid {
-    grid-template-columns: 1fr;
+  .fashion-category-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
   
-  .ecom-section-tile {
-    padding: 36px 24px;
-  }
-  
-  .ecom-restraint {
+  .fashion-ethos {
     padding: 60px 24px;
   }
   
-  .ecom-restraint-text {
-    font-size: 16px;
+  .fashion-ethos-text {
+    font-size: 18px;
   }
   
-  .ecom-footer-note {
+  .fashion-house-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .fashion-house-image {
+    height: 200px;
+  }
+  
+  .fashion-mirror {
     padding: 48px 24px;
   }
 }
 
 /* REDUCED MOTION SUPPORT */
 @media (prefers-reduced-motion: reduce) {
-  .ecom-hero-bg {
-    opacity: 0.06;
-    filter: grayscale(100%) contrast(1.0) brightness(0.8);
+  .fashion-hero-bg {
+    opacity: 0.3;
+    filter: grayscale(40%) contrast(1.0) brightness(0.9);
   }
   
-  .ecom-btn-primary,
-  .ecom-link-secondary,
-  .ecom-product-card,
-  .ecom-section-tile,
-  .ecom-footer-link {
+  .fashion-btn-primary,
+  .fashion-link-secondary,
+  .fashion-apparel-card,
+  .fashion-category-card,
+  .fashion-house-card,
+  .fashion-mirror-link {
     transition-duration: var(--transition-reveal-reduced);
   }
   
-  .ecom-product-image img {
+  .fashion-apparel-image img,
+  .fashion-category-image img,
+  .fashion-house-image img {
     transition: none;
   }
   
-  .ecom-product-card:hover .ecom-product-image img,
-  .ecom-product-card:focus-visible .ecom-product-image img {
+  .fashion-apparel-card:hover .fashion-apparel-image img,
+  .fashion-apparel-card:focus-visible .fashion-apparel-image img,
+  .fashion-category-card:hover .fashion-category-image img,
+  .fashion-category-card:focus-visible .fashion-category-image img,
+  .fashion-house-card:hover .fashion-house-image img,
+  .fashion-house-card:focus-visible .fashion-house-image img {
     transform: none;
   }
 }
