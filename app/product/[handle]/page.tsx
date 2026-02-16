@@ -2,7 +2,8 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getProductByHandle, getCollectionByHandle } from '@/lib/storefront';
+import { getProductByHandle } from '@/lib/storefront';
+import { getProductBySlug } from '@/lib/products';
 import type { Metadata } from 'next';
 
 interface ProductPageProps {
@@ -20,7 +21,27 @@ function formatPrice(price: number, currency: string = 'USD'): string {
 }
 
 async function ProductDetails({ handle }: { handle: string }) {
-  const product = await getProductByHandle(handle);
+  // Try Shopify first
+  let product = await getProductByHandle(handle);
+  
+  // Fallback to legacy products if not found in Shopify
+  if (!product) {
+    const legacyProduct = getProductBySlug(handle);
+    if (legacyProduct) {
+      // Convert legacy product to Shopify format for display
+      product = {
+        id: legacyProduct.id,
+        handle: legacyProduct.slug,
+        title: legacyProduct.name,
+        description: legacyProduct.description.ritualIntro,
+        price: legacyProduct.pricePublic,
+        currencyCode: 'USD',
+        images: legacyProduct.images,
+        tags: [],
+        availableForSale: legacyProduct.inStock,
+      };
+    }
+  }
 
   if (!product) {
     notFound();
@@ -132,7 +153,25 @@ export default function ProductPage({ params }: ProductPageProps) {
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const product = await getProductByHandle(params.handle);
+  // Try Shopify first
+  let product = await getProductByHandle(params.handle);
+  
+  // Fallback to legacy products
+  if (!product) {
+    const legacyProduct = getProductBySlug(params.handle);
+    if (legacyProduct) {
+      return {
+        title: `${legacyProduct.name} - Charmed & Dark`,
+        description: legacyProduct.description.ritualIntro || legacyProduct.name,
+        openGraph: {
+          title: legacyProduct.name,
+          description: legacyProduct.description.ritualIntro || legacyProduct.name,
+          images: legacyProduct.images[0] ? [{ url: legacyProduct.images[0] }] : [],
+          type: 'website',
+        },
+      };
+    }
+  }
 
   if (!product) {
     return {
