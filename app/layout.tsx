@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import Header from '@/components/Header';
+import Navigation from '@/components/Navigation';
 
 export const metadata: Metadata = {
-  title: 'Charmed & Dark',
-  description: 'Luxury gothic-romantic ecommerce',
+  title: 'Charmed & Dark - Elegant Gothic Apparel & Home Decor',
+  description: 'Modern gothic apparel and home decor. Elegant, wearable, built to last.',
+  openGraph: {
+    title: 'Charmed & Dark',
+    description: 'Elegant gothic apparel for everyday wear',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
@@ -15,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
+        <Navigation />
         {children}
       </body>
     </html>
