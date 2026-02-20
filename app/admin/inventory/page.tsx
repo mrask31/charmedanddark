@@ -1,9 +1,21 @@
 'use client';
 
+// Temporarily disabled - needs refactoring for new product structure
+export default function InventoryDebugPage() {
+  return (
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <h1>Inventory Debug - Under Maintenance</h1>
+      <p>This page is being updated for the new product structure.</p>
+    </div>
+  );
+}
+
+/*
+// OLD CODE - TO BE REFACTORED
 import { getHouseProducts } from '@/lib/products';
 import { apparelItems } from '@/lib/apparel';
 
-export default function InventoryDebugPage() {
+function InventoryDebugPageOld() {
   const houseProducts = getHouseProducts();
   const productsWithVariants = houseProducts.filter(p => p.variants && p.variants.length > 0);
   const totalVariants = productsWithVariants.reduce((sum, p) => sum + (p.variants?.length || 0), 0);
@@ -160,3 +172,4 @@ export default function InventoryDebugPage() {
     </div>
   );
 }
+*/
