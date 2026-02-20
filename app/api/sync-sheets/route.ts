@@ -11,7 +11,7 @@ export const maxDuration = 60; // 60 seconds for Vercel
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify authorization (optional but recommended)
+    // Optional: Verify authorization if SYNC_API_TOKEN is set
     const authHeader = request.headers.get('authorization');
     const expectedToken = process.env.SYNC_API_TOKEN;
 
@@ -22,8 +22,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('Starting Google Sheets sync...');
+
     // Run sync
     const results = await syncGoogleSheets();
+
+    console.log('Sync completed:', results);
 
     return NextResponse.json({
       success: true,
@@ -37,6 +41,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
       },
       { status: 500 }
     );
