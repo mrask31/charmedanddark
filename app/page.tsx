@@ -49,7 +49,14 @@ export default async function HomePage() {
             <p style={styles.subtitle}>Everyday Gothic</p>
           </section>
 
-          <ProductGrid products={products} />
+          {products.length === 0 ? (
+            <div style={styles.emptyState}>
+              <p>No products available yet.</p>
+              <p style={styles.emptyHint}>Run the Google Sheets sync to populate products.</p>
+            </div>
+          ) : (
+            <ProductGrid products={products} />
+          )}
         </div>
       </main>
     </>
@@ -86,5 +93,15 @@ const styles = {
     color: '#404040',
     letterSpacing: '0.1em',
     textTransform: 'uppercase' as const,
+  },
+  emptyState: {
+    textAlign: 'center' as const,
+    padding: '4rem 2rem',
+    color: '#404040',
+  },
+  emptyHint: {
+    marginTop: '1rem',
+    fontSize: '0.875rem',
+    color: '#666',
   },
 } as const;

@@ -13,6 +13,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, isRecognized }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const pricing = getPricingDisplay(product.price);
   
   const displayImage = isHovered && product.images.hover 
@@ -26,13 +27,20 @@ export default function ProductCard({ product, isRecognized }: ProductCardProps)
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Image
-          src={displayImage}
-          alt={product.title}
-          width={400}
-          height={500}
-          style={styles.image}
-        />
+        {!imageError ? (
+          <Image
+            src={displayImage}
+            alt={product.title}
+            width={400}
+            height={500}
+            style={styles.image}
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div style={styles.imagePlaceholder}>
+            <span>No Image</span>
+          </div>
+        )}
         {!product.inStock && (
           <div style={styles.outOfStock}>Out of Stock</div>
         )}
@@ -89,6 +97,16 @@ const styles = {
     fontSize: '0.75rem',
     fontWeight: 400,
     letterSpacing: '0.05em',
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e8e8e3',
+    color: '#404040',
+    fontSize: '0.875rem',
   },
   info: {
     padding: '1rem',
