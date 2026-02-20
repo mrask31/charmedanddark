@@ -6,7 +6,8 @@ export function getSupabaseServer() {
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing Supabase environment variables');
+    console.error('Missing Supabase environment variables');
+    throw new Error('Supabase not configured');
   }
 
   return createClient(supabaseUrl, supabaseServiceKey, {

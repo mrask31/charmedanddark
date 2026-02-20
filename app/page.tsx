@@ -1,43 +1,44 @@
-import { getSupabaseServer } from '@/lib/supabase/server';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { getSupabaseClient } from '@/lib/supabase/client';
-import { getShopifyProducts } from '@/lib/shopify/products';
-import { transformSupabaseProduct, transformShopifyProduct, UnifiedProduct } from '@/lib/products';
+import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import Header from '@/components/Header';
 import ProductGrid from '@/components/ProductGrid';
 
-export const dynamic = 'force-dynamic';
+export default function HomePage() {
+  const [products, setProducts] = useState<UnifiedProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-async function getProducts(): Promise<UnifiedProduct[]> {
-  try {
-    // Fetch Supabase products (50 physical objects)
-    const supabase = getSupabaseServer();
-    const { data: supabaseProducts, error: supabaseError } = await supabase
-      .from('products')
-      .select('*')
-      .order('title');
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const supabase = getSupabaseClient();
+        const { data, error: supabaseError } = await supabase
+          .from('products')
+          .select('*')
+          .order('title');
 
-    if (supabaseError) {
-      console.error('Supabase products error:', supabaseError);
+        if (supabaseError) {
+          console.error('Supabase error:', supabaseError);
+          setError('Failed to load products');
+          setLoading(false);
+          return;
+        }
+
+        const unified = (data || []).map(transformSupabaseProduct);
+        setProducts(unified);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error loading products:', err);
+        setError('Failed to load products');
+        setLoading(false);
+      }
     }
 
-    // Fetch Shopify products (15 apparel items)
-    const shopifyProducts = await getShopifyProducts();
-
-    // Transform and merge
-    const unified: UnifiedProduct[] = [
-      ...(supabaseProducts || []).map(transformSupabaseProduct),
-      ...shopifyProducts.map(transformShopifyProduct),
-    ];
-
-    return unified;
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
-    return [];
-  }
-}
-
-export default async function HomePage() {
-  const products = await getProducts();
+    loadProducts();
+  }, []);
 
   return (
     <>
@@ -49,7 +50,15 @@ export default async function HomePage() {
             <p style={styles.subtitle}>Everyday Gothic</p>
           </section>
 
-          {products.length === 0 ? (
+          {loading ? (
+            <div style={styles.loading}>
+              <p>Loading...</p>
+            </div>
+          ) : error ? (
+            <div style={styles.error}>
+              <p>{error}</p>
+            </div>
+          ) : products.length === 0 ? (
             <div style={styles.emptyState}>
               <p>No products available yet.</p>
               <p style={styles.emptyHint}>Run the Google Sheets sync to populate products.</p>
@@ -93,6 +102,16 @@ const styles = {
     color: '#404040',
     letterSpacing: '0.1em',
     textTransform: 'uppercase' as const,
+  },
+  loading: {
+    textAlign: 'center' as const,
+    padding: '4rem 2rem',
+    color: '#404040',
+  },
+  error: {
+    textAlign: 'center' as const,
+    padding: '4rem 2rem',
+    color: '#d32f2f',
   },
   emptyState: {
     textAlign: 'center' as const,
