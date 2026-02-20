@@ -6,15 +6,16 @@ import { getSupabaseClient } from '@/lib/supabase/client';
 
 export default function Header() {
   const [isRecognized, setIsRecognized] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    
     const supabase = getSupabaseClient();
     
     // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsRecognized(!!session);
-      setLoading(false);
     });
 
     // Listen for auth changes
@@ -40,7 +41,11 @@ export default function Header() {
         </Link>
         
         <nav style={styles.nav}>
-          {loading ? null : isRecognized ? (
+          {!mounted ? (
+            <Link href="/threshold/enter" style={styles.link}>
+              Enter the House
+            </Link>
+          ) : isRecognized ? (
             <>
               <span style={styles.status}>Recognized</span>
               <button onClick={handleSignOut} style={styles.link}>
