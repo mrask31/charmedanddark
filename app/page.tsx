@@ -15,14 +15,29 @@ export default function HomePage() {
     async function loadProducts() {
       try {
         const supabase = getSupabaseClient();
+        
+        // Test connection first
+        const { data: testData, error: testError } = await supabase
+          .from('products')
+          .select('count')
+          .limit(1);
+
+        if (testError) {
+          console.error('Supabase connection error:', testError);
+          setError(`Database connection failed: ${testError.message}`);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch products
         const { data, error: supabaseError } = await supabase
           .from('products')
           .select('*')
           .order('title');
 
         if (supabaseError) {
-          console.error('Supabase error:', supabaseError);
-          setError('Failed to load products');
+          console.error('Supabase query error:', supabaseError);
+          setError(`Failed to load products: ${supabaseError.message}`);
           setLoading(false);
           return;
         }
@@ -31,8 +46,8 @@ export default function HomePage() {
         setProducts(unified);
         setLoading(false);
       } catch (err) {
-        console.error('Error loading products:', err);
-        setError('Failed to load products');
+        console.error('Unexpected error:', err);
+        setError(`Unexpected error: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setLoading(false);
       }
     }
@@ -56,7 +71,15 @@ export default function HomePage() {
             </div>
           ) : error ? (
             <div style={styles.error}>
-              <p>{error}</p>
+              <p style={styles.errorTitle}>Configuration Issue</p>
+              <p style={styles.errorMessage}>{error}</p>
+              <p style={styles.errorHint}>
+                Check that Supabase environment variables are set in Vercel:
+                <br />
+                • NEXT_PUBLIC_SUPABASE_URL
+                <br />
+                • NEXT_PUBLIC_SUPABASE_ANON_KEY
+              </p>
             </div>
           ) : products.length === 0 ? (
             <div style={styles.emptyState}>
@@ -111,7 +134,24 @@ const styles = {
   error: {
     textAlign: 'center' as const,
     padding: '4rem 2rem',
+    maxWidth: '600px',
+    margin: '0 auto',
+  },
+  errorTitle: {
+    fontSize: '1.25rem',
+    fontWeight: 500,
     color: '#d32f2f',
+    marginBottom: '1rem',
+  },
+  errorMessage: {
+    color: '#666',
+    marginBottom: '1.5rem',
+    fontSize: '0.95rem',
+  },
+  errorHint: {
+    fontSize: '0.875rem',
+    color: '#888',
+    lineHeight: 1.6,
   },
   emptyState: {
     textAlign: 'center' as const,
