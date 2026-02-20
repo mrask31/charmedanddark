@@ -1,108 +1,99 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { getSupabaseClient } from '@/lib/supabase/client';
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isSanctuary, setIsSanctuary] = useState(false);
+  const [isRecognized, setIsRecognized] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check sanctuary status on mount
-    if (typeof window !== 'undefined') {
-      setIsSanctuary(localStorage.getItem('sanctuary_preview') === 'true');
-    }
+    const supabase = getSupabaseClient();
+    
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsRecognized(!!session);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsRecognized(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const handleLeaveSanctuary = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('sanctuary_preview');
-      setIsSanctuary(false);
-      window.location.reload();
-    }
+  const handleSignOut = async () => {
+    const supabase = getSupabaseClient();
+    await supabase.auth.signOut();
   };
 
   return (
-    <header className="global-header">
-      <div className="header-container">
-        {/* Logo */}
-        <Link href="/" className="header-logo-link">
-          <Image
-            src="/images/Charmed and Dark Logo.png"
-            alt="Charmed & Dark"
-            width={160}
-            height={40}
-            className="header-logo"
-            priority
-          />
+    <header style={styles.header}>
+      <div style={styles.container}>
+        <Link href="/" style={styles.logo}>
+          Charmed & Dark
         </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="header-nav">
-          <Link href="/shop" className="header-link">
-            The House
-          </Link>
-          <Link href="/uniform" className="header-link">
-            The Uniform
-          </Link>
-          <Link href="/join" className="header-link">
-            Join
-          </Link>
+        
+        <nav style={styles.nav}>
+          {loading ? null : isRecognized ? (
+            <>
+              <span style={styles.status}>Recognized</span>
+              <button onClick={handleSignOut} style={styles.link}>
+                Leave
+              </button>
+            </>
+          ) : (
+            <Link href="/threshold/enter" style={styles.link}>
+              Enter the House
+            </Link>
+          )}
         </nav>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="mobile-menu-button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-          aria-expanded={mobileMenuOpen}
-        >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-        </button>
       </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <nav className="mobile-menu">
-          <Link 
-            href="/shop" 
-            className="mobile-menu-link"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            The House
-          </Link>
-          <Link 
-            href="/uniform" 
-            className="mobile-menu-link"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            The Uniform
-          </Link>
-          <Link 
-            href="/join" 
-            className="mobile-menu-link"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Join
-          </Link>
-        </nav>
-      )}
-
-      {/* Sanctuary Status Indicator */}
-      {isSanctuary && (
-        <div className="sanctuary-status">
-          <span className="sanctuary-status-text">Sanctuary presence active</span>
-          <button 
-            onClick={handleLeaveSanctuary}
-            className="sanctuary-leave-button"
-          >
-            Leave
-          </button>
-        </div>
-      )}
     </header>
   );
 }
+
+const styles = {
+  header: {
+    borderBottom: '1px solid #2d2d2d',
+    padding: '1.5rem 0',
+    backgroundColor: '#f5f5f0',
+  },
+  container: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '0 1.5rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  logo: {
+    fontFamily: "'Crimson Pro', serif",
+    fontSize: '1.5rem',
+    fontWeight: 400,
+    letterSpacing: '0.05em',
+    color: '#1a1a1a',
+  },
+  nav: {
+    display: 'flex',
+    gap: '1.5rem',
+    alignItems: 'center',
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.9rem',
+  },
+  status: {
+    color: '#404040',
+    fontWeight: 300,
+  },
+  link: {
+    color: '#1a1a1a',
+    fontWeight: 400,
+    transition: 'color 0.2s',
+    cursor: 'pointer',
+  },
+} as const;

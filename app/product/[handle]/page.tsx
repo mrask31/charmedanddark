@@ -1,192 +1,240 @@
-import { Suspense } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getProductByHandle } from '@/lib/storefront';
-import { getProductBySlug } from '@/lib/products';
-import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { getSupabaseServer } from '@/lib/supabase/server';
+import { getShopifyProducts } from '@/lib/shopify/products';
+import { transformSupabaseProduct, transformShopifyProduct, UnifiedProduct } from '@/lib/products';
+import { getPricingDisplay } from '@/lib/pricing';
+import Header from '@/components/Header';
+import PricingDisplay from '@/components/PricingDisplay';
+import ProductDescription from '@/components/ProductDescription';
+import { Product as SupabaseProduct } from '@/lib/supabase/client';
 
-interface ProductPageProps {
-  params: {
-    handle: string;
-  };
-}
+export const dynamic = 'force-dynamic';
 
-function formatPrice(price: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-  }).format(price);
-}
+async function getProduct(handle: string): Promise<{ product: UnifiedProduct; raw: SupabaseProduct | null } | null> {
+  try {
+    // Try Supabase first
+    const supabase = getSupabaseServer();
+    const { data: supabaseProduct } = await supabase
+      .from('products')
+      .select('*')
+      .eq('handle', handle)
+      .single();
 
-async function ProductDetails({ handle }: { handle: string }) {
-  // Try Shopify first
-  let product = await getProductByHandle(handle);
-  
-  // Fallback to legacy products if not found in Shopify
-  if (!product) {
-    const legacyProduct = getProductBySlug(handle);
-    if (legacyProduct) {
-      // Convert legacy product to Shopify format for display
-      product = {
-        id: legacyProduct.id,
-        handle: legacyProduct.slug,
-        title: legacyProduct.name,
-        description: legacyProduct.description.ritualIntro,
-        price: legacyProduct.pricePublic,
-        currencyCode: 'USD',
-        images: legacyProduct.images,
-        tags: [],
-        availableForSale: legacyProduct.inStock,
+    if (supabaseProduct) {
+      return {
+        product: transformSupabaseProduct(supabaseProduct),
+        raw: supabaseProduct,
       };
     }
-  }
 
-  if (!product) {
+    // Try Shopify
+    const shopifyProducts = await getShopifyProducts();
+    const shopifyProduct = shopifyProducts.find((p) => p.handle === handle);
+
+    if (shopifyProduct) {
+      return {
+        product: transformShopifyProduct(shopifyProduct),
+        raw: null,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch product:', error);
+    return null;
+  }
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: { handle: string };
+}) {
+  const result = await getProduct(params.handle);
+
+  if (!result) {
     notFound();
   }
 
+  const { product, raw } = result;
+  const pricing = getPricingDisplay(product.price);
+
   return (
     <>
-      <div className="product-container">
-        {/* Image Gallery */}
-        <div className="product-gallery">
-          <div className="product-main-image">
-            {product.images[0] ? (
-              <Image
-                src={product.images[0]}
-                alt={product.title}
-                width={600}
-                height={750}
-                priority
-              />
-            ) : (
-              <div className="product-image-placeholder-large">
-                <span>No Image Available</span>
-              </div>
-            )}
-          </div>
+      <Header />
+      <main style={styles.main}>
+        <div style={styles.container}>
+          <Link href="/" style={styles.back}>
+            ← All Products
+          </Link>
 
-          {product.images.length > 1 && (
-            <div className="product-thumbnails">
-              {product.images.slice(1, 5).map((image, index) => (
-                <div key={index} className="product-thumbnail">
+          <div style={styles.product}>
+            <div style={styles.imageSection}>
+              <div style={styles.mainImage}>
+                <Image
+                  src={product.images.hero}
+                  alt={product.title}
+                  width={600}
+                  height={750}
+                  style={styles.image}
+                  priority
+                />
+              </div>
+              
+              {product.images.front && (
+                <div style={styles.thumbnails}>
                   <Image
-                    src={image}
-                    alt={`${product.title} view ${index + 2}`}
-                    width={120}
-                    height={150}
-                    loading="lazy"
+                    src={product.images.front}
+                    alt={`${product.title} - Front`}
+                    width={150}
+                    height={187}
+                    style={styles.thumbnail}
                   />
                 </div>
-              ))}
+              )}
             </div>
-          )}
+
+            <div style={styles.details}>
+              <h1 style={styles.title}>{product.title}</h1>
+              
+              {product.category && (
+                <span style={styles.category}>{product.category}</span>
+              )}
+
+              <PricingDisplay pricing={pricing} />
+
+              <div style={styles.description}>
+                <ProductDescription 
+                  description={product.description}
+                  lines={raw?.description_lines || undefined}
+                />
+              </div>
+
+              {product.inStock ? (
+                <button style={styles.addButton}>
+                  Add to Cart
+                </button>
+              ) : (
+                <div style={styles.outOfStock}>Out of Stock</div>
+              )}
+
+              <div style={styles.source}>
+                {product.source === 'shopify' ? 'Apparel' : 'Home Object'}
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Product Info */}
-        <div className="product-details">
-          <h1 className="product-detail-title">{product.title}</h1>
-
-          {/* Pricing */}
-          <div className="product-pricing-block">
-            <p className="product-price-large">
-              {formatPrice(product.price, product.currencyCode)}
-            </p>
-          </div>
-
-          {/* Description */}
-          {product.description && (
-            <div className="product-description">
-              <p>{product.description}</p>
-            </div>
-          )}
-
-          {/* Availability */}
-          <div className="product-availability-detail">
-            {product.availableForSale ? (
-              <span className="availability-in-stock">Available</span>
-            ) : (
-              <span className="availability-out-of-stock">Out of Stock</span>
-            )}
-          </div>
-
-          {/* CTAs */}
-          <div className="product-ctas">
-            <button className="btn-primary product-cta-primary" disabled={!product.availableForSale}>
-              Add to Cart
-            </button>
-            <Link href="/shop" className="btn-secondary product-cta-secondary">
-              Continue Shopping
-            </Link>
-          </div>
-
-          {/* Tags */}
-          {product.tags.length > 0 && (
-            <div className="product-tags">
-              {product.tags.map((tag) => (
-                <span key={tag} className="product-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      </main>
     </>
   );
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  return (
-    <main className="product-page">
-      <Suspense fallback={
-        <div className="loading-state">
-          <p>Loading product...</p>
-        </div>
-      }>
-        <ProductDetails handle={params.handle} />
-      </Suspense>
-    </main>
-  );
-}
-
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  // Try Shopify first
-  let product = await getProductByHandle(params.handle);
-  
-  // Fallback to legacy products
-  if (!product) {
-    const legacyProduct = getProductBySlug(params.handle);
-    if (legacyProduct) {
-      return {
-        title: `${legacyProduct.name} - Charmed & Dark`,
-        description: legacyProduct.description.ritualIntro || legacyProduct.name,
-        openGraph: {
-          title: legacyProduct.name,
-          description: legacyProduct.description.ritualIntro || legacyProduct.name,
-          images: legacyProduct.images[0] ? [{ url: legacyProduct.images[0] }] : [],
-          type: 'website',
-        },
-      };
-    }
-  }
-
-  if (!product) {
-    return {
-      title: 'Product Not Found',
-    };
-  }
-
-  return {
-    title: `${product.title} - Charmed & Dark`,
-    description: product.description || product.title,
-    openGraph: {
-      title: product.title,
-      description: product.description || product.title,
-      images: product.images[0] ? [{ url: product.images[0] }] : [],
-      type: 'website',
-    },
-  };
-}
+const styles = {
+  main: {
+    minHeight: '100vh',
+    paddingTop: '2rem',
+    paddingBottom: '3rem',
+  },
+  container: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '0 1.5rem',
+  },
+  back: {
+    display: 'inline-block',
+    marginBottom: '2rem',
+    fontSize: '0.9rem',
+    color: '#404040',
+    fontFamily: "'Inter', sans-serif",
+  },
+  product: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '3rem',
+  },
+  imageSection: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '1rem',
+  },
+  mainImage: {
+    width: '100%',
+    aspectRatio: '4 / 5',
+    backgroundColor: '#f5f5f0',
+    border: '1px solid #e8e8e3',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover' as const,
+  },
+  thumbnails: {
+    display: 'flex',
+    gap: '1rem',
+  },
+  thumbnail: {
+    width: '150px',
+    height: '187px',
+    objectFit: 'cover' as const,
+    border: '1px solid #e8e8e3',
+    cursor: 'pointer',
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '1.5rem',
+  },
+  title: {
+    fontFamily: "'Crimson Pro', serif",
+    fontSize: '2rem',
+    fontWeight: 400,
+    color: '#1a1a1a',
+  },
+  category: {
+    fontSize: '0.75rem',
+    color: '#404040',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em',
+    fontWeight: 300,
+  },
+  description: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '1rem',
+    lineHeight: 1.7,
+    color: '#2d2d2d',
+  },
+  addButton: {
+    padding: '1rem 2rem',
+    backgroundColor: '#1a1a1a',
+    color: '#f5f5f0',
+    fontSize: '0.9rem',
+    fontWeight: 400,
+    fontFamily: "'Inter', sans-serif",
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+    border: 'none',
+    width: '100%',
+  },
+  outOfStock: {
+    padding: '1rem 2rem',
+    backgroundColor: '#e8e8e3',
+    color: '#404040',
+    fontSize: '0.9rem',
+    fontWeight: 400,
+    fontFamily: "'Inter', sans-serif",
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em',
+    textAlign: 'center' as const,
+  },
+  source: {
+    fontSize: '0.75rem',
+    color: '#404040',
+    fontFamily: "'Inter', sans-serif",
+    paddingTop: '1rem',
+    borderTop: '1px solid #e8e8e3',
+  },
+} as const;

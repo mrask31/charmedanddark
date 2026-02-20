@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Charmed & Dark - Google Sheets Sync Tool</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #f5f5f0;
+        }
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            color: #f5f5f0;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #404040;
+            background: #2d2d2d;
+        }
+        button {
+            padding: 12px 24px;
+            background: #f5f5f0;
+            color: #1a1a1a;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        button:hover {
+            background: #e8e8e3;
+        }
+        .log {
+            background: #0a0a0a;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error { color: #ff6b6b; }
+        .success { color: #51cf66; }
+        .info { color: #74c0fc; }
+    </style>
+</head>
+<body>
+    <h1>🖤 Charmed & Dark - Sync Tool</h1>
+    
+    <div class="status">
+        <p><strong>Spreadsheet ID:</strong> 1zCLWZ8cbHolQ9K8fFdH9CzZgUMtN9EU667ycveFBWII</p>
+        <p><strong>Sheet Name:</strong> Physical Inventory</p>
+        <p><strong>Supabase Project:</strong> ewsztwchfbjclbjsqhnd</p>
+    </div>
+
+    <button onclick="syncData()">Sync Google Sheets to Supabase</button>
+
+    <div class="log" id="log"></div>
+
+    <script>
+        const SPREADSHEET_ID = '1zCLWZ8cbHolQ9K8fFdH9CzZgUMtN9EU667ycveFBWII';
+        const SHEET_NAME = 'Physical Inventory';
+        const SUPABASE_URL = 'https://ewsztwchfbjclbjsqhnd.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3c3p0d2NoZmJqY2xianNxaG5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MDQ0NzYsImV4cCI6MjA4NTQ4MDQ3Nn0.611O25_lyRr_HvmrUOV-EzsB9yrbmrH2EYiTX1Yn874';
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function getAccessToken() {
+            // This requires the service account credentials
+            // For security, this should be done server-side
+            log('Note: This tool requires server-side implementation for security', 'error');
+            log('Please use the API endpoint instead: POST /api/sync-sheets', 'info');
+            return null;
+        }
+
+        async function syncData() {
+            log('Starting sync...', 'info');
+            
+            try {
+                // Call the API endpoint instead
+                const response = await fetch('/api/sync-sheets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    log(`✅ Sync completed successfully!`, 'success');
+                    log(`Created: ${result.results.created}`, 'success');
+                    log(`Updated: ${result.results.updated}`, 'success');
+                    log(`Errors: ${result.results.errors}`, result.results.errors > 0 ? 'error' : 'success');
+                } else {
+                    log(`❌ Sync failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                log('Make sure the development server is running (npm run dev)', 'info');
+            }
+        }
+    </script>
+</body>
+</html>

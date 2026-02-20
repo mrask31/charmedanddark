@@ -1,98 +1,90 @@
-import { Suspense } from 'react';
-import { getFeaturedProducts } from '@/lib/storefront';
-import { STOREFRONT_CONFIG } from '@/lib/storefront/config';
-import HeroIdentity from '@/components/home/HeroIdentity';
-import SectionDivider from '@/components/home/SectionDivider';
-import UniformGrid from '@/components/home/UniformGrid';
-import BeliefStatement from '@/components/home/BeliefStatement';
-import CategoryForms from '@/components/home/CategoryForms';
-import HomeRituals from '@/components/home/HomeRituals';
-import MirrorPortal from '@/components/home/MirrorPortal';
+import { getSupabaseServer } from '@/lib/supabase/server';
+import { getSupabaseClient } from '@/lib/supabase/client';
+import { getShopifyProducts } from '@/lib/shopify/products';
+import { transformSupabaseProduct, transformShopifyProduct, UnifiedProduct } from '@/lib/products';
+import Header from '@/components/Header';
+import ProductGrid from '@/components/ProductGrid';
 
-async function FeaturedUniform() {
-  const products = await getFeaturedProducts(
-    STOREFRONT_CONFIG.collections.apparelFeatured,
-    'apparel-featured',
-    STOREFRONT_CONFIG.limits.homepageApparelFeatured
-  );
+export const dynamic = 'force-dynamic';
 
-  if (!products.length) {
-    return (
-      <div className="empty-state">
-        <p>Featured apparel coming soon.</p>
-      </div>
-    );
+async function getProducts(): Promise<UnifiedProduct[]> {
+  try {
+    // Fetch Supabase products (50 physical objects)
+    const supabase = getSupabaseServer();
+    const { data: supabaseProducts, error: supabaseError } = await supabase
+      .from('products')
+      .select('*')
+      .order('title');
+
+    if (supabaseError) {
+      console.error('Supabase products error:', supabaseError);
+    }
+
+    // Fetch Shopify products (15 apparel items)
+    const shopifyProducts = await getShopifyProducts();
+
+    // Transform and merge
+    const unified: UnifiedProduct[] = [
+      ...(supabaseProducts || []).map(transformSupabaseProduct),
+      ...shopifyProducts.map(transformShopifyProduct),
+    ];
+
+    return unified;
+  } catch (error) {
+    console.error('Failed to fetch products:', error);
+    return [];
   }
-
-  return <UniformGrid products={products} />;
 }
 
-async function RitualObjects() {
-  const products = await getFeaturedProducts(
-    STOREFRONT_CONFIG.collections.decorFeatured,
-    'decor-featured',
-    STOREFRONT_CONFIG.limits.homepageDecorPreview
-  );
+export default async function HomePage() {
+  const products = await getProducts();
 
-  if (!products.length) {
-    return null;
-  }
-
-  return <HomeRituals products={products} />;
-}
-
-export default function HomePage() {
   return (
-    <main className="homepage-identity">
-      {/* HERO — Identity First */}
-      <HeroIdentity />
+    <>
+      <Header />
+      <main style={styles.main}>
+        <div style={styles.container}>
+          <section style={styles.hero}>
+            <h1 style={styles.title}>Apparel & Objects</h1>
+            <p style={styles.subtitle}>Everyday Gothic</p>
+          </section>
 
-      {/* TRANSITION LINE */}
-      <SectionDivider 
-        text="You don't put this on to become someone else. You put it on because you already are."
-        spacing="large"
-      />
-
-      {/* THE UNIFORM — Featured Apparel */}
-      <Suspense fallback={<div className="loading">Loading...</div>}>
-        <FeaturedUniform />
-      </Suspense>
-
-      {/* BELIEF BLOCK */}
-      <BeliefStatement />
-
-      {/* CATEGORY SECTION */}
-      <CategoryForms />
-
-      {/* BRAND POSITIONING STRIP */}
-      <SectionDivider 
-        text="Charmed & Dark creates everyday pieces with a gothic edge. Designed to be worn, not performed."
-        spacing="normal"
-      />
-
-      {/* HOME OBJECTS SECTION */}
-      <Suspense fallback={<div className="loading">Loading...</div>}>
-        <RitualObjects />
-      </Suspense>
-
-      {/* THE MIRROR — Discovery Portal */}
-      <MirrorPortal />
-
-      {/* Footer */}
-      <footer className="footer-identity">
-        <p className="footer-tagline">Keep what feels like you.</p>
-      </footer>
-    </main>
+          <ProductGrid products={products} />
+        </div>
+      </main>
+    </>
   );
 }
 
-export const metadata = {
-  title: 'Charmed & Dark - Everyday Gothic Clothing',
-  description: 'Not costume. Not aesthetic. Everyday pieces for people who live comfortably in darker tones. Minimal gothic apparel designed to be worn daily.',
-  keywords: 'everyday gothic clothing, minimal gothic apparel, dark aesthetic clothing daily wear, gothic clothing everyday, dark clothing comfortable',
-  openGraph: {
-    title: 'Charmed & Dark - Made to be worn',
-    description: 'Everyday pieces for people who live comfortably in darker tones',
-    type: 'website',
+const styles = {
+  main: {
+    minHeight: '100vh',
+    paddingTop: '3rem',
+    paddingBottom: '3rem',
   },
-};
+  container: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '0 1.5rem',
+  },
+  hero: {
+    textAlign: 'center' as const,
+    marginBottom: '3rem',
+  },
+  title: {
+    fontFamily: "'Crimson Pro', serif",
+    fontSize: '2.5rem',
+    fontWeight: 400,
+    letterSpacing: '0.05em',
+    marginBottom: '0.5rem',
+    color: '#1a1a1a',
+  },
+  subtitle: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '1rem',
+    fontWeight: 300,
+    color: '#404040',
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase' as const,
+  },
+} as const;
