@@ -53,7 +53,8 @@ export async function getShopifyProducts(): Promise<ShopifyProduct[]> {
   const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
 
   if (!storefrontToken || !storeDomain) {
-    throw new Error('Missing Shopify Storefront API credentials');
+    console.log('Shopify credentials not configured - skipping Shopify products');
+    return [];
   }
 
   const query = `
