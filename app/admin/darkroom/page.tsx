@@ -39,7 +39,8 @@ export default function DarkroomPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || errorData.message || 'Processing failed');
       }
 
       const reader = response.body?.getReader();
@@ -71,7 +72,7 @@ export default function DarkroomPage() {
       }
     } catch (error) {
       console.error('Processing error:', error);
-      alert('Processing failed. Check console for details.');
+      alert(`Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease check that your CSV has the required columns: product_handle, image_url`);
     } finally {
       setProcessing(false);
     }
@@ -99,6 +100,13 @@ export default function DarkroomPage() {
               <label htmlFor="csv-upload" style={styles.uploadLabel}>
                 {file ? file.name : 'Select CSV File'}
               </label>
+              <p style={styles.uploadHint}>
+                Required columns: product_handle, image_url
+                <br />
+                <a href="/darkroom-template.csv" download style={styles.templateLink}>
+                  Download CSV Template →
+                </a>
+              </p>
             </div>
 
             <button
@@ -223,6 +231,19 @@ const styles = {
     color: '#404040',
     cursor: 'pointer',
     transition: 'border-color 0.2s',
+  },
+  uploadHint: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.75rem',
+    color: '#666',
+    textAlign: 'center' as const,
+    marginTop: '1rem',
+    lineHeight: 1.6,
+  },
+  templateLink: {
+    color: '#1a1a1a',
+    textDecoration: 'underline',
+    fontWeight: 500,
   },
   processButton: {
     width: '100%',

@@ -10,14 +10,30 @@ export async function POST(request: NextRequest) {
     const file = formData.get('csv') as File;
 
     if (!file) {
-      return new Response('No file provided', { status: 400 });
+      return new Response(JSON.stringify({ 
+        error: 'No file provided' 
+      }), { 
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     const csvText = await file.text();
     const lines = csvText.split('\n').filter(Boolean);
     
-    // Parse CSV header
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    if (lines.length < 2) {
+      return new Response(JSON.stringify({ 
+        error: 'CSV file is empty or has no data rows' 
+      }), { 
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Parse CSV header - handle quoted headers
+    const headerLine = lines[0].replace(/"/g, '');
+    const headers = headerLine.split(',').map(h => h.trim().toLowerCase());
+    
     const productHandleIndex = headers.indexOf('product_handle') >= 0 
       ? headers.indexOf('product_handle')
       : headers.indexOf('handle');
@@ -29,7 +45,14 @@ export async function POST(request: NextRequest) {
       : headers.indexOf('image');
 
     if (productHandleIndex < 0 || imageUrlIndex < 0) {
-      return new Response('CSV must contain product_handle and image_url columns', { status: 400 });
+      return new Response(JSON.stringify({ 
+        error: 'CSV must contain product_handle (or handle) and image_url (or image) columns',
+        foundHeaders: headers,
+        requiredHeaders: ['product_handle or handle', 'image_url or image']
+      }), { 
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Create streaming response
@@ -112,6 +135,13 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Darkroom processing error:', error);
-    return new Response('Processing failed', { status: 500 });
+    return new Response(JSON.stringify({ 
+      error: 'Processing failed',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.stack : undefined
+    }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
