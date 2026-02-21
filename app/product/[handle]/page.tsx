@@ -11,35 +11,53 @@ import ProductDescription from '@/components/ProductDescription';
 import { Product as SupabaseProduct } from '@/lib/supabase/client';
 
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true; // Allow dynamic params that weren't generated at build time
 
 async function getProduct(handle: string): Promise<{ product: UnifiedProduct; raw: SupabaseProduct | null } | null> {
   try {
     // Try Supabase first
-    const supabase = getSupabaseServer();
-    const { data: supabaseProduct } = await supabase
-      .from('products')
-      .select('*')
-      .eq('handle', handle)
-      .single();
+    try {
+      const supabase = getSupabaseServer();
+      const { data: supabaseProduct, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('handle', handle)
+        .single();
 
-    if (supabaseProduct) {
-      return {
-        product: transformSupabaseProduct(supabaseProduct),
-        raw: supabaseProduct,
-      };
+      if (supabaseProduct && !error) {
+        console.log('Found product in Supabase:', handle);
+        return {
+          product: transformSupabaseProduct(supabaseProduct),
+          raw: supabaseProduct,
+        };
+      }
+      
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 is "not found", which is expected
+        console.error('Supabase error:', error);
+      }
+    } catch (supabaseError) {
+      console.error('Supabase connection error:', supabaseError);
+      // Continue to try Shopify
     }
 
     // Try Shopify
-    const shopifyProducts = await getShopifyProducts();
-    const shopifyProduct = shopifyProducts.find((p) => p.handle === handle);
+    try {
+      const shopifyProducts = await getShopifyProducts();
+      const shopifyProduct = shopifyProducts.find((p) => p.handle === handle);
 
-    if (shopifyProduct) {
-      return {
-        product: transformShopifyProduct(shopifyProduct),
-        raw: null,
-      };
+      if (shopifyProduct) {
+        console.log('Found product in Shopify:', handle);
+        return {
+          product: transformShopifyProduct(shopifyProduct),
+          raw: null,
+        };
+      }
+    } catch (shopifyError) {
+      console.error('Shopify error:', shopifyError);
     }
 
+    console.log('Product not found:', handle);
     return null;
   } catch (error) {
     console.error('Failed to fetch product:', error);
@@ -73,14 +91,22 @@ export default async function ProductPage({
           <div style={styles.product}>
             <div style={styles.imageSection}>
               <div style={styles.mainImage}>
-                <Image
-                  src={product.images.hero}
-                  alt={product.title}
-                  width={600}
-                  height={750}
-                  style={styles.image}
-                  priority
-                />
+                {product.images.hero ? (
+                  <Image
+                    src={product.images.hero}
+                    alt={product.title}
+                    width={600}
+                    height={750}
+                    style={styles.image}
+                    priority
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div style={styles.imagePlaceholder}>No Image</div>
+                )}
               </div>
               
               {product.images.front && (
@@ -91,6 +117,10 @@ export default async function ProductPage({
                     width={150}
                     height={187}
                     style={styles.thumbnail}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
                   />
                 </div>
               )}
@@ -236,5 +266,15 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
     paddingTop: '1rem',
     borderTop: '1px solid #e8e8e3',
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e8e8e3',
+    color: '#404040',
+    fontSize: '0.875rem',
   },
 } as const;
