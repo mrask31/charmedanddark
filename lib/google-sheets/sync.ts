@@ -125,16 +125,6 @@ export async function syncProductsToSupabase(products: SheetRow[]) {
         }
       }
 
-      // Parse metadata if provided
-      let metadata = {};
-      if (product.metadata) {
-        try {
-          metadata = JSON.parse(product.metadata);
-        } catch (e) {
-          console.warn(`Invalid metadata JSON for ${product.handle}:`, product.metadata);
-        }
-      }
-
       // Build full description from lines
       const description = descriptionLines.join('\n');
 
@@ -153,7 +143,6 @@ export async function syncProductsToSupabase(products: SheetRow[]) {
             stock_quantity: product.stock,
             category: product.category,
             options,
-            metadata,
             sync_source: 'google_sheets',
             last_synced_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
