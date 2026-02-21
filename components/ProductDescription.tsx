@@ -40,13 +40,15 @@ const styles = {
   container: {
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: '0.75rem',
+    gap: '0.875rem',
   },
   line: {
     margin: 0,
     fontSize: '0.9375rem',
-    lineHeight: '1.6',
+    lineHeight: '1.7',
     color: '#404040',
     fontFamily: "'Inter', sans-serif",
+    fontWeight: 300,
+    letterSpacing: '0.025em',
   },
 } as const;

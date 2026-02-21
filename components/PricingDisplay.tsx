@@ -30,17 +30,16 @@ export default function PricingDisplay({ pricing }: PricingDisplayProps) {
   return (
     <div style={styles.container}>
       {isRecognized ? (
-        <div style={styles.housePrice}>{pricing.formatted.house}</div>
+        <div style={styles.recognizedPrice}>
+          <span style={styles.housePrice}>${pricing.house.toFixed(0)}</span>
+          <span style={styles.housePriceLabel}>House Price</span>
+        </div>
       ) : (
         <div style={styles.dualPricing}>
-          <div style={styles.standard}>
-            <span style={styles.label}>Standard</span>
-            <span style={styles.price}>{pricing.formatted.standard}</span>
-          </div>
-          <div style={styles.house}>
-            <span style={styles.label}>House</span>
-            <span style={styles.price}>{pricing.formatted.house}</span>
-          </div>
+          <span style={styles.basePrice}>${pricing.standard.toFixed(0)}</span>
+          <span style={styles.separator}>|</span>
+          <span style={styles.housePrice}>${pricing.house.toFixed(0)}</span>
+          <span style={styles.housePriceLabel}>House</span>
         </div>
       )}
     </div>
@@ -53,37 +52,41 @@ const styles = {
     borderTop: '1px solid #e8e8e3',
     borderBottom: '1px solid #e8e8e3',
   },
-  housePrice: {
-    fontSize: '1.75rem',
-    fontFamily: "'Crimson Pro', serif",
-    color: '#1a1a1a',
-    fontWeight: 400,
+  recognizedPrice: {
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: '0.75rem',
   },
   dualPricing: {
     display: 'flex',
-    gap: '2rem',
+    alignItems: 'baseline',
+    gap: '1rem',
   },
-  standard: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '0.25rem',
+  basePrice: {
+    fontSize: '1.5rem',
+    fontFamily: "'Inter', sans-serif",
+    color: '#404040',
+    fontWeight: 300,
+    letterSpacing: '0.02em',
   },
-  house: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '0.25rem',
+  separator: {
+    fontSize: '1.5rem',
+    color: '#e8e8e3',
+    fontWeight: 300,
   },
-  label: {
+  housePrice: {
+    fontSize: '1.75rem',
+    fontFamily: "'Inter', sans-serif",
+    color: '#1a1a1a',
+    fontWeight: 400,
+    letterSpacing: '0.02em',
+  },
+  housePriceLabel: {
     fontSize: '0.75rem',
     color: '#404040',
     textTransform: 'uppercase' as const,
-    letterSpacing: '0.1em',
+    letterSpacing: '0.15em',
     fontFamily: "'Inter', sans-serif",
-  },
-  price: {
-    fontSize: '1.5rem',
-    fontFamily: "'Crimson Pro', serif",
-    color: '#1a1a1a',
     fontWeight: 400,
   },
 } as const;

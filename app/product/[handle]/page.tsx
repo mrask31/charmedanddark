@@ -132,7 +132,7 @@ export default function ProductPage() {
 
               {product.inStock ? (
                 <button style={styles.addButton}>
-                  Add to Cart
+                  Add to House
                 </button>
               ) : (
                 <div style={styles.outOfStock}>Out of Stock</div>
@@ -230,21 +230,23 @@ const styles = {
   description: {
     fontFamily: "'Inter', sans-serif",
     fontSize: '1rem',
-    lineHeight: 1.7,
+    lineHeight: 1.8,
     color: '#2d2d2d',
+    letterSpacing: '0.02em',
   },
   addButton: {
     padding: '1rem 2rem',
-    backgroundColor: '#1a1a1a',
-    color: '#f5f5f0',
+    backgroundColor: 'transparent',
+    color: '#1a1a1a',
+    border: '1px solid #1a1a1a',
+    borderRadius: '0px',
     fontSize: '0.9rem',
     fontWeight: 400,
     fontFamily: "'Inter', sans-serif",
     textTransform: 'uppercase' as const,
-    letterSpacing: '0.1em',
+    letterSpacing: '0.15em',
     cursor: 'pointer',
-    transition: 'background-color 0.2s',
-    border: 'none',
+    transition: 'all 0.2s ease',
     width: '100%',
   },
   outOfStock: {

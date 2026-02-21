@@ -89,3 +89,30 @@ button {
 .text-sans {
   font-family: var(--font-sans);
 }
+
+/* Ghost Button - Add to House */
+button[style*="transparent"] {
+  transition: all 0.2s ease;
+}
+
+button[style*="transparent"]:hover {
+  background-color: var(--charcoal-deep) !important;
+  color: var(--off-white) !important;
+}
+
+/* Product Grid Styling */
+.product-card {
+  border-radius: 0;
+}
+
+/* Typography Enhancements */
+.product-title {
+  font-family: var(--font-sans);
+  letter-spacing: 0.02em;
+}
+
+.product-description {
+  font-family: var(--font-sans);
+  letter-spacing: 0.025em;
+  line-height: 1.7;
+}
