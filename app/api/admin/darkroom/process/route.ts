@@ -87,6 +87,11 @@ export async function POST(request: NextRequest) {
 
           if (!productHandle || sourceImageUrls.length === 0) continue;
 
+          // Add delay between products to avoid rate limiting (except first product)
+          if (i > 1) {
+            await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second delay between products
+          }
+
           const jobId = `job-${i}`;
 
           // Send initial status
@@ -132,15 +137,28 @@ export async function POST(request: NextRequest) {
             );
           } catch (error) {
             console.error(`Error processing ${productHandle}:`, error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({
                 id: jobId,
                 productHandle,
                 productTitle,
                 status: 'error',
-                error: error instanceof Error ? error.message : 'Unknown error',
+                error: errorMessage,
               })}\n\n`)
             );
+            
+            // If it's a rate limit or payment error, stop processing
+            if (errorMessage.includes('Rate limit') || errorMessage.includes('Payment required')) {
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({
+                  id: 'system',
+                  status: 'error',
+                  error: `Stopping batch: ${errorMessage}`,
+                })}\n\n`)
+              );
+              break;
+            }
           }
         }
 

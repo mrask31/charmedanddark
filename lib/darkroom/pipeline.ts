@@ -27,31 +27,41 @@ export async function processImagePipeline(options: PipelineOptions): Promise<Pi
   const { productHandle, productTitle, sourceImageUrls, onProgress } = options;
 
   const processedImageUrls: string[] = [];
+  let sharedBackground: Buffer | null = null;
 
   try {
     // Process each image in the array
     for (let i = 0; i < sourceImageUrls.length; i++) {
       const sourceImageUrl = sourceImageUrls[i];
       
+      // Add delay between requests to avoid rate limiting (except first image)
+      if (i > 0) {
+        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
+      }
+      
       // Step 1: Extract product (remove background)
       onProgress?.('extracting');
       const extractedImage = await removeBackground(sourceImageUrl);
 
-      // Step 2: Generate branded background (reuse for all images of same product)
+      // Step 2: Generate branded background (only once, reuse for all images)
       if (i === 0) {
         onProgress?.('generating');
+        sharedBackground = await generateBackground({
+          prompt: 'Dark brutalist concrete wall, moody single-source lighting, architectural shadows, empty space, product photography backdrop, matte finish',
+          width: 1024,
+          height: 1024,
+        });
       }
-      const background = await generateBackground({
-        prompt: 'Dark brutalist concrete wall, moody single-source lighting, architectural shadows, empty space, product photography backdrop, matte finish',
-        width: 1024,
-        height: 1024,
-      });
+
+      if (!sharedBackground) {
+        throw new Error('Background generation failed');
+      }
 
       // Step 3: Composite product onto background
       onProgress?.('compositing');
       const compositedImage = await compositeImage({
         product: extractedImage,
-        background: background,
+        background: sharedBackground,
         addShadow: true,
       });
 

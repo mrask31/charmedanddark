@@ -27,16 +27,30 @@ export async function removeBackground(imageUrl: string): Promise<Buffer> {
     });
 
     if (!response.ok) {
-      throw new Error(`Replicate API error: ${response.statusText}`);
+      const errorText = await response.text();
+      
+      // Check for specific error types
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+      }
+      if (response.status === 402) {
+        throw new Error('Payment required. Please add credits to your Replicate account at https://replicate.com/account/billing');
+      }
+      
+      throw new Error(`Replicate API error (${response.status}): ${errorText}`);
     }
 
     const prediction = await response.json();
     const predictionId = prediction.id;
 
-    // Poll for completion
+    // Poll for completion with timeout
     let result = prediction;
-    while (result.status !== 'succeeded' && result.status !== 'failed') {
+    let attempts = 0;
+    const maxAttempts = 60; // 60 seconds max
+    
+    while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
+      attempts++;
       
       const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         headers: {
@@ -44,16 +58,29 @@ export async function removeBackground(imageUrl: string): Promise<Buffer> {
         },
       });
 
+      if (!pollResponse.ok) {
+        throw new Error(`Polling failed: ${pollResponse.statusText}`);
+      }
+
       result = await pollResponse.json();
     }
 
     if (result.status === 'failed') {
-      throw new Error('Background removal failed');
+      throw new Error(`Background removal failed: ${result.error || 'Unknown error'}`);
+    }
+
+    if (attempts >= maxAttempts) {
+      throw new Error('Background removal timed out after 60 seconds');
     }
 
     // Download the result image
     const outputUrl = result.output;
     const imageResponse = await fetch(outputUrl);
+    
+    if (!imageResponse.ok) {
+      throw new Error('Failed to download processed image');
+    }
+    
     const arrayBuffer = await imageResponse.arrayBuffer();
     
     return Buffer.from(arrayBuffer);
