@@ -9,7 +9,7 @@ import { createClient } from '@supabase/supabase-js';
 // Google Sheets configuration
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID!;
 const SHEET_NAME = process.env.GOOGLE_SHEETS_SHEET_NAME || 'Physical Inventory';
-const RANGE = `${SHEET_NAME}!A2:K`; // Adjust based on your columns
+const RANGE = `${SHEET_NAME}!A2:J`; // 10 columns: Handle through Options
 
 // Supabase configuration
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -25,8 +25,7 @@ interface SheetRow {
   housePrice: number;
   stock: number;
   category: string;
-  options?: string; // JSON string of options
-  metadata?: string; // JSON string of metadata
+  options?: string; // JSON string of options (column J)
 }
 
 /**
@@ -47,7 +46,6 @@ function parseSheetRow(row: string[]): SheetRow | null {
     stock: parseInt(row[7]) || 0,
     category: row[8]?.trim() || '',
     options: row[9]?.trim() || undefined,
-    metadata: row[10]?.trim() || undefined,
   };
 }
 
