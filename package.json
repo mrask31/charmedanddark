@@ -18,6 +18,7 @@
     "sync-sheets": "ts-node scripts/sync-sheets.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@supabase/supabase-js": "^2.39.0",
     "dotenv": "^16.4.5",
     "googleapis": "^134.0.0",

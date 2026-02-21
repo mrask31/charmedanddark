@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import { getPricingDisplay } from '@/lib/pricing';
+import { trackProductView } from '@/lib/tracking';
 import Header from '@/components/Header';
 import PricingDisplay from '@/components/PricingDisplay';
 import ProductDescription from '@/components/ProductDescription';
@@ -45,6 +46,10 @@ export default function ProductPage() {
           setProduct(transformSupabaseProduct(data));
           setRaw(data);
           setLoading(false);
+          
+          // Track product view
+          trackProductView(data.id, handle);
+          
           return;
         }
 

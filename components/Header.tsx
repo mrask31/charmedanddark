@@ -47,6 +47,9 @@ export default function Header() {
             </Link>
           ) : isRecognized ? (
             <>
+              <Link href="/sanctuary" style={styles.link}>
+                Sanctuary
+              </Link>
               <span style={styles.status}>Recognized</span>
               <button onClick={handleSignOut} style={styles.link}>
                 Leave
