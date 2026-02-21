@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabase/client';
@@ -8,7 +9,7 @@ import Header from '@/components/Header';
 import ProductGrid from '@/components/ProductGrid';
 import CategoryFilter from '@/components/CategoryFilter';
 
-export default function ObjectsPage() {
+function ObjectsContent() {
   const [products, setProducts] = useState<UnifiedProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,38 +59,52 @@ export default function ObjectsPage() {
   }, [currentCategory]);
 
   return (
+    <div style={styles.container}>
+      <section style={styles.header}>
+        <h1 style={styles.title}>The Objects</h1>
+        <p style={styles.subtitle}>Physical Goods</p>
+      </section>
+
+      <div style={styles.layout}>
+        {categories.length > 0 && (
+          <CategoryFilter 
+            categories={categories} 
+            currentCategory={currentCategory}
+          />
+        )}
+        
+        <div style={categories.length > 0 ? styles.content : styles.contentFull}>
+          {loading ? (
+            <div style={styles.loading}>
+              <p>Loading...</p>
+            </div>
+          ) : products.length === 0 ? (
+            <div style={styles.emptyState}>
+              <p>No objects available yet.</p>
+            </div>
+          ) : (
+            <ProductGrid products={products} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ObjectsPage() {
+  return (
     <>
       <Header />
       <main style={styles.main}>
-        <div style={styles.container}>
-          <section style={styles.header}>
-            <h1 style={styles.title}>The Objects</h1>
-            <p style={styles.subtitle}>Physical Goods</p>
-          </section>
-
-          <div style={styles.layout}>
-            {categories.length > 0 && (
-              <CategoryFilter 
-                categories={categories} 
-                currentCategory={currentCategory}
-              />
-            )}
-            
-            <div style={categories.length > 0 ? styles.content : styles.contentFull}>
-              {loading ? (
-                <div style={styles.loading}>
-                  <p>Loading...</p>
-                </div>
-              ) : products.length === 0 ? (
-                <div style={styles.emptyState}>
-                  <p>No objects available yet.</p>
-                </div>
-              ) : (
-                <ProductGrid products={products} />
-              )}
+        <Suspense fallback={
+          <div style={styles.container}>
+            <div style={styles.loading}>
+              <p>Loading...</p>
             </div>
           </div>
-        </div>
+        }>
+          <ObjectsContent />
+        </Suspense>
       </main>
     </>
   );
