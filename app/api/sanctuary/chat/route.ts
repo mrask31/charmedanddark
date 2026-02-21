@@ -64,10 +64,22 @@ export async function POST(request: NextRequest) {
 
     // Get AI recommendation
     console.log('Calling Gemini API...');
-    const { response, recommendedProduct } = await getCuratorRecommendation(
-      prompt,
-      products
-    );
+    let response, recommendedProduct;
+    try {
+      const result = await getCuratorRecommendation(prompt, products);
+      response = result.response;
+      recommendedProduct = result.recommendedProduct;
+    } catch (geminiError) {
+      console.error('Gemini API call failed:', geminiError);
+      if (geminiError instanceof Error) {
+        console.error('Gemini error details:', {
+          name: geminiError.name,
+          message: geminiError.message,
+          stack: geminiError.stack,
+        });
+      }
+      throw geminiError;
+    }
 
     console.log('Gemini response received:', { 
       hasResponse: !!response, 
@@ -103,10 +115,19 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Sanctuary chat error:', error);
     
+    // Detailed error logging
+    if (error instanceof Error) {
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
     return NextResponse.json(
       {
         error: 'The Curator is unavailable',
         details: error instanceof Error ? error.message : 'Unknown error',
+        errorType: error instanceof Error ? error.name : typeof error,
+        stack: error instanceof Error ? error.stack : undefined,
       },
       { status: 500 }
     );
