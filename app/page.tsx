@@ -101,7 +101,7 @@ export default function HomePage() {
               <>
                 <div style={styles.productGrid}>
                   {featuredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product.id} product={product} isRecognized={false} />
                   ))}
                 </div>
                 <div style={styles.viewAllContainer}>
