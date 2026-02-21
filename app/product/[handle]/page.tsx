@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
@@ -11,6 +10,7 @@ import { trackProductView } from '@/lib/tracking';
 import Header from '@/components/Header';
 import PricingDisplay from '@/components/PricingDisplay';
 import ProductDescription from '@/components/ProductDescription';
+import ProductImageGallery from '@/components/ProductImageGallery';
 import { Product as SupabaseProduct } from '@/lib/supabase/client';
 
 export default function ProductPage() {
@@ -110,13 +110,10 @@ export default function ProductPage() {
 
           <div style={styles.product}>
             <div style={styles.imageSection}>
-              <div style={styles.mainImage}>
-                {product.images.hero ? (
-                  <div style={styles.imagePlaceholder}>No Image</div>
-                ) : (
-                  <div style={styles.imagePlaceholder}>No Image</div>
-                )}
-              </div>
+              <ProductImageGallery 
+                images={product.images.all || [product.images.hero]}
+                productTitle={product.title}
+              />
             </div>
 
             <div style={styles.details}>
@@ -197,22 +194,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '1rem',
-  },
-  mainImage: {
-    width: '100%',
-    aspectRatio: '4 / 5',
-    backgroundColor: '#f5f5f0',
-    border: '1px solid #e8e8e3',
-  },
-  imagePlaceholder: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#e8e8e3',
-    color: '#404040',
-    fontSize: '0.875rem',
   },
   details: {
     display: 'flex',

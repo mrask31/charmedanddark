@@ -19,6 +19,7 @@ export interface UnifiedProduct {
     hero: string;
     front?: string;
     hover?: string;
+    all?: string[]; // All images array
   };
   inStock: boolean;
 }
@@ -36,16 +37,42 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     description = product.description_lines.join('\n');
   }
 
-  // PRIORITY: Use image_url from database (Google Sheets SSOT)
-  // FALLBACK: Construct local path if no image_url
-  const heroImage = product.image_url || `/products/${product.handle}/hero.jpg`;
-  const frontImage = product.image_url || `/products/${product.handle}/front.jpg`;
-  const hoverImage = product.image_url || `/products/${product.handle}/hover.jpg`;
+  // PRIORITY 1: Use images array from database (Darkroom processed)
+  // PRIORITY 2: Use image_url from database (Google Sheets SSOT)
+  // FALLBACK: Construct local path if no images
+  let allImages: string[] = [];
+  let heroImage = '';
+  let frontImage: string | undefined;
+  let hoverImage: string | undefined;
+
+  if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+    // Extract URLs from images array
+    allImages = product.images
+      .sort((a: any, b: any) => (a.position || 0) - (b.position || 0))
+      .map((img: any) => img.url);
+    
+    heroImage = allImages[0];
+    frontImage = allImages[1];
+    hoverImage = allImages[2];
+  } else if (product.image_url) {
+    // Fallback to single image_url
+    heroImage = product.image_url;
+    frontImage = product.image_url;
+    hoverImage = product.image_url;
+    allImages = [product.image_url];
+  } else {
+    // Final fallback to local paths
+    heroImage = `/products/${product.handle}/hero.jpg`;
+    frontImage = `/products/${product.handle}/front.jpg`;
+    hoverImage = `/products/${product.handle}/hover.jpg`;
+    allImages = [heroImage];
+  }
   
   const images = {
     hero: heroImage,
     front: frontImage,
     hover: hoverImage,
+    all: allImages,
   };
 
   return {
@@ -66,9 +93,10 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
  */
 export function transformShopifyProduct(product: ShopifyProduct): UnifiedProduct {
   const price = parseFloat(product.priceRange.minVariantPrice.amount);
-  const heroImage = product.images.edges[0]?.node.url || '/images/placeholder.jpg';
-  const frontImage = product.images.edges[1]?.node.url;
-  const hoverImage = product.images.edges[2]?.node.url;
+  const allImages = product.images.edges.map(edge => edge.node.url);
+  const heroImage = allImages[0] || '/images/placeholder.jpg';
+  const frontImage = allImages[1];
+  const hoverImage = allImages[2];
 
   return {
     id: product.id,
@@ -82,6 +110,7 @@ export function transformShopifyProduct(product: ShopifyProduct): UnifiedProduct
       hero: heroImage,
       front: frontImage,
       hover: hoverImage,
+      all: allImages,
     },
     inStock: product.variants.edges.some((v) => v.node.availableForSale),
   };

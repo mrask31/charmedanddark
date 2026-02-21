@@ -25,6 +25,7 @@ export interface Product {
   stock_quantity: number;
   category: string | null;
   image_url?: string | null;
+  images?: Array<{ url: string; position: number; alt?: string }> | null; // Multi-image array
   options?: Record<string, any> | null;
   metadata?: Record<string, any> | null;
   sync_source?: string | null;

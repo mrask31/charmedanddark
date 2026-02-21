@@ -1,4 +1,4 @@
-product_handle,product_title,image_url
-black-taper-candles,Black Taper Candles Set of 3,https://cdn.faire.com/fastly/example1.jpg
-vintage-brass-candlestick,Vintage Brass Candlestick,https://cdn.faire.com/fastly/example2.jpg
-celestial-kisslock-bag,Celestial Kisslock Bag,https://cdn.faire.com/fastly/example3.jpg
+product_handle,product_title,image_1,image_2,image_3,image_4
+black-taper-candles,Black Taper Candles Set of 3,https://cdn.faire.com/fastly/example1-main.jpg,https://cdn.faire.com/fastly/example1-detail.jpg,https://cdn.faire.com/fastly/example1-angle.jpg,
+vintage-brass-candlestick,Vintage Brass Candlestick,https://cdn.faire.com/fastly/example2-main.jpg,https://cdn.faire.com/fastly/example2-detail.jpg,,
+celestial-kisslock-bag,Celestial Kisslock Bag,https://cdn.faire.com/fastly/example3-main.jpg,,,

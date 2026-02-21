@@ -9,7 +9,8 @@ interface ProcessingJob {
   productTitle: string;
   status: 'pending' | 'extracting' | 'generating' | 'compositing' | 'uploading' | 'complete' | 'error';
   error?: string;
-  imageUrl?: string;
+  imageUrls?: string[];
+  imageCount?: number;
 }
 
 export default function DarkroomPage() {
@@ -101,7 +102,7 @@ export default function DarkroomPage() {
                 {file ? file.name : 'Select CSV File'}
               </label>
               <p style={styles.uploadHint}>
-                Required columns: product_handle, image_url
+                Required columns: product_handle, image_1, image_2, image_3, image_4 (or more)
                 <br />
                 <a href="/darkroom-template.csv" download style={styles.templateLink}>
                   Download CSV Template →
@@ -137,14 +138,21 @@ export default function DarkroomPage() {
                         {job.status}
                       </span>
                     </div>
-                    <p style={styles.jobHandle}>{job.productHandle}</p>
+                    <p style={styles.jobHandle}>
+                      {job.productHandle}
+                      {job.imageCount && ` • ${job.imageCount} image${job.imageCount > 1 ? 's' : ''}`}
+                    </p>
                     {job.error && (
                       <p style={styles.jobError}>{job.error}</p>
                     )}
-                    {job.imageUrl && (
-                      <a href={job.imageUrl} target="_blank" rel="noopener noreferrer" style={styles.jobLink}>
-                        View Image →
-                      </a>
+                    {job.imageUrls && job.imageUrls.length > 0 && (
+                      <div style={styles.jobImages}>
+                        {job.imageUrls.map((url, idx) => (
+                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" style={styles.jobLink}>
+                            Image {idx + 1} →
+                          </a>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -330,6 +338,13 @@ const styles = {
     textDecoration: 'underline',
     marginTop: '0.5rem',
     display: 'inline-block',
+    marginRight: '1rem',
+  },
+  jobImages: {
+    display: 'flex',
+    flexWrap: 'wrap' as const,
+    gap: '0.5rem',
+    marginTop: '0.75rem',
   },
   infoSection: {
     backgroundColor: '#2d2d2d',

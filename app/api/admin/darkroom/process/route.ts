@@ -40,15 +40,30 @@ export async function POST(request: NextRequest) {
     const productTitleIndex = headers.indexOf('product_title') >= 0
       ? headers.indexOf('product_title')
       : headers.indexOf('title');
-    const imageUrlIndex = headers.indexOf('image_url') >= 0
-      ? headers.indexOf('image_url')
-      : headers.indexOf('image');
+    
+    // Find all image columns (image_1, image_2, image_3, image_4, etc.)
+    const imageIndices: number[] = [];
+    headers.forEach((header, index) => {
+      if (header.match(/^image_?\d+$/)) {
+        imageIndices.push(index);
+      }
+    });
+    
+    // Fallback to single image_url column if no image_N columns found
+    if (imageIndices.length === 0) {
+      const imageUrlIndex = headers.indexOf('image_url') >= 0
+        ? headers.indexOf('image_url')
+        : headers.indexOf('image');
+      if (imageUrlIndex >= 0) {
+        imageIndices.push(imageUrlIndex);
+      }
+    }
 
-    if (productHandleIndex < 0 || imageUrlIndex < 0) {
+    if (productHandleIndex < 0 || imageIndices.length === 0) {
       return new Response(JSON.stringify({ 
-        error: 'CSV must contain product_handle (or handle) and image_url (or image) columns',
+        error: 'CSV must contain product_handle (or handle) and at least one image column (image_1, image_2, etc. or image_url)',
         foundHeaders: headers,
-        requiredHeaders: ['product_handle or handle', 'image_url or image']
+        requiredHeaders: ['product_handle or handle', 'image_1, image_2, ... or image_url']
       }), { 
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -64,9 +79,13 @@ export async function POST(request: NextRequest) {
           const values = lines[i].split(',').map(v => v.trim());
           const productHandle = values[productHandleIndex];
           const productTitle = productTitleIndex >= 0 ? values[productTitleIndex] : productHandle;
-          const sourceImageUrl = values[imageUrlIndex];
+          
+          // Collect all image URLs for this product
+          const sourceImageUrls = imageIndices
+            .map(idx => values[idx])
+            .filter(url => url && url.length > 0);
 
-          if (!productHandle || !sourceImageUrl) continue;
+          if (!productHandle || sourceImageUrls.length === 0) continue;
 
           const jobId = `job-${i}`;
 
@@ -77,15 +96,16 @@ export async function POST(request: NextRequest) {
               productHandle,
               productTitle,
               status: 'pending',
+              imageCount: sourceImageUrls.length,
             })}\n\n`)
           );
 
           try {
-            // Process image through pipeline
+            // Process all images through pipeline
             const result = await processImagePipeline({
               productHandle,
               productTitle,
-              sourceImageUrl,
+              sourceImageUrls, // Now an array
               onProgress: (status) => {
                 controller.enqueue(
                   encoder.encode(`data: ${JSON.stringify({
@@ -93,6 +113,7 @@ export async function POST(request: NextRequest) {
                     productHandle,
                     productTitle,
                     status,
+                    imageCount: sourceImageUrls.length,
                   })}\n\n`)
                 );
               },
@@ -105,7 +126,8 @@ export async function POST(request: NextRequest) {
                 productHandle,
                 productTitle,
                 status: 'complete',
-                imageUrl: result.imageUrl,
+                imageUrls: result.imageUrls, // Now an array
+                imageCount: result.imageUrls.length,
               })}\n\n`)
             );
           } catch (error) {

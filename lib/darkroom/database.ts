@@ -1,17 +1,17 @@
 /**
  * Database Update
- * Updates product image_url in Supabase
+ * Updates product images array in Supabase
  */
 
 import { createClient } from '@supabase/supabase-js';
 
 interface UpdateOptions {
   productHandle: string;
-  imageUrl: string;
+  imageUrls: string[]; // Now an array
 }
 
 export async function updateProductImage(options: UpdateOptions): Promise<void> {
-  const { productHandle, imageUrl } = options;
+  const { productHandle, imageUrls } = options;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -23,10 +23,18 @@ export async function updateProductImage(options: UpdateOptions): Promise<void> 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
   try {
+    // Build images array with position metadata
+    const images = imageUrls.map((url, index) => ({
+      url,
+      position: index,
+      alt: `${productHandle} - Image ${index + 1}`,
+    }));
+
     const { error } = await supabase
       .from('products')
       .update({ 
-        image_url: imageUrl,
+        images: images, // JSONB array
+        image_url: imageUrls[0], // Keep first image for backward compatibility
         last_synced_at: new Date().toISOString(),
       })
       .eq('handle', productHandle);
