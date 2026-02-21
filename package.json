@@ -15,6 +15,7 @@
     "seed-products": "ts-node scripts/seed-products.ts",
     "verify-setup": "ts-node scripts/verify-setup.ts",
     "check-images": "ts-node scripts/check-images.ts",
+    "organize-images": "ts-node scripts/organize-images.ts",
     "sync-sheets": "ts-node scripts/sync-sheets.ts"
   },
   "dependencies": {
