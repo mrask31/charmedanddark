@@ -1,82 +1,97 @@
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSupabaseServer } from '@/lib/supabase/server';
-import { getShopifyProducts } from '@/lib/shopify/products';
-import { transformSupabaseProduct, transformShopifyProduct, UnifiedProduct } from '@/lib/products';
+import { getSupabaseClient } from '@/lib/supabase/client';
+import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import { getPricingDisplay } from '@/lib/pricing';
 import Header from '@/components/Header';
 import PricingDisplay from '@/components/PricingDisplay';
 import ProductDescription from '@/components/ProductDescription';
 import { Product as SupabaseProduct } from '@/lib/supabase/client';
 
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true; // Allow dynamic params that weren't generated at build time
+export default function ProductPage() {
+  const params = useParams();
+  const handle = params.handle as string;
+  
+  const [product, setProduct] = useState<UnifiedProduct | null>(null);
+  const [raw, setRaw] = useState<SupabaseProduct | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-async function getProduct(handle: string): Promise<{ product: UnifiedProduct; raw: SupabaseProduct | null } | null> {
-  try {
-    // Try Supabase first
-    try {
-      const supabase = getSupabaseServer();
-      const { data: supabaseProduct, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('handle', handle)
-        .single();
+  useEffect(() => {
+    async function loadProduct() {
+      try {
+        console.log('Loading product with handle:', handle);
+        
+        const supabase = getSupabaseClient();
+        const { data, error: supabaseError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('handle', handle)
+          .single();
 
-      if (supabaseProduct && !error) {
-        console.log('Found product in Supabase:', handle);
-        return {
-          product: transformSupabaseProduct(supabaseProduct),
-          raw: supabaseProduct,
-        };
+        if (supabaseError) {
+          console.error('Supabase error:', supabaseError);
+          setError('Product not found');
+          setLoading(false);
+          return;
+        }
+
+        if (data) {
+          console.log('Found product:', data);
+          setProduct(transformSupabaseProduct(data));
+          setRaw(data);
+          setLoading(false);
+          return;
+        }
+
+        setError('Product not found');
+        setLoading(false);
+      } catch (err) {
+        console.error('Error loading product:', err);
+        setError('Failed to load product');
+        setLoading(false);
       }
-      
-      if (error && error.code !== 'PGRST116') {
-        // PGRST116 is "not found", which is expected
-        console.error('Supabase error:', error);
-      }
-    } catch (supabaseError) {
-      console.error('Supabase connection error:', supabaseError);
-      // Continue to try Shopify
     }
 
-    // Try Shopify
-    try {
-      const shopifyProducts = await getShopifyProducts();
-      const shopifyProduct = shopifyProducts.find((p) => p.handle === handle);
+    loadProduct();
+  }, [handle]);
 
-      if (shopifyProduct) {
-        console.log('Found product in Shopify:', handle);
-        return {
-          product: transformShopifyProduct(shopifyProduct),
-          raw: null,
-        };
-      }
-    } catch (shopifyError) {
-      console.error('Shopify error:', shopifyError);
-    }
-
-    console.log('Product not found:', handle);
-    return null;
-  } catch (error) {
-    console.error('Failed to fetch product:', error);
-    return null;
-  }
-}
-
-export default async function ProductPage({
-  params,
-}: {
-  params: { handle: string };
-}) {
-  const result = await getProduct(params.handle);
-
-  if (!result) {
-    notFound();
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <main style={styles.main}>
+          <div style={styles.container}>
+            <div style={styles.loading}>Loading...</div>
+          </div>
+        </main>
+      </>
+    );
   }
 
-  const { product, raw } = result;
+  if (error || !product) {
+    return (
+      <>
+        <Header />
+        <main style={styles.main}>
+          <div style={styles.container}>
+            <div style={styles.error}>
+              <h1>Product Not Found</h1>
+              <p>{error || 'The product you\'re looking for doesn\'t exist.'}</p>
+              <Link href="/" style={styles.backLink}>
+                ← Return to All Products
+              </Link>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   const pricing = getPricingDisplay(product.price);
 
   return (
@@ -92,38 +107,11 @@ export default async function ProductPage({
             <div style={styles.imageSection}>
               <div style={styles.mainImage}>
                 {product.images.hero ? (
-                  <Image
-                    src={product.images.hero}
-                    alt={product.title}
-                    width={600}
-                    height={750}
-                    style={styles.image}
-                    priority
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
+                  <div style={styles.imagePlaceholder}>No Image</div>
                 ) : (
                   <div style={styles.imagePlaceholder}>No Image</div>
                 )}
               </div>
-              
-              {product.images.front && (
-                <div style={styles.thumbnails}>
-                  <Image
-                    src={product.images.front}
-                    alt={`${product.title} - Front`}
-                    width={150}
-                    height={187}
-                    style={styles.thumbnail}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
             </div>
 
             <div style={styles.details}>
@@ -172,6 +160,22 @@ const styles = {
     margin: '0 auto',
     padding: '0 1.5rem',
   },
+  loading: {
+    textAlign: 'center' as const,
+    padding: '4rem 2rem',
+    color: '#404040',
+  },
+  error: {
+    textAlign: 'center' as const,
+    padding: '4rem 2rem',
+    color: '#404040',
+  },
+  backLink: {
+    display: 'inline-block',
+    marginTop: '2rem',
+    color: '#1a1a1a',
+    textDecoration: 'underline',
+  },
   back: {
     display: 'inline-block',
     marginBottom: '2rem',
@@ -195,21 +199,15 @@ const styles = {
     backgroundColor: '#f5f5f0',
     border: '1px solid #e8e8e3',
   },
-  image: {
+  imagePlaceholder: {
     width: '100%',
     height: '100%',
-    objectFit: 'cover' as const,
-  },
-  thumbnails: {
     display: 'flex',
-    gap: '1rem',
-  },
-  thumbnail: {
-    width: '150px',
-    height: '187px',
-    objectFit: 'cover' as const,
-    border: '1px solid #e8e8e3',
-    cursor: 'pointer',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e8e8e3',
+    color: '#404040',
+    fontSize: '0.875rem',
   },
   details: {
     display: 'flex',
@@ -266,15 +264,5 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
     paddingTop: '1rem',
     borderTop: '1px solid #e8e8e3',
-  },
-  imagePlaceholder: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#e8e8e3',
-    color: '#404040',
-    fontSize: '0.875rem',
   },
 } as const;
