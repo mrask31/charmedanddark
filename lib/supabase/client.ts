@@ -26,10 +26,23 @@ export interface Product {
   category: string | null;
   image_url?: string | null;
   images?: Array<{ url: string; position: number; alt?: string }> | null; // Multi-image array
+  variants?: Array<ProductVariant> | null; // Variant support
+  is_variant_parent?: boolean;
   options?: Record<string, any> | null;
   metadata?: Record<string, any> | null;
   sync_source?: string | null;
   last_synced_at?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProductVariant {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  house_price?: number;
+  stock_quantity: number;
+  image_indices?: number[]; // Maps to images array positions
+  options?: Record<string, string>; // e.g., { color: "Black", style: "Moth" }
 }

@@ -3,22 +3,26 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getSupabaseClient } from '@/lib/supabase/client';
+import { getSupabaseClient, ProductVariant } from '@/lib/supabase/client';
 import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import { getPricingDisplay } from '@/lib/pricing';
 import { trackProductView } from '@/lib/tracking';
+import { useCart } from '@/lib/cart/context';
 import Header from '@/components/Header';
 import PricingDisplay from '@/components/PricingDisplay';
 import ProductDescription from '@/components/ProductDescription';
 import ProductImageGallery from '@/components/ProductImageGallery';
+import VariantSelector from '@/components/VariantSelector';
 import { Product as SupabaseProduct } from '@/lib/supabase/client';
 
 export default function ProductPage() {
   const params = useParams();
   const handle = params.handle as string;
+  const { addItem } = useCart();
   
   const [product, setProduct] = useState<UnifiedProduct | null>(null);
   const [raw, setRaw] = useState<SupabaseProduct | null>(null);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +49,12 @@ export default function ProductPage() {
           console.log('Found product:', data);
           setProduct(transformSupabaseProduct(data));
           setRaw(data);
+          
+          // Auto-select first variant if product has variants
+          if (data.variants && data.variants.length > 0) {
+            setSelectedVariantId(data.variants[0].id);
+          }
+          
           setLoading(false);
           
           // Track product view
@@ -97,7 +107,51 @@ export default function ProductPage() {
     );
   }
 
-  const pricing = getPricingDisplay(product.price);
+  // Get selected variant or use parent product data
+  const hasVariants = raw?.variants && raw.variants.length > 0;
+  const selectedVariant = hasVariants 
+    ? raw!.variants!.find((v: ProductVariant) => v.id === selectedVariantId)
+    : null;
+
+  // Use variant price if selected, otherwise parent price
+  const displayPrice = selectedVariant?.price || product.price;
+  const pricing = getPricingDisplay(displayPrice);
+
+  // Get images for selected variant or all images
+  const displayImages = (() => {
+    if (selectedVariant?.image_indices && product.images.all) {
+      // Map variant image indices to actual image URLs
+      return selectedVariant.image_indices
+        .map(idx => product.images.all![idx])
+        .filter(Boolean);
+    }
+    return product.images.all || [product.images.hero];
+  })();
+
+  // Check stock for variant or parent
+  const inStock = selectedVariant 
+    ? selectedVariant.stock_quantity > 0
+    : product.inStock;
+
+  const handleAddToCart = () => {
+    const cartItem = {
+      productId: product.id,
+      productHandle: product.handle,
+      productTitle: product.title,
+      variantId: selectedVariant?.id || null,
+      variantName: selectedVariant?.name || null,
+      sku: selectedVariant?.sku || null,
+      price: displayPrice,
+      housePrice: selectedVariant?.house_price || pricing.housePrice,
+      quantity: 1,
+      image: displayImages[0],
+    };
+
+    addItem(cartItem);
+    
+    // Show confirmation
+    alert(`Added to House: ${product.title}${selectedVariant ? ` - ${selectedVariant.name}` : ''}`);
+  };
 
   return (
     <>
@@ -111,7 +165,7 @@ export default function ProductPage() {
           <div style={styles.product}>
             <div style={styles.imageSection}>
               <ProductImageGallery 
-                images={product.images.all || [product.images.hero]}
+                images={displayImages}
                 productTitle={product.title}
               />
             </div>
@@ -125,6 +179,14 @@ export default function ProductPage() {
 
               <PricingDisplay pricing={pricing} />
 
+              {hasVariants && (
+                <VariantSelector
+                  variants={raw!.variants!}
+                  selectedVariantId={selectedVariantId}
+                  onVariantChange={setSelectedVariantId}
+                />
+              )}
+
               <div style={styles.description}>
                 <ProductDescription 
                   description={product.description}
@@ -132,8 +194,8 @@ export default function ProductPage() {
                 />
               </div>
 
-              {product.inStock ? (
-                <button style={styles.addButton}>
+              {inStock ? (
+                <button style={styles.addButton} onClick={handleAddToCart}>
                   Add to House
                 </button>
               ) : (
@@ -142,6 +204,7 @@ export default function ProductPage() {
 
               <div style={styles.source}>
                 {product.source === 'shopify' ? 'Apparel' : 'Home Object'}
+                {selectedVariant?.sku && ` • SKU: ${selectedVariant.sku}`}
               </div>
             </div>
           </div>
