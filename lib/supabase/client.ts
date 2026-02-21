@@ -24,6 +24,7 @@ export interface Product {
   house_price?: number | null;
   stock_quantity: number;
   category: string | null;
+  image_url?: string | null;
   options?: Record<string, any> | null;
   metadata?: Record<string, any> | null;
   sync_source?: string | null;

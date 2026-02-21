@@ -36,19 +36,22 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     description = product.description_lines.join('\n');
   }
 
-  // Handle image paths with options (e.g., color variants)
-  const baseImagePath = `/products/${product.handle}`;
+  // Use image_url from database if available, otherwise construct local path
+  let heroImage = product.image_url || `/products/${product.handle}/hero.jpg`;
+  
+  // Fallback to Unsplash placeholder if local image doesn't exist
+  // This ensures products always have visual representation
   const images = {
-    hero: `${baseImagePath}/hero.jpg`,
-    front: `${baseImagePath}/front.jpg`,
-    hover: `${baseImagePath}/hover.jpg`,
+    hero: heroImage,
+    front: product.image_url || `/products/${product.handle}/front.jpg`,
+    hover: product.image_url || `/products/${product.handle}/hover.jpg`,
   };
 
   // If product has color options, look for color-specific images
   if (product.options && product.options.colors && Array.isArray(product.options.colors)) {
     const defaultColor = product.options.colors[0];
-    if (defaultColor) {
-      images.hero = `${baseImagePath}/${product.handle}-${defaultColor.toLowerCase()}.jpg`;
+    if (defaultColor && !product.image_url) {
+      images.hero = `/products/${product.handle}/${product.handle}-${defaultColor.toLowerCase()}.jpg`;
     }
   }
 

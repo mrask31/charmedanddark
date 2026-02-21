@@ -56,11 +56,13 @@ export default function HomePage() {
         {/* 1. Hero Section */}
         <section style={styles.hero}>
           <div style={styles.heroImageContainer}>
-            <div style={styles.heroImagePlaceholder} />
+            <div style={styles.heroImagePlaceholder}>
+              <div style={styles.heroOverlay} />
+            </div>
           </div>
           <div style={styles.heroContent}>
             <h1 style={styles.heroHeadline}>
-              Restrained design for the intentional home.
+              The Architecture of Shadow.
             </h1>
             <button 
               style={styles.heroCTA}
@@ -118,7 +120,14 @@ export default function HomePage() {
         <section style={styles.portals}>
           <div style={styles.portalsContainer}>
             <Link href="/collections/wardrobe" style={styles.portal}>
-              <div style={styles.portalImagePlaceholder} />
+              <div style={{
+                ...styles.portalImagePlaceholder,
+                backgroundImage: 'url(https://images.unsplash.com/photo-1558769132-cb1aea1c8a5c?q=80&w=2400&auto=format&fit=crop)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}>
+                <div style={styles.portalOverlay} />
+              </div>
               <div style={styles.portalContent}>
                 <h2 style={styles.portalTitle}>The Wardrobe</h2>
                 <p style={styles.portalSubtitle}>Apparel</p>
@@ -126,7 +135,14 @@ export default function HomePage() {
             </Link>
             
             <Link href="/collections/objects" style={styles.portal}>
-              <div style={styles.portalImagePlaceholder} />
+              <div style={{
+                ...styles.portalImagePlaceholder,
+                backgroundImage: 'url(https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=2400&auto=format&fit=crop)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}>
+                <div style={styles.portalOverlay} />
+              </div>
               <div style={styles.portalContent}>
                 <h2 style={styles.portalTitle}>The Objects</h2>
                 <p style={styles.portalSubtitle}>Physical Goods</p>
@@ -164,8 +180,18 @@ const styles = {
   heroImagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#2d2d2d',
-    backgroundImage: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+    backgroundImage: 'url(https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2400&auto=format&fit=crop)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'relative' as const,
+  },
+  heroOverlay: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   heroContent: {
     position: 'relative' as const,
@@ -283,8 +309,16 @@ const styles = {
   portalImagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#2d2d2d',
+    position: 'relative' as const,
     transition: 'transform 0.3s ease',
+  },
+  portalOverlay: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   portalContent: {
     position: 'absolute' as const,
