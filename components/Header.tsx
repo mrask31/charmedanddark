@@ -41,23 +41,31 @@ export default function Header() {
         </Link>
         
         <nav style={styles.nav}>
-          {!mounted ? (
-            <Link href="/threshold/enter" style={styles.link}>
-              Enter the House
-            </Link>
-          ) : isRecognized ? (
+          <Link href="/collections/wardrobe" style={styles.link}>
+            The Wardrobe
+          </Link>
+          <Link href="/collections/objects" style={styles.link}>
+            The Objects
+          </Link>
+          <Link href="/ethos" style={styles.link}>
+            The Ethos
+          </Link>
+          <Link href="/archive" style={styles.link}>
+            The Archive
+          </Link>
+          
+          {!mounted ? null : isRecognized ? (
             <>
               <Link href="/sanctuary" style={styles.link}>
                 Sanctuary
               </Link>
-              <span style={styles.status}>Recognized</span>
-              <button onClick={handleSignOut} style={styles.link}>
+              <button onClick={handleSignOut} style={styles.linkButton}>
                 Leave
               </button>
             </>
           ) : (
             <Link href="/threshold/enter" style={styles.link}>
-              Enter the House
+              Enter
             </Link>
           )}
         </nav>
@@ -89,10 +97,11 @@ const styles = {
   },
   nav: {
     display: 'flex',
-    gap: '1.5rem',
+    gap: '2rem',
     alignItems: 'center',
     fontFamily: "'Inter', sans-serif",
-    fontSize: '0.9rem',
+    fontSize: '0.875rem',
+    letterSpacing: '0.05em',
   },
   status: {
     color: '#404040',
@@ -101,7 +110,22 @@ const styles = {
   link: {
     color: '#1a1a1a',
     fontWeight: 400,
-    transition: 'color 0.2s',
+    transition: 'opacity 0.2s',
     cursor: 'pointer',
+    ':hover': {
+      opacity: 0.6,
+    },
+  },
+  linkButton: {
+    color: '#1a1a1a',
+    fontWeight: 400,
+    transition: 'opacity 0.2s',
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.875rem',
+    letterSpacing: '0.05em',
+    padding: 0,
   },
 } as const;

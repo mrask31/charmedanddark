@@ -1,32 +1,41 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import Header from '@/components/Header';
 import ProductGrid from '@/components/ProductGrid';
+import CategoryFilter from '@/components/CategoryFilter';
 
 export default function WardrobePage() {
   const [products, setProducts] = useState<UnifiedProduct[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get('category') || undefined;
 
   useEffect(() => {
     async function loadWardrobeProducts() {
       try {
         const supabase = getSupabaseClient();
         
-        // Filter for apparel/wardrobe items
-        const { data, error } = await supabase
+        // Build query - filter for Apparel category
+        let query = supabase
           .from('products')
           .select('*')
-          .eq('category', 'Apparel')
-          .order('title');
+          .eq('category', 'Apparel');
+
+        const { data, error } = await query.order('title');
 
         if (error) {
           console.error('Error loading wardrobe products:', error);
           setLoading(false);
           return;
         }
+
+        // For now, categories will be empty until we add subcategories
+        setCategories([]);
 
         const unified = (data || []).map(transformSupabaseProduct);
         setProducts(unified);
@@ -38,7 +47,7 @@ export default function WardrobePage() {
     }
 
     loadWardrobeProducts();
-  }, []);
+  }, [currentCategory]);
 
   return (
     <>
@@ -50,17 +59,28 @@ export default function WardrobePage() {
             <p style={styles.subtitle}>Apparel</p>
           </section>
 
-          {loading ? (
-            <div style={styles.loading}>
-              <p>Loading...</p>
+          <div style={styles.layout}>
+            {categories.length > 0 && (
+              <CategoryFilter 
+                categories={categories} 
+                currentCategory={currentCategory}
+              />
+            )}
+            
+            <div style={categories.length > 0 ? styles.content : styles.contentFull}>
+              {loading ? (
+                <div style={styles.loading}>
+                  <p>Loading...</p>
+                </div>
+              ) : products.length === 0 ? (
+                <div style={styles.emptyState}>
+                  <p>No apparel items available yet.</p>
+                </div>
+              ) : (
+                <ProductGrid products={products} />
+              )}
             </div>
-          ) : products.length === 0 ? (
-            <div style={styles.emptyState}>
-              <p>No apparel items available yet.</p>
-            </div>
-          ) : (
-            <ProductGrid products={products} />
-          )}
+          </div>
         </div>
       </main>
     </>
@@ -100,14 +120,26 @@ const styles = {
     letterSpacing: '0.1em',
     textTransform: 'uppercase' as const,
   },
+  layout: {
+    display: 'grid',
+    gridTemplateColumns: '200px 1fr',
+    gap: '4rem',
+  },
+  content: {
+    minHeight: '400px',
+  },
+  contentFull: {
+    minHeight: '400px',
+    gridColumn: '1 / -1',
+  },
   loading: {
     textAlign: 'center' as const,
-    padding: '4rem 2rem',
+    padding: '4rem 0',
     color: '#404040',
   },
   emptyState: {
     textAlign: 'center' as const,
-    padding: '4rem 2rem',
+    padding: '4rem 0',
     color: '#404040',
   },
 } as const;
