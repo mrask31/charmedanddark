@@ -1,0 +1,117 @@
+import { NextRequest } from 'next/server';
+import { processImagePipeline } from '@/lib/darkroom/pipeline';
+
+export const runtime = 'nodejs';
+export const maxDuration = 300; // 5 minutes
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('csv') as File;
+
+    if (!file) {
+      return new Response('No file provided', { status: 400 });
+    }
+
+    const csvText = await file.text();
+    const lines = csvText.split('\n').filter(Boolean);
+    
+    // Parse CSV header
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const productHandleIndex = headers.indexOf('product_handle') >= 0 
+      ? headers.indexOf('product_handle')
+      : headers.indexOf('handle');
+    const productTitleIndex = headers.indexOf('product_title') >= 0
+      ? headers.indexOf('product_title')
+      : headers.indexOf('title');
+    const imageUrlIndex = headers.indexOf('image_url') >= 0
+      ? headers.indexOf('image_url')
+      : headers.indexOf('image');
+
+    if (productHandleIndex < 0 || imageUrlIndex < 0) {
+      return new Response('CSV must contain product_handle and image_url columns', { status: 400 });
+    }
+
+    // Create streaming response
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        // Process each product
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          const productHandle = values[productHandleIndex];
+          const productTitle = productTitleIndex >= 0 ? values[productTitleIndex] : productHandle;
+          const sourceImageUrl = values[imageUrlIndex];
+
+          if (!productHandle || !sourceImageUrl) continue;
+
+          const jobId = `job-${i}`;
+
+          // Send initial status
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({
+              id: jobId,
+              productHandle,
+              productTitle,
+              status: 'pending',
+            })}\n\n`)
+          );
+
+          try {
+            // Process image through pipeline
+            const result = await processImagePipeline({
+              productHandle,
+              productTitle,
+              sourceImageUrl,
+              onProgress: (status) => {
+                controller.enqueue(
+                  encoder.encode(`data: ${JSON.stringify({
+                    id: jobId,
+                    productHandle,
+                    productTitle,
+                    status,
+                  })}\n\n`)
+                );
+              },
+            });
+
+            // Send completion
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({
+                id: jobId,
+                productHandle,
+                productTitle,
+                status: 'complete',
+                imageUrl: result.imageUrl,
+              })}\n\n`)
+            );
+          } catch (error) {
+            console.error(`Error processing ${productHandle}:`, error);
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({
+                id: jobId,
+                productHandle,
+                productTitle,
+                status: 'error',
+                error: error instanceof Error ? error.message : 'Unknown error',
+              })}\n\n`)
+            );
+          }
+        }
+
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
+  } catch (error) {
+    console.error('Darkroom processing error:', error);
+    return new Response('Processing failed', { status: 500 });
+  }
+}
