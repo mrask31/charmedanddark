@@ -36,24 +36,17 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     description = product.description_lines.join('\n');
   }
 
-  // Use image_url from database if available, otherwise construct local path
-  let heroImage = product.image_url || `/products/${product.handle}/hero.jpg`;
+  // PRIORITY: Use image_url from database (Google Sheets SSOT)
+  // FALLBACK: Construct local path if no image_url
+  const heroImage = product.image_url || `/products/${product.handle}/hero.jpg`;
+  const frontImage = product.image_url || `/products/${product.handle}/front.jpg`;
+  const hoverImage = product.image_url || `/products/${product.handle}/hover.jpg`;
   
-  // Fallback to Unsplash placeholder if local image doesn't exist
-  // This ensures products always have visual representation
   const images = {
     hero: heroImage,
-    front: product.image_url || `/products/${product.handle}/front.jpg`,
-    hover: product.image_url || `/products/${product.handle}/hover.jpg`,
+    front: frontImage,
+    hover: hoverImage,
   };
-
-  // If product has color options, look for color-specific images
-  if (product.options && product.options.colors && Array.isArray(product.options.colors)) {
-    const defaultColor = product.options.colors[0];
-    if (defaultColor && !product.image_url) {
-      images.hero = `/products/${product.handle}/${product.handle}-${defaultColor.toLowerCase()}.jpg`;
-    }
-  }
 
   return {
     id: product.id,

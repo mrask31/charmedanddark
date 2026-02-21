@@ -31,7 +31,6 @@ export default function HomePage() {
         }
 
         const unified = (data || []).map(transformSupabaseProduct);
-        console.log('Featured products:', unified.map(p => ({ handle: p.handle, title: p.title, image: p.images.hero })));
         setFeaturedProducts(unified);
         setLoading(false);
       } catch (err) {

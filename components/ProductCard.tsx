@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { UnifiedProduct } from '@/lib/products';
 import { getPricingDisplay } from '@/lib/pricing';
+import ImagePlaceholder from './ImagePlaceholder';
 
 interface ProductCardProps {
   product: UnifiedProduct;
@@ -19,11 +20,6 @@ export default function ProductCard({ product, isRecognized }: ProductCardProps)
   const displayImage = isHovered && product.images.hover 
     ? product.images.hover 
     : product.images.hero;
-
-  // Debug logging
-  if (typeof window !== 'undefined' && product.handle === 'celestial-taper-candles') {
-    console.log('Product image path:', displayImage);
-  }
 
   return (
     <Link href={`/product/${product.handle}`} style={styles.card}>
@@ -46,9 +42,7 @@ export default function ProductCard({ product, isRecognized }: ProductCardProps)
             }}
           />
         ) : (
-          <div style={styles.imagePlaceholder}>
-            <span>No Image</span>
-          </div>
+          <ImagePlaceholder title={product.title} />
         )}
         {!product.inStock && (
           <div style={styles.outOfStock}>Out of Stock</div>

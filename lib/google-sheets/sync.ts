@@ -9,7 +9,7 @@ import { createClient } from '@supabase/supabase-js';
 // Google Sheets configuration
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID!;
 const SHEET_NAME = process.env.GOOGLE_SHEETS_SHEET_NAME || 'Physical Inventory';
-const RANGE = `${SHEET_NAME}!A2:J`; // 10 columns: Handle through Options
+const RANGE = `${SHEET_NAME}!A2:K`; // 11 columns: Handle through Image URL
 
 // Supabase configuration
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -26,6 +26,7 @@ interface SheetRow {
   stock: number;
   category: string;
   options?: string; // JSON string of options (column J)
+  imageUrl?: string; // Direct image URL (column K)
 }
 
 /**
@@ -46,6 +47,7 @@ function parseSheetRow(row: string[]): SheetRow | null {
     stock: parseInt(row[7]) || 0,
     category: row[8]?.trim() || '',
     options: row[9]?.trim() || undefined,
+    imageUrl: row[10]?.trim() || undefined,
   };
 }
 
@@ -143,6 +145,7 @@ export async function syncProductsToSupabase(products: SheetRow[]) {
             stock_quantity: product.stock,
             category: product.category,
             options,
+            image_url: product.imageUrl || null,
             sync_source: 'google_sheets',
             last_synced_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
