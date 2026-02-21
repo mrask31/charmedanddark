@@ -1,6 +1,7 @@
 /**
- * Background Generation using Stability AI or Replicate
+ * Background Generation using SDXL Lightning (4-step, ultra-fast, low-cost)
  * Generates branded brutalist backdrops separately from product
+ * COST OPTIMIZED: ~$0.001 per generation vs $0.08+ for standard SDXL
  */
 
 interface BackgroundOptions {
@@ -12,14 +13,14 @@ interface BackgroundOptions {
 export async function generateBackground(options: BackgroundOptions): Promise<Buffer> {
   const { prompt, width, height } = options;
   
-  // Try Replicate first (Stable Diffusion)
+  // Try Replicate first (SDXL Lightning - 4 step model)
   const replicateApiKey = process.env.REPLICATE_API_TOKEN;
   
   if (replicateApiKey) {
-    return generateWithReplicate(prompt, width, height, replicateApiKey);
+    return generateWithReplicateLightning(prompt, width, height, replicateApiKey);
   }
 
-  // Fallback: Try Stability AI
+  // Fallback: Try Stability AI with minimal steps
   const stabilityApiKey = process.env.STABILITY_API_KEY;
   
   if (stabilityApiKey) {
@@ -29,7 +30,7 @@ export async function generateBackground(options: BackgroundOptions): Promise<Bu
   throw new Error('No AI generation API key configured (REPLICATE_API_TOKEN or STABILITY_API_KEY)');
 }
 
-async function generateWithReplicate(
+async function generateWithReplicateLightning(
   prompt: string,
   width: number,
   height: number,
@@ -43,24 +44,36 @@ async function generateWithReplicate(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        version: 'ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4', // SDXL
+        // SDXL Lightning 4-step - Ultra fast, ultra cheap
+        version: '5f24084160c9089501c1b3545d9be3c27883ae2239b6f412990e82d4a6210f8f',
         input: {
           prompt,
-          width,
-          height,
+          width: Math.min(width, 1024), // Cap at 1024
+          height: Math.min(height, 1024), // Cap at 1024
           num_outputs: 1,
+          num_inference_steps: 4, // CRITICAL: 4 steps only
+          guidance_scale: 0, // Lightning models don't use guidance
           negative_prompt: 'product, object, text, watermark, logo, people, faces',
         },
       }),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Replicate API error (${response.status}): ${errorText}`);
+    }
+
     const prediction = await response.json();
     const predictionId = prediction.id;
 
-    // Poll for completion
+    // Poll for completion with timeout
     let result = prediction;
-    while (result.status !== 'succeeded' && result.status !== 'failed') {
+    let attempts = 0;
+    const maxAttempts = 30; // 30 seconds max (Lightning is fast)
+    
+    while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 1000));
+      attempts++;
       
       const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         headers: {
@@ -68,21 +81,34 @@ async function generateWithReplicate(
         },
       });
 
+      if (!pollResponse.ok) {
+        throw new Error(`Polling failed: ${pollResponse.statusText}`);
+      }
+
       result = await pollResponse.json();
     }
 
     if (result.status === 'failed') {
-      throw new Error('Background generation failed');
+      throw new Error(`Background generation failed: ${result.error || 'Unknown error'}`);
+    }
+
+    if (attempts >= maxAttempts) {
+      throw new Error('Background generation timed out after 30 seconds');
     }
 
     // Download the result
     const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output;
     const imageResponse = await fetch(outputUrl);
+    
+    if (!imageResponse.ok) {
+      throw new Error('Failed to download generated background');
+    }
+    
     const arrayBuffer = await imageResponse.arrayBuffer();
     
     return Buffer.from(arrayBuffer);
   } catch (error) {
-    console.error('Replicate generation error:', error);
+    console.error('Replicate Lightning generation error:', error);
     throw error;
   }
 }
@@ -112,10 +138,10 @@ async function generateWithStability(
           },
         ],
         cfg_scale: 7,
-        height,
-        width,
+        height: Math.min(height, 1024), // Cap at 1024
+        width: Math.min(width, 1024), // Cap at 1024
         samples: 1,
-        steps: 30,
+        steps: 15, // REDUCED from 30 to 15 for cost savings
       }),
     });
 
