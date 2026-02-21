@@ -82,11 +82,11 @@ export default function HomePage() {
         {/* 2. Ethos Block */}
         <section style={styles.ethos}>
           <div style={styles.ethosContainer}>
-            <p style={styles.ethosText}>
-              We design objects and apparel that hold space without demanding attention. 
-              Each piece is selected for its restraint, its clarity, and its ability to 
-              anchor the everyday with quiet intention.
-            </p>
+            <h2 style={styles.ethosText}>
+              We dictate silhouette before we dictate space. Charmed & Dark constructs 
+              premium, restrained apparel designed for permanence, accompanied by a 
+              curated collection of heavy, physical objects to anchor your home.
+            </h2>
           </div>
         </section>
 
