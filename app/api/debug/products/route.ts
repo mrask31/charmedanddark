@@ -11,12 +11,14 @@ export async function GET() {
   const { data: products, error } = await supabase
     .from('products')
     .select('handle, title, category')
-    .order('title')
-    .limit(20);
+    .order('title');
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ products }, { status: 200 });
+  return NextResponse.json({ 
+    count: products?.length || 0,
+    products 
+  }, { status: 200 });
 }
