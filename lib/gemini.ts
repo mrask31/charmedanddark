@@ -40,20 +40,27 @@ export async function getCuratorRecommendation(
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     
+    console.log('Gemini API key check:', { hasKey: !!apiKey });
+    
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
 
+    console.log('Initializing Gemini...');
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     // Format product catalog for context
     const productContext = products
       .map((p) => {
-        const lines = p.description_lines.join('. ');
+        const lines = Array.isArray(p.description_lines) 
+          ? p.description_lines.join('. ')
+          : '';
         return `- ${p.title} (${p.category}): ${lines}`;
       })
       .join('\n');
+
+    console.log(`Product context prepared: ${products.length} products`);
 
     const fullPrompt = `${CURATOR_SYSTEM_PROMPT}
 
@@ -64,15 +71,19 @@ User: ${userPrompt}
 
 Respond as The Curator. Recommend ONE product that matches their mood. Include the exact product title in your response.`;
 
+    console.log('Sending request to Gemini...');
     const result = await model.generateContent(fullPrompt);
     const response = result.response;
     const text = response.text();
+
+    console.log('Gemini response received:', text.substring(0, 100));
 
     // Extract recommended product from response
     let recommendedProduct: Product | null = null;
     for (const product of products) {
       if (text.includes(product.title)) {
         recommendedProduct = product;
+        console.log('Matched product:', product.title);
         break;
       }
     }
@@ -82,7 +93,11 @@ Respond as The Curator. Recommend ONE product that matches their mood. Include t
       recommendedProduct,
     };
   } catch (error) {
-    console.error('Gemini API error:', error);
+    console.error('Gemini API error details:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
     throw error;
   }
 }

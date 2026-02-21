@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
     // Get user prompt from request
     const { prompt, userId, userEmail } = await request.json();
 
+    console.log('Sanctuary request:', { prompt, userId, userEmail });
+
     if (!prompt || !userId || !userEmail) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -25,9 +27,16 @@ export async function POST(request: NextRequest) {
     // Initialize Supabase
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    
+    console.log('Supabase config:', { 
+      url: supabaseUrl, 
+      hasKey: !!supabaseKey 
+    });
+
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Fetch all products for context
+    console.log('Fetching products...');
     const { data: products, error: productsError } = await supabase
       .from('products')
       .select('id, handle, title, description_lines, category')
@@ -35,19 +44,35 @@ export async function POST(request: NextRequest) {
       .gt('stock_quantity', 0)
       .order('title');
 
-    if (productsError || !products) {
-      console.error('Error fetching products:', productsError);
+    if (productsError) {
+      console.error('Products fetch error:', productsError);
       return NextResponse.json(
-        { error: 'Failed to load product catalog' },
+        { error: 'Failed to load product catalog', details: productsError.message },
         { status: 500 }
       );
     }
 
+    if (!products || products.length === 0) {
+      console.error('No products found');
+      return NextResponse.json(
+        { error: 'No products available' },
+        { status: 500 }
+      );
+    }
+
+    console.log(`Fetched ${products.length} products`);
+
     // Get AI recommendation
+    console.log('Calling Gemini API...');
     const { response, recommendedProduct } = await getCuratorRecommendation(
       prompt,
       products
     );
+
+    console.log('Gemini response received:', { 
+      hasResponse: !!response, 
+      hasRecommendation: !!recommendedProduct 
+    });
 
     // Log interaction to database
     const { error: logError } = await supabase
