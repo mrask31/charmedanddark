@@ -48,7 +48,7 @@ export async function getCuratorRecommendation(
 
     console.log('Initializing Gemini...');
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // Format product catalog for context
     const productContext = products
