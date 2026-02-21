@@ -4,92 +4,136 @@ import { useEffect, useState } from 'react';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import Header from '@/components/Header';
-import ProductGrid from '@/components/ProductGrid';
+import ProductCard from '@/components/ProductCard';
+import Link from 'next/link';
 
 export default function HomePage() {
-  const [products, setProducts] = useState<UnifiedProduct[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<UnifiedProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadProducts() {
+    async function loadFeaturedProducts() {
       try {
         const supabase = getSupabaseClient();
         
-        // Test connection first
-        const { data: testData, error: testError } = await supabase
-          .from('products')
-          .select('count')
-          .limit(1);
-
-        if (testError) {
-          console.error('Supabase connection error:', testError);
-          setError(`Database connection failed: ${testError.message}`);
-          setLoading(false);
-          return;
-        }
-
-        // Fetch products
-        const { data, error: supabaseError } = await supabase
+        // Fetch exactly 6 curated products
+        const { data, error } = await supabase
           .from('products')
           .select('*')
-          .order('title');
+          .gt('stock_quantity', 0)
+          .order('title')
+          .limit(6);
 
-        if (supabaseError) {
-          console.error('Supabase query error:', supabaseError);
-          setError(`Failed to load products: ${supabaseError.message}`);
+        if (error) {
+          console.error('Error loading featured products:', error);
           setLoading(false);
           return;
         }
 
         const unified = (data || []).map(transformSupabaseProduct);
-        setProducts(unified);
+        setFeaturedProducts(unified);
         setLoading(false);
       } catch (err) {
         console.error('Unexpected error:', err);
-        setError(`Unexpected error: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setLoading(false);
       }
     }
 
-    loadProducts();
+    loadFeaturedProducts();
   }, []);
+
+  const scrollToCuration = () => {
+    const curationSection = document.getElementById('curation');
+    if (curationSection) {
+      curationSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
       <Header />
       <main style={styles.main}>
-        <div style={styles.container}>
-          <section style={styles.hero}>
-            <h1 style={styles.title}>Apparel & Objects</h1>
-            <p style={styles.subtitle}>Everyday Gothic</p>
-          </section>
+        {/* 1. Hero Section */}
+        <section style={styles.hero}>
+          <div style={styles.heroImageContainer}>
+            <div style={styles.heroImagePlaceholder} />
+          </div>
+          <div style={styles.heroContent}>
+            <h1 style={styles.heroHeadline}>
+              Restrained design for the intentional home.
+            </h1>
+            <button 
+              style={styles.heroCTA}
+              onClick={scrollToCuration}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#1a1a1a';
+                e.currentTarget.style.color = '#f5f5f0';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#1a1a1a';
+              }}
+            >
+              Enter the Collection
+            </button>
+          </div>
+        </section>
 
-          {loading ? (
-            <div style={styles.loading}>
-              <p>Loading...</p>
-            </div>
-          ) : error ? (
-            <div style={styles.error}>
-              <p style={styles.errorTitle}>Configuration Issue</p>
-              <p style={styles.errorMessage}>{error}</p>
-              <p style={styles.errorHint}>
-                Check that Supabase environment variables are set in Vercel:
-                <br />
-                • NEXT_PUBLIC_SUPABASE_URL
-                <br />
-                • NEXT_PUBLIC_SUPABASE_ANON_KEY
-              </p>
-            </div>
-          ) : products.length === 0 ? (
-            <div style={styles.emptyState}>
-              <p>No products available yet.</p>
-              <p style={styles.emptyHint}>Run the Google Sheets sync to populate products.</p>
-            </div>
-          ) : (
-            <ProductGrid products={products} />
-          )}
-        </div>
+        {/* 2. Ethos Block */}
+        <section style={styles.ethos}>
+          <div style={styles.ethosContainer}>
+            <p style={styles.ethosText}>
+              We design objects and apparel that hold space without demanding attention. 
+              Each piece is selected for its restraint, its clarity, and its ability to 
+              anchor the everyday with quiet intention.
+            </p>
+          </div>
+        </section>
+
+        {/* 3. Curated Grid */}
+        <section id="curation" style={styles.curation}>
+          <div style={styles.container}>
+            {loading ? (
+              <div style={styles.loadingState}>
+                <p style={styles.loadingText}>Loading...</p>
+              </div>
+            ) : (
+              <>
+                <div style={styles.productGrid}>
+                  {featuredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+                <div style={styles.viewAllContainer}>
+                  <Link href="/collections/all" style={styles.viewAllLink}>
+                    View the Complete Record →
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+
+        {/* 4. Category Portals */}
+        <section style={styles.portals}>
+          <div style={styles.portalsContainer}>
+            <Link href="/collections/wardrobe" style={styles.portal}>
+              <div style={styles.portalImagePlaceholder} />
+              <div style={styles.portalContent}>
+                <h2 style={styles.portalTitle}>The Wardrobe</h2>
+                <p style={styles.portalSubtitle}>Apparel</p>
+              </div>
+            </Link>
+            
+            <Link href="/collections/objects" style={styles.portal}>
+              <div style={styles.portalImagePlaceholder} />
+              <div style={styles.portalContent}>
+                <h2 style={styles.portalTitle}>The Objects</h2>
+                <p style={styles.portalSubtitle}>Physical Goods</p>
+              </div>
+            </Link>
+          </div>
+        </section>
       </main>
     </>
   );
@@ -98,69 +142,172 @@ export default function HomePage() {
 const styles = {
   main: {
     minHeight: '100vh',
-    paddingTop: '3rem',
-    paddingBottom: '3rem',
+  },
+  
+  // Hero Section
+  hero: {
+    position: 'relative' as const,
+    height: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  heroImageContainer: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 0,
+  },
+  heroImagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#2d2d2d',
+    backgroundImage: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+  },
+  heroContent: {
+    position: 'relative' as const,
+    zIndex: 1,
+    textAlign: 'center' as const,
+    padding: '0 2rem',
+    maxWidth: '900px',
+  },
+  heroHeadline: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+    fontWeight: 300,
+    letterSpacing: '0.05em',
+    color: '#f5f5f0',
+    marginBottom: '3rem',
+    lineHeight: 1.3,
+  },
+  heroCTA: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    letterSpacing: '0.15em',
+    textTransform: 'uppercase' as const,
+    padding: '1rem 2.5rem',
+    border: '1px solid #f5f5f0',
+    backgroundColor: 'transparent',
+    color: '#f5f5f0',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+  },
+  
+  // Ethos Block
+  ethos: {
+    padding: '8rem 2rem',
+    backgroundColor: '#f5f5f0',
+  },
+  ethosContainer: {
+    maxWidth: '800px',
+    margin: '0 auto',
+    textAlign: 'center' as const,
+  },
+  ethosText: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
+    fontWeight: 300,
+    letterSpacing: '0.03em',
+    lineHeight: 1.8,
+    color: '#1a1a1a',
+  },
+  
+  // Curation Section
+  curation: {
+    padding: '6rem 0',
+    backgroundColor: '#f5f5f0',
   },
   container: {
     maxWidth: '1400px',
     margin: '0 auto',
-    padding: '0 1.5rem',
+    padding: '0 2rem',
   },
-  hero: {
+  productGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '2rem',
+    marginBottom: '4rem',
+  },
+  loadingState: {
     textAlign: 'center' as const,
-    marginBottom: '3rem',
+    padding: '4rem 0',
   },
-  title: {
+  loadingText: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.875rem',
+    letterSpacing: '0.1em',
+    color: '#404040',
+  },
+  viewAllContainer: {
+    textAlign: 'center' as const,
+    paddingTop: '2rem',
+  },
+  viewAllLink: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    letterSpacing: '0.1em',
+    color: '#404040',
+    textDecoration: 'none',
+    borderBottom: '1px solid transparent',
+    transition: 'border-color 0.2s ease',
+    display: 'inline-block',
+    ':hover': {
+      borderBottomColor: '#404040',
+    },
+  },
+  
+  // Category Portals
+  portals: {
+    padding: '4rem 2rem',
+    backgroundColor: '#f5f5f0',
+  },
+  portalsContainer: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '2rem',
+  },
+  portal: {
+    position: 'relative' as const,
+    height: '500px',
+    overflow: 'hidden',
+    cursor: 'pointer',
+    textDecoration: 'none',
+  },
+  portalImagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#2d2d2d',
+    transition: 'transform 0.3s ease',
+  },
+  portalContent: {
+    position: 'absolute' as const,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: '2rem',
+    background: 'linear-gradient(to top, rgba(26, 26, 26, 0.9) 0%, transparent 100%)',
+  },
+  portalTitle: {
     fontFamily: "'Crimson Pro', serif",
-    fontSize: '2.5rem',
+    fontSize: '2rem',
     fontWeight: 400,
     letterSpacing: '0.05em',
+    color: '#f5f5f0',
     marginBottom: '0.5rem',
-    color: '#1a1a1a',
   },
-  subtitle: {
+  portalSubtitle: {
     fontFamily: "'Inter', sans-serif",
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 300,
-    color: '#404040',
     letterSpacing: '0.1em',
     textTransform: 'uppercase' as const,
-  },
-  loading: {
-    textAlign: 'center' as const,
-    padding: '4rem 2rem',
-    color: '#404040',
-  },
-  error: {
-    textAlign: 'center' as const,
-    padding: '4rem 2rem',
-    maxWidth: '600px',
-    margin: '0 auto',
-  },
-  errorTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 500,
-    color: '#d32f2f',
-    marginBottom: '1rem',
-  },
-  errorMessage: {
-    color: '#666',
-    marginBottom: '1.5rem',
-    fontSize: '0.95rem',
-  },
-  errorHint: {
-    fontSize: '0.875rem',
-    color: '#888',
-    lineHeight: 1.6,
-  },
-  emptyState: {
-    textAlign: 'center' as const,
-    padding: '4rem 2rem',
-    color: '#404040',
-  },
-  emptyHint: {
-    marginTop: '1rem',
-    fontSize: '0.875rem',
-    color: '#666',
+    color: '#e8e8e3',
   },
 } as const;
