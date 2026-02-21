@@ -20,6 +20,11 @@ export default function ProductCard({ product, isRecognized }: ProductCardProps)
     ? product.images.hover 
     : product.images.hero;
 
+  // Debug logging
+  if (typeof window !== 'undefined' && product.handle === 'celestial-taper-candles') {
+    console.log('Product image path:', displayImage);
+  }
+
   return (
     <Link href={`/product/${product.handle}`} style={styles.card}>
       <div
@@ -34,7 +39,11 @@ export default function ProductCard({ product, isRecognized }: ProductCardProps)
             width={400}
             height={500}
             style={styles.image}
-            onError={() => setImageError(true)}
+            unoptimized
+            onError={() => {
+              console.log('Image failed to load:', displayImage);
+              setImageError(true);
+            }}
           />
         ) : (
           <div style={styles.imagePlaceholder}>
