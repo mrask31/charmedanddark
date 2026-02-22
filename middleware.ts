@@ -5,7 +5,7 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 /**
  * Get admin whitelist from environment (server-side)
@@ -47,23 +47,25 @@ async function checkAdminAccess(request: NextRequest): Promise<{
   }
 
   try {
-    // Create Supabase client for server-side
-    const supabase = createServerClient(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value;
-          },
-          set() {},
-          remove() {},
+    // Get auth token from cookies
+    const accessToken = request.cookies.get('sb-access-token')?.value ||
+                       request.cookies.get('supabase-auth-token')?.value;
+
+    if (!accessToken) {
+      return { isAuthenticated: false, isAdmin: false };
+    }
+
+    // Create Supabase client
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-      }
-    );
+      },
+    });
 
     // Get user from session
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser(accessToken);
 
     if (!user?.email) {
       return { isAuthenticated: false, isAdmin: false };
