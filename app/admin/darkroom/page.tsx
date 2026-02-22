@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
+import { checkAdminAccess, checkAuthenticated } from '@/lib/auth/admin';
 
 interface ProcessingJob {
   id: string;
@@ -14,9 +16,34 @@ interface ProcessingJob {
 }
 
 export default function DarkroomPage() {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [jobs, setJobs] = useState<ProcessingJob[]>([]);
+  const [authChecking, setAuthChecking] = useState(true);
+
+  // Check admin access on mount
+  useEffect(() => {
+    async function verifyAccess() {
+      const isAuthenticated = await checkAuthenticated();
+      
+      if (!isAuthenticated) {
+        router.push('/threshold/enter');
+        return;
+      }
+
+      const adminEmail = await checkAdminAccess();
+      
+      if (!adminEmail) {
+        router.push('/not-authorized');
+        return;
+      }
+
+      setAuthChecking(false);
+    }
+
+    verifyAccess();
+  }, [router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -78,6 +105,20 @@ export default function DarkroomPage() {
       setProcessing(false);
     }
   };
+
+  // Show loading state while checking auth
+  if (authChecking) {
+    return (
+      <>
+        <Header />
+        <main style={styles.main}>
+          <div style={styles.container}>
+            <div style={styles.loading}>Verifying access...</div>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -194,6 +235,14 @@ const styles = {
     maxWidth: '1000px',
     margin: '0 auto',
     padding: '0 2rem',
+  },
+  loading: {
+    textAlign: 'center' as const,
+    padding: '4rem 2rem',
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '0.875rem',
+    color: '#404040',
+    letterSpacing: '0.05em',
   },
   header: {
     textAlign: 'center' as const,
