@@ -142,7 +142,7 @@ export default function ProductPage() {
       variantName: selectedVariant?.name || null,
       sku: selectedVariant?.sku || null,
       price: displayPrice,
-      housePrice: selectedVariant?.house_price || pricing.housePrice,
+      housePrice: selectedVariant?.house_price || pricing.house,
       quantity: 1,
       image: displayImages[0],
     };
