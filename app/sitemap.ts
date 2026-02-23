@@ -99,12 +99,7 @@ async function fetchCollections(): Promise<ShopifyCollection[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, collections] = await Promise.all([
-    fetchAllProducts(),
-    fetchCollections(),
-  ]);
-
-  // Static pages
+  // Static pages that are always available
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: getCanonicalUrl('/'),
@@ -120,21 +115,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Collection pages
-  const collectionPages: MetadataRoute.Sitemap = collections.map(collection => ({
-    url: getCanonicalUrl(`/collections/${collection.handle}`),
-    lastModified: new Date(collection.updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  try {
+    const [products, collections] = await Promise.all([
+      fetchAllProducts(),
+      fetchCollections(),
+    ]);
 
-  // Product pages
-  const productPages: MetadataRoute.Sitemap = products.map(product => ({
-    url: getCanonicalUrl(`/product/${product.handle}`),
-    lastModified: new Date(product.updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
+    // Collection pages
+    const collectionPages: MetadataRoute.Sitemap = collections.map(collection => ({
+      url: getCanonicalUrl(`/collections/${collection.handle}`),
+      lastModified: new Date(collection.updatedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
 
-  return [...staticPages, ...collectionPages, ...productPages];
+    // Product pages
+    const productPages: MetadataRoute.Sitemap = products.map(product => ({
+      url: getCanonicalUrl(`/product/${product.handle}`),
+      lastModified: new Date(product.updatedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
+
+    return [...staticPages, ...collectionPages, ...productPages];
+  } catch (error) {
+    console.error('[Sitemap] Failed to fetch dynamic pages:', error);
+    // Return static pages only if Shopify fetch fails
+    return staticPages;
+  }
 }
