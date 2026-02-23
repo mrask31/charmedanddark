@@ -89,32 +89,25 @@ async function checkAdminAccess(request: NextRequest): Promise<{
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // TEMPORARILY DISABLED - Allow all access for debugging
-  console.log('[Middleware] Path:', pathname);
-  console.log('[Middleware] Cookies:', request.cookies.getAll().map(c => c.name));
-  
   // Protect /admin/darkroom route
   if (pathname.startsWith('/admin/darkroom')) {
-    // TEMPORARILY BYPASS AUTH CHECK
-    console.log('[Middleware] Darkroom access - BYPASSING AUTH CHECK');
-    return NextResponse.next();
-    
-    /* ORIGINAL CODE - RE-ENABLE AFTER DEBUGGING
     const { isAuthenticated, isAdmin } = await checkAdminAccess(request);
 
     // Not authenticated → redirect to login
     if (!isAuthenticated) {
+      console.log('[Middleware] Not authenticated - redirecting to /threshold/enter');
       return NextResponse.redirect(new URL('/threshold/enter', request.url));
     }
 
     // Authenticated but not admin → redirect to not-authorized
     if (!isAdmin) {
+      console.log('[Middleware] Not admin - redirecting to /not-authorized');
       return NextResponse.redirect(new URL('/not-authorized', request.url));
     }
 
     // Admin access granted - continue
+    console.log('[Middleware] Admin access granted');
     return NextResponse.next();
-    */
   }
 
   // Allow all other routes
