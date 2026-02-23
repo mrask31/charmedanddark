@@ -199,10 +199,17 @@ async function processProduct(product: ShopifyProductForDarkroom): Promise<Proce
     }
 
     // Step 4: Reorder media (branded images first)
-    console.log(`  Reordering media...`);
-    const existingMediaIds = product.images.map(img => img.id);
-    const newMediaOrder = [...brandedMediaIds, ...existingMediaIds];
-    await reorderProductMedia(product.id, newMediaOrder);
+    // Only reorder if we have valid media IDs (not fallback URLs)
+    const hasValidMediaIds = brandedMediaIds.every(id => id.startsWith('gid://shopify/'));
+    
+    if (hasValidMediaIds) {
+      console.log(`  Reordering media...`);
+      const existingMediaIds = product.images.map(img => img.id);
+      const newMediaOrder = [...brandedMediaIds, ...existingMediaIds];
+      await reorderProductMedia(product.id, newMediaOrder);
+    } else {
+      console.log(`  Skipping media reorder (images still processing in Shopify)`);
+    }
 
     // Step 5: Update tags
     console.log(`  Updating tags...`);
