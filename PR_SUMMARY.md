@@ -351,3 +351,35 @@ Add structured logging, better error handling, and groundwork for future media r
 
 ## Commit
 `feat: stabilize darkroom logging and background fallback (phase 6A)`
+
+---
+
+# Build Fix: Remove Legacy CSV Pipeline
+
+**Commit**: `fix: remove legacy CSV darkroom pipeline (build error fix)`
+
+## Issue
+Build failed with module not found error:
+```
+Module not found: Can't resolve './database'
+./lib/darkroom/pipeline.ts:10:1
+```
+
+## Root Cause
+- Legacy `lib/darkroom/pipeline.ts` imported deleted `database.ts`
+- CSV upload endpoint `app/api/admin/darkroom/process/route.ts` still referenced legacy pipeline
+- These files should have been deleted in Phase 3 but were missed
+
+## Resolution
+**Deleted**:
+- `lib/darkroom/pipeline.ts` - Legacy CSV-based pipeline (280 lines)
+- `app/api/admin/darkroom/process/route.ts` - Legacy CSV upload endpoint
+
+**Updated**:
+- `app/admin/darkroom/page.tsx` - Disabled CSV upload handler with deprecation message
+
+## Impact
+- Build now passes ✅
+- Only Shopify tag-based automation remains
+- Admin UI directs users to automated mode
+- No functionality lost (CSV mode was deprecated)
