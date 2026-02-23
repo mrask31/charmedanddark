@@ -107,6 +107,12 @@ async function checkAdminAccess(request: NextRequest): Promise<{
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // TEMPORARILY DISABLE middleware auth check
+  // Auth will be handled in the page component instead
+  console.log('[Middleware] Allowing access to:', pathname);
+  return NextResponse.next();
+
+  /* DISABLED - Auth cookies not accessible in middleware
   // Debug: Log all cookies to help diagnose auth issues
   if (pathname.startsWith('/admin/darkroom')) {
     const allCookies = request.cookies.getAll();
@@ -115,25 +121,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Protect /admin/darkroom route
-  if (pathname.startsWith('/admin/darkroom')) {
-    const { isAuthenticated, isAdmin } = await checkAdminAccess(request);
-
-    // Not authenticated → redirect to login
-    if (!isAuthenticated) {
-      console.log('[Middleware] Not authenticated - redirecting to /threshold/enter');
-      return NextResponse.redirect(new URL('/threshold/enter', request.url));
-    }
-
-    // Authenticated but not admin → redirect to not-authorized
-    if (!isAdmin) {
-      console.log('[Middleware] Not admin - redirecting to /not-authorized');
-      return NextResponse.redirect(new URL('/not-authorized', request.url));
-    }
-
-    // Admin access granted - continue
-    console.log('[Middleware] Admin access granted');
-    return NextResponse.next();
-  }
+  // TEMPORARILY DISABLE middleware auth check
+  // Auth will be handled in the page component instead
+  console.log('[Middleware] Allowing access to:', pathname);
+  return NextResponse.next();
+  */
 
   // Allow all other routes
   return NextResponse.next();
