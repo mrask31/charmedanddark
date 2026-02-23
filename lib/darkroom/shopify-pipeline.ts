@@ -200,6 +200,7 @@ async function processProduct(product: ShopifyProductForDarkroom): Promise<Proce
 
     // Step 4: Reorder media (branded images first)
     // Only reorder if we have valid media IDs (not fallback URLs)
+    // Note: Shopify may not return media IDs immediately after upload
     const hasValidMediaIds = brandedMediaIds.every(id => id.startsWith('gid://shopify/'));
     
     if (hasValidMediaIds) {
