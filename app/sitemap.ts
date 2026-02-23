@@ -53,7 +53,12 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
   let cursor: string | null = null;
 
   while (hasNextPage) {
-    const data = await storefrontRequest<{
+    const data: {
+      products: {
+        pageInfo: { hasNextPage: boolean; endCursor: string };
+        edges: Array<{ node: ShopifyProduct }>;
+      };
+    } | null = await storefrontRequest<{
       products: {
         pageInfo: { hasNextPage: boolean; endCursor: string };
         edges: Array<{ node: ShopifyProduct }>;
@@ -76,7 +81,11 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
 }
 
 async function fetchCollections(): Promise<ShopifyCollection[]> {
-  const data = await storefrontRequest<{
+  const data: {
+    collections: {
+      edges: Array<{ node: ShopifyCollection }>;
+    };
+  } | null = await storefrontRequest<{
     collections: {
       edges: Array<{ node: ShopifyCollection }>;
     };
