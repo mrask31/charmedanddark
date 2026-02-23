@@ -47,27 +47,45 @@ async function checkAdminAccess(request: NextRequest): Promise<{
   }
 
   try {
-    // Get auth token from cookies
-    const accessToken = request.cookies.get('sb-access-token')?.value ||
-                       request.cookies.get('supabase-auth-token')?.value;
+    // Get all cookies that might contain Supabase auth
+    const allCookies = request.cookies.getAll();
+    
+    // Look for Supabase auth token in various possible cookie names
+    let accessToken = null;
+    
+    // Check common Supabase cookie patterns
+    for (const cookie of allCookies) {
+      if (cookie.name.includes('auth-token') || 
+          cookie.name.includes('access-token') ||
+          cookie.name.includes('sb-') && cookie.name.includes('auth')) {
+        try {
+          // Try to parse if it's JSON
+          const parsed = JSON.parse(cookie.value);
+          if (parsed.access_token) {
+            accessToken = parsed.access_token;
+            break;
+          }
+        } catch {
+          // If not JSON, use the value directly
+          accessToken = cookie.value;
+          break;
+        }
+      }
+    }
 
     if (!accessToken) {
+      console.log('[Middleware] No auth token found in cookies');
       return { isAuthenticated: false, isAdmin: false };
     }
 
     // Create Supabase client
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    });
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     // Get user from session
-    const { data: { user } } = await supabase.auth.getUser(accessToken);
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
 
-    if (!user?.email) {
+    if (error || !user?.email) {
+      console.log('[Middleware] Auth error or no user:', error?.message);
       return { isAuthenticated: false, isAdmin: false };
     }
 
@@ -88,6 +106,13 @@ async function checkAdminAccess(request: NextRequest): Promise<{
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Debug: Log all cookies to help diagnose auth issues
+  if (pathname.startsWith('/admin/darkroom')) {
+    const allCookies = request.cookies.getAll();
+    console.log('[Middleware] Darkroom access attempt');
+    console.log('[Middleware] Cookies present:', allCookies.map(c => c.name).join(', '));
+  }
 
   // Protect /admin/darkroom route
   if (pathname.startsWith('/admin/darkroom')) {
