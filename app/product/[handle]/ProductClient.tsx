@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart/context';
+import { getSupabaseClient } from '@/lib/supabase/client';
+import { applyMemberDiscount } from '@/lib/sanctuary/auth';
 import Header from '@/components/Header';
 import PricingDisplay from '@/components/PricingDisplay';
 import ProductDescription from '@/components/ProductDescription';
@@ -15,13 +17,25 @@ import type { Product as SupabaseProduct, ProductVariant } from '@/lib/supabase/
 interface ProductClientProps {
   product: UnifiedProduct;
   raw: SupabaseProduct;
+  curatorNote: string | null;
 }
 
-export default function ProductClient({ product, raw }: ProductClientProps) {
+export default function ProductClient({ product, raw, curatorNote }: ProductClientProps) {
   const { addItem } = useCart();
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     raw.variants && raw.variants.length > 0 ? raw.variants[0].id : null
   );
+  const [isSanctuaryMember, setIsSanctuaryMember] = useState(false);
+  const supabase = getSupabaseClient();
+
+  // Check Sanctuary membership
+  useEffect(() => {
+    const checkMembership = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsSanctuaryMember(session?.user?.user_metadata?.sanctuary_member === true);
+    };
+    checkMembership();
+  }, [supabase]);
 
   // Get selected variant or use parent product data
   const hasVariants = raw?.variants && raw.variants.length > 0;
@@ -30,7 +44,8 @@ export default function ProductClient({ product, raw }: ProductClientProps) {
     : null;
 
   // Use variant price if selected, otherwise parent price
-  const displayPrice = selectedVariant?.price || product.price;
+  const basePrice = selectedVariant?.price || product.price;
+  const displayPrice = isSanctuaryMember ? applyMemberDiscount(basePrice) : basePrice;
   const pricing = getPricingDisplay(displayPrice);
 
   // Get images for selected variant or all images
@@ -93,7 +108,17 @@ export default function ProductClient({ product, raw }: ProductClientProps) {
                 <span style={styles.category}>{product.category}</span>
               )}
 
-              <PricingDisplay pricing={pricing} />
+              {isSanctuaryMember ? (
+                <div style={styles.memberPricing}>
+                  <div style={styles.memberPrice}>
+                    ${displayPrice.toFixed(2)}
+                  </div>
+                  <div style={styles.memberLabel}>Member Price</div>
+                  <div style={styles.originalPrice}>${basePrice.toFixed(2)}</div>
+                </div>
+              ) : (
+                <PricingDisplay pricing={pricing} />
+              )}
 
               {hasVariants && (
                 <VariantSelector
@@ -109,6 +134,13 @@ export default function ProductClient({ product, raw }: ProductClientProps) {
                   lines={raw?.description_lines || undefined}
                 />
               </div>
+
+              {curatorNote && (
+                <div style={styles.curatorNote}>
+                  <div style={styles.curatorLabel}>Curator's Note</div>
+                  <div style={styles.curatorText}>{curatorNote}</div>
+                </div>
+              )}
 
               {inStock ? (
                 <button style={styles.addButton} onClick={handleAddToCart}>
@@ -215,5 +247,48 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
     paddingTop: '1rem',
     borderTop: '1px solid #e8e8e3',
+  },
+  memberPricing: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '0.5rem',
+  },
+  memberPrice: {
+    fontSize: '1.75rem',
+    fontWeight: 300,
+    color: '#1a1a1a',
+  },
+  memberLabel: {
+    fontSize: '0.75rem',
+    color: '#404040',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em',
+    fontFamily: "'Inter', sans-serif",
+  },
+  originalPrice: {
+    fontSize: '0.875rem',
+    color: '#999',
+    textDecoration: 'line-through',
+  },
+  curatorNote: {
+    padding: '1rem',
+    backgroundColor: '#fafafa',
+    border: '1px solid #e8e8e3',
+    marginTop: '0.5rem',
+  },
+  curatorLabel: {
+    fontSize: '0.65rem',
+    color: '#404040',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.15em',
+    fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+    marginBottom: '0.5rem',
+  },
+  curatorText: {
+    fontSize: '0.875rem',
+    lineHeight: 1.6,
+    color: '#2d2d2d',
+    fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+    letterSpacing: '0.01em',
   },
 } as const;

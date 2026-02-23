@@ -5,6 +5,7 @@ import { transformSupabaseProduct } from '@/lib/products';
 import { buildProductJsonLd } from '@/lib/seo/schema';
 import { trackProductView } from '@/lib/tracking';
 import { getCanonicalUrl } from '@/lib/config/site';
+import { getCuratorNote } from './actions';
 import ProductClient from './ProductClient';
 
 interface ProductPageProps {
@@ -103,6 +104,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
   // Track product view (server-side)
   trackProductView(raw.id, params.handle);
 
+  // Fetch or generate curator note
+  const curatorNote = await getCuratorNote(
+    raw.shopify_product_id || raw.id,
+    raw.title,
+    raw.product_type || null,
+    raw.description || null
+  );
+
   return (
     <>
       {/* Inject JSON-LD schema */}
@@ -112,7 +121,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       
       {/* Render client component with product data */}
-      <ProductClient product={product} raw={raw} />
+      <ProductClient product={product} raw={raw} curatorNote={curatorNote} />
     </>
   );
 }

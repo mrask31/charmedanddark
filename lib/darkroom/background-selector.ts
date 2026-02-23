@@ -4,6 +4,7 @@
  */
 
 import { getGeminiModel, getModelName } from '@/lib/google/gemini';
+import { devLog } from '@/lib/utils/logger';
 
 export type BackgroundType = 'stone' | 'candle' | 'glass';
 
@@ -24,7 +25,7 @@ export async function selectBackgroundForProduct(
   productTags: string[]
 ): Promise<BackgroundType> {
   const modelName = getModelName('darkroom');
-  console.log(`[Background Selector] Using Gemini model: ${modelName}`);
+  devLog.log(`[Background Selector] Using Gemini model: ${modelName}`);
 
   try {
     const model = getGeminiModel('darkroom');
@@ -48,12 +49,12 @@ Your choice:`;
 
     // Validate response
     if (response === 'stone' || response === 'candle' || response === 'glass') {
-      console.log(`[Background Selector] AI selected: ${response}`);
+      devLog.log(`[Background Selector] AI selected: ${response}`);
       return response as BackgroundType;
     }
 
     // Fallback if AI returns invalid response
-    console.warn(`[Background Selector] Invalid AI response: "${response}" — defaulting to stone`);
+    devLog.warn(`[Background Selector] Invalid AI response: "${response}" — defaulting to stone`);
     return 'stone';
   } catch (error) {
     console.error('[Background Selector] Background selection failed — defaulting to stone');

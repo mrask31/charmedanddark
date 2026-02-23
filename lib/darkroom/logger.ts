@@ -1,7 +1,10 @@
 /**
  * Structured Logger for Darkroom Pipeline
  * Provides consistent logging with run_id, product context, and timing
+ * Gates info/warning logs behind development flag
  */
+
+import { devLog } from '@/lib/utils/logger';
 
 export interface DarkroomLogContext {
   run_id: string;
@@ -39,29 +42,29 @@ export class DarkroomLogger {
   }
 
   /**
-   * Log info message
+   * Log info message (development only)
    */
   info(message: string, context: Partial<DarkroomLogContext> = {}): void {
     const fullContext: DarkroomLogContext = {
       run_id: this.run_id,
       ...context,
     };
-    console.log(formatLog('info', message, fullContext));
+    devLog.log(formatLog('info', message, fullContext));
   }
 
   /**
-   * Log warning message
+   * Log warning message (development only)
    */
   warning(message: string, context: Partial<DarkroomLogContext> = {}): void {
     const fullContext: DarkroomLogContext = {
       run_id: this.run_id,
       ...context,
     };
-    console.warn(formatLog('warning', message, fullContext));
+    devLog.warn(formatLog('warning', message, fullContext));
   }
 
   /**
-   * Log error message
+   * Log error message (always logged)
    */
   error(message: string, context: Partial<DarkroomLogContext> = {}): void {
     const fullContext: DarkroomLogContext = {

@@ -16,7 +16,8 @@
     "verify-setup": "ts-node scripts/verify-setup.ts",
     "check-images": "ts-node scripts/check-images.ts",
     "organize-images": "ts-node scripts/organize-images.ts",
-    "sync-sheets": "ts-node scripts/sync-sheets.ts"
+    "sync-sheets": "ts-node scripts/sync-sheets.ts",
+    "health-check:curator": "ts-node scripts/health-check-curator.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
