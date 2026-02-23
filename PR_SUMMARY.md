@@ -121,3 +121,47 @@ Determine which suspected cruft files are actually used in the codebase through 
 
 ## Commit
 `docs: usage verification for cleanup (phase 2)`
+
+---
+
+# PR #3: Delete Unused Files & Gate Debug Routes (COMPLETE)
+
+## Objective
+Remove confirmed-unused files and disable debug endpoints in production.
+
+## Files Deleted ✅
+1. `lib/darkroom/database.ts` - Legacy CSV pipeline code (0 imports)
+2. `app/admin/darkroom/middleware.ts` - Created but never imported
+3. `app/client-services/page.tsx` - Orphaned page (no navigation links)
+4. `public/product-images/` - Duplicate directory (31 files deleted)
+   - Canonical directory: `public/products/` (34 subdirs, 50+ refs)
+
+## Debug Routes Gated 🔒
+Added production guards to 3 debug endpoints:
+- `app/api/debug/products/route.ts`
+- `app/api/debug/list-handles/route.ts`
+- `app/api/sanctuary/debug/route.ts`
+
+**Guard Logic**:
+```typescript
+// Debug endpoint: disabled in production
+if (process.env.NODE_ENV === 'production') {
+  return new Response('Not Found', { status: 404 });
+}
+```
+
+## Verification ✅
+- No broken imports (verified with ripgrep)
+- All deleted files had 0 references in code
+- Debug routes still work in development
+- Debug routes return 404 in production
+
+## Impact
+- **Files Removed**: 34 (3 code files + 31 images)
+- **Lines Removed**: 326
+- **Lines Added**: 60 (production guards + comments)
+- **Breaking Changes**: None (unused files only)
+- **Security**: Debug endpoints now hidden in production
+
+## Commit
+`chore: remove unused files and disable debug routes in prod (phase 3)`
