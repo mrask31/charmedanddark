@@ -27,7 +27,7 @@ export async function GET() {
     // Fetch first 10 products
     const { data: products, error } = await supabase
       .from('products')
-      .select('id, handle, title, product_type, description, shopify_product_id')
+      .select('id, handle, title, category, description')
       .limit(10);
 
     if (error || !products) {
@@ -49,9 +49,9 @@ export async function GET() {
       
       try {
         const note = await getCuratorNote(
-          product.shopify_product_id || product.id,
+          product.id,
           product.title,
-          product.product_type,
+          product.category,
           product.description
         );
 

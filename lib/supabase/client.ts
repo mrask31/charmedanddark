@@ -24,8 +24,6 @@ export interface Product {
   house_price?: number | null;
   stock_quantity: number;
   category: string | null;
-  product_type?: string | null;
-  shopify_product_id?: string | null;
   image_url?: string | null;
   images?: Array<{ url: string; position: number; alt?: string }> | null; // Multi-image array
   variants?: Array<ProductVariant> | null; // Variant support

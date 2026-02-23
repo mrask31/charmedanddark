@@ -10,9 +10,8 @@ interface Product {
   id: string;
   handle: string;
   title: string;
-  product_type: string | null;
+  category: string | null;
   description: string | null;
-  shopify_product_id: string | null;
 }
 
 async function healthCheck() {
@@ -24,7 +23,7 @@ async function healthCheck() {
   // Fetch first 10 products
   const { data: products, error } = await supabase
     .from('products')
-    .select('id, handle, title, product_type, description, shopify_product_id')
+    .select('id, handle, title, category, description')
     .limit(10);
 
   if (error || !products) {
@@ -51,9 +50,9 @@ async function healthCheck() {
       console.log(`Testing: ${product.handle}`);
       
       const note = await getCuratorNote(
-        product.shopify_product_id || product.id,
+        product.id,
         product.title,
-        product.product_type,
+        product.category,
         product.description
       );
 

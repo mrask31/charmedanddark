@@ -106,9 +106,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   // Fetch or generate curator note
   const curatorNote = await getCuratorNote(
-    raw.shopify_product_id || raw.id,
+    raw.id,
     raw.title,
-    raw.product_type || null,
+    raw.category || null,
     raw.description || null
   );
 
