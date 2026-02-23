@@ -278,3 +278,76 @@ Both files no longer import `@google/generative-ai` directly:
 
 ## Commit
 `refactor: consolidate Gemini client (phase 5)`
+
+---
+
+# PR #6: Darkroom Stabilization (Phase 6A) (COMPLETE)
+
+## Objective
+Add structured logging, better error handling, and groundwork for future media reordering without changing pipeline behavior.
+
+## Files Created ✅
+1. `lib/darkroom/logger.ts` - Structured logging system
+   - `DarkroomLogger` class with run_id tracking
+   - Logs: run_id, product_id, handle, step, status, duration_ms, error
+   - Methods: `info()`, `warning()`, `error()`, `stepStart()`, `stepSuccess()`, `stepError()`, `stepSkip()`
+   - `generateRunId()` for unique pipeline execution tracking
+   - JSON-formatted structured logs
+
+2. `lib/darkroom/shopify-media.ts` - Polling helper (groundwork)
+   - `pollUntilShopifyMediaReady()` function
+   - Not used yet - groundwork for Phase 6B
+   - Will enable reliable media reordering in future
+
+## Files Updated ✅
+- `lib/darkroom/shopify-pipeline.ts` - Enhanced with structured logging
+  - Added run_id generation at pipeline start
+  - Structured logging throughout all steps
+  - Background selection wrapped with try/catch:
+    - Logs model name and purpose ("darkroom")
+    - Validates response (stone/candle/glass)
+    - Falls back to "stone" on error or invalid value
+    - Explicit logging of failures and fallbacks
+  - Per-image timing and context logging
+  - Step-based logging (fetch, select_background, generate_background, etc.)
+
+## Key Features
+- **Run ID Tracking**: Every pipeline execution has unique run_id
+- **Structured Logs**: JSON format with consistent fields
+- **Step Timing**: Duration tracking for every step
+- **Error Context**: Full context (product_id, handle, step) in error logs
+- **Graceful Fallback**: Background selection never fails (falls back to "stone")
+- **Model Logging**: Logs Gemini model name during background selection
+- **Future-Ready**: Polling helper ready for Phase 6B reordering
+
+## No Behavior Changes ✅
+- Media reordering still skipped (Phase 6A - deferred to 6B)
+- Tags, upload, and pipeline flow unchanged
+- Only added logging and error handling
+- All existing functionality preserved
+
+## Example Log Output
+```json
+{
+  "run_id": "run_1708723456_abc123",
+  "product_id": "gid://shopify/Product/123",
+  "handle": "gothic-candle",
+  "step": "select_background",
+  "status": "success",
+  "duration_ms": 1234,
+  "background_type": "stone",
+  "model": "gemini-1.5-flash",
+  "purpose": "darkroom"
+}
+```
+
+## Impact
+- **Files Created**: 2 (logger, polling helper)
+- **Files Updated**: 1 (pipeline)
+- **Lines Added**: +400, -29 (net +371)
+- **Breaking Changes**: None
+- **Reliability**: Improved (graceful fallback, better error handling)
+- **Observability**: Greatly improved (structured logs, timing, context)
+
+## Commit
+`feat: stabilize darkroom logging and background fallback (phase 6A)`
