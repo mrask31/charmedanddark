@@ -44,7 +44,11 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const canonicalUrl = `https://charmedanddark.vercel.app/product/${params.handle}`;
-  const imageUrl = product.image_url || (product.images && product.images.length > 0 ? product.images[0] : undefined);
+  // Extract image URL from either image_url or first image in images array
+  const imageUrl = product.image_url || 
+    (product.images && product.images.length > 0 
+      ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url)
+      : undefined);
 
   return {
     title: `${product.title} | Charmed & Dark`,
