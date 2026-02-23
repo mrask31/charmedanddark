@@ -584,3 +584,63 @@ NEXT_PUBLIC_SITE_URL=https://charmedanddark.vercel.app
 
 ## Commit
 `feat: merchant feed and sitemap (phase 8)`
+
+
+---
+
+# Merchant Feed Fix: Switch to Admin API
+
+**Commit**: `feat: switch merchant feed to Admin API (fixes missing storefront token)`
+
+## Problem
+- `/api/merchant/feed` was returning `{"error":"Failed to generate product feed"}`
+- Server logs showed "Shopify Storefront API credentials not configured"
+- `SHOPIFY_STOREFRONT_ACCESS_TOKEN` was empty in Vercel environment
+- Merchant feed couldn't fetch products without Storefront token
+
+## Solution
+Switched merchant feed from Storefront API to Admin API:
+
+**Files Created**:
+- `lib/shopify/merchant.ts` - Admin GraphQL client for merchant feed
+  - `fetchProductsForMerchantFeed()` - Fetches active products via Admin API
+  - `stripHtml()` - Strips HTML from product descriptions
+  - Pagination support (250 products per page)
+  - Comprehensive logging
+
+**Files Updated**:
+- `app/api/merchant/feed/route.ts` - Now uses Admin API
+  - Environment variable validation with detailed error messages
+  - Better error logging (logs missing env vars, never prints secrets)
+  - Returns valid XML even on error (with error comment)
+  - Health check support (empty feed with 0 items is valid)
+
+## Key Changes
+- **API Switch**: Storefront GraphQL → Admin GraphQL
+- **Required Env Vars**: Now only needs `SHOPIFY_ADMIN_ACCESS_TOKEN` (already configured)
+- **Error Handling**: Returns XML with error comment instead of JSON error
+- **Logging**: Logs missing env vars, fetch progress, and product counts
+- **Product Data**: Includes vendor, productType, SKU, and availability from Admin API
+
+## Environment Variables
+**Required for Merchant Feed**:
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` ✅ (already configured)
+- `NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN` ✅ (already configured)
+- `NEXT_PUBLIC_SITE_URL` ✅ (already configured)
+
+**Not Required for Merchant Feed**:
+- `SHOPIFY_STOREFRONT_ACCESS_TOKEN` (still required for storefront/cart pages)
+
+## Benefits
+- Merchant feed now works without Storefront token
+- Better error messages for debugging
+- More product data available (vendor, type, SKU)
+- Consistent with Darkroom (both use Admin API)
+- Valid XML returned even on errors
+
+## Impact
+- **Files Created**: 1 (merchant.ts)
+- **Files Updated**: 1 (feed route)
+- **Lines Changed**: +338, -105 (net +233)
+- **Breaking Changes**: None
+- **API Dependency**: Removed Storefront API dependency for feed

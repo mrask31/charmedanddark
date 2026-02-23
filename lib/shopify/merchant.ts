@@ -20,10 +20,12 @@ export interface MerchantProduct {
     edges: Array<{
       node: {
         id: string;
+        title: string;
         price: string;
         compareAtPrice?: string;
         sku?: string;
         availableForSale: boolean;
+        inventoryQuantity?: number;
       };
     }>;
   };
@@ -49,14 +51,16 @@ const PRODUCTS_QUERY = `
           featuredImage {
             url
           }
-          variants(first: 1) {
+          variants(first: 100) {
             edges {
               node {
                 id
+                title
                 price
                 compareAtPrice
                 sku
                 availableForSale
+                inventoryQuantity
               }
             }
           }
@@ -165,4 +169,58 @@ export function stripHtml(html: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .trim();
+}
+
+/**
+ * Map Shopify product type to Google Product Category
+ * https://support.google.com/merchants/answer/6324436
+ */
+export function getGoogleProductCategory(productType: string): string {
+  const type = productType.toLowerCase();
+  
+  // Apparel categories
+  if (type.includes('hoodie') || type.includes('sweatshirt')) {
+    return 'Apparel & Accessories > Clothing > Activewear > Hoodies & Sweatshirts';
+  }
+  if (type.includes('t-shirt') || type.includes('tee') || type.includes('shirt')) {
+    return 'Apparel & Accessories > Clothing > Shirts & Tops';
+  }
+  if (type.includes('hat') || type.includes('cap') || type.includes('beanie')) {
+    return 'Apparel & Accessories > Clothing Accessories > Hats';
+  }
+  if (type.includes('jacket') || type.includes('coat')) {
+    return 'Apparel & Accessories > Clothing > Outerwear > Coats & Jackets';
+  }
+  if (type.includes('pant') || type.includes('jean') || type.includes('trouser')) {
+    return 'Apparel & Accessories > Clothing > Pants';
+  }
+  
+  // Home & Decor categories
+  if (type.includes('candle')) {
+    return 'Home & Garden > Decor > Home Fragrance Accessories > Candles';
+  }
+  if (type.includes('mug') || type.includes('cup') || type.includes('drinkware')) {
+    return 'Home & Garden > Kitchen & Dining > Tableware > Drinkware';
+  }
+  if (type.includes('pillow') || type.includes('cushion')) {
+    return 'Home & Garden > Decor > Pillows';
+  }
+  if (type.includes('blanket') || type.includes('throw')) {
+    return 'Home & Garden > Linens & Bedding > Blankets';
+  }
+  if (type.includes('poster') || type.includes('print') || type.includes('art')) {
+    return 'Home & Garden > Decor > Artwork > Posters, Prints, & Visual Artwork';
+  }
+  
+  // Default category
+  return 'Home & Garden > Decor';
+}
+
+/**
+ * Extract numeric ID from Shopify GID
+ * e.g., "gid://shopify/Product/123456" -> "123456"
+ */
+export function extractNumericId(gid: string): string {
+  const match = gid.match(/\/(\d+)$/);
+  return match ? match[1] : gid;
 }
