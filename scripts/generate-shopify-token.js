@@ -10,7 +10,7 @@ const https = require('https');
 // Configuration - Replace these with your actual values
 const CLIENT_ID = 'YOUR_CLIENT_ID_HERE';
 const CLIENT_SECRET = 'YOUR_CLIENT_SECRET_HERE';
-const STORE_DOMAIN = 'charmedanddark.myshopify.com';
+const STORE_DOMAIN = 'charmed-dark.myshopify.com';
 
 // Scopes your app needs
 const SCOPES = [

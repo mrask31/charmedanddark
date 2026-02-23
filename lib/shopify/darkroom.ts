@@ -34,13 +34,14 @@ export async function fetchProductsNeedingBranding(limit: number = 20): Promise<
 
   const query = `
     query getProductsNeedingBranding($query: String!, $first: Int!) {
-      products(first: $first, query: $query) {
+      products(first: $first, query: $query, savedSearchId: null) {
         edges {
           node {
             id
             handle
             title
             tags
+            status
             images(first: 10) {
               edges {
                 node {
@@ -56,8 +57,9 @@ export async function fetchProductsNeedingBranding(limit: number = 20): Promise<
     }
   `;
 
-  // Query for products with all three tags
-  const searchQuery = 'tag:img:needs-brand AND tag:source:faire AND tag:dept:objects';
+  // Query for products with all three tags (including draft products)
+  // Note: Tags with colons must be quoted in the search query
+  const searchQuery = 'tag:"img:needs-brand" AND tag:"source:faire" AND tag:"dept:objects"';
 
   try {
     const response = await fetch(
