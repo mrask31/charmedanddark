@@ -29,13 +29,13 @@ export default function ReturnsPage() {
         {/* Single-column, center-aligned layout */}
         <div className="space-y-16">
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-light tracking-tight text-center uppercase letter-spacing-wide">
+          <h1 className="text-4xl md:text-5xl font-light tracking-[0.1em] text-center uppercase">
             Returns & Exchanges
           </h1>
 
           {/* Body Section */}
           <section className="space-y-8">
-            <p className="text-base md:text-lg leading-relaxed text-gray-900 architectural-hover">
+            <p className="text-base md:text-lg leading-relaxed text-gray-900 relative pl-0 hover:pl-6 transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-black before:scale-y-0 before:origin-top before:transition-transform before:duration-[400ms] before:ease-[cubic-bezier(0.4,0,0.2,1)] hover:before:scale-y-100">
               Objects from Charmed & Dark are curated for longevity. If an item does not meet your spatial requirements, we offer a 30-day return window for all new, unused products.
             </p>
           </section>
@@ -45,7 +45,7 @@ export default function ReturnsPage() {
             <h2 className="text-xs uppercase tracking-widest text-gray-600 font-light">
               Process
             </h2>
-            <p className="text-base md:text-lg leading-relaxed text-gray-900 architectural-hover">
+            <p className="text-base md:text-lg leading-relaxed text-gray-900 relative pl-0 hover:pl-6 transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-black before:scale-y-0 before:origin-top before:transition-transform before:duration-[400ms] before:ease-[cubic-bezier(0.4,0,0.2,1)] hover:before:scale-y-100">
               All returns are handled via mail. No restocking fees. Your refund will be processed within 7 business days of receipt.
             </p>
           </section>
@@ -53,7 +53,7 @@ export default function ReturnsPage() {
           {/* Sanctuary Integration */}
           <section className="border-t border-black pt-16">
             <div className="bg-gray-50 border border-gray-200 p-8 md:p-12">
-              <p className="text-sm md:text-base leading-relaxed text-gray-800 architectural-hover">
+              <p className="text-sm md:text-base leading-relaxed text-gray-800 relative pl-0 hover:pl-6 transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-black before:scale-y-0 before:origin-top before:transition-transform before:duration-[400ms] before:ease-[cubic-bezier(0.4,0,0.2,1)] hover:before:scale-y-100">
                 Sanctuary Members receive priority concierge support for all exchanges.
               </p>
             </div>
@@ -64,45 +64,12 @@ export default function ReturnsPage() {
             <h2 className="text-xs uppercase tracking-widest text-gray-600 font-light">
               Contact
             </h2>
-            <p className="text-sm text-gray-700 architectural-hover">
+            <p className="text-sm text-gray-700 relative pl-0 hover:pl-6 transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-black before:scale-y-0 before:origin-top before:transition-transform before:duration-[400ms] before:ease-[cubic-bezier(0.4,0,0.2,1)] hover:before:scale-y-100">
               For return inquiries, contact us with your order number and reason for return.
             </p>
           </section>
         </div>
       </div>
-
-      <style jsx>{`
-        .letter-spacing-wide {
-          letter-spacing: 0.1em;
-        }
-
-        .architectural-hover {
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-        }
-
-        .architectural-hover::before {
-          content: '';
-          position: absolute;
-          left: -16px;
-          top: 0;
-          bottom: 0;
-          width: 2px;
-          background: black;
-          transform: scaleY(0);
-          transform-origin: top;
-          transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .architectural-hover:hover::before {
-          transform: scaleY(1);
-        }
-
-        .architectural-hover:hover {
-          padding-left: 8px;
-          color: #000;
-        }
-      `}</style>
     </div>
   );
 }
