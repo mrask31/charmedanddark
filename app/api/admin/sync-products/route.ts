@@ -96,7 +96,7 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
       }
     `;
 
-    const response = await fetch(
+    const response: Response = await fetch(
       `https://${domain}/admin/api/2024-01/graphql.json`,
       {
         method: 'POST',
@@ -115,7 +115,7 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
       throw new Error(`Shopify API error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
 
     if (data.errors) {
       throw new Error(`GraphQL errors: ${JSON.stringify(data.errors)}`);
