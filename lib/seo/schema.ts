@@ -39,11 +39,6 @@ export function buildProductJsonLd(product: UnifiedProduct, canonicalUrl: string
     (schema as any).category = product.category;
   }
 
-  // Add SKU if available
-  if (product.sku) {
-    (schema as any).sku = product.sku;
-  }
-
   return schema;
 }
 
