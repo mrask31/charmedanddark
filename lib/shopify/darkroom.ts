@@ -201,7 +201,7 @@ export async function uploadImageToProduct(
       // The image will be available in Shopify, just not immediately
       console.warn('Image URL not immediately available, using media ID only');
       return {
-        mediaId: media.id,
+        mediaId: media.id || 'PENDING', // Mark as pending if no ID
         url: `https://${storeDomain}/admin/products/${productId.split('/').pop()}`, // Fallback
       };
     }

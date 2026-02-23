@@ -198,19 +198,11 @@ async function processProduct(product: ShopifyProductForDarkroom): Promise<Proce
       }
     }
 
-    // Step 4: Reorder media (branded images first)
-    // Only reorder if we have valid media IDs (not fallback URLs)
-    // Note: Shopify may not return media IDs immediately after upload
-    const hasValidMediaIds = brandedMediaIds.every(id => id.startsWith('gid://shopify/'));
-    
-    if (hasValidMediaIds) {
-      console.log(`  Reordering media...`);
-      const existingMediaIds = product.images.map(img => img.id);
-      const newMediaOrder = [...brandedMediaIds, ...existingMediaIds];
-      await reorderProductMedia(product.id, newMediaOrder);
-    } else {
-      console.log(`  Skipping media reorder (images still processing in Shopify)`);
-    }
+    // Step 4: Skip media reordering
+    // Shopify doesn't return image URLs immediately after upload, making reordering unreliable
+    // Images are uploaded successfully and will appear in the product
+    // Admin can manually reorder in Shopify if needed
+    console.log(`  Skipping media reorder (Shopify processing delay)`);
 
     // Step 5: Update tags
     console.log(`  Updating tags...`);
