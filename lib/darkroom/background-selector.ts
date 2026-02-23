@@ -3,7 +3,7 @@
  * Uses Gemini to choose best background (stone, candle, glass) for product
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, getModelName } from '@/lib/google/gemini';
 
 export type BackgroundType = 'stone' | 'candle' | 'glass';
 
@@ -23,18 +23,11 @@ export async function selectBackgroundForProduct(
   productTitle: string,
   productTags: string[]
 ): Promise<BackgroundType> {
-  const geminiApiKey = process.env.GEMINI_API_KEY;
-
-  if (!geminiApiKey) {
-    throw new Error('GEMINI_API_KEY environment variable is not configured');
-  }
-
-  const modelName = 'gemini-1.5-flash';
+  const modelName = getModelName('darkroom');
   console.log(`[Background Selector] Using Gemini model: ${modelName}`);
 
   try {
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({ model: modelName });
+    const model = getGeminiModel('darkroom');
 
     const prompt = `You are a product photography expert for a gothic, minimalist brand called "Charmed & Dark".
 

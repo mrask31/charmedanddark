@@ -165,3 +165,63 @@ if (process.env.NODE_ENV === 'production') {
 
 ## Commit
 `chore: remove unused files and disable debug routes in prod (phase 3)`
+
+---
+
+# PR #4: Consolidate Shopify Storefront Client (COMPLETE)
+
+## Objective
+Remove duplicate `lib/storefront/*` by consolidating into `lib/shopify/` with centralized configuration.
+
+## Files Created ✅
+1. `lib/shopify/config.ts` - Centralized configuration
+   - Environment variable getters (domain, tokens, webhook secret)
+   - API version constant (`2024-01`)
+   - Endpoint builders (storefront, admin)
+   - Collection handles and limits (from old config)
+
+2. `lib/shopify/types.ts` - Shared types
+   - Storefront API types (Product, Collection, Cart, etc.)
+   - Admin API types (Order, LineItem, etc.)
+   - Consolidated from both lib/storefront and lib/shopify
+
+3. `lib/shopify/storefront.ts` - Consolidated client
+   - Single `storefrontRequest<T>(query, variables)` function
+   - Robust error handling with Shopify error messages
+   - All cart and product operations
+   - Uses config for endpoints and tokens
+
+## Files Updated ✅
+- `app/cart/page.tsx` - Updated imports
+- `app/collections/[handle]/page.tsx` - Updated imports
+- `components/home/HomeRituals.tsx` - Updated imports
+- `components/home/UniformGrid.tsx` - Updated imports
+
+## Files Deleted ✅
+- `lib/storefront/client.ts` (471 lines)
+- `lib/storefront/config.ts`
+- `lib/storefront/types.ts`
+- `lib/storefront/index.ts`
+
+## Key Features
+- **Single Request Function**: `storefrontRequest<T>()` handles all GraphQL queries
+- **Centralized Config**: All env vars and endpoints in one place
+- **Better Error Handling**: Includes Shopify error messages in thrown errors
+- **Type Safety**: Shared types across storefront and admin
+- **No Logic Changes**: All GraphQL queries preserved exactly
+
+## Verification ✅
+- All imports updated successfully
+- No broken references (ripgrep verified)
+- Business logic unchanged
+- GraphQL queries preserved
+
+## Impact
+- **Files Removed**: 4 (lib/storefront/*)
+- **Files Created**: 2 (config, types - storefront.ts replaced)
+- **Lines Changed**: +483, -471 (net +12 for better structure)
+- **Breaking Changes**: None (internal refactor only)
+- **Consolidation**: 3 Shopify clients → 2 (storefront consolidated)
+
+## Commit
+`refactor: consolidate Shopify storefront client (phase 4)`

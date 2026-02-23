@@ -3,7 +3,7 @@
  * Quiet AI persuasion for product recommendations
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel } from '@/lib/google/gemini';
 
 const CURATOR_SYSTEM_PROMPT = `You are The Curator - a minimalist AI advisor for Charmed & Dark, a premium home goods brand.
 
@@ -38,17 +38,8 @@ export async function getCuratorRecommendation(
   products: Product[]
 ): Promise<{ response: string; recommendedProduct: Product | null }> {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    
-    console.log('Gemini API key check:', { hasKey: !!apiKey });
-    
-    if (!apiKey) {
-      throw new Error('GEMINI_API_KEY not configured');
-    }
-
-    console.log('Initializing Gemini...');
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    console.log('Initializing Gemini for Sanctuary...');
+    const model = getGeminiModel('sanctuary');
 
     // Format product catalog for context
     const productContext = products
