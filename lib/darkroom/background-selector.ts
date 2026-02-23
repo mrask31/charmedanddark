@@ -26,13 +26,15 @@ export async function selectBackgroundForProduct(
   const geminiApiKey = process.env.GEMINI_API_KEY;
 
   if (!geminiApiKey) {
-    console.warn('GEMINI_API_KEY not configured, defaulting to stone background');
-    return 'stone';
+    throw new Error('GEMINI_API_KEY environment variable is not configured');
   }
+
+  const modelName = 'gemini-1.5-flash';
+  console.log(`[Background Selector] Using Gemini model: ${modelName}`);
 
   try {
     const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({ model: modelName });
 
     const prompt = `You are a product photography expert for a gothic, minimalist brand called "Charmed & Dark".
 
@@ -53,14 +55,16 @@ Your choice:`;
 
     // Validate response
     if (response === 'stone' || response === 'candle' || response === 'glass') {
+      console.log(`[Background Selector] AI selected: ${response}`);
       return response as BackgroundType;
     }
 
     // Fallback if AI returns invalid response
-    console.warn(`Invalid AI response: ${response}, defaulting to stone`);
+    console.warn(`[Background Selector] Invalid AI response: "${response}" — defaulting to stone`);
     return 'stone';
   } catch (error) {
-    console.error('Background selection error:', error);
+    console.error('[Background Selector] Background selection failed — defaulting to stone');
+    console.error('[Background Selector] Error details:', error);
     return 'stone'; // Safe fallback
   }
 }
