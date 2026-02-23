@@ -9,6 +9,10 @@ import { createClient } from '@supabase/supabase-js';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  // Debug endpoint: disabled in production
+  if (process.env.NODE_ENV === 'production') {
+    return new Response('Not Found', { status: 404 });
+  }
   const diagnostics: any = {
     timestamp: new Date().toISOString(),
     checks: {},

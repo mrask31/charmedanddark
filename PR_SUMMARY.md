@@ -73,3 +73,51 @@ See `docs/REPO_AUDIT_AND_CLEANUP_PLAN.md` for complete details:
 
 ## PR Link
 https://github.com/mrask31/charmedanddark/pull/new/reset/google-revenue-engine
+
+---
+
+# PR #2: Usage Verification Pass (COMPLETE)
+
+## Objective
+Determine which suspected cruft files are actually used in the codebase through comprehensive reference analysis.
+
+## Method
+- ripgrep searches across entire repository
+- Import analysis for library files
+- URL/link analysis for pages and API routes
+- Directory content inspection
+
+## Results Document
+`docs/cleanup/USAGE_VERIFICATION.md` - Complete analysis with line-by-line references
+
+## Key Findings
+
+### UNUSED (Safe to Delete) ✅
+- `app/admin/darkroom/middleware.ts` - 0 imports found
+- `lib/darkroom/database.ts` - 0 imports found (legacy CSV pipeline)
+- `app/client-services/` - Orphaned page, no navigation links
+- `public/product-images/` - Duplicate directory (30 files), use `public/products/` instead
+
+### DEBUG ENDPOINTS (Remove in Production) ⚠️
+- `app/api/debug/products/route.ts` - No calls found
+- `app/api/debug/list-handles/route.ts` - No calls found
+- `app/api/sanctuary/debug/route.ts` - No calls found
+
+### USED (Keep) ✅
+- `lib/google-sheets/sync.ts` - 2 active imports
+- `app/api/sync-sheets/route.ts` - Operational endpoint, 10+ doc references
+- `public/products/` - Canonical directory (34 subdirs), 50+ references
+- `app/archive/` - Active page with header navigation link
+- `app/uniform/` - Major feature, 100+ references
+
+### UNCLEAR (Investigate) ❓
+- `powers/shopify-admin/` - Kiro IDE power, no code refs (expected)
+
+## Impact
+- Identified 4 files/directories safe to delete immediately
+- Identified 3 debug endpoints to remove in production
+- Confirmed 5 features/files are actively used
+- Resolved product-images vs products directory question
+
+## Commit
+`docs: usage verification for cleanup (phase 2)`
