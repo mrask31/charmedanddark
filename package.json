@@ -17,6 +17,7 @@
     "check-images": "ts-node scripts/check-images.ts",
     "organize-images": "ts-node scripts/organize-images.ts",
     "sync-sheets": "ts-node scripts/sync-sheets.ts",
+    "sync-shopify": "ts-node scripts/sync-shopify-products.ts",
     "health-check:curator": "ts-node scripts/health-check-curator.ts"
   },
   "dependencies": {
