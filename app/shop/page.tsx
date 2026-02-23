@@ -1,4 +1,3 @@
-import { storefrontRequest } from '@/lib/shopify/storefront';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { devLog } from '@/lib/utils/logger';
 import Link from 'next/link';
@@ -10,66 +9,29 @@ import Image from 'next/image';
  * Prioritizes Darkroom images over raw Shopify images
  */
 
-interface ShopifyProduct {
+interface Product {
   id: string;
   handle: string;
   title: string;
-  priceRange: {
-    minVariantPrice: {
-      amount: string;
-      currencyCode: string;
-    };
-  };
-  images: {
-    edges: Array<{
-      node: {
-        url: string;
-        altText?: string;
-      };
-    }>;
-  };
+  price: number;
+  image_url: string | null;
+  images: Array<{ url: string; position: number; alt?: string }> | null;
 }
 
-const PRODUCTS_QUERY = `
-  query GetAllProducts($first: Int!) {
-    products(first: $first) {
-      edges {
-        node {
-          id
-          handle
-          title
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
-          images(first: 1) {
-            edges {
-              node {
-                url
-                altText
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+async function getProducts(): Promise<Product[]> {
+  const supabase = getSupabaseClient();
+  
+  const { data, error } = await supabase
+    .from('products')
+    .select('id, handle, title, price, image_url, images')
+    .order('title');
 
-async function getProducts(): Promise<ShopifyProduct[]> {
-  const data = await storefrontRequest<{
-    products: {
-      edges: Array<{ node: ShopifyProduct }>;
-    };
-  }>(PRODUCTS_QUERY, { first: 50 });
-
-  if (!data) {
+  if (error) {
+    console.error('[Shop] Failed to fetch products:', error);
     return [];
   }
 
-  return data.products.edges.map(edge => edge.node);
+  return data || [];
 }
 
 async function getDarkroomImage(handle: string): Promise<string | null> {
@@ -136,13 +98,12 @@ export default async function ShopPage() {
   );
 }
 
-async function ProductCard({ product }: { product: ShopifyProduct }) {
-  const shopifyImage = product.images.edges[0]?.node.url;
+async function ProductCard({ product }: { product: Product }) {
+  const supabaseImage = product.image_url || (product.images && product.images[0]?.url);
   const darkroomImage = await getDarkroomImage(product.handle);
   
-  // Prioritize Darkroom, fallback to Shopify
-  const imageUrl = darkroomImage || shopifyImage;
-  const price = parseFloat(product.priceRange.minVariantPrice.amount);
+  // Prioritize Darkroom, fallback to Supabase
+  const imageUrl = darkroomImage || supabaseImage;
 
   return (
     <Link
@@ -175,7 +136,7 @@ async function ProductCard({ product }: { product: ShopifyProduct }) {
           {product.title}
         </h3>
         <p className="text-xs text-gray-600 mt-1">
-          ${price.toFixed(2)} {product.priceRange.minVariantPrice.currencyCode}
+          ${product.price.toFixed(2)} USD
         </p>
       </div>
     </Link>
