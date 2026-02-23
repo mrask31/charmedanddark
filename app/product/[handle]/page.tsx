@@ -4,6 +4,7 @@ import { getSupabaseClient, Product as SupabaseProduct } from '@/lib/supabase/cl
 import { transformSupabaseProduct } from '@/lib/products';
 import { buildProductJsonLd } from '@/lib/seo/schema';
 import { trackProductView } from '@/lib/tracking';
+import { getCanonicalUrl } from '@/lib/config/site';
 import ProductClient from './ProductClient';
 
 interface ProductPageProps {
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
-  const canonicalUrl = `https://charmedanddark.vercel.app/product/${params.handle}`;
+  const canonicalUrl = getCanonicalUrl(`/product/${params.handle}`);
   // Extract image URL from either image_url or first image in images array
   const imageUrl = product.image_url || 
     (product.images && product.images.length > 0 
