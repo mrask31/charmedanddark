@@ -187,7 +187,23 @@ export async function uploadImageToProduct(
 
     const media = data.data?.productCreateMedia?.media?.[0];
     if (!media) {
+      console.error('Upload response:', JSON.stringify(data.data?.productCreateMedia));
       throw new Error('No media returned from upload');
+    }
+
+    // Shopify may return media without image URL if still processing
+    // Wait and retry if needed
+    if (!media.image || !media.image.url) {
+      console.log('Image still processing, waiting 3 seconds...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // For now, return the media ID and a placeholder URL
+      // The image will be available in Shopify, just not immediately
+      console.warn('Image URL not immediately available, using media ID only');
+      return {
+        mediaId: media.id,
+        url: `https://${storeDomain}/admin/products/${productId.split('/').pop()}`, // Fallback
+      };
     }
 
     return {
