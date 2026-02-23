@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import type { Product } from '@/lib/storefront/types';
+import type { Product } from '@/lib/shopify/types';
 
 interface UniformGridProps {
   products: Product[];

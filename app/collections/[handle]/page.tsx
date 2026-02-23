@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getCollectionByHandle } from '@/lib/storefront';
+import { getCollectionByHandle } from '@/lib/shopify/storefront';
 import type { Metadata } from 'next';
 
 interface CollectionPageProps {

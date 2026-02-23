@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getCart } from '@/lib/storefront';
-import type { Cart } from '@/lib/storefront/types';
+import { getCart } from '@/lib/shopify/storefront';
+import type { Cart } from '@/lib/shopify/types';
 
 function formatPrice(amount: string, currency: string = 'USD'): string {
   return new Intl.NumberFormat('en-US', {
