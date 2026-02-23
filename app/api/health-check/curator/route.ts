@@ -21,6 +21,15 @@ interface HealthCheckResult {
 export async function GET() {
   const startTime = Date.now();
   
+  // Check environment variables first
+  const envCheck = {
+    geminiApiKey: !!process.env.GEMINI_API_KEY,
+    shopifyAdminToken: !!process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+    shopifyDomain: !!process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN,
+    supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    supabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  };
+  
   try {
     const supabase = getSupabaseClient();
 
@@ -35,6 +44,7 @@ export async function GET() {
         success: false,
         error: 'Failed to fetch products',
         details: error,
+        envCheck,
       }, { status: 500 });
     }
 
@@ -73,6 +83,7 @@ export async function GET() {
               handle: product.handle,
               status: 'timeout',
               duration,
+              error: 'Generation exceeded 3s timeout',
             });
           } else {
             failureCount++;
@@ -80,17 +91,22 @@ export async function GET() {
               handle: product.handle,
               status: 'failure',
               duration,
+              error: 'Generation returned null (check logs for details)',
             });
           }
         }
       } catch (err) {
         const duration = Date.now() - productStartTime;
         failureCount++;
+        
+        // Log full error to console for debugging
+        console.error(`[Health Check] Error for ${product.handle}:`, err);
+        
         results.push({
           handle: product.handle,
           status: 'failure',
           duration,
-          error: err instanceof Error ? err.message : 'Unknown error',
+          error: err instanceof Error ? err.message : String(err),
         });
       }
     }
@@ -119,6 +135,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       passed,
+      envCheck,
       summary: {
         totalProducts: products.length,
         successCount,
@@ -140,10 +157,13 @@ export async function GET() {
       results,
     });
   } catch (error) {
+    console.error('[Health Check] Fatal error:', error);
     return NextResponse.json({
       success: false,
       error: 'Health check failed',
       details: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      envCheck,
     }, { status: 500 });
   }
 }
