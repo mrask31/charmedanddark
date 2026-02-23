@@ -110,6 +110,8 @@ export async function runShopifyDarkroomPipeline(
  */
 async function processProduct(product: ShopifyProductForDarkroom): Promise<ProcessingResult> {
   console.log(`Processing: ${product.title} (${product.handle})`);
+  console.log(`  Product has ${product.images.length} images`);
+  console.log(`  Image data:`, product.images.map(img => ({ id: img?.id, hasUrl: !!img?.url })));
 
   try {
     // Safety check: Never process Printify products
@@ -130,6 +132,12 @@ async function processProduct(product: ShopifyProductForDarkroom): Promise<Proce
 
     if (product.images.length === 0) {
       throw new Error('Product has no images');
+    }
+
+    // Validate all images have URLs
+    const invalidImages = product.images.filter(img => !img || !img.url);
+    if (invalidImages.length > 0) {
+      throw new Error(`Product has ${invalidImages.length} images without URLs`);
     }
 
     // Step 1: AI selects best background
