@@ -225,3 +225,56 @@ Remove duplicate `lib/storefront/*` by consolidating into `lib/shopify/` with ce
 
 ## Commit
 `refactor: consolidate Shopify storefront client (phase 4)`
+
+---
+
+# PR #5: Consolidate Gemini Client (COMPLETE)
+
+## Objective
+Create single entry point for all Gemini usage with purpose-specific model configuration.
+
+## Files Created ✅
+1. `lib/google/gemini.ts` - Consolidated Gemini client
+   - `getGeminiModel(purpose)` - Returns configured model instance
+   - `getModelName(purpose)` - Returns model name for logging
+   - Purpose-specific models:
+     - `darkroom`: `gemini-1.5-flash` (background selection)
+     - `sanctuary`: `gemini-2.5-flash` (curator chat)
+   - Centralized API key management
+   - Consistent error handling
+
+## Files Updated ✅
+- `lib/gemini.ts` - Sanctuary curator (now uses consolidated client)
+- `lib/darkroom/background-selector.ts` - Darkroom (now uses consolidated client)
+
+## Removed Direct Imports ✅
+Both files no longer import `@google/generative-ai` directly:
+- `lib/gemini.ts` - Removed direct import
+- `lib/darkroom/background-selector.ts` - Removed direct import
+
+## Verification ✅
+- `rg "@google/generative-ai"` returns only:
+  - `lib/google/gemini.ts` (consolidated client) ✅
+  - `app/api/sanctuary/debug/route.ts` (debug endpoint - acceptable) ✅
+  - Documentation and package.json (expected) ✅
+- Darkroom logs model name: `[Background Selector] Using Gemini model: gemini-1.5-flash`
+- No logic or prompt changes
+- Model versions preserved exactly
+
+## Key Features
+- **Single Entry Point**: All Gemini usage goes through `lib/google/gemini.ts`
+- **Purpose-Based Config**: Different models for different use cases
+- **Centralized Management**: API key and model versions in one place
+- **Better Logging**: Model name logged for debugging
+- **Type Safety**: `GeminiPurpose` type ensures valid usage
+
+## Impact
+- **Files Created**: 1 (lib/google/gemini.ts)
+- **Files Updated**: 2 (gemini.ts, background-selector.ts)
+- **Direct Imports Removed**: 2
+- **Lines Changed**: +118, -22 (net +96 for better structure)
+- **Breaking Changes**: None (internal refactor only)
+- **Consolidation**: 2 Gemini implementations → 1 entry point
+
+## Commit
+`refactor: consolidate Gemini client (phase 5)`
