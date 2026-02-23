@@ -53,12 +53,7 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
   let cursor: string | null = null;
 
   while (hasNextPage) {
-    const data: {
-      products: {
-        pageInfo: { hasNextPage: boolean; endCursor: string };
-        edges: Array<{ node: ShopifyProduct }>;
-      };
-    } = await storefrontRequest<{
+    const data = await storefrontRequest<{
       products: {
         pageInfo: { hasNextPage: boolean; endCursor: string };
         edges: Array<{ node: ShopifyProduct }>;
@@ -67,6 +62,10 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
       first: 250,
       after: cursor,
     });
+
+    if (!data) {
+      throw new Error('Failed to fetch products from Shopify');
+    }
 
     products.push(...data.products.edges.map(edge => edge.node));
     hasNextPage = data.products.pageInfo.hasNextPage;
@@ -77,15 +76,15 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
 }
 
 async function fetchCollections(): Promise<ShopifyCollection[]> {
-  const data: {
-    collections: {
-      edges: Array<{ node: ShopifyCollection }>;
-    };
-  } = await storefrontRequest<{
+  const data = await storefrontRequest<{
     collections: {
       edges: Array<{ node: ShopifyCollection }>;
     };
   }>(COLLECTIONS_QUERY, { first: 250 });
+
+  if (!data) {
+    throw new Error('Failed to fetch collections from Shopify');
+  }
 
   return data.collections.edges.map(edge => edge.node);
 }
