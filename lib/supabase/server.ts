@@ -8,7 +8,20 @@ import { createClient } from '@supabase/supabase-js';
  * Never expose service role key to client
  */
 
-export function getSupabaseServerClient() {
+// Order type for database
+export interface Order {
+  id: string;
+  shopify_order_id: string;
+  order_number: string;
+  line_items: any[];
+  shipping_address: any;
+  total_price: number;
+  currency: string;
+  created_at: string;
+  [key: string]: any;
+}
+
+export function getSupabaseServer() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -23,3 +36,6 @@ export function getSupabaseServerClient() {
     },
   });
 }
+
+// Alias for consistency
+export const getSupabaseServerClient = getSupabaseServer;
