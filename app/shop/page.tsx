@@ -1,12 +1,11 @@
 import { getSupabaseClient } from '@/lib/supabase/client';
-import { devLog } from '@/lib/utils/logger';
 import Link from 'next/link';
 import Image from 'next/image';
 
 /**
  * The Object Gallery
  * Monochromatic Brutalism - 2-column mobile, 4-column desktop
- * Prioritizes Darkroom images over raw Shopify images
+ * Uses Shopify CDN images from database
  */
 
 interface Product {
@@ -32,41 +31,6 @@ async function getProducts(): Promise<Product[]> {
   }
 
   return data || [];
-}
-
-async function getDarkroomImage(handle: string): Promise<string | null> {
-  try {
-    const supabase = getSupabaseClient();
-    
-    // Check if branded image exists in Darkroom bucket
-    const { data, error } = await supabase
-      .storage
-      .from('darkroom')
-      .list(`products/${handle}`, {
-        limit: 1,
-        search: 'branded',
-      });
-
-    if (error) {
-      devLog.warn(`[Shop] Failed to check Darkroom for ${handle}:`, error.message);
-      return null;
-    }
-
-    if (data && data.length > 0) {
-      const { data: { publicUrl } } = supabase
-        .storage
-        .from('darkroom')
-        .getPublicUrl(`products/${handle}/${data[0].name}`);
-      
-      devLog.log(`[Shop] Using Darkroom image for ${handle}`);
-      return publicUrl;
-    }
-
-    return null;
-  } catch (error) {
-    console.error(`[Shop] Error fetching Darkroom image for ${handle}:`, error);
-    return null;
-  }
 }
 
 export default async function ShopPage() {
@@ -98,21 +62,9 @@ export default async function ShopPage() {
   );
 }
 
-async function ProductCard({ product }: { product: Product }) {
-  const supabaseImage = product.image_url || (product.images && product.images[0]?.url);
-  const darkroomImage = await getDarkroomImage(product.handle);
-  
-  // Prioritize Darkroom, fallback to Supabase
-  const imageUrl = darkroomImage || supabaseImage;
-  
-  // Debug logging (only in development)
-  if (!imageUrl) {
-    console.log(`[Shop] No image for ${product.handle}:`, {
-      image_url: product.image_url,
-      images: product.images,
-      darkroom: darkroomImage,
-    });
-  }
+function ProductCard({ product }: { product: Product }) {
+  // Get image from database - prioritize image_url, fallback to images array
+  const imageUrl = product.image_url || (product.images && product.images.length > 0 ? product.images[0].url : null);
 
   return (
     <Link
@@ -128,7 +80,7 @@ async function ProductCard({ product }: { product: Product }) {
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, 25vw"
-            unoptimized={imageUrl.includes('shopify')}
+            unoptimized
           />
         </div>
       ) : (
