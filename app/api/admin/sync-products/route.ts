@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase/client';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
 
 /**
  * Admin API: Sync Products from Shopify to Supabase
@@ -144,7 +144,7 @@ export async function GET() {
       );
     }
 
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseServerClient();
 
     // Fetch products from Shopify
     const products = await fetchAllProducts();
