@@ -69,11 +69,11 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/product/${product.handle}`}
-      className="bg-white group block relative aspect-square overflow-hidden"
+      className="bg-white group block overflow-hidden"
     >
-      {/* Image - graceful fallback if missing */}
-      {imageUrl ? (
-        <div className="relative w-full h-full">
+      {/* Image Container - aspect-square with relative positioning for Image fill */}
+      <div className="relative aspect-square w-full">
+        {imageUrl ? (
           <Image
             src={imageUrl}
             alt={product.title}
@@ -82,18 +82,18 @@ function ProductCard({ product }: { product: Product }) {
             sizes="(max-width: 768px) 50vw, 25vw"
             unoptimized
           />
-        </div>
-      ) : (
-        <div className="relative w-full h-full bg-gray-100 flex items-center justify-center">
-          <span className="text-xs text-gray-400 uppercase tracking-wider">No Image</span>
-        </div>
-      )}
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+        ) : (
+          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+            <span className="text-xs text-gray-400 uppercase tracking-wider">No Image</span>
+          </div>
+        )}
+        
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+      </div>
 
       {/* Info */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-black">
+      <div className="p-4 bg-white border-t border-black">
         <h3 className="text-sm font-light tracking-wide truncate">
           {product.title}
         </h3>
