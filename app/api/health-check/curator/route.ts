@@ -24,8 +24,11 @@ export async function GET() {
   // Check environment variables first
   const envCheck = {
     geminiApiKey: !!process.env.GEMINI_API_KEY,
+    geminiApiKeyLength: process.env.GEMINI_API_KEY?.length || 0,
     shopifyAdminToken: !!process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+    shopifyAdminTokenLength: process.env.SHOPIFY_ADMIN_ACCESS_TOKEN?.length || 0,
     shopifyDomain: !!process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN,
+    shopifyDomainValue: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'NOT SET',
     supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
     supabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   };

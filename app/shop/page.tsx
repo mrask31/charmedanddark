@@ -104,6 +104,15 @@ async function ProductCard({ product }: { product: Product }) {
   
   // Prioritize Darkroom, fallback to Supabase
   const imageUrl = darkroomImage || supabaseImage;
+  
+  // Debug logging (only in development)
+  if (!imageUrl) {
+    console.log(`[Shop] No image for ${product.handle}:`, {
+      image_url: product.image_url,
+      images: product.images,
+      darkroom: darkroomImage,
+    });
+  }
 
   return (
     <Link
@@ -119,6 +128,7 @@ async function ProductCard({ product }: { product: Product }) {
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, 25vw"
+            unoptimized={imageUrl.includes('shopify')}
           />
         </div>
       ) : (
