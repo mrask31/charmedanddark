@@ -133,8 +133,11 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
 
 export async function GET() {
   try {
-    // Only allow in development or with auth token
-    if (process.env.NODE_ENV === 'production') {
+    // Temporarily allow in production for initial setup
+    // TODO: Add authentication or disable after setup
+    const allowInProduction = true; // TEMPORARY: Set to false after setup
+    
+    if (process.env.NODE_ENV === 'production' && !allowInProduction) {
       return NextResponse.json(
         { error: 'This endpoint is disabled in production' },
         { status: 403 }
