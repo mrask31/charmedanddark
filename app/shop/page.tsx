@@ -1,5 +1,4 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server';
-import Link from 'next/link';
 
 /**
  * The Object Gallery
@@ -36,22 +35,26 @@ export default async function ShopPage() {
   const products = await getProducts();
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div style={{ minHeight: '100vh', backgroundColor: 'white', color: 'black' }}>
       {/* Header */}
-      <div className="border-b border-black">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl md:text-6xl font-light tracking-tight">
+      <div style={{ borderBottom: '1px solid black' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1rem' }}>
+          <h1 style={{ fontSize: '3rem', fontWeight: 300, letterSpacing: '-0.02em' }}>
             OBJECTS
           </h1>
-          <p className="text-sm text-gray-600 mt-2 uppercase tracking-widest">
+          <p style={{ fontSize: '0.875rem', color: '#666', marginTop: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             {products.length} Items
           </p>
         </div>
       </div>
 
       {/* Grid */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1rem' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          gap: '1rem'
+        }}>
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -66,35 +69,69 @@ function ProductCard({ product }: { product: Product }) {
   const imageUrl = product.image_url || (product.images && product.images.length > 0 ? product.images[0].url : null);
 
   return (
-    <Link
+    <a
       href={`/product/${product.handle}`}
-      className="bg-white group block overflow-hidden border border-gray-200"
+      style={{
+        display: 'block',
+        backgroundColor: 'white',
+        border: '1px solid #e5e5e5',
+        textDecoration: 'none',
+        color: 'inherit',
+        overflow: 'hidden'
+      }}
     >
-      {/* Image Container - aspect-square */}
-      <div className="relative w-full" style={{ paddingBottom: '100%' }}>
+      {/* Image Container */}
+      <div style={{ position: 'relative', width: '100%', paddingBottom: '100%', overflow: 'hidden' }}>
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={product.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
             loading="lazy"
           />
         ) : (
-          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-            <span className="text-xs text-gray-400 uppercase tracking-wider">No Image</span>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#f5f5f5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <span style={{ fontSize: '0.75rem', color: '#999', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              No Image
+            </span>
           </div>
         )}
       </div>
 
       {/* Info */}
-      <div className="p-4 bg-white">
-        <h3 className="text-sm font-light tracking-wide truncate">
+      <div style={{ padding: '1rem', backgroundColor: 'white' }}>
+        <h3 style={{
+          fontSize: '0.875rem',
+          fontWeight: 300,
+          letterSpacing: '0.02em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          marginBottom: '0.25rem'
+        }}>
           {product.title}
         </h3>
-        <p className="text-xs text-gray-600 mt-1">
+        <p style={{ fontSize: '0.75rem', color: '#666' }}>
           ${product.price.toFixed(2)} USD
         </p>
       </div>
-    </Link>
+    </a>
   );
 }
