@@ -1,4 +1,4 @@
-import { getSupabaseClient } from '@/lib/supabase/client';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 
 /**
@@ -17,7 +17,7 @@ interface Product {
 }
 
 async function getProducts(): Promise<Product[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseServerClient();
   
   const { data, error } = await supabase
     .from('products')
