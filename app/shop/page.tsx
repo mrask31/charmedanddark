@@ -51,7 +51,7 @@ export default async function ShopPage() {
 
       {/* Grid */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-black">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -68,26 +68,26 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/product/${product.handle}`}
-      className="bg-white group block overflow-hidden"
+      className="bg-white group block overflow-hidden border border-gray-200"
     >
       {/* Image Container - aspect-square */}
-      <div className="relative aspect-square w-full overflow-hidden">
+      <div className="relative w-full" style={{ paddingBottom: '100%' }}>
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={product.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
             <span className="text-xs text-gray-400 uppercase tracking-wider">No Image</span>
           </div>
         )}
       </div>
 
       {/* Info */}
-      <div className="p-4 bg-white border-t border-black">
+      <div className="p-4 bg-white">
         <h3 className="text-sm font-light tracking-wide truncate">
           {product.title}
         </h3>
