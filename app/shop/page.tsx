@@ -52,7 +52,7 @@ export default async function ShopPage() {
 
       {/* Grid */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-black">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-black" style={{ isolation: 'isolate' }}>
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -70,9 +70,10 @@ function ProductCard({ product }: { product: Product }) {
     <Link
       href={`/product/${product.handle}`}
       className="bg-white group block overflow-hidden"
+      style={{ contain: 'layout' }}
     >
       {/* Image Container - aspect-square with relative positioning for Image fill */}
-      <div className="relative aspect-square w-full">
+      <div className="relative aspect-square w-full" style={{ contain: 'paint' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -81,6 +82,7 @@ function ProductCard({ product }: { product: Product }) {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, 25vw"
             unoptimized
+            priority={false}
           />
         ) : (
           <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
@@ -89,7 +91,7 @@ function ProductCard({ product }: { product: Product }) {
         )}
         
         {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" style={{ pointerEvents: 'none' }} />
       </div>
 
       {/* Info */}
