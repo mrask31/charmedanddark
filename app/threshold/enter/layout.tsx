@@ -1,7 +1,7 @@
-// Force dynamic rendering for join page
+// Force dynamic rendering for threshold enter page
 export const dynamic = 'force-dynamic';
 
-export default function JoinLayout({
+export default function ThresholdEnterLayout({
   children,
 }: {
   children: React.ReactNode;

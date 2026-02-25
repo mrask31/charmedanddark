@@ -4,9 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabase/client';
 
-// Disable static generation for this page
-export const dynamic = 'force-dynamic';
-
 /**
  * Sanctuary Gate - High-end Login/Signup Flow
  * Monochromatic Brutalism aesthetic

@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getSupabaseClient } from '@/lib/supabase/client';
 
-// Disable static generation for this page
-export const dynamic = 'force-dynamic';
-
 export default function EnterPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
