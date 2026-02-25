@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   }
 };
 
+// Force dynamic rendering since we need database access
+export const dynamic = 'force-dynamic';
+
 export default function ShopLayout({
   children,
 }: {
