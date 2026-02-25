@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { transformSupabaseProduct, UnifiedProduct } from '@/lib/products';
 import Header from '@/components/Header';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
+
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<UnifiedProduct[]>([]);
