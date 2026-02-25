@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getSupabaseClient, Product as SupabaseProduct } from '@/lib/supabase/client';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { Product as SupabaseProduct } from '@/lib/supabase/client';
 import { transformSupabaseProduct } from '@/lib/products';
 import { buildProductJsonLd } from '@/lib/seo/schema';
 import { trackProductView } from '@/lib/tracking';
@@ -18,7 +19,7 @@ interface ProductPageProps {
  * Fetch product data server-side
  */
 async function getProduct(handle: string): Promise<SupabaseProduct | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseServerClient();
   
   const { data, error } = await supabase
     .from('products')

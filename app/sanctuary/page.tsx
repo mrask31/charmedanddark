@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import SanctuaryToast from '@/components/SanctuaryToast';
 
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
 /**
  * Sanctuary Main Page
  * Shows welcome toast for new members
