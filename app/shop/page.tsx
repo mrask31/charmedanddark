@@ -1,6 +1,5 @@
 import { getSupabaseClient } from '@/lib/supabase/client';
 import Link from 'next/link';
-import Image from 'next/image';
 
 /**
  * The Object Gallery
@@ -52,7 +51,7 @@ export default async function ShopPage() {
 
       {/* Grid */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-black" style={{ isolation: 'isolate' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-black">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -70,28 +69,21 @@ function ProductCard({ product }: { product: Product }) {
     <Link
       href={`/product/${product.handle}`}
       className="bg-white group block overflow-hidden"
-      style={{ contain: 'layout' }}
     >
-      {/* Image Container - aspect-square with relative positioning for Image fill */}
-      <div className="relative aspect-square w-full" style={{ contain: 'paint' }}>
+      {/* Image Container - aspect-square */}
+      <div className="relative aspect-square w-full overflow-hidden">
         {imageUrl ? (
-          <Image
+          <img
             src={imageUrl}
             alt={product.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 50vw, 25vw"
-            unoptimized
-            priority={false}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
           />
         ) : (
-          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
             <span className="text-xs text-gray-400 uppercase tracking-wider">No Image</span>
           </div>
         )}
-        
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" style={{ pointerEvents: 'none' }} />
       </div>
 
       {/* Info */}
