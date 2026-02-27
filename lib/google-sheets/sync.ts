@@ -5,6 +5,7 @@
 
 import { google } from 'googleapis';
 import { createClient } from '@supabase/supabase-js';
+import { slugify } from '../utils/slugify';
 
 // Google Sheets configuration
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID!;
@@ -36,8 +37,12 @@ function parseSheetRow(row: string[]): SheetRow | null {
   // Skip empty rows
   if (!row[0] || !row[1]) return null;
 
+  // Sanitize handle: strip emojis and special characters
+  const rawHandle = row[0]?.trim() || '';
+  const cleanHandle = slugify(rawHandle);
+
   return {
-    handle: row[0]?.trim() || '',
+    handle: cleanHandle,
     title: row[1]?.trim() || '',
     line1: row[2]?.trim() || '',
     line2: row[3]?.trim() || '',
