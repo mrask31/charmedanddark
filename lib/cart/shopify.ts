@@ -107,15 +107,32 @@ export async function addLineItem(
   quantity: number = 1
 ): Promise<Cart | null> {
   try {
+    console.log('[Cart] Adding line item:', { cartId, variantId, quantity });
+    
     const shopifyCart = await shopifyAddToCart(cartId, variantId, quantity);
     
     if (!shopifyCart) {
+      console.error('[Cart] addLineItem failed: shopifyAddToCart returned null');
       return null;
     }
     
     return transformShopifyCart(shopifyCart);
   } catch (error) {
     console.error('[Cart] Failed to add line item:', error);
+    
+    // Enhanced error logging for Shopify GraphQL errors
+    if (error && typeof error === 'object') {
+      if ('errors' in error) {
+        console.error('[Cart] Shopify GraphQL errors:', JSON.stringify((error as any).errors, null, 2));
+      }
+      if ('message' in error) {
+        console.error('[Cart] Error message:', (error as any).message);
+      }
+      if ('response' in error) {
+        console.error('[Cart] Full response:', JSON.stringify((error as any).response, null, 2));
+      }
+    }
+    
     return null;
   }
 }

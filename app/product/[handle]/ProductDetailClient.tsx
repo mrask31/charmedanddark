@@ -51,8 +51,9 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   const displayImage = darkroomUrl || product.images.hero;
 
   // Variant detection (for Shopify apparel)
-  const hasVariants = product.variants && product.variants.length > 0;
+  const hasVariants = product.variants && product.variants.length > 1; // Only show selector if multiple variants
   const variants = product.variants || [];
+  const isSingleVariant = variants.length === 1;
 
   // Pricing - Dual Pricing Law
   const standardPrice = product.price;
@@ -158,17 +159,24 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
       // Determine variant ID
       let variantId: string;
       
-      if (hasVariants && variants.length > 0) {
+      if (hasVariants && variants.length > 1) {
+        // Multiple variants - user must select
         if (!selectedVariant) {
           // No variant selected - should not happen due to button disabled state
           setIsClaiming(false);
           return;
         }
         variantId = selectedVariant;
+        console.log('[CLAIM] Multi-variant product, using selected variant:', variantId);
+      } else if (isSingleVariant) {
+        // Single-variant products: Use the default variant ID
+        // CRITICAL: Shopify requires merchandiseId (variant ID), not product ID
+        variantId = variants[0].id;
+        console.log('[CLAIM] Single-variant product detected, using default variant:', variantId);
       } else {
-        // No variants - use product ID as variant ID
-        // For Shopify, we need the actual variant ID from metadata
+        // Fallback for products without variants array
         variantId = (product as any).metadata?.shopify_variant_id || product.id;
+        console.warn('[CLAIM] No variants array found, using fallback variant ID:', variantId);
       }
       
       // Add to cart
