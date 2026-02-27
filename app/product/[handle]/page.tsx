@@ -22,19 +22,33 @@ interface ProductPageProps {
  * Fetch product data server-side
  */
 async function getProduct(handle: string): Promise<SupabaseProduct | null> {
-  const supabase = getSupabaseServerClient();
-  
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('handle', handle)
-    .single();
+  try {
+    const supabase = getSupabaseServerClient();
+    
+    console.log('[ProductDetail] Fetching product with handle:', handle);
+    
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('handle', handle)
+      .single();
 
-  if (error || !data) {
+    if (error) {
+      console.error('[ProductDetail] Supabase error:', error);
+      return null;
+    }
+
+    if (!data) {
+      console.warn('[ProductDetail] No product found for handle:', handle);
+      return null;
+    }
+
+    console.log('[ProductDetail] Product found:', data.id, data.title);
+    return data;
+  } catch (error) {
+    console.error('[ProductDetail] Unexpected error:', error);
     return null;
   }
-
-  return data;
 }
 
 /**
