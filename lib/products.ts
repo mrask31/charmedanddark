@@ -22,6 +22,23 @@ export interface UnifiedProduct {
     all?: string[]; // All images array
   };
   inStock: boolean;
+  metadata?: {
+    darkroom_url?: string; // Darkroom AI-processed image URL
+    is_featured?: boolean; // Featured product flag for deep purple accent
+    featured_until?: Date; // Optional expiration for featured status
+    featured_reason?: string; // Context for featured status
+  };
+}
+
+/**
+ * Featured product metadata interface
+ * Used for products that receive deep purple accent treatment
+ */
+export interface FeaturedProductMetadata {
+  productId: string;
+  isFeatured: boolean;
+  featuredUntil?: Date;
+  featuredReason?: string;
 }
 
 /**
@@ -75,6 +92,14 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     all: allImages,
   };
 
+  // Extract metadata including featured status and darkroom URL
+  const metadata: UnifiedProduct['metadata'] = {
+    darkroom_url: (product as any).metadata?.darkroom_url,
+    is_featured: (product as any).is_featured || false,
+    featured_until: (product as any).featured_until ? new Date((product as any).featured_until) : undefined,
+    featured_reason: (product as any).featured_reason,
+  };
+
   return {
     id: product.id,
     handle: product.handle,
@@ -85,6 +110,7 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     category: product.category || undefined,
     images,
     inStock: product.stock_quantity > 0,
+    metadata,
   };
 }
 

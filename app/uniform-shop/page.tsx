@@ -2,8 +2,8 @@ import { ProductDiscoveryGrid } from '@/components/ProductDiscoveryGrid';
 import { getDiscoveryProducts } from '@/lib/products-discovery';
 
 /**
- * The Object Gallery - /shop
- * Curated, gallery-like product browsing with strict density controls
+ * Uniform Shop - /uniform-shop
+ * Curated uniform/apparel product browsing with strict density controls
  * Feature: product-discovery-threshold
  * 
  * Enforces:
@@ -14,8 +14,13 @@ import { getDiscoveryProducts } from '@/lib/products-discovery';
  * - Dual Pricing Law
  */
 
-export default async function ShopPage() {
-  const products = await getDiscoveryProducts();
+export default async function UniformShopPage() {
+  // Fetch products filtered by uniform/apparel category
+  const allProducts = await getDiscoveryProducts();
+  const uniformProducts = allProducts.filter(p => 
+    p.category?.toLowerCase().includes('apparel') || 
+    p.category?.toLowerCase().includes('uniform')
+  );
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f0' }}>
@@ -36,7 +41,7 @@ export default async function ShopPage() {
             color: '#1a1a1a',
             marginBottom: '0.5rem',
           }}>
-            Objects
+            The Uniform
           </h1>
           <p style={{ 
             fontSize: '0.875rem', 
@@ -50,7 +55,7 @@ export default async function ShopPage() {
       </div>
 
       {/* Discovery Grid */}
-      <ProductDiscoveryGrid products={products} route="shop" />
+      <ProductDiscoveryGrid products={uniformProducts} route="uniform" />
     </div>
   );
 }
