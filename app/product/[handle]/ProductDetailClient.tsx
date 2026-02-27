@@ -49,8 +49,8 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   const displayImage = darkroomUrl || product.images.hero;
 
   // Variant detection (for Shopify apparel)
-  const hasVariants = product.source === 'shopify' || (product as any).variants?.length > 0;
-  const variants = (product as any).variants || [];
+  const hasVariants = product.variants && product.variants.length > 0;
+  const variants = product.variants || [];
 
   // Pricing - Dual Pricing Law
   const standardPrice = product.price;

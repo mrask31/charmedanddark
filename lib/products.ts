@@ -22,6 +22,16 @@ export interface UnifiedProduct {
     all?: string[]; // All images array
   };
   inStock: boolean;
+  variants?: Array<{
+    id: string;
+    name: string;
+    sku: string;
+    price: number;
+    house_price?: number;
+    stock_quantity: number;
+    image_indices?: number[];
+    options?: Record<string, string>;
+  }>; // Product variants (for apparel with sizes)
   metadata?: {
     darkroom_url?: string; // Darkroom AI-processed image URL
     is_featured?: boolean; // Featured product flag for deep purple accent
@@ -110,6 +120,7 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     category: product.category || undefined,
     images,
     inStock: product.stock_quantity > 0,
+    variants: product.variants || undefined, // Pass through variants from database
     metadata,
   };
 }
