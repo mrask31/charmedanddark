@@ -42,6 +42,8 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+  const [isClaiming, setIsClaiming] = useState(false);
 
   // Darkroom state detection
   const darkroomUrl = product.metadata?.darkroom_url;
@@ -129,7 +131,12 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
 
   // Singular CTA handler - Wire to cart
   const handleClaim = async () => {
+    if (isClaiming) return;
+    
     try {
+      setIsClaiming(true);
+      setClaimError(null);
+      
       // Get or create cart ID
       let cartId = localStorage.getItem('shopify_cart_id');
       
@@ -142,7 +149,8 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
           cartId = newCart.id;
           localStorage.setItem('shopify_cart_id', cartId);
         } else {
-          alert('Unable to add to cart. Please try again.');
+          setClaimError('Unable to add to cart. Please try again.');
+          setIsClaiming(false);
           return;
         }
       }
@@ -153,6 +161,7 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
       if (hasVariants && variants.length > 0) {
         if (!selectedVariant) {
           // No variant selected - should not happen due to button disabled state
+          setIsClaiming(false);
           return;
         }
         variantId = selectedVariant;
@@ -170,11 +179,13 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
         // Navigate to cart
         window.location.href = '/cart';
       } else {
-        alert('Unable to add to cart. Please try again.');
+        setClaimError('Unable to add to cart. Please try again.');
+        setIsClaiming(false);
       }
     } catch (error) {
       console.error('[CLAIM ACTION] Failed:', error);
-      alert('Unable to add to cart. Please try again.');
+      setClaimError('Unable to add to cart. Please try again.');
+      setIsClaiming(false);
     }
   };
 
@@ -314,19 +325,28 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
               onClick={handleClaim}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              disabled={!product.inStock || (hasVariants && !selectedVariant)}
+              disabled={!product.inStock || (hasVariants && !selectedVariant) || isClaiming}
               style={{
                 ...styles.claimButton,
-                ...(isHovered && product.inStock && (!hasVariants || selectedVariant) ? styles.claimButtonHover : {}),
-                ...((!product.inStock || (hasVariants && !selectedVariant)) ? styles.claimButtonDisabled : {}),
+                ...(isHovered && product.inStock && (!hasVariants || selectedVariant) && !isClaiming ? styles.claimButtonHover : {}),
+                ...((!product.inStock || (hasVariants && !selectedVariant) || isClaiming) ? styles.claimButtonDisabled : {}),
               }}
             >
               {!product.inStock 
                 ? 'Out of Stock' 
-                : hasVariants && !selectedVariant 
-                  ? 'Select Size' 
-                  : 'Claim'}
+                : isClaiming
+                  ? 'Adding...'
+                  : hasVariants && !selectedVariant 
+                    ? 'Select Size' 
+                    : 'Claim'}
             </button>
+
+            {/* Inline error display (NO modals) */}
+            {claimError && (
+              <div style={styles.claimError}>
+                {claimError}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -659,5 +679,15 @@ const styles = {
     borderColor: '#e8e8e3',
     color: '#999',
     cursor: 'not-allowed',
+  },
+  claimError: {
+    marginTop: '0.75rem',
+    padding: '0.75rem',
+    backgroundColor: 'transparent',
+    color: '#8b0000', // Deep red (blood)
+    fontSize: '0.875rem',
+    fontFamily: "'Inter', sans-serif",
+    lineHeight: 1.5,
+    textAlign: 'center' as const,
   },
 } as const;
