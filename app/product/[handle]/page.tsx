@@ -6,8 +6,7 @@ import { transformSupabaseProduct } from '@/lib/products';
 import { buildProductJsonLd } from '@/lib/seo/schema';
 import { trackProductView } from '@/lib/tracking';
 import { getCanonicalUrl } from '@/lib/config/site';
-import { getCuratorNote } from './actions';
-import ProductClient from './ProductClient';
+import ProductDetailClient from './ProductDetailClient';
 
 interface ProductPageProps {
   params: {
@@ -105,13 +104,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   // Track product view (server-side)
   trackProductView(raw.id, params.handle);
 
-  // Fetch or generate curator note
-  const curatorNote = await getCuratorNote(
-    raw.id,
-    raw.title,
-    raw.category || null,
-    raw.description || null
-  );
+  // Check authentication state server-side
+  const supabase = getSupabaseServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const isAuthenticated = !!session;
 
   return (
     <>
@@ -121,8 +117,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      {/* Render client component with product data */}
-      <ProductClient product={product} raw={raw} curatorNote={curatorNote} />
+      {/* Render new client component with product data and auth state */}
+      <ProductDetailClient 
+        product={product} 
+        initialAuthState={isAuthenticated}
+      />
     </>
   );
 }

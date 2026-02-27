@@ -8,8 +8,8 @@ Implementation will proceed incrementally: core routing and data fetching first,
 
 ## Tasks
 
-- [ ] 1. Set up product detail page routing and data fetching
-  - [ ] 1.1 Create Next.js dynamic route at `app/product/[handle]/page.tsx`
+- [-] 1. Set up product detail page routing and data fetching
+  - [x] 1.1 Create Next.js dynamic route at `app/product/[handle]/page.tsx`
     - Implement server component that extracts handle from URL params
     - Fetch product data from Supabase using handle
     - Transform raw data to UnifiedProduct format
@@ -29,15 +29,15 @@ Implementation will proceed incrementally: core routing and data fetching first,
     - Generate random valid handles and verify correct product data renders
     - _Requirements: 1.1, 1.3_
 
-- [ ] 2. Implement core page structure and client component
-  - [ ] 2.1 Create ProductDetailClient component
+- [-] 2. Implement core page structure and client component
+  - [x] 2.1 Create ProductDetailClient component
     - Implement client component with product prop
     - Set up state management for narrative, auth, and image loading
     - Create component hierarchy: ImageGallery, ProductInfo, SingularCTA
     - Apply Absolute Geometry (0px border radius) to all containers
     - _Requirements: 2.2, 2.4, 4.4, 8.4_
   
-  - [ ] 2.2 Implement SEO metadata generation
+  - [x] 2.2 Implement SEO metadata generation
     - Generate OpenGraph tags from product data
     - Create Twitter Card metadata
     - Generate JSON-LD structured data for product schema
@@ -152,7 +152,7 @@ Implementation will proceed incrementally: core routing and data fetching first,
     - Show both standard and house pricing when unauthenticated
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 9.3_
   
-  - [ ] 6.2 Integrate authentication state checking
+  - [x] 6.2 Integrate authentication state checking
     - Check Supabase auth session server-side
     - Pass initial auth state to ProductDetailClient
     - Set up client-side auth state listener
