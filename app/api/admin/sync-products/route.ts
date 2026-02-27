@@ -34,7 +34,12 @@ interface ShopifyProduct {
   variants: {
     edges: Array<{
       node: {
+        id: string;
+        title: string;
+        sku: string;
+        price: string;
         inventoryQuantity: number;
+        availableForSale: boolean;
       };
     }>;
   };
@@ -83,10 +88,15 @@ async function fetchAllProducts(): Promise<ShopifyProduct[]> {
                   }
                 }
               }
-              variants(first: 1) {
+              variants(first: 100) {
                 edges {
                   node {
+                    id
+                    title
+                    sku
+                    price
                     inventoryQuantity
+                    availableForSale
                   }
                 }
               }
@@ -166,7 +176,25 @@ export async function GET() {
     for (const product of products) {
       try {
         const shopifyId = product.id.split('/').pop() || product.id;
-        const stockQuantity = product.variants.edges[0]?.node?.inventoryQuantity || 0;
+        
+        // Map variants to Supabase format
+        const variants = product.variants.edges.map((edge, index) => {
+          const variantId = edge.node.id.split('/').pop() || edge.node.id;
+          const price = parseFloat(edge.node.price);
+          
+          return {
+            id: variantId,
+            name: edge.node.title,
+            sku: edge.node.sku || `${shopifyId}-${index}`,
+            price: price,
+            house_price: Math.round(price * 0.9), // Dual Pricing Law
+            stock_quantity: edge.node.inventoryQuantity,
+            options: { size: edge.node.title }, // Map title to size option
+          };
+        });
+
+        // Calculate total stock from all variants
+        const stockQuantity = variants.reduce((sum, v) => sum + v.stock_quantity, 0);
 
         const images = product.images.edges.map((edge, index) => ({
           url: edge.node.url,
@@ -184,6 +212,8 @@ export async function GET() {
           stock_quantity: stockQuantity,
           image_url: images[0]?.url || null,
           images: images.length > 0 ? images : null,
+          variants: variants.length > 0 ? variants : null, // Store variants in JSONB
+          is_variant_parent: variants.length > 1, // Flag multi-variant products
           metadata: {
             shopify_id: shopifyId,
             vendor: product.vendor,
