@@ -41,11 +41,16 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   const [isAuthenticated, setIsAuthenticated] = useState(initialAuthState);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
 
   // Darkroom state detection
   const darkroomUrl = product.metadata?.darkroom_url;
   const isDarkroomProcessing = !darkroomUrl && product.images.hero;
   const displayImage = darkroomUrl || product.images.hero;
+
+  // Variant detection (for Shopify apparel)
+  const hasVariants = product.source === 'shopify' || (product as any).variants?.length > 0;
+  const variants = (product as any).variants || [];
 
   // Pricing - Dual Pricing Law
   const standardPrice = product.price;
@@ -55,7 +60,10 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   useEffect(() => {
     async function fetchNarrative() {
       try {
+        console.log('[Narrative] Starting fetch for:', product.title);
         setNarrativeLoading(true);
+        setNarrativeError(null);
+        
         const response = await fetch('/api/generate-narrative', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -68,18 +76,26 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
           }),
         });
 
+        console.log('[Narrative] Response status:', response.status);
+
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error('[Narrative] API error:', response.status, errorText);
           throw new Error(`Narrative API returned ${response.status}`);
         }
 
         const result = await response.json();
+        console.log('[Narrative] API result:', result);
+        
         if (result.success && result.data) {
+          console.log('[Narrative] Successfully loaded narrative');
           setNarrative(result.data);
         } else {
+          console.error('[Narrative] API returned unsuccessful result:', result);
           setNarrativeError('Narrative generation failed');
         }
       } catch (error) {
-        console.error('Narrative generation failed:', error);
+        console.error('[Narrative] Fetch failed:', error);
         setNarrativeError('Failed to load narrative');
       } finally {
         setNarrativeLoading(false);
@@ -229,19 +245,46 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
               )}
             </div>
 
+            {/* Variant Selector - For Apparel */}
+            {hasVariants && variants.length > 0 && (
+              <div style={styles.variantSection}>
+                <div style={styles.variantLabel}>Size</div>
+                <div style={styles.variantGrid}>
+                  {variants.map((variant: any) => (
+                    <button
+                      key={variant.id}
+                      onClick={() => setSelectedVariant(variant.id)}
+                      style={{
+                        ...styles.variantButton,
+                        ...(selectedVariant === variant.id ? styles.variantButtonSelected : {}),
+                        ...(variant.stock_quantity === 0 ? styles.variantButtonDisabled : {}),
+                      }}
+                      disabled={variant.stock_quantity === 0}
+                    >
+                      {variant.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Singular CTA - The Ritual Interaction */}
             <button
               onClick={handleClaim}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              disabled={!product.inStock}
+              disabled={!product.inStock || (hasVariants && !selectedVariant)}
               style={{
                 ...styles.claimButton,
-                ...(isHovered && product.inStock ? styles.claimButtonHover : {}),
-                ...(! product.inStock ? styles.claimButtonDisabled : {}),
+                ...(isHovered && product.inStock && (!hasVariants || selectedVariant) ? styles.claimButtonHover : {}),
+                ...((!product.inStock || (hasVariants && !selectedVariant)) ? styles.claimButtonDisabled : {}),
               }}
             >
-              {product.inStock ? 'Claim' : 'Out of Stock'}
+              {!product.inStock 
+                ? 'Out of Stock' 
+                : hasVariants && !selectedVariant 
+                  ? 'Select Size' 
+                  : 'Claim'}
             </button>
           </div>
         </div>
@@ -421,6 +464,48 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
     paddingTop: '1rem',
     borderTop: '1px solid #e8e8e3',
+  },
+  variantSection: {
+    paddingTop: '1rem',
+    borderTop: '1px solid #e8e8e3',
+  },
+  variantLabel: {
+    fontSize: '0.75rem',
+    color: '#404040',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em',
+    fontFamily: "'Inter', sans-serif",
+    marginBottom: '0.75rem',
+  },
+  variantGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+    gap: '0.5rem',
+  },
+  variantButton: {
+    padding: '0.75rem',
+    backgroundColor: 'transparent',
+    color: '#1a1a1a',
+    border: '1px solid #e8e8e3',
+    borderRadius: '0px', // Absolute Geometry
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    fontFamily: "'Inter', sans-serif",
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em',
+    cursor: 'pointer',
+    transition: 'all 150ms ease',
+  },
+  variantButtonSelected: {
+    borderColor: '#1a1a1a',
+    backgroundColor: '#1a1a1a',
+    color: '#f5f5f0',
+  },
+  variantButtonDisabled: {
+    borderColor: '#e8e8e3',
+    color: '#ccc',
+    cursor: 'not-allowed',
+    textDecoration: 'line-through',
   },
   claimButton: {
     padding: '1rem 2rem',
