@@ -14,6 +14,10 @@ import { getDiscoveryProducts } from '@/lib/products-discovery';
  * - Dual Pricing Law
  */
 
+// Force dynamic rendering to always fetch fresh product data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ShopPage() {
   const products = await getDiscoveryProducts();
 

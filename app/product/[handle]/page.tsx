@@ -8,6 +8,10 @@ import { trackProductView } from '@/lib/tracking';
 import { getCanonicalUrl } from '@/lib/config/site';
 import ProductDetailClient from './ProductDetailClient';
 
+// Force dynamic rendering to always fetch fresh product data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface ProductPageProps {
   params: {
     handle: string;
