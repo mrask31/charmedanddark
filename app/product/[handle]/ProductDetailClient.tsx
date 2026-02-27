@@ -127,19 +127,55 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
     return () => subscription.unsubscribe();
   }, []);
 
-  // Singular CTA handler (stub for cart integration)
-  const handleClaim = () => {
-    console.log('[CLAIM ACTION]', {
-      productId: product.id,
-      productHandle: product.handle,
-      productTitle: product.title,
-      price: standardPrice,
-      housePrice,
-      timestamp: new Date().toISOString(),
-    });
-    
-    // TODO: Wire to cart in next sprint
-    alert(`Claimed: ${product.title}\n\nThis will be wired to the cart in the next sprint.`);
+  // Singular CTA handler - Wire to cart
+  const handleClaim = async () => {
+    try {
+      // Get or create cart ID
+      let cartId = localStorage.getItem('shopify_cart_id');
+      
+      if (!cartId) {
+        // Create new cart
+        const { createCart } = await import('@/lib/cart/shopify');
+        const newCart = await createCart();
+        
+        if (newCart) {
+          cartId = newCart.id;
+          localStorage.setItem('shopify_cart_id', cartId);
+        } else {
+          alert('Unable to add to cart. Please try again.');
+          return;
+        }
+      }
+      
+      // Determine variant ID
+      let variantId: string;
+      
+      if (hasVariants && variants.length > 0) {
+        if (!selectedVariant) {
+          // No variant selected - should not happen due to button disabled state
+          return;
+        }
+        variantId = selectedVariant;
+      } else {
+        // No variants - use product ID as variant ID
+        // For Shopify, we need the actual variant ID from metadata
+        variantId = (product as any).metadata?.shopify_variant_id || product.id;
+      }
+      
+      // Add to cart
+      const { addLineItem } = await import('@/lib/cart/shopify');
+      const updatedCart = await addLineItem(cartId, variantId, 1);
+      
+      if (updatedCart) {
+        // Navigate to cart
+        window.location.href = '/cart';
+      } else {
+        alert('Unable to add to cart. Please try again.');
+      }
+    } catch (error) {
+      console.error('[CLAIM ACTION] Failed:', error);
+      alert('Unable to add to cart. Please try again.');
+    }
   };
 
   return (
