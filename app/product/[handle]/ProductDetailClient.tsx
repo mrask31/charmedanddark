@@ -310,13 +310,20 @@ type ItemType = "jewelry" | "apparel" | "home_object" | "altar_piece" | "wearabl
 
 /**
  * Infer item type from category for Narrative Engine
+ * CASE-INSENSITIVE keyword matching
  */
 function inferItemType(category?: string): ItemType {
   if (!category) return 'home_object';
   
   const cat = category.toLowerCase();
-  if (cat.includes('apparel') || cat.includes('clothing')) return 'apparel';
-  if (cat.includes('jewelry') || cat.includes('ring') || cat.includes('necklace')) return 'jewelry';
+  
+  // Apparel detection (case-insensitive)
+  if (cat.includes('apparel') || cat.includes('clothing') || cat.includes('hoodie') || cat.includes('shirt') || cat.includes('jacket') || cat.includes('sweater') || cat.includes('coat')) return 'apparel';
+  
+  // Jewelry detection
+  if (cat.includes('jewelry') || cat.includes('ring') || cat.includes('necklace') || cat.includes('bracelet')) return 'jewelry';
+  
+  // Altar pieces
   if (cat.includes('altar')) return 'altar_piece';
   
   return 'home_object';
@@ -325,26 +332,30 @@ function inferItemType(category?: string): ItemType {
 /**
  * Infer primary symbol from product title and category
  * Maps to valid enum: ["moon","rose","heart","blade","bone","mirror","candle"]
+ * CASE-INSENSITIVE keyword matching
  */
 function inferPrimarySymbol(title: string, category?: string): PrimarySymbol {
   const text = `${title} ${category || ''}`.toLowerCase();
   
-  // Direct symbol matches
+  // Direct symbol matches (case-insensitive)
   if (text.includes('moon') || text.includes('lunar')) return 'moon';
   if (text.includes('rose') || text.includes('floral')) return 'rose';
   if (text.includes('heart')) return 'heart';
-  if (text.includes('blade') || text.includes('sword') || text.includes('dagger')) return 'blade';
+  if (text.includes('blade') || text.includes('sword') || text.includes('dagger') || text.includes('obsidian')) return 'blade';
   if (text.includes('bone') || text.includes('skull')) return 'bone';
   if (text.includes('mirror')) return 'mirror';
   if (text.includes('candle') || text.includes('light')) return 'candle';
   
-  // Category-based fallbacks
+  // Category-based fallbacks (case-insensitive)
   if (category) {
     const cat = category.toLowerCase();
-    if (cat.includes('apparel') || cat.includes('clothing')) return 'blade'; // Armor/protection
+    if (cat.includes('apparel') || cat.includes('clothing') || cat.includes('hoodie') || cat.includes('shirt') || cat.includes('jacket')) return 'blade'; // Armor/protection
     if (cat.includes('jewelry')) return 'heart'; // Adornment/devotion
     if (cat.includes('home')) return 'candle'; // Warmth/sanctuary
   }
+  
+  // Title-based apparel detection (case-insensitive)
+  if (text.includes('hoodie') || text.includes('shirt') || text.includes('jacket') || text.includes('sweater') || text.includes('coat')) return 'blade';
   
   // Safe default
   return 'moon';

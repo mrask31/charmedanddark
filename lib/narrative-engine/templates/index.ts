@@ -84,23 +84,23 @@ export const ITEM_TYPE_CONTEXT: Record<ItemType, {
   presence: string[];
 }> = {
   jewelry: {
-    wearing: ['worn', 'carried', 'adorned', 'held close', 'kept near'],
-    presence: ['rests against', 'circles', 'marks', 'adorns', 'graces'],
+    wearing: ['wear', 'carry', 'adorn', 'hold close', 'keep near'],
+    presence: ['rests against', 'circles', 'marks', 'adorn', 'grace'],
   },
   apparel: {
-    wearing: ['worn', 'draped', 'wrapped', 'carried', 'held'],
-    presence: ['covers', 'drapes', 'falls', 'wraps', 'envelops'],
+    wearing: ['wear', 'drape', 'wrap', 'carry', 'hold'],
+    presence: ['covers', 'drapes', 'falls', 'wrap', 'envelop'],
   },
   home_object: {
-    wearing: ['kept', 'placed', 'held', 'displayed', 'housed'],
-    presence: ['rests', 'sits', 'stands', 'occupies', 'inhabits'],
+    wearing: ['keep', 'place', 'hold', 'display', 'house'],
+    presence: ['rests', 'sits', 'stands', 'occupy', 'inhabit'],
   },
   altar_piece: {
-    wearing: ['placed', 'kept', 'tended', 'honored', 'maintained'],
-    presence: ['stands', 'rests', 'holds space', 'marks', 'anchors'],
+    wearing: ['place', 'keep', 'tend', 'honor', 'maintain'],
+    presence: ['stands', 'rests', 'holds space', 'mark', 'anchor'],
   },
   wearable_symbol: {
-    wearing: ['worn', 'carried', 'borne', 'displayed', 'held'],
-    presence: ['marks', 'signifies', 'declares', 'shows', 'bears'],
+    wearing: ['wear', 'carry', 'bear', 'display', 'hold'],
+    presence: ['marks', 'signifies', 'declares', 'show', 'bear'],
   },
 };
