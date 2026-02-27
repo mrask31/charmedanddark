@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { slugify } from '@/lib/utils/slugify';
 
 /**
  * Admin API: Sync Products from Shopify to Supabase
@@ -177,6 +178,10 @@ export async function GET() {
       try {
         const shopifyId = product.id.split('/').pop() || product.id;
         
+        // CRITICAL: Sanitize handle to pass database check constraint
+        // Strips emojis and special characters (e.g., ⚔️-the-charmed-dark-obsidian-zip-hoodie)
+        const sanitizedHandle = slugify(product.handle);
+        
         // Map variants to Supabase format
         const variants = product.variants.edges.map((edge, index) => {
           const variantId = edge.node.id.split('/').pop() || edge.node.id;
@@ -203,7 +208,7 @@ export async function GET() {
         }));
 
         const productData = {
-          handle: product.handle,
+          handle: sanitizedHandle, // Use sanitized handle
           title: product.title,
           description: product.description,
           category: product.productType || null,
@@ -229,17 +234,17 @@ export async function GET() {
         const { data: existing } = await supabase
           .from('products')
           .select('id')
-          .eq('handle', product.handle)
+          .eq('handle', sanitizedHandle) // Query with sanitized handle
           .single();
 
         if (existing) {
           const { error } = await supabase
             .from('products')
             .update(productData)
-            .eq('handle', product.handle);
+            .eq('handle', sanitizedHandle); // Update with sanitized handle
 
           if (error) {
-            errors.push(`Update ${product.handle}: ${error.message}`);
+            errors.push(`Update ${sanitizedHandle}: ${error.message}`);
           } else {
             updateCount++;
           }
@@ -249,7 +254,7 @@ export async function GET() {
             .insert(productData);
 
           if (error) {
-            errors.push(`Insert ${product.handle}: ${error.message}`);
+            errors.push(`Insert ${sanitizedHandle}: ${error.message}`);
           } else {
             insertCount++;
           }
