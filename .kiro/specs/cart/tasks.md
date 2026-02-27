@@ -6,14 +6,14 @@ This implementation plan converts the cart design into discrete coding tasks for
 
 ## Tasks
 
-- [ ] 1. Set up cart data layer and Shopify integration
-  - [ ] 1.1 Create TypeScript interfaces for Cart, CartLineItem, CartItemImage models
+- [x] 1. Set up cart data layer and Shopify integration
+  - [x] 1.1 Create TypeScript interfaces for Cart, CartLineItem, CartItemImage models
     - Define Cart interface with id, lineItems, subtotal, currency, itemCount
     - Define CartLineItem interface with id, productId, variantId, quantity, title, price, image
     - Define CartItemMetadata as optional enrichment data
     - _Requirements: 10.1_
   
-  - [ ] 1.2 Implement Shopify cart integration functions
+  - [x] 1.2 Implement Shopify cart integration functions
     - Create fetchCart(cartId) function using Shopify Storefront API
     - Create updateLineItem(cartId, lineItemId, quantity) function
     - Create removeLineItem(cartId, lineItemId) function
@@ -24,14 +24,14 @@ This implementation plan converts the cart design into discrete coding tasks for
     - **Property 19: Shopify Cart Data Completeness**
     - **Validates: Requirements 10.1**
 
-- [ ] 2. Implement cart view layout and responsive behavior
-  - [ ] 2.1 Create CartView component with responsive layout configuration
+- [x] 2. Implement cart view layout and responsive behavior
+  - [x] 2.1 Create CartView component with responsive layout configuration
     - Implement single-column layout for mobile (≤768px)
     - Implement two-column layout for desktop (≥1025px)
     - Apply transactional state spacing (18px between elements, 72px between sections)
     - _Requirements: 1.2, 11.1, 11.2, 11.3_
   
-  - [ ] 2.2 Implement cart density limits (5-7 items per viewport)
+  - [x] 2.2 Implement cart density limits (5-7 items per viewport)
     - Calculate items per viewport based on viewport height
     - Ensure maximum 7 items visible per viewport
     - _Requirements: 1.1_
