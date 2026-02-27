@@ -13,9 +13,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     handle: string;
-  };
+  }>;
 }
 
 /**
@@ -55,7 +55,8 @@ async function getProduct(handle: string): Promise<SupabaseProduct | null> {
  * Generate metadata for product page (SSR)
  */
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const product = await getProduct(params.handle);
+  const { handle } = await params;
+  const product = await getProduct(handle);
 
   if (!product) {
     return {
@@ -63,7 +64,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
-  const canonicalUrl = getCanonicalUrl(`/product/${params.handle}`);
+  const canonicalUrl = getCanonicalUrl(`/product/${handle}`);
   // Extract image URL from either image_url or first image in images array
   const imageUrl = product.image_url || 
     (product.images && product.images.length > 0 
@@ -104,7 +105,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
  * Product page component (SSR)
  */
 export default async function ProductPage({ params }: ProductPageProps) {
-  const raw = await getProduct(params.handle);
+  const { handle } = await params;
+  const raw = await getProduct(handle);
 
   if (!raw) {
     notFound();
@@ -114,13 +116,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const product = transformSupabaseProduct(raw);
 
   // Build canonical URL
-  const canonicalUrl = `https://charmedanddark.vercel.app/product/${params.handle}`;
+  const canonicalUrl = `https://charmedanddark.vercel.app/product/${handle}`;
 
   // Generate JSON-LD schema
   const jsonLd = buildProductJsonLd(product, canonicalUrl);
 
   // Track product view (server-side)
-  trackProductView(raw.id, params.handle);
+  trackProductView(raw.id, handle);
 
   // Check authentication state server-side
   const supabase = getSupabaseServerClient();
