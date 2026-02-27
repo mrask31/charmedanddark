@@ -64,16 +64,21 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
         setNarrativeLoading(true);
         setNarrativeError(null);
         
+        // Build valid payload with intelligent fallbacks
+        const payload = {
+          item_name: product.title,
+          item_type: inferItemType(product.category),
+          primary_symbol: inferPrimarySymbol(product.title, product.category),
+          emotional_core: inferEmotionalCore(product.title, product.category),
+          energy_tone: inferEnergyTone(product.category),
+        };
+        
+        console.log('[Narrative] Payload:', payload);
+        
         const response = await fetch('/api/generate-narrative', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            item_name: product.title,
-            item_type: inferItemType(product.category),
-            primary_symbol: 'devotion',
-            emotional_core: 'devotion',
-            energy_tone: 'balanced_reverent',
-          }),
+          body: JSON.stringify(payload),
         });
 
         console.log('[Narrative] Response status:', response.status);
@@ -294,17 +299,93 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
 }
 
 /**
+ * Narrative Engine Schema Mapping
+ * Ensures all payloads pass strict validation
+ */
+
+type PrimarySymbol = "moon" | "rose" | "heart" | "blade" | "bone" | "mirror" | "candle";
+type EmotionalCore = "devotion" | "grief" | "protection" | "longing" | "transformation" | "memory" | "power";
+type EnergyTone = "soft_whispered" | "balanced_reverent" | "dark_commanding";
+type ItemType = "jewelry" | "apparel" | "home_object" | "altar_piece" | "wearable_symbol";
+
+/**
  * Infer item type from category for Narrative Engine
  */
-function inferItemType(category?: string): string {
+function inferItemType(category?: string): ItemType {
   if (!category) return 'home_object';
   
   const cat = category.toLowerCase();
   if (cat.includes('apparel') || cat.includes('clothing')) return 'apparel';
-  if (cat.includes('candle')) return 'candle_holder';
-  if (cat.includes('light')) return 'candle_holder';
+  if (cat.includes('jewelry') || cat.includes('ring') || cat.includes('necklace')) return 'jewelry';
+  if (cat.includes('altar')) return 'altar_piece';
   
   return 'home_object';
+}
+
+/**
+ * Infer primary symbol from product title and category
+ * Maps to valid enum: ["moon","rose","heart","blade","bone","mirror","candle"]
+ */
+function inferPrimarySymbol(title: string, category?: string): PrimarySymbol {
+  const text = `${title} ${category || ''}`.toLowerCase();
+  
+  // Direct symbol matches
+  if (text.includes('moon') || text.includes('lunar')) return 'moon';
+  if (text.includes('rose') || text.includes('floral')) return 'rose';
+  if (text.includes('heart')) return 'heart';
+  if (text.includes('blade') || text.includes('sword') || text.includes('dagger')) return 'blade';
+  if (text.includes('bone') || text.includes('skull')) return 'bone';
+  if (text.includes('mirror')) return 'mirror';
+  if (text.includes('candle') || text.includes('light')) return 'candle';
+  
+  // Category-based fallbacks
+  if (category) {
+    const cat = category.toLowerCase();
+    if (cat.includes('apparel') || cat.includes('clothing')) return 'blade'; // Armor/protection
+    if (cat.includes('jewelry')) return 'heart'; // Adornment/devotion
+    if (cat.includes('home')) return 'candle'; // Warmth/sanctuary
+  }
+  
+  // Safe default
+  return 'moon';
+}
+
+/**
+ * Infer emotional core from product context
+ * Maps to valid enum: ["devotion","grief","protection","longing","transformation","memory","power"]
+ */
+function inferEmotionalCore(title: string, category?: string): EmotionalCore {
+  const text = `${title} ${category || ''}`.toLowerCase();
+  
+  // Keyword-based inference
+  if (text.includes('protect') || text.includes('guard') || text.includes('shield')) return 'protection';
+  if (text.includes('memory') || text.includes('remember') || text.includes('memorial')) return 'memory';
+  if (text.includes('transform') || text.includes('change') || text.includes('rebirth')) return 'transformation';
+  if (text.includes('grief') || text.includes('mourn') || text.includes('loss')) return 'grief';
+  if (text.includes('power') || text.includes('strength') || text.includes('command')) return 'power';
+  if (text.includes('long') || text.includes('yearn') || text.includes('desire')) return 'longing';
+  
+  // Safe default - devotion is universal
+  return 'devotion';
+}
+
+/**
+ * Infer energy tone from product type
+ * Maps to valid enum: ["soft_whispered","balanced_reverent","dark_commanding"]
+ */
+function inferEnergyTone(category?: string): EnergyTone {
+  if (!category) return 'balanced_reverent';
+  
+  const cat = category.toLowerCase();
+  
+  // Soft for delicate items
+  if (cat.includes('jewelry') || cat.includes('candle')) return 'soft_whispered';
+  
+  // Dark for bold items
+  if (cat.includes('apparel') || cat.includes('blade') || cat.includes('armor')) return 'dark_commanding';
+  
+  // Balanced default
+  return 'balanced_reverent';
 }
 
 const styles = {
