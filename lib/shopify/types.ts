@@ -65,7 +65,11 @@ export interface Collection {
 export interface Cart {
   id: string;
   checkoutUrl: string;
-  lines: CartLine[];
+  lines: {
+    edges: Array<{
+      node: CartLine;
+    }>;
+  };
   cost: {
     totalAmount: {
       amount: string;

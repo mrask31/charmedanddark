@@ -17,9 +17,18 @@ import type { Cart, CartLineItem, CartItemImage, CartModificationResult, Modific
 
 /**
  * Transform Shopify cart to internal Cart format
+ * CRITICAL: Shopify returns lines.edges with nodes, not a flat array
  */
 function transformShopifyCart(shopifyCart: ShopifyCart): Cart {
-  const lineItems: CartLineItem[] = shopifyCart.lines.map(transformShopifyCartLine);
+  // Defensive: Handle missing or malformed lines structure
+  const edges = shopifyCart?.lines?.edges || [];
+  const lineItems: CartLineItem[] = edges.map(edge => transformShopifyCartLine(edge.node));
+  
+  console.log('[Cart] Transforming Shopify cart:', {
+    cartId: shopifyCart.id,
+    edgesCount: edges.length,
+    lineItemsCount: lineItems.length,
+  });
   
   return {
     id: shopifyCart.id,
@@ -62,11 +71,21 @@ function transformShopifyCartLine(line: ShopifyCartLine): CartLineItem {
  */
 export async function fetchCart(cartId: string): Promise<Cart | null> {
   try {
+    console.log('[Cart] Fetching cart:', cartId);
+    
     const shopifyCart = await shopifyGetCart(cartId);
     
     if (!shopifyCart) {
+      console.warn('[Cart] Cart not found:', cartId);
       return null;
     }
+    
+    console.log('[Cart] Shopify cart fetched:', {
+      id: shopifyCart.id,
+      hasLines: !!shopifyCart.lines,
+      hasEdges: !!shopifyCart.lines?.edges,
+      edgesLength: shopifyCart.lines?.edges?.length || 0,
+    });
     
     return transformShopifyCart(shopifyCart);
   } catch (error) {
@@ -81,15 +100,39 @@ export async function fetchCart(cartId: string): Promise<Cart | null> {
  */
 export async function createCart(): Promise<Cart | null> {
   try {
+    console.log('[Cart] Creating new cart...');
+    
     const shopifyCart = await shopifyCreateCart();
     
     if (!shopifyCart) {
+      console.error('[Cart] createCart failed: shopifyCreateCart returned null');
       return null;
     }
+    
+    console.log('[Cart] Shopify cart created:', {
+      id: shopifyCart.id,
+      hasLines: !!shopifyCart.lines,
+      hasEdges: !!shopifyCart.lines?.edges,
+      edgesLength: shopifyCart.lines?.edges?.length || 0,
+    });
     
     return transformShopifyCart(shopifyCart);
   } catch (error) {
     console.error('[Cart] Failed to create cart:', error);
+    
+    // Enhanced error logging for Shopify GraphQL errors
+    if (error && typeof error === 'object') {
+      if ('errors' in error) {
+        console.error('[Cart] Shopify GraphQL errors:', JSON.stringify((error as any).errors, null, 2));
+      }
+      if ('message' in error) {
+        console.error('[Cart] Error message:', (error as any).message);
+      }
+      if ('response' in error) {
+        console.error('[Cart] Full response:', JSON.stringify((error as any).response, null, 2));
+      }
+    }
+    
     return null;
   }
 }
