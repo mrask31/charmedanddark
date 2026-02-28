@@ -7,7 +7,7 @@
  * Enforces:
  * - 18px internal spacing between elements
  * - Absolute Geometry (0px border radius)
- * - Darkroom fallback (grayscale + PROCESSING tag)
+ * - Full color reveal (Darkroom complete)
  * - Deep red hover states (300ms transitions)
  * - Muted gold price emphasis
  * - Subtle modification feedback (NO modals)
@@ -31,8 +31,7 @@ export default function CartItemCard({ lineItem, cartId, onUpdate }: CartItemCar
   const [decrementHover, setDecrementHover] = useState(false);
   const [incrementHover, setIncrementHover] = useState(false);
 
-  // Darkroom state detection
-  const isDarkroomProcessing = !lineItem.image.url.includes('cdn.shopify.com');
+  // Display image (Darkroom filters removed - full color reveal)
   const displayImage = lineItem.image.url;
 
   // Handle quantity change
@@ -83,16 +82,9 @@ export default function CartItemCard({ lineItem, cartId, onUpdate }: CartItemCar
           height={120}
           style={{
             objectFit: 'cover',
-            filter: isDarkroomProcessing ? 'grayscale(100%) contrast(1.2)' : 'none',
             borderRadius: '0px', // Absolute Geometry
           }}
         />
-        
-        {isDarkroomProcessing && (
-          <div style={styles.darkroomTag}>
-            PROCESSING // DARKROOM
-          </div>
-        )}
       </div>
 
       {/* Product details */}
@@ -175,19 +167,6 @@ const styles = {
     height: '120px',
     borderRadius: '0px', // Absolute Geometry
     overflow: 'hidden',
-  },
-  darkroomTag: {
-    position: 'absolute' as const,
-    top: '0.5rem',
-    left: '0.5rem',
-    padding: '0.25rem 0.5rem',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    color: '#f5f5f0',
-    fontSize: '0.625rem',
-    letterSpacing: '0.15em',
-    fontWeight: 300,
-    fontFamily: "'Inter', sans-serif",
-    zIndex: 10,
   },
   details: {
     display: 'flex',

@@ -8,7 +8,7 @@
  * - Image-dominant layout (monument breathes)
  * - Narrative Engine integration (museum plaque aesthetic)
  * - Singular CTA with Accent Reveal (gold/red ritual interaction)
- * - Darkroom pending state (grayscale + PROCESSING tag)
+ * - Full color reveal (Darkroom complete)
  * - Dual Pricing Law
  * - Absolute Geometry (0px border radius)
  * - Distraction-free (NO related products, cross-sells, timers, urgency)
@@ -45,9 +45,7 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   const [claimError, setClaimError] = useState<string | null>(null);
   const [isClaiming, setIsClaiming] = useState(false);
 
-  // Darkroom state detection
-  const darkroomUrl = product.metadata?.darkroom_url;
-  const isDarkroomProcessing = !darkroomUrl && product.images.hero;
+  // Display image (Darkroom filters removed - full color reveal)
   const displayImage = darkroomUrl || product.images.hero;
 
   // Variant detection (for Shopify apparel)
@@ -212,13 +210,7 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
         <div style={styles.imageSection}>
           <div style={styles.imageContainer}>
             {!imageLoaded && (
-              <div style={styles.imagePlaceholder}>
-                {isDarkroomProcessing && (
-                  <div style={styles.darkroomOverlay}>
-                    PROCESSING // DARKROOM
-                  </div>
-                )}
-              </div>
+              <div style={styles.imagePlaceholder} />
             )}
             
             <Image
@@ -228,19 +220,12 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
               sizes="(max-width: 768px) 100vw, 60vw"
               style={{
                 objectFit: 'cover',
-                filter: isDarkroomProcessing ? 'grayscale(100%) contrast(1.2)' : 'none',
                 opacity: imageLoaded ? 1 : 0,
                 transition: 'opacity 300ms ease',
               }}
               onLoad={() => setImageLoaded(true)}
               priority
             />
-
-            {isDarkroomProcessing && imageLoaded && (
-              <div style={styles.darkroomOverlay}>
-                PROCESSING // DARKROOM
-              </div>
-            )}
           </div>
         </div>
 
@@ -512,19 +497,6 @@ const styles = {
     width: '100%',
     height: '100%',
     backgroundColor: '#e8e8e3',
-  },
-  darkroomOverlay: {
-    position: 'absolute' as const,
-    top: '1rem',
-    left: '1rem',
-    padding: '0.5rem 1rem',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    color: '#f5f5f0',
-    fontSize: '0.75rem',
-    letterSpacing: '0.2em',
-    fontWeight: 300,
-    fontFamily: "'Inter', sans-serif",
-    zIndex: 10,
   },
   infoSection: {
     display: 'flex',
