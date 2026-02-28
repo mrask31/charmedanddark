@@ -44,6 +44,7 @@ async function getProduct(handle: string): Promise<SupabaseProduct | null> {
     }
 
     console.log('[ProductDetail] Product found:', data.id, data.title);
+    console.log('[ProductDetail] Variants data:', data.variants);
     return data;
   } catch (error) {
     console.error('[ProductDetail] Unexpected error:', error);
