@@ -198,6 +198,14 @@ export async function GET() {
           };
         });
 
+        // CRITICAL: Log variant data for debugging
+        if (product.handle === 'antique-mirror' || variants.length === 0) {
+          console.log(`[SYNC] Product: ${product.handle}`);
+          console.log(`[SYNC] Shopify variants edges:`, product.variants.edges.length);
+          console.log(`[SYNC] Mapped variants:`, variants.length);
+          console.log(`[SYNC] Variant data:`, JSON.stringify(variants));
+        }
+
         // Calculate total stock from all variants
         const stockQuantity = variants.reduce((sum, v) => sum + v.stock_quantity, 0);
 
@@ -217,7 +225,7 @@ export async function GET() {
           stock_quantity: stockQuantity,
           image_url: images[0]?.url || null,
           images: images.length > 0 ? images : null,
-          variants: variants.length > 0 ? variants : null, // Store variants in JSONB
+          variants: variants.length > 0 ? variants : null, // Store variants in JSONB (should always have at least 1)
           is_variant_parent: variants.length > 1, // Flag multi-variant products
           metadata: {
             shopify_id: shopifyId,
