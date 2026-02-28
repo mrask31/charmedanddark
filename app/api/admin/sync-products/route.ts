@@ -172,6 +172,7 @@ export async function GET() {
     let insertCount = 0;
     let updateCount = 0;
     const errors: string[] = [];
+    const debugLogs: string[] = []; // Collect debug logs for response
 
     // Sync each product
     for (const product of products) {
@@ -200,10 +201,9 @@ export async function GET() {
 
         // CRITICAL: Log variant data for debugging
         if (product.handle === 'antique-mirror' || variants.length === 0) {
-          console.log(`[SYNC] Product: ${product.handle}`);
-          console.log(`[SYNC] Shopify variants edges:`, product.variants.edges.length);
-          console.log(`[SYNC] Mapped variants:`, variants.length);
-          console.log(`[SYNC] Variant data:`, JSON.stringify(variants));
+          const debugMsg = `[SYNC] ${product.handle}: edges=${product.variants.edges.length}, mapped=${variants.length}, data=${JSON.stringify(variants)}`;
+          console.log(debugMsg);
+          debugLogs.push(debugMsg);
         }
 
         // Calculate total stock from all variants
@@ -281,6 +281,7 @@ export async function GET() {
         errors: errors.length,
       },
       errors: errors.length > 0 ? errors.slice(0, 10) : undefined,
+      debugLogs: debugLogs.length > 0 ? debugLogs : undefined,
     });
   } catch (error) {
     return NextResponse.json(
