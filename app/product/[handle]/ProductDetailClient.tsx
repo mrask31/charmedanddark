@@ -46,7 +46,7 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
   const [isClaiming, setIsClaiming] = useState(false);
 
   // Display image (Darkroom filters removed - full color reveal)
-  const displayImage = darkroomUrl || product.images.hero;
+  const displayImage = product.metadata?.darkroom_url || product.images.hero;
 
   // Variant detection (for Shopify apparel)
   const hasVariants = product.variants && product.variants.length > 1; // Only show selector if multiple variants
