@@ -50,7 +50,7 @@ export default function CartSummary({ cart, onProceed, isProceedingToCheckout }:
       {hasDiscount && (
         <div style={styles.discountSection}>
           <span style={styles.discountLabel}>House Discount ({cart.discountCode})</span>
-          <span style={styles.discountValue}>-${cart.discountAmount?.toFixed(2) || '0.00'}</span>
+          <span style={styles.discountValue}>-${(cart.discountAmount ?? 0).toFixed(2)}</span>
         </div>
       )}
 

@@ -270,6 +270,14 @@ export async function createCart(): Promise<Cart | null> {
               amount
               currencyCode
             }
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+          }
+          discountCodes {
+            code
+            applicable
           }
         }
       }
@@ -320,6 +328,14 @@ export async function addToCart(cartId: string, variantId: string, quantity: num
               amount
               currencyCode
             }
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+          }
+          discountCodes {
+            code
+            applicable
           }
         }
       }
@@ -373,6 +389,14 @@ export async function getCart(cartId: string): Promise<Cart | null> {
             amount
             currencyCode
           }
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+        }
+        discountCodes {
+          code
+          applicable
         }
       }
     }
