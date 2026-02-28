@@ -66,7 +66,7 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
 
   // PRIORITY 1: Use images array from database (Darkroom processed)
   // PRIORITY 2: Use image_url from database (Google Sheets SSOT)
-  // FALLBACK: Construct local path if no images
+  // NO FALLBACK: Never use local /products/... paths
   let allImages: string[] = [];
   let heroImage = '';
   let frontImage: string | undefined;
@@ -80,19 +80,19 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     
     heroImage = allImages[0];
     frontImage = allImages[1];
-    hoverImage = allImages[2];
+    hoverImage = allImages[2] || allImages[0]; // Fallback to hero if no hover
   } else if (product.image_url) {
-    // Fallback to single image_url
+    // Fallback to single image_url (Shopify CDN)
     heroImage = product.image_url;
     frontImage = product.image_url;
     hoverImage = product.image_url;
     allImages = [product.image_url];
   } else {
-    // Final fallback to local paths
-    heroImage = `/products/${product.handle}/hero.jpg`;
-    frontImage = `/products/${product.handle}/front.jpg`;
-    hoverImage = `/products/${product.handle}/hover.jpg`;
-    allImages = [heroImage];
+    // No images available - use placeholder
+    heroImage = '/images/placeholder.jpg';
+    frontImage = '/images/placeholder.jpg';
+    hoverImage = '/images/placeholder.jpg';
+    allImages = ['/images/placeholder.jpg'];
   }
   
   const images = {

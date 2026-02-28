@@ -8,7 +8,7 @@
  * - Deep red (#8B0000) hover for standard products
  * - Deep purple (#4B0082) hover for featured products
  * - 0px border radius (Absolute Geometry)
- * - Darkroom pending state with grayscale filter
+ * - Full color reveal (Darkroom complete)
  * - Dual Pricing Law (House pricing logic)
  */
 
@@ -35,12 +35,8 @@ export function AccentRevealCard({ product, isRecognized }: AccentRevealCardProp
   const defaultBorder = '#e8e8e3'; // Off-white-dim
   
   // Image source priority: darkroom_url → hero → placeholder
-  const darkroomUrl = product.metadata?.darkroom_url;
-  const displayImage = darkroomUrl || product.images.hero;
+  const displayImage = product.metadata?.darkroom_url || product.images.hero;
   const hoverImage = product.images.hover || displayImage;
-  
-  // Darkroom pending state
-  const isDarkroomPending = !darkroomUrl && product.images.hero;
   
   // Pricing - Dual Pricing Law
   const standardPrice = product.price;
@@ -72,36 +68,16 @@ export function AccentRevealCard({ product, isRecognized }: AccentRevealCardProp
         overflow: 'hidden',
       }}>
         {!imageError ? (
-          <>
-            <Image
-              src={isHovered && hoverImage ? hoverImage : displayImage}
-              alt={product.title}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              style={{
-                objectFit: 'cover',
-                filter: isDarkroomPending ? 'grayscale(100%) contrast(1.2)' : 'none',
-              }}
-              onError={() => setImageError(true)}
-            />
-            
-            {/* Darkroom Pending Overlay */}
-            {isDarkroomPending && (
-              <div style={{
-                position: 'absolute',
-                top: '1rem',
-                left: '1rem',
-                padding: '0.5rem 1rem',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                color: '#f5f5f0',
-                fontSize: '0.75rem',
-                letterSpacing: '0.2em',
-                fontWeight: 300,
-              }}>
-                PROCESSING // DARKROOM
-              </div>
-            )}
-          </>
+          <Image
+            src={isHovered && hoverImage ? hoverImage : displayImage}
+            alt={product.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            style={{
+              objectFit: 'cover',
+            }}
+            onError={() => setImageError(true)}
+          />
         ) : (
           <ImagePlaceholder title={product.title} />
         )}

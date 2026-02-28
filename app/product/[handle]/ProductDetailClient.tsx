@@ -166,15 +166,22 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
         }
         variantId = selectedVariant;
         console.log('[CLAIM] Multi-variant product, using selected variant:', variantId);
-      } else if (isSingleVariant) {
-        // Single-variant products: Use the default variant ID
-        // CRITICAL: Shopify requires merchandiseId (variant ID), not product ID
+      } else if (isSingleVariant && variants[0]?.id) {
+        // Single-variant products: Use the Shopify variant ID from variants array
+        // CRITICAL: variants[0].id contains the Shopify variant ID, NOT the product UUID
         variantId = variants[0].id;
-        console.log('[CLAIM] Single-variant product detected, using default variant:', variantId);
+        console.log('[CLAIM] Single-variant product detected, using Shopify variant ID:', variantId);
       } else {
-        // Fallback for products without variants array
-        variantId = (product as any).metadata?.shopify_variant_id || product.id;
-        console.warn('[CLAIM] No variants array found, using fallback variant ID:', variantId);
+        // Fatal error - no valid variant ID available
+        console.error('[CLAIM] FATAL: No valid variant ID found', { 
+          hasVariants, 
+          variantsLength: variants.length,
+          productId: product.id,
+          productHandle: product.handle 
+        });
+        setClaimError('Product configuration error. Please contact support.');
+        setIsClaiming(false);
+        return;
       }
       
       // Add to cart
