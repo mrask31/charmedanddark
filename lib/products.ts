@@ -66,7 +66,7 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
 
   // PRIORITY 1: Use images array from database (Darkroom processed)
   // PRIORITY 2: Use image_url from database (Google Sheets SSOT)
-  // NO FALLBACK: Never use local /products/... paths
+  // FALLBACK: Use SVG placeholder (no 404s)
   let allImages: string[] = [];
   let heroImage = '';
   let frontImage: string | undefined;
@@ -88,11 +88,11 @@ export function transformSupabaseProduct(product: SupabaseProduct): UnifiedProdu
     hoverImage = product.image_url;
     allImages = [product.image_url];
   } else {
-    // No images available - use placeholder
-    heroImage = '/images/placeholder.jpg';
-    frontImage = '/images/placeholder.jpg';
-    hoverImage = '/images/placeholder.jpg';
-    allImages = ['/images/placeholder.jpg'];
+    // No images available - use SVG placeholder (no 404s)
+    heroImage = '/images/placeholder.svg';
+    frontImage = '/images/placeholder.svg';
+    hoverImage = '/images/placeholder.svg';
+    allImages = ['/images/placeholder.svg'];
   }
   
   const images = {
