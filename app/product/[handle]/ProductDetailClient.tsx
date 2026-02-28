@@ -171,6 +171,28 @@ export default function ProductDetailClient({ product, initialAuthState }: Produ
         // CRITICAL: variants[0].id contains the Shopify variant ID, NOT the product UUID
         variantId = variants[0].id;
         console.log('[CLAIM] Single-variant product detected, using Shopify variant ID:', variantId);
+      } else if (!variants || variants.length === 0) {
+        // TEMPORARY WORKAROUND: Products without variants array in database
+        // This indicates a data sync issue - variants should be populated
+        console.warn('[CLAIM] WARNING: Product missing variants array, attempting to use product as single-variant');
+        
+        // For products synced from Shopify, the product ID might be usable
+        // This is a fallback and should be fixed by re-syncing product data
+        if (product.source === 'shopify' && product.id) {
+          variantId = product.id;
+          console.warn('[CLAIM] Using product ID as fallback variant ID:', variantId);
+        } else {
+          console.error('[CLAIM] FATAL: No valid variant ID found', { 
+            hasVariants, 
+            variantsLength: variants?.length || 0,
+            productId: product.id,
+            productHandle: product.handle,
+            productSource: product.source
+          });
+          setClaimError('Product configuration error. Please contact support.');
+          setIsClaiming(false);
+          return;
+        }
       } else {
         // Fatal error - no valid variant ID available
         console.error('[CLAIM] FATAL: No valid variant ID found', { 
