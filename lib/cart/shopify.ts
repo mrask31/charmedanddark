@@ -16,6 +16,27 @@ import type { Cart as ShopifyCart, CartLine as ShopifyCartLine } from '@/lib/sho
 import type { Cart, CartLineItem, CartItemImage, CartModificationResult, ModificationFeedback } from './types';
 
 /**
+ * Format variant ID as Shopify Global ID (GID)
+ * Shopify Storefront API requires GID format: gid://shopify/ProductVariant/{id}
+ * @param id - Raw numeric ID or existing GID
+ * @returns Properly formatted GID
+ */
+function formatVariantGid(id: string | number): string {
+  const idStr = String(id);
+  
+  // Already a GID - return as-is
+  if (idStr.includes('gid://')) {
+    console.log('[Cart] Variant ID already formatted as GID:', idStr);
+    return idStr;
+  }
+  
+  // Format as GID
+  const gid = `gid://shopify/ProductVariant/${idStr}`;
+  console.log('[Cart] Formatted variant ID as GID:', { raw: idStr, gid });
+  return gid;
+}
+
+/**
  * Transform Shopify cart to internal Cart format
  * CRITICAL: Shopify returns lines.edges with nodes, not a flat array
  */
@@ -140,7 +161,7 @@ export async function createCart(): Promise<Cart | null> {
 /**
  * Add item to cart
  * @param cartId - Shopify cart ID
- * @param variantId - Shopify variant ID
+ * @param variantId - Shopify variant ID (raw numeric or GID format)
  * @param quantity - Quantity to add
  * @returns Updated cart data
  */
@@ -150,9 +171,12 @@ export async function addLineItem(
   quantity: number = 1
 ): Promise<Cart | null> {
   try {
-    console.log('[Cart] Adding line item:', { cartId, variantId, quantity });
+    // Format variant ID as GID before sending to Shopify
+    const formattedVariantId = formatVariantGid(variantId);
     
-    const shopifyCart = await shopifyAddToCart(cartId, variantId, quantity);
+    console.log('[Cart] Adding line item:', { cartId, variantId, formattedVariantId, quantity });
+    
+    const shopifyCart = await shopifyAddToCart(cartId, formattedVariantId, quantity);
     
     if (!shopifyCart) {
       console.error('[Cart] addLineItem failed: shopifyAddToCart returned null');
