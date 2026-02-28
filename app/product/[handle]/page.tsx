@@ -115,6 +115,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   // Transform to unified product format
   const product = transformSupabaseProduct(raw);
+  
+  // DEBUG: Log raw variants data from database
+  console.log('[ProductDetail] Raw variants from DB:', JSON.stringify(raw.variants));
+  console.log('[ProductDetail] Transformed variants:', JSON.stringify(product.variants));
 
   // Build canonical URL
   const canonicalUrl = `https://charmedanddark.vercel.app/product/${handle}`;
