@@ -75,7 +75,15 @@ export interface Cart {
       amount: string;
       currencyCode: string;
     };
+    subtotalAmount?: {
+      amount: string;
+      currencyCode: string;
+    };
   };
+  discountCodes?: Array<{
+    code: string;
+    applicable: boolean;
+  }>;
 }
 
 export interface CartLine {

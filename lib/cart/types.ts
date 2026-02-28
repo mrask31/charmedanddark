@@ -17,6 +17,8 @@ export interface Cart {
   itemCount: number;
   createdAt: Date;
   updatedAt: Date;
+  discountCode?: string; // Applied discount code (e.g., "HOUSE10")
+  discountAmount?: number; // Discount amount in currency
 }
 
 /**

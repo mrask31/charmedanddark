@@ -25,6 +25,12 @@ interface CartSummaryProps {
 export default function CartSummary({ cart, onProceed, isProceedingToCheckout }: CartSummaryProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Calculate original subtotal and discount
+  const originalSubtotal = cart.discountAmount 
+    ? cart.subtotal + cart.discountAmount 
+    : cart.subtotal;
+  const hasDiscount = cart.discountCode && cart.discountAmount && cart.discountAmount > 0;
+
   return (
     <div style={styles.summary}>
       {/* Item count */}
@@ -32,9 +38,25 @@ export default function CartSummary({ cart, onProceed, isProceedingToCheckout }:
         {cart.itemCount} {cart.itemCount === 1 ? 'object' : 'objects'} claimed
       </div>
 
-      {/* Subtotal */}
-      <div style={styles.subtotalSection}>
-        <span style={styles.subtotalLabel}>Subtotal</span>
+      {/* Subtotal (original price if discount applied) */}
+      {hasDiscount && (
+        <div style={styles.subtotalSection}>
+          <span style={styles.subtotalLabel}>Subtotal</span>
+          <span style={styles.originalPrice}>${originalSubtotal.toFixed(2)}</span>
+        </div>
+      )}
+
+      {/* House discount */}
+      {hasDiscount && (
+        <div style={styles.discountSection}>
+          <span style={styles.discountLabel}>House Discount ({cart.discountCode})</span>
+          <span style={styles.discountValue}>-${cart.discountAmount.toFixed(2)}</span>
+        </div>
+      )}
+
+      {/* Final total */}
+      <div style={styles.totalSection}>
+        <span style={styles.totalLabel}>{hasDiscount ? 'Total' : 'Subtotal'}</span>
         <span style={styles.subtotalValue}>${cart.subtotal.toFixed(2)}</span>
       </div>
 
@@ -88,6 +110,43 @@ const styles = {
     borderTop: '1px solid #e8e8e3',
   },
   subtotalLabel: {
+    fontSize: '1rem',
+    fontWeight: 400,
+    color: '#1a1a1a',
+    fontFamily: "'Inter', sans-serif",
+  },
+  originalPrice: {
+    fontSize: '1rem',
+    fontWeight: 300,
+    color: '#999', // Muted to show it's the original price
+    fontFamily: "'Inter', sans-serif",
+    textDecoration: 'line-through',
+  },
+  discountSection: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+  },
+  discountLabel: {
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    color: '#404040',
+    fontFamily: "'Inter', sans-serif",
+  },
+  discountValue: {
+    fontSize: '1rem',
+    fontWeight: 300,
+    color: '#6B1515', // Deep red to emphasize savings
+    fontFamily: "'Inter', sans-serif",
+  },
+  totalSection: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingTop: '18px',
+    borderTop: '1px solid #e8e8e3',
+  },
+  totalLabel: {
     fontSize: '1rem',
     fontWeight: 400,
     color: '#1a1a1a',

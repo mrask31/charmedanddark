@@ -38,7 +38,18 @@ export default function CartView() {
         
         if (cartId) {
           const cartData = await fetchCart(cartId);
-          setCart(cartData);
+          
+          if (cartData) {
+            // Apply House discount if not already applied
+            if (!cartData.discountCode) {
+              console.log('[CartView] Applying House discount to existing cart...');
+              const { applyHouseDiscount } = await import('@/lib/cart/shopify');
+              const cartWithDiscount = await applyHouseDiscount(cartId);
+              setCart(cartWithDiscount || cartData);
+            } else {
+              setCart(cartData);
+            }
+          }
         } else {
           // Create new cart if none exists
           const newCart = await createCart();

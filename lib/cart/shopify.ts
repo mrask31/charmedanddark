@@ -45,20 +45,35 @@ function transformShopifyCart(shopifyCart: ShopifyCart): Cart {
   const edges = shopifyCart?.lines?.edges || [];
   const lineItems: CartLineItem[] = edges.map(edge => transformShopifyCartLine(edge.node));
   
+  // Extract discount information
+  const discountCodes = shopifyCart?.discountCodes || [];
+  const appliedDiscount = discountCodes.find(dc => dc.applicable);
+  
+  // Calculate discount amount (subtotal - total)
+  const subtotal = parseFloat(shopifyCart.cost.subtotalAmount?.amount || shopifyCart.cost.totalAmount.amount);
+  const total = parseFloat(shopifyCart.cost.totalAmount.amount);
+  const discountAmount = appliedDiscount ? subtotal - total : 0;
+  
   console.log('[Cart] Transforming Shopify cart:', {
     cartId: shopifyCart.id,
     edgesCount: edges.length,
     lineItemsCount: lineItems.length,
+    discountCode: appliedDiscount?.code,
+    discountAmount,
+    subtotal,
+    total,
   });
   
   return {
     id: shopifyCart.id,
     lineItems,
-    subtotal: parseFloat(shopifyCart.cost.totalAmount.amount),
+    subtotal,
     currency: shopifyCart.cost.totalAmount.currencyCode,
     itemCount: lineItems.reduce((sum, item) => sum + item.quantity, 0),
     createdAt: new Date(), // Shopify doesn't provide this in Storefront API
     updatedAt: new Date(),
+    discountCode: appliedDiscount?.code,
+    discountAmount,
   };
 }
 
@@ -163,7 +178,7 @@ export async function createCart(): Promise<Cart | null> {
  * @param cartId - Shopify cart ID
  * @param variantId - Shopify variant ID (raw numeric or GID format)
  * @param quantity - Quantity to add
- * @returns Updated cart data
+ * @returns Updated cart data with House discount applied
  */
 export async function addLineItem(
   cartId: string,
@@ -183,7 +198,16 @@ export async function addLineItem(
       return null;
     }
     
-    return transformShopifyCart(shopifyCart);
+    // Apply House discount automatically after adding item
+    console.log('[Cart] Applying House discount after adding item...');
+    const cartWithDiscount = await applyHouseDiscount(cartId);
+    
+    if (!cartWithDiscount) {
+      console.warn('[Cart] Failed to apply House discount, returning cart without discount');
+      return transformShopifyCart(shopifyCart);
+    }
+    
+    return cartWithDiscount;
   } catch (error) {
     console.error('[Cart] Failed to add line item:', error);
     
@@ -413,6 +437,98 @@ export async function getCheckoutUrl(cartId: string): Promise<string | null> {
     return cart?.checkoutUrl || null;
   } catch (error) {
     console.error('[Cart] Failed to get checkout URL:', error);
+    return null;
+  }
+}
+
+/**
+ * Apply House discount code to cart
+ * CRITICAL: Enforces 10% House pricing for all storefront transactions
+ * @param cartId - Shopify cart ID
+ * @returns Updated cart data with discount applied
+ */
+export async function applyHouseDiscount(cartId: string): Promise<Cart | null> {
+  try {
+    const HOUSE_DISCOUNT_CODE = 'HOUSE10';
+    
+    console.log('[Cart] Applying House discount:', { cartId, code: HOUSE_DISCOUNT_CODE });
+    
+    const query = `
+      mutation applyDiscount($cartId: ID!, $discountCodes: [String!]!) {
+        cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+          cart {
+            id
+            checkoutUrl
+            lines(first: 100) {
+              edges {
+                node {
+                  id
+                  quantity
+                  merchandise {
+                    ... on ProductVariant {
+                      id
+                      title
+                      product {
+                        title
+                        handle
+                      }
+                      image {
+                        url
+                      }
+                      priceV2 {
+                        amount
+                        currencyCode
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            cost {
+              totalAmount {
+                amount
+                currencyCode
+              }
+              subtotalAmount {
+                amount
+                currencyCode
+              }
+            }
+            discountCodes {
+              code
+              applicable
+            }
+          }
+        }
+      }
+    `;
+
+    const data = await storefrontRequest<{ cartDiscountCodesUpdate: { cart: ShopifyCart } }>(query, {
+      cartId,
+      discountCodes: [HOUSE_DISCOUNT_CODE],
+    });
+
+    if (!data?.cartDiscountCodesUpdate.cart) {
+      console.error('[Cart] Failed to apply House discount');
+      return null;
+    }
+
+    console.log('[Cart] House discount applied successfully:', {
+      cartId,
+      discountCodes: data.cartDiscountCodesUpdate.cart.discountCodes,
+    });
+
+    return transformShopifyCart(data.cartDiscountCodesUpdate.cart);
+  } catch (error) {
+    console.error('[Cart] Failed to apply House discount:', error);
+    
+    // Enhanced error logging
+    if (error && typeof error === 'object') {
+      if ('errors' in error) {
+        console.error('[Cart] Shopify GraphQL errors:', JSON.stringify((error as any).errors, null, 2));
+      }
+    }
+    
     return null;
   }
 }
