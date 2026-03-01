@@ -200,9 +200,10 @@ export async function GET() {
         });
 
         // CRITICAL: Log variant data for debugging
+        const debugMsg = `[SYNC] ${product.handle}: edges=${product.variants.edges.length}, mapped=${variants.length}, data=${JSON.stringify(variants.slice(0, 1))}`;
+        console.log(debugMsg);
+        
         if (product.handle === 'antique-mirror' || variants.length === 0) {
-          const debugMsg = `[SYNC] ${product.handle}: edges=${product.variants.edges.length}, mapped=${variants.length}, data=${JSON.stringify(variants)}`;
-          console.log(debugMsg);
           debugLogs.push(debugMsg);
         }
 
