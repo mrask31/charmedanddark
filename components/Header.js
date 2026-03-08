@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCart } from "@/context/CartContext";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -11,6 +12,8 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const { itemCount, setIsOpen } = useCart();
+
   return (
     <header className="w-full border-b border-white/10 bg-black/70 backdrop-blur">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
@@ -33,6 +36,20 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative text-white/70 hover:text-white transition-colors"
+          >
+            <span className="uppercase tracking-wider text-sm">Cart</span>
+            {itemCount > 0 && (
+              <span
+                className="absolute -top-2 -right-3 bg-[#B89C6D] text-black text-xs w-5 h-5 flex items-center justify-center font-medium"
+                style={{ borderRadius: '0px' }}
+              >
+                {itemCount}
+              </span>
+            )}
+          </button>
         </nav>
       </div>
     </header>
