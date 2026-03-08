@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getAllShopifyProducts } from '@/lib/shopify/queries';
+import { generateProductLore } from '@/lib/ai/generate-lore';
 import { NextResponse } from 'next/server';
 
 // Simple auth check — replace with proper admin auth in Phase 2
@@ -29,6 +30,7 @@ function transformShopifyProduct(shopifyProduct) {
 
   return {
     shopify_id: shopifyProduct.id,
+    shopify_variant_id: variant?.id || null,
     name: shopifyProduct.title,
     slug: sanitizeHandle(shopifyProduct.handle),
     handle: sanitizeHandle(shopifyProduct.handle),
@@ -64,20 +66,47 @@ export async function POST(request) {
 
     // 2. Transform and upsert to Supabase
     let synced = 0;
+    let loreGenerated = 0;
     let errors = [];
 
     for (const sp of shopifyProducts) {
       const record = transformShopifyProduct(sp);
 
-      const { error } = await supabaseAdmin
+      // Upsert product data
+      const { error: upsertError } = await supabaseAdmin
         .from('products')
         .upsert(record, { onConflict: 'handle' });
 
-      if (error) {
-        errors.push({ product: record.name, error: error.message });
-        console.error(`Sync error for ${record.name}:`, error.message);
-      } else {
-        synced++;
+      if (upsertError) {
+        errors.push({ product: record.name, error: upsertError.message });
+        console.error(`Sync error for ${record.name}:`, upsertError.message);
+        continue;
+      }
+      synced++;
+
+      // Check if product needs lore
+      const { data: existing } = await supabaseAdmin
+        .from('products')
+        .select('lore')
+        .eq('handle', record.handle)
+        .single();
+
+      if (!existing?.lore) {
+        try {
+          console.log(`Generating lore for: ${record.name}`);
+          const lore = await generateProductLore(record);
+          if (lore) {
+            await supabaseAdmin
+              .from('products')
+              .update({ lore })
+              .eq('handle', record.handle);
+            loreGenerated++;
+            console.log(`Lore generated for: ${record.name}`);
+          }
+        } catch (loreError) {
+          console.error(`Lore generation failed for ${record.name}:`, loreError.message);
+          // Don't add to errors array — lore failure shouldn't block the sync
+        }
       }
     }
 
@@ -86,6 +115,7 @@ export async function POST(request) {
       success: true,
       total_shopify: shopifyProducts.length,
       synced,
+      lore_generated: loreGenerated,
       errors: errors.length,
       error_details: errors,
       synced_at: new Date().toISOString(),
