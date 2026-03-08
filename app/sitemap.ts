@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { getProducts } from "@/lib/products-csv";
+import { getProducts } from "@/lib/products";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://charmedanddark.com";
