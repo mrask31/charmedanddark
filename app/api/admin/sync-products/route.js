@@ -15,6 +15,14 @@ function slugify(text) {
     .replace(/(^-|-$)/g, '');
 }
 
+function sanitizeHandle(handle) {
+  return handle
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 function transformShopifyProduct(shopifyProduct) {
   const variant = shopifyProduct.variants.edges[0]?.node;
   const images = shopifyProduct.images.edges.map(({ node }) => node.url);
@@ -22,8 +30,8 @@ function transformShopifyProduct(shopifyProduct) {
   return {
     shopify_id: shopifyProduct.id,
     name: shopifyProduct.title,
-    slug: slugify(shopifyProduct.title),
-    handle: shopifyProduct.handle,
+    slug: sanitizeHandle(shopifyProduct.handle),
+    handle: sanitizeHandle(shopifyProduct.handle),
     title: shopifyProduct.title,
     category: shopifyProduct.productType || null,
     description: shopifyProduct.description || null,
