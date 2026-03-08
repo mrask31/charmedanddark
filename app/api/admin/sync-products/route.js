@@ -63,7 +63,7 @@ export async function POST(request) {
 
       const { error } = await supabaseAdmin
         .from('products')
-        .upsert(record, { onConflict: 'slug' });
+        .upsert(record, { onConflict: 'handle' });
 
       if (error) {
         errors.push({ product: record.name, error: error.message });
