@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import TwoPrice, { formatCurrency, getPublicPrice } from "@/components/TwoPrice";
 import { isMember } from "@/lib/membership";
+import AddToCartButton from "@/components/AddToCartButton";
 
 export default function ProductDetailContent({ product }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -136,20 +137,15 @@ export default function ProductDetailContent({ product }) {
             </div>
 
             <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <AddToCartButton product={product} />
               <Link
                 href="/join"
                 className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-black/80 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 Join the Sanctuary (10% off always)
               </Link>
-              <button
-                type="button"
-                className="w-full rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
-                Save for Later
-              </button>
               <p className="text-xs text-white/50">
-                Checkout opens soon. Members get first access.
+                Sanctuary members receive 10% off all purchases, always.
               </p>
             </div>
 
@@ -206,19 +202,13 @@ export default function ProductDetailContent({ product }) {
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-white/50">
-              Sanctuary
+              House Price
             </p>
-            <p className="text-base font-medium text-white">
+            <p className="text-base font-medium text-[#B89C6D]">
               {formatCurrency(sanctuaryPrice, product.currency)}
             </p>
           </div>
-          <button
-            type="button"
-            disabled
-            className="rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-medium text-white/60"
-          >
-            Checkout soon
-          </button>
+          <AddToCartButton product={product} />
         </div>
       </div>
     </>

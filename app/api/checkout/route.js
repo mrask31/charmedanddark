@@ -3,6 +3,14 @@ import { NextResponse } from 'next/server';
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
+// Validate required environment variables
+if (!domain || !storefrontToken) {
+  console.error('Missing required environment variables:', {
+    SHOPIFY_STORE_DOMAIN: !!domain,
+    SHOPIFY_STOREFRONT_ACCESS_TOKEN: !!storefrontToken,
+  });
+}
+
 async function shopifyStorefront(query, variables = {}) {
   const res = await fetch(`https://${domain}/api/2024-01/graphql.json`, {
     method: 'POST',
