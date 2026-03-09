@@ -166,7 +166,7 @@ The implementation builds on existing systems (AI Narrative Engine, Slide-Out Ca
     - Check HMAC verification passes
     - _Requirements: 6.1, 6.7, 6.8_
 
-- [-] 10. Build verification and deployment
+- [x] 10. Build verification and deployment
   - [x] 10.1 Run production build
     - Execute npm run build
     - Verify no build errors or warnings
@@ -179,13 +179,13 @@ The implementation builds on existing systems (AI Narrative Engine, Slide-Out Ca
     - Test environment variable access in deployed functions
     - _Requirements: 10.9_
   
-  - [-] 10.3 Deploy to production
+  - [x] 10.3 Deploy to production
     - Deploy to Vercel
     - Verify all routes are accessible
     - Test cart, checkout, and webhook endpoints
     - _Requirements: 11.5, 11.6_
   
-  - [ ] 10.4 End-to-end production test
+  - [x] 10.4 End-to-end production test
     - Add product to cart on production site
     - Proceed to Shopify checkout
     - Complete test purchase
@@ -193,7 +193,7 @@ The implementation builds on existing systems (AI Narrative Engine, Slide-Out Ca
     - Confirm HOUSE10 discount applied correctly
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 11. Final checkpoint - Production verification
+- [x] 11. Final checkpoint - Production verification
   - Verify all systems operational in production
   - Confirm cart persistence works across page reloads
   - Test complete purchase flow with real Shopify checkout
