@@ -67,10 +67,41 @@ export async function POST(request) {
     // 2. Transform and upsert to Supabase
     let synced = 0;
     let loreGenerated = 0;
+    let preserved = 0;
     let errors = [];
 
     for (const sp of shopifyProducts) {
-      const record = transformShopifyProduct(sp);
+      const shopifyData = transformShopifyProduct(sp);
+
+      // Check if product already exists
+      const { data: existing } = await supabaseAdmin
+        .from('products')
+        .select('id, name, title, lore')
+        .eq('handle', shopifyData.handle)
+        .single();
+
+      let record;
+      
+      if (existing) {
+        // Product exists - preserve custom name and lore
+        record = {
+          ...shopifyData,
+          // Preserve custom name if it differs from Shopify title
+          name: (existing.name && existing.name !== shopifyData.title) 
+            ? existing.name 
+            : shopifyData.name,
+          // Preserve existing lore
+          lore: existing.lore || undefined,
+        };
+        
+        if (existing.name !== shopifyData.title || existing.lore) {
+          preserved++;
+          console.log(`Preserving custom content for: ${existing.name || shopifyData.name}`);
+        }
+      } else {
+        // New product - use all Shopify data
+        record = shopifyData;
+      }
 
       // Upsert product data
       const { error: upsertError } = await supabaseAdmin
@@ -84,13 +115,7 @@ export async function POST(request) {
       }
       synced++;
 
-      // Check if product needs lore
-      const { data: existing } = await supabaseAdmin
-        .from('products')
-        .select('lore')
-        .eq('handle', record.handle)
-        .single();
-
+      // Generate lore only for products without it
       if (!existing?.lore) {
         try {
           console.log(`Generating lore for: ${record.name}`);
@@ -115,6 +140,7 @@ export async function POST(request) {
       success: true,
       total_shopify: shopifyProducts.length,
       synced,
+      preserved_custom_content: preserved,
       lore_generated: loreGenerated,
       errors: errors.length,
       error_details: errors,
