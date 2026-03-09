@@ -1,4 +1,4 @@
-import { getProducts } from "@/lib/products-csv";
+import { getProducts } from "@/lib/products";
 import ShopContent from "@/components/ShopContent";
 
 export const metadata = {

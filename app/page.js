@@ -1,6 +1,6 @@
 import Link from "next/link";
 import MirrorModule from "@/components/MirrorModule";
-import { getProducts } from "@/lib/products-csv";
+import { getProducts } from "@/lib/products";
 import { isMember } from "@/lib/membership";
 
 const categoryCards = [

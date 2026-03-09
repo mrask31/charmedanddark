@@ -1,4 +1,4 @@
-import { getProducts, getProductBySlug } from "@/lib/products-csv";
+import { getProducts, getProductBySlug } from "@/lib/products";
 import { notFound } from "next/navigation";
 import ProductDetailContent from "@/components/ProductDetailContent";
 
