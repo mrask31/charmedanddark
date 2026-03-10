@@ -26,26 +26,57 @@ async function checkLore() {
   console.log('URL:', supabaseUrl);
   console.log('');
   
+  // Get total count
+  const { count: totalCount } = await supabase
+    .from('products')
+    .select('*', { count: 'exact', head: true });
+  
+  // Get count with lore
+  const { count: withLoreCount } = await supabase
+    .from('products')
+    .select('*', { count: 'exact', head: true })
+    .not('lore', 'is', null);
+  
+  console.log(`Total products: ${totalCount}`);
+  console.log(`Products with lore: ${withLoreCount}`);
+  console.log(`Products without lore: ${totalCount - withLoreCount}`);
+  console.log('');
+  
+  // Get sample products
   const { data, error } = await supabase
     .from('products')
     .select('id, name, lore, description')
-    .limit(5);
+    .limit(10);
 
   if (error) {
     console.error('Error fetching products:', error);
     return;
   }
 
-  console.log(`Found ${data.length} products:\n`);
+  console.log(`Sample of ${data.length} products:\n`);
+  
+  let cleanLoreCount = 0;
+  let markdownLoreCount = 0;
   
   data.forEach((product, index) => {
-    console.log(`${index + 1}. ${product.name}`);
+    const hasMarkdown = product.lore?.startsWith('**') || false;
+    if (hasMarkdown) {
+      markdownLoreCount++;
+    } else if (product.lore) {
+      cleanLoreCount++;
+    }
+    
+    console.log(`${index + 1}. ${product.name || 'null'}`);
     console.log(`   Has lore: ${!!product.lore}`);
+    console.log(`   Format: ${hasMarkdown ? 'MARKDOWN (needs regeneration)' : 'CLEAN'}`);
     console.log(`   Lore length: ${product.lore?.length || 0} chars`);
     console.log(`   Lore preview: ${product.lore?.substring(0, 100) || 'NO LORE'}...`);
-    console.log(`   Description: ${product.description?.substring(0, 100) || 'NO DESCRIPTION'}...`);
     console.log('');
   });
+  
+  console.log('Format Summary:');
+  console.log(`  Clean lore: ${cleanLoreCount}`);
+  console.log(`  Markdown lore (needs regeneration): ${markdownLoreCount}`);
 }
 
 checkLore();

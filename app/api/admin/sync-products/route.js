@@ -58,7 +58,14 @@ export async function POST(request) {
   }
 
   try {
+    // Check for force regeneration flag
+    const url = new URL(request.url);
+    const forceRegenerate = url.searchParams.get('force') === 'true';
+    
     console.log('Starting Vault Sync...');
+    if (forceRegenerate) {
+      console.log('Force regeneration enabled - will regenerate all lore');
+    }
 
     // 1. Pull from Shopify
     const shopifyProducts = await getAllShopifyProducts();
@@ -83,18 +90,18 @@ export async function POST(request) {
       let record;
       
       if (existing) {
-        // Product exists - preserve custom name and lore
+        // Product exists - preserve custom name and lore (unless force regenerate)
         record = {
           ...shopifyData,
           // Preserve custom name if it differs from Shopify title
           name: (existing.name && existing.name !== shopifyData.title) 
             ? existing.name 
             : shopifyData.name,
-          // Preserve existing lore
-          lore: existing.lore || undefined,
+          // Preserve existing lore (unless force regenerate)
+          lore: forceRegenerate ? undefined : (existing.lore || undefined),
         };
         
-        if (existing.name !== shopifyData.title || existing.lore) {
+        if (!forceRegenerate && (existing.name !== shopifyData.title || existing.lore)) {
           preserved++;
           console.log(`Preserving custom content for: ${existing.name || shopifyData.name}`);
         }
@@ -115,8 +122,8 @@ export async function POST(request) {
       }
       synced++;
 
-      // Generate lore only for products without it
-      if (!existing?.lore) {
+      // Generate lore for products without it OR if force regenerate is enabled
+      if (!existing?.lore || forceRegenerate) {
         try {
           console.log(`Generating lore for: ${record.name}`);
           const lore = await generateProductLore(record);
@@ -142,6 +149,7 @@ export async function POST(request) {
       synced,
       preserved_custom_content: preserved,
       lore_generated: loreGenerated,
+      force_regenerate: forceRegenerate,
       errors: errors.length,
       error_details: errors,
       synced_at: new Date().toISOString(),
