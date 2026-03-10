@@ -2,9 +2,12 @@
 // Restores custom branded product names from CSV to Supabase
 // Run with: node scripts/restore-branded-names.js
 
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { getProducts as getProductsCSV } from '../lib/products-csv.js';
+
+// Load .env.local explicitly
+dotenv.config({ path: '.env.local' });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,

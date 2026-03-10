@@ -2,8 +2,11 @@
 // Diagnostic script to check if lore is in Supabase
 // Run with: node scripts/check-lore.js
 
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+
+// Load .env.local explicitly
+dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
