@@ -1,6 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getAllShopifyProducts } from '@/lib/shopify/queries';
-import { generateProductLore } from '@/lib/ai/generate-lore';
+import { generateProductContent } from '@/lib/ai/generate-lore';
 import { NextResponse } from 'next/server';
 
 // Simple auth check — replace with proper admin auth in Phase 2
@@ -122,22 +122,30 @@ export async function POST(request) {
       }
       synced++;
 
-      // Generate lore for products without it OR if force regenerate is enabled
+      // Generate content (name + lore) for products without it OR if force regenerate is enabled
       if (!existing?.lore || forceRegenerate) {
         try {
-          console.log(`Generating lore for: ${record.name}`);
-          const lore = await generateProductLore(record);
-          if (lore) {
-            await supabaseAdmin
-              .from('products')
-              .update({ lore })
-              .eq('handle', record.handle);
-            loreGenerated++;
-            console.log(`Lore generated for: ${record.name}`);
+          console.log(`Generating content for: ${record.name}`);
+          const content = await generateProductContent(record);
+          console.log('Claude returned:', JSON.stringify(content));
+          
+          if (content) {
+            const updateFields = {};
+            if (content.lore) updateFields.lore = content.lore;
+            if (content.name) updateFields.name = content.name;
+            
+            if (Object.keys(updateFields).length > 0) {
+              await supabaseAdmin
+                .from('products')
+                .update(updateFields)
+                .eq('handle', record.handle);
+              loreGenerated++;
+              console.log(`Content generated for: ${content.name || record.name}`);
+            }
           }
-        } catch (loreError) {
-          console.error(`Lore generation failed for ${record.name}:`, loreError.message);
-          // Don't add to errors array — lore failure shouldn't block the sync
+        } catch (contentError) {
+          console.error(`Content generation failed for ${record.name}:`, contentError.message);
+          // Don't add to errors array — content generation failure shouldn't block the sync
         }
       }
     }
