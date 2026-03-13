@@ -7,26 +7,36 @@ import SectionHeader from "@/components/shop/SectionHeader";
 import ProductCard from "@/components/shop/ProductCard";
 import { isMember } from "@/lib/membership";
 
-// Category mapping for filter bar - matches actual Supabase category column values
+// Category mapping for filter bar - matches exact Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
-  APPAREL: ["T-Shirt", "Tank Top"],
-  HOME: [], // No home products yet
-  ACCESSORIES: [], // No accessories yet
-  RITUAL: [], // No ritual products yet
+  HOME: ["home-decor"],
+  RITUAL: ["ritual"],
+  ACCESSORIES: ["accessories"],
+  APPAREL: ["T-Shirt", "Tank Top", "Hoodie", "Hats"],
 };
 
-// Section configuration - matches actual Supabase category values
+// Section configuration - matches exact Supabase category values
 const SECTIONS = {
+  HOME: {
+    title: "The Sanctuary",
+    subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
+    categories: ["home-decor"],
+  },
+  RITUAL: {
+    title: "The Ritual",
+    subtitle: "Tools for transformation, ceremony, and quiet devotion",
+    categories: ["ritual"],
+  },
+  ACCESSORIES: {
+    title: "Adornments",
+    subtitle: "Jewelry and accessories for those who move between worlds",
+    categories: ["accessories"],
+  },
   APPAREL: {
     title: "The Wardrobe",
     subtitle: "Wearable darkness, crafted for those who move between worlds",
-    categories: ["T-Shirt", "Tank Top"],
-  },
-  UNCATEGORIZED: {
-    title: "The Collection",
-    subtitle: "Curated pieces for the modern mystic",
-    categories: [null], // Products with NULL category
+    categories: ["T-Shirt", "Tank Top", "Hoodie", "Hats"],
   },
 };
 
@@ -61,6 +71,7 @@ export default function ShopPageClient({ products }) {
     if (activeFilter !== "ALL") {
       const categories = CATEGORY_MAP[activeFilter];
       if (categories && categories.length > 0) {
+        // Case-sensitive exact match
         filtered = filtered.filter((p) => categories.includes(p.category));
       }
     }
@@ -68,14 +79,15 @@ export default function ShopPageClient({ products }) {
     return sortProducts(filtered, sortOption);
   }, [products, activeFilter, sortOption]);
 
-  // Group products by section
+  // Group products by section with empty state safety
   const productsBySection = useMemo(() => {
     const grouped = {};
 
     Object.entries(SECTIONS).forEach(([key, config]) => {
+      // Safe filtering with empty array fallback
       grouped[key] = filteredProducts.filter((p) =>
-        config.categories.includes(p.category)
-      );
+        config.categories && config.categories.includes(p.category)
+      ) || [];
     });
 
     return grouped;
@@ -87,12 +99,15 @@ export default function ShopPageClient({ products }) {
       return Object.keys(SECTIONS);
     }
     
-    if (activeFilter === "APPAREL") return ["APPAREL"];
-    if (activeFilter === "HOME") return ["HOME"];
-    if (activeFilter === "ACCESSORIES") return ["ACCESSORIES"];
-    if (activeFilter === "RITUAL") return ["RITUAL"];
+    // Map filter to corresponding section
+    const filterToSection = {
+      HOME: ["HOME"],
+      RITUAL: ["RITUAL"],
+      ACCESSORIES: ["ACCESSORIES"],
+      APPAREL: ["APPAREL"],
+    };
     
-    return [];
+    return filterToSection[activeFilter] || [];
   }, [activeFilter]);
 
   return (
@@ -109,9 +124,10 @@ export default function ShopPageClient({ products }) {
       <div className="mx-auto max-w-7xl px-6 py-16">
         {visibleSections.map((sectionKey) => {
           const section = SECTIONS[sectionKey];
-          const sectionProducts = productsBySection[sectionKey];
+          const sectionProducts = productsBySection[sectionKey] || [];
 
-          if (sectionProducts.length === 0) return null;
+          // Skip empty sections
+          if (!section || sectionProducts.length === 0) return null;
 
           return (
             <section key={sectionKey} className="mb-20">
