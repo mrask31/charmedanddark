@@ -65,22 +65,35 @@ export default function ProductCard({ product, isMember }) {
             {product.name}
           </h3>
 
-          {!isSoldOut ? (
+          {!isSoldOut && (
             <div className="space-y-1">
-              <div className="text-sm text-white">
+              {/* Always show regular price */}
+              <div className={`text-sm ${isMember ? 'line-through text-zinc-500' : 'text-white'}`}>
                 ${publicPrice.toFixed(2)}
               </div>
+              
+              {/* Sanctuary price display */}
               {isMember ? (
-                <div className="text-sm text-[#C9A84C]">
-                  ${sanctuaryPrice.toFixed(2)} Sanctuary
+                <div className="text-sm text-[#c9a96e] font-medium">
+                  ${sanctuaryPrice.toFixed(2)} Sanctuary Price
                 </div>
               ) : (
-                <div className="text-xs text-zinc-500">
-                  Join the Sanctuary to unlock
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <svg className="h-3 w-3 text-[#c9a96e]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm text-[#c9a96e]">
+                      ${sanctuaryPrice.toFixed(2)} Sanctuary Price
+                    </span>
+                  </div>
+                  <div className="text-xs text-zinc-500">
+                    Join to unlock
+                  </div>
                 </div>
               )}
             </div>
-          ) : null}
+          )}
         </div>
       </Link>
 

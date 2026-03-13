@@ -5,7 +5,7 @@ import ShopHero from "@/components/shop/ShopHero";
 import StickyFilterBar from "@/components/shop/StickyFilterBar";
 import SectionHeader from "@/components/shop/SectionHeader";
 import ProductCard from "@/components/shop/ProductCard";
-import { isMember } from "@/lib/membership";
+import { useSanctuaryAccess } from "@/hooks/useSanctuaryAccess";
 
 // Category mapping for filter bar - matches exact Supabase category column values
 const CATEGORY_MAP = {
@@ -63,6 +63,7 @@ function sortProducts(products, sortOption) {
 export default function ShopPageClient({ products }) {
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [sortOption, setSortOption] = useState("Featured");
+  const { isMember } = useSanctuaryAccess();
 
   // Filter products based on active filter
   const filteredProducts = useMemo(() => {
