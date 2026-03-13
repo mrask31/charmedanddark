@@ -61,7 +61,7 @@ export default function ShopPageClient({ products }) {
 
   // Filter products based on active filter
   const filteredProducts = useMemo(() => {
-    let filtered = products.filter((p) => !p.hidden && p.qty > 0);
+    let filtered = products.filter((p) => !p.hidden);
 
     if (activeFilter !== "ALL") {
       const categories = CATEGORY_MAP[activeFilter];
