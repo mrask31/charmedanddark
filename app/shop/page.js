@@ -1,7 +1,8 @@
 import { getProducts } from "@/lib/products";
 import ShopPageClient from "./page-new";
 
-export const revalidate = 3600; // Revalidate every hour via ISR
+// ISR: Revalidate every hour to keep product data fresh
+export const revalidate = 3600;
 
 export const metadata = {
   title: "The Atelier | Charmed & Dark",
