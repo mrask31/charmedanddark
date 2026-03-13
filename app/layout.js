@@ -1,5 +1,5 @@
 import "./globals.css";
-import Header from "@/components/Header";
+import { StickyNav } from "@/components/StickyNav";
 import MobileTabNav from "@/components/MobileTabNav";
 import SlideOutCart from "@/components/SlideOutCart";
 import { CartProvider } from "@/context/CartContext";
@@ -48,10 +48,8 @@ export default function RootLayout({ children }) {
         />
         <div className="min-h-screen bg-black text-white">
           <CartProvider>
-            <Header />
-            <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-6 md:pb-12">
-              {children}
-            </main>
+            <StickyNav />
+            {children}
             <SlideOutCart />
             <MobileTabNav />
           </CartProvider>

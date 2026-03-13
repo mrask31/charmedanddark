@@ -9,5 +9,9 @@ export const metadata = {
 export default async function ShopPage() {
   const products = await getProducts();
   
-  return <ShopContent products={products} />;
+  return (
+    <div className="mx-auto w-full max-w-5xl px-6 pb-24 pt-6 md:pb-12">
+      <ShopContent products={products} />
+    </div>
+  );
 }
