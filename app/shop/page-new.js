@@ -7,21 +7,21 @@ import SectionHeader from "@/components/shop/SectionHeader";
 import ProductCard from "@/components/shop/ProductCard";
 import { isMember } from "@/lib/membership";
 
-// Category mapping for filter bar
+// Category mapping for filter bar - matches Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
-  HOME: ["home-decor"],
-  APPAREL: ["apparel"],
-  ACCESSORIES: ["accessories"],
-  RITUAL: ["ritual"],
+  HOME: "home-decor",
+  APPAREL: "apparel",
+  ACCESSORIES: "accessories",
+  RITUAL: "ritual",
 };
 
-// Section configuration
+// Section configuration - matches Supabase category values
 const SECTIONS = {
   RITUAL: {
     title: "The Ritual",
     subtitle: "Tools for transformation, ceremony, and quiet devotion",
-    categories: ["ritual"],
+    category: "ritual",
   },
   WARDROBE: {
     title: "The Wardrobe",
@@ -31,7 +31,7 @@ const SECTIONS = {
   HOME: {
     title: "The Sanctuary",
     subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
-    categories: ["home-decor"],
+    category: "home-decor",
   },
 };
 
@@ -64,9 +64,9 @@ export default function ShopPageClient({ products }) {
     let filtered = products.filter((p) => !p.hidden);
 
     if (activeFilter !== "ALL") {
-      const categories = CATEGORY_MAP[activeFilter];
-      if (categories) {
-        filtered = filtered.filter((p) => categories.includes(p.category));
+      const category = CATEGORY_MAP[activeFilter];
+      if (category) {
+        filtered = filtered.filter((p) => p.category === category);
       }
     }
 
@@ -78,9 +78,15 @@ export default function ShopPageClient({ products }) {
     const grouped = {};
 
     Object.entries(SECTIONS).forEach(([key, config]) => {
-      grouped[key] = filteredProducts.filter((p) =>
-        config.categories.includes(p.category)
-      );
+      if (config.categories) {
+        // WARDROBE section has multiple categories
+        grouped[key] = filteredProducts.filter((p) =>
+          config.categories.includes(p.category)
+        );
+      } else {
+        // RITUAL and HOME sections have single category
+        grouped[key] = filteredProducts.filter((p) => p.category === config.category);
+      }
     });
 
     return grouped;
