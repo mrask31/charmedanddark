@@ -7,31 +7,26 @@ import SectionHeader from "@/components/shop/SectionHeader";
 import ProductCard from "@/components/shop/ProductCard";
 import { isMember } from "@/lib/membership";
 
-// Category mapping for filter bar - matches Supabase category column values
+// Category mapping for filter bar - matches actual Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
-  HOME: "home-decor",
-  APPAREL: "apparel",
-  ACCESSORIES: "accessories",
-  RITUAL: "ritual",
+  APPAREL: ["T-Shirt", "Tank Top"],
+  HOME: [], // No home products yet
+  ACCESSORIES: [], // No accessories yet
+  RITUAL: [], // No ritual products yet
 };
 
-// Section configuration - matches Supabase category values
+// Section configuration - matches actual Supabase category values
 const SECTIONS = {
-  RITUAL: {
-    title: "The Ritual",
-    subtitle: "Tools for transformation, ceremony, and quiet devotion",
-    category: "ritual",
-  },
-  WARDROBE: {
+  APPAREL: {
     title: "The Wardrobe",
     subtitle: "Wearable darkness, crafted for those who move between worlds",
-    categories: ["apparel", "accessories"],
+    categories: ["T-Shirt", "Tank Top"],
   },
-  HOME: {
-    title: "The Sanctuary",
-    subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
-    category: "home-decor",
+  UNCATEGORIZED: {
+    title: "The Collection",
+    subtitle: "Curated pieces for the modern mystic",
+    categories: [null], // Products with NULL category
   },
 };
 
@@ -64,9 +59,9 @@ export default function ShopPageClient({ products }) {
     let filtered = products.filter((p) => !p.hidden);
 
     if (activeFilter !== "ALL") {
-      const category = CATEGORY_MAP[activeFilter];
-      if (category) {
-        filtered = filtered.filter((p) => p.category === category);
+      const categories = CATEGORY_MAP[activeFilter];
+      if (categories && categories.length > 0) {
+        filtered = filtered.filter((p) => categories.includes(p.category));
       }
     }
 
@@ -78,15 +73,9 @@ export default function ShopPageClient({ products }) {
     const grouped = {};
 
     Object.entries(SECTIONS).forEach(([key, config]) => {
-      if (config.categories) {
-        // WARDROBE section has multiple categories
-        grouped[key] = filteredProducts.filter((p) =>
-          config.categories.includes(p.category)
-        );
-      } else {
-        // RITUAL and HOME sections have single category
-        grouped[key] = filteredProducts.filter((p) => p.category === config.category);
-      }
+      grouped[key] = filteredProducts.filter((p) =>
+        config.categories.includes(p.category)
+      );
     });
 
     return grouped;
@@ -98,9 +87,10 @@ export default function ShopPageClient({ products }) {
       return Object.keys(SECTIONS);
     }
     
-    if (activeFilter === "RITUAL") return ["RITUAL"];
-    if (activeFilter === "APPAREL" || activeFilter === "ACCESSORIES") return ["WARDROBE"];
+    if (activeFilter === "APPAREL") return ["APPAREL"];
     if (activeFilter === "HOME") return ["HOME"];
+    if (activeFilter === "ACCESSORIES") return ["ACCESSORIES"];
+    if (activeFilter === "RITUAL") return ["RITUAL"];
     
     return [];
   }, [activeFilter]);
