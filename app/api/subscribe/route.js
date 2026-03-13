@@ -9,11 +9,22 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Check if email already exists
+    const { data: existing } = await supabaseAdmin
+      .from('email_subscribers')
+      .select('email')
+      .eq('email', normalizedEmail)
+      .single();
+
+    const alreadyExists = !!existing;
+
     const { error } = await supabaseAdmin
       .from('email_subscribers')
       .upsert(
         {
-          email: email.toLowerCase().trim(),
+          email: normalizedEmail,
           source: source || 'unknown',
           utm_campaign: utm_campaign || null,
           utm_source: utm_source || null,
@@ -24,7 +35,7 @@ export async function POST(request) {
 
     if (error) throw error;
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, alreadySubscribed: alreadyExists });
   } catch (err) {
     console.error('Subscribe error:', err);
     return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
