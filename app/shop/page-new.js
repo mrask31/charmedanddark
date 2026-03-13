@@ -10,10 +10,10 @@ import { isMember } from "@/lib/membership";
 // Category mapping for filter bar
 const CATEGORY_MAP = {
   ALL: null,
-  HOME: ["Drinkware", "Dining & Serveware", "Candles & Scent", "Wall Art", "Decor Objects", "Textiles", "Home Decor (Other)"],
-  APPAREL: ["Apparel"],
-  ACCESSORIES: ["Accessories"],
-  RITUAL: ["Ritual", "Candles & Scent"],
+  HOME: ["home-decor"],
+  APPAREL: ["apparel"],
+  ACCESSORIES: ["accessories"],
+  RITUAL: ["ritual"],
 };
 
 // Section configuration
@@ -21,17 +21,17 @@ const SECTIONS = {
   RITUAL: {
     title: "The Ritual",
     subtitle: "Tools for transformation, ceremony, and quiet devotion",
-    categories: ["Ritual", "Candles & Scent"],
+    categories: ["ritual"],
   },
   WARDROBE: {
     title: "The Wardrobe",
     subtitle: "Wearable darkness, crafted for those who move between worlds",
-    categories: ["Apparel", "Accessories"],
+    categories: ["apparel", "accessories"],
   },
   HOME: {
     title: "The Sanctuary",
     subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
-    categories: ["Drinkware", "Dining & Serveware", "Wall Art", "Decor Objects", "Textiles", "Home Decor (Other)"],
+    categories: ["home-decor"],
   },
 };
 
