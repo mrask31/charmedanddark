@@ -91,13 +91,36 @@ function FeatureCard({ title, badge, description, buttonLabel, buttonHref, butto
 }
 
 export default function FeatureCards({ access }) {
-  const { isMember, discountCode } = access;
+  const { isMember, discountCode, loading } = access;
 
   const copyToClipboard = (text) => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
     }
   };
+
+  // Loading skeleton
+  if (loading) {
+    return (
+      <div id="features" className="grid gap-6 md:grid-cols-3">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="animate-pulse rounded-2xl p-6"
+            style={{
+              backgroundColor: '#0e0e1a',
+              border: '1px solid rgba(201,169,110,0.2)',
+            }}
+          >
+            <div className="h-6 w-20 rounded bg-white/10" />
+            <div className="mt-4 h-8 w-3/4 rounded bg-white/10" />
+            <div className="mt-3 h-16 rounded bg-white/10" />
+            <div className="mt-6 h-12 rounded-full bg-white/10" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div id="features" className="grid gap-6 md:grid-cols-3">

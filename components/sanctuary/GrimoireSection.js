@@ -19,7 +19,20 @@ export default function GrimoireSection({ access }) {
     return (
       <section className="mx-auto max-w-[680px] px-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-white/70">Loading...</p>
+          <div className="animate-pulse space-y-4">
+            <div className="h-6 w-48 rounded bg-white/10" />
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/40 px-4 py-3">
+                  <div className="space-y-2">
+                    <div className="h-4 w-32 rounded bg-white/10" />
+                    <div className="h-3 w-48 rounded bg-white/10" />
+                  </div>
+                  <div className="h-4 w-4 rounded bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     );

@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react';
 
 export default function SanctuaryHero({ onScrollClick }) {
   return (
-    <section className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#08080f' }}>
+    <section className="relative overflow-hidden py-20 md:py-24" style={{ backgroundColor: '#08080f', paddingTop: '80px', paddingBottom: '60px' }}>
       {/* Radial nebula gradient */}
       <div 
         className="absolute inset-0 opacity-20"
@@ -12,7 +12,7 @@ export default function SanctuaryHero({ onScrollClick }) {
       />
       
       {/* Micro star field */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 50 }).map((_, i) => (
           <div
             key={i}
@@ -37,6 +37,7 @@ export default function SanctuaryHero({ onScrollClick }) {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
+        style={{ pointerEvents: 'none' }}
       >
         <path
           d="M140 20C140 20 100 60 100 140C100 220 140 260 140 260C80 260 20 200 20 140C20 80 80 20 140 20Z"
@@ -45,7 +46,7 @@ export default function SanctuaryHero({ onScrollClick }) {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
+      <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center">
         <p 
           className="text-[11px] uppercase tracking-[0.3em]"
           style={{ color: '#c9a96e' }}
@@ -54,7 +55,7 @@ export default function SanctuaryHero({ onScrollClick }) {
         </p>
         
         <h1 
-          className="mt-4 font-serif text-6xl italic text-white md:text-7xl lg:text-8xl"
+          className="mt-4 font-serif text-5xl italic text-white md:text-7xl lg:text-8xl"
           style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
         >
           Enter the Sanctuary

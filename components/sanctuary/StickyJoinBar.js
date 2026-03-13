@@ -21,8 +21,8 @@ export default function StickyJoinBar({ access }) {
         borderTop: '1px solid #c9a96e',
       }}
     >
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-        <p className="text-sm text-white/70">{description}</p>
+      <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 py-4 md:flex-row">
+        <p className="text-center text-sm text-white/70 md:text-left">{description}</p>
         <Link
           href="/join"
           className="whitespace-nowrap rounded-full px-6 py-2 text-sm font-medium transition-colors"

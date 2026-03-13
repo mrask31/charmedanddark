@@ -1,8 +1,23 @@
 import "./globals.css";
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { StickyNav } from "@/components/StickyNav";
 import MobileTabNav from "@/components/MobileTabNav";
 import SlideOutCart from "@/components/SlideOutCart";
 import { CartProvider } from "@/context/CartContext";
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '600'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata = {
   metadataBase: new URL('https://charmedanddark.com'),
@@ -29,7 +44,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${cormorantGaramond.variable} ${inter.variable} antialiased`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
