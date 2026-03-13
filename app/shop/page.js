@@ -1,6 +1,8 @@
 import { getProducts } from "@/lib/products";
 import ShopPageClient from "./page-new";
 
+export const revalidate = 3600; // Revalidate every hour via ISR
+
 export const metadata = {
   title: "The Atelier | Charmed & Dark",
   description: "Curated darkness for the modern mystic. Gothic home decor, ritual tools, and wearable art.",
