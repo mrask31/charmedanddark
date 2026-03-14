@@ -14,13 +14,13 @@ async function getJournalData() {
   const { count } = await supabase
     .from('blog_posts')
     .select('*', { count: 'exact', head: true })
-    .eq('published', true);
+    .eq('status', 'published');
 
   // Featured post — most recent
   const { data: featured } = await supabase
     .from('blog_posts')
     .select('*')
-    .eq('published', true)
+    .eq('status', 'published')
     .order('created_at', { ascending: false })
     .limit(1)
     .single();
@@ -33,7 +33,7 @@ async function getJournalData() {
   const { data: posts } = await supabase
     .from('blog_posts')
     .select('*')
-    .eq('published', true)
+    .eq('status', 'published')
     .neq('id', featured.id)
     .order('created_at', { ascending: false })
     .range(0, 5);

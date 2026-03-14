@@ -20,7 +20,7 @@ export default function PostGrid({ initialPosts, featuredId, totalCount }) {
       const { data } = await supabase
         .from('blog_posts')
         .select('*')
-        .eq('published', true)
+        .eq('status', 'published')
         .neq('id', featuredId)
         .order('created_at', { ascending: false })
         .range(from, to);

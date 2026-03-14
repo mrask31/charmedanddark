@@ -1,28 +1,14 @@
--- Create blog_posts table for the Journal page
-CREATE TABLE IF NOT EXISTS blog_posts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title TEXT NOT NULL,
-  slug TEXT NOT NULL UNIQUE,
-  excerpt TEXT,
-  content TEXT,
-  cover_image_url TEXT,
-  category TEXT,
-  author TEXT DEFAULT 'Charmed & Dark',
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  published BOOLEAN DEFAULT TRUE
-);
+-- Ensure blog_posts table has all required columns for the Journal page.
+-- The table already exists with a 'status' column (values: 'published', 'scheduled', 'draft').
+-- Add any missing columns safely.
+
+ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS cover_image_url TEXT;
+ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS category TEXT;
+ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS author TEXT DEFAULT 'Charmed & Dark';
 
 -- Indexes for common query patterns
-CREATE INDEX IF NOT EXISTS idx_blog_posts_published_created
-  ON blog_posts (published, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_status_created
+  ON blog_posts (status, created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_blog_posts_slug
   ON blog_posts (slug);
-
--- Enable RLS
-ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
-
--- Public read access for published posts
-CREATE POLICY "Public can read published posts"
-  ON blog_posts FOR SELECT
-  USING (published = true);
