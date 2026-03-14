@@ -1,6 +1,7 @@
-import { getProducts, getProductBySlug } from "@/lib/products";
-import { notFound } from "next/navigation";
-import ProductDetailContent from "@/components/ProductDetailContent";
+import { getProducts, getProductBySlug } from '@/lib/products';
+import { supabase } from '@/lib/supabase/client';
+import { notFound } from 'next/navigation';
+import ProductDetail from '@/components/shop/ProductDetail';
 
 export async function generateStaticParams() {
   const products = await getProducts();
@@ -10,29 +11,80 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  
-  if (!product) return { title: "Product Not Found" };
-  
+
+  if (!product) return { title: 'Product Not Found' };
+
   return {
-    title: product.name,
-    description: product.description?.slice(0, 160)
-      || "Discover this artifact at Charmed & Dark.",
+    title: `${product.name} | Charmed & Dark`,
+    description:
+      product.description?.slice(0, 160) ||
+      'Discover this artifact at Charmed & Dark.',
     openGraph: {
-      title: product.name + " | Charmed & Dark",
+      title: `${product.name} | Charmed & Dark`,
       description: product.description?.slice(0, 160),
       images: product.imageUrls?.[0]
         ? [{ url: product.imageUrls[0], width: 800, height: 800 }]
         : [],
-      type: "website",
     },
+  };
+}
+
+async function getRelatedProducts(product) {
+  try {
+    // First try same category
+    const { data: sameCat } = await supabase
+      .from('products')
+      .select('*')
+      .eq('category', product.category)
+      .neq('slug', product.slug)
+      .or('hidden.is.null,hidden.eq.false')
+      .order('created_at', { ascending: false })
+      .limit(4);
+
+    const results = (sameCat || []).map(transformRow);
+
+    // If fewer than 4, fill from other categories
+    if (results.length < 4) {
+      const excludeSlugs = [product.slug, ...results.map((r) => r.slug)];
+      const { data: others } = await supabase
+        .from('products')
+        .select('*')
+        .not('slug', 'in', `(${excludeSlugs.join(',')})`)
+        .or('hidden.is.null,hidden.eq.false')
+        .order('created_at', { ascending: false })
+        .limit(4 - results.length);
+
+      results.push(...(others || []).map(transformRow));
+    }
+
+    return results.slice(0, 4);
+  } catch (err) {
+    console.error('Failed to fetch related products:', err);
+    return [];
+  }
+}
+
+function transformRow(row) {
+  return {
+    id: row.id,
+    sku: row.sku,
+    name: row.name || row.title,
+    slug: row.slug || row.handle,
+    category: row.category,
+    description: row.lore || row.description,
+    price: row.sale_price || row.price,
+    imageUrls: row.image_urls || (row.image_url ? [row.image_url] : []),
+    shopifyVariantId: row.shopify_variant_id,
   };
 }
 
 export default async function ProductPage({ params }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  
+
   if (!product) return notFound();
-  
-  return <ProductDetailContent product={product} />;
+
+  const relatedProducts = await getRelatedProducts(product);
+
+  return <ProductDetail product={product} relatedProducts={relatedProducts} />;
 }
