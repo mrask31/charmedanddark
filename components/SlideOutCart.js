@@ -63,7 +63,7 @@ export default function SlideOutCart() {
             <p className="text-zinc-500 text-sm">The cart is empty.</p>
           ) : (
             items.map(item => (
-              <div key={item.slug} className="flex gap-4 border-b border-zinc-900 pb-6">
+              <div key={item.cartKey || item.slug} className="flex gap-4 border-b border-zinc-900 pb-6">
                 {item.imageUrl && (
                   <img
                     src={item.imageUrl}
@@ -73,18 +73,21 @@ export default function SlideOutCart() {
                   />
                 )}
                 <div className="flex-1">
-                  <h3 className="text-white text-sm">{item.name}</h3>
+                  <h3 className="text-white text-sm">
+                    {item.name}
+                    {item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
+                  </h3>
                   <p className="text-zinc-400 text-sm mt-1">${item.price.toFixed(2)}</p>
                   <div className="flex items-center gap-3 mt-2">
                     <button
-                      onClick={() => updateQuantity(item.slug, item.quantity - 1)}
+                      onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity - 1)}
                       className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
                     >
                       -
                     </button>
                     <span className="text-white text-sm">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.slug, item.quantity + 1)}
+                      onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity + 1)}
                       className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
                     >
                       +
@@ -92,7 +95,7 @@ export default function SlideOutCart() {
                   </div>
                 </div>
                 <button
-                  onClick={() => removeItem(item.slug)}
+                  onClick={() => removeItem(item.cartKey || item.slug)}
                   className="text-zinc-600 hover:text-red-400 text-xs uppercase tracking-wider"
                 >
                   Remove

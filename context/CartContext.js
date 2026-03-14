@@ -28,18 +28,23 @@ export function CartProvider({ children }) {
   }, [items]);
 
   const addItem = useCallback((product, quantity = 1) => {
+    const size = product.selectedSize || null;
+    const cartKey = size ? `${product.slug}__${size}` : product.slug;
+
     setItems(prev => {
-      const existing = prev.find(item => item.slug === product.slug);
+      const existing = prev.find(item => item.cartKey === cartKey);
       if (existing) {
         return prev.map(item =>
-          item.slug === product.slug
+          item.cartKey === cartKey
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
       return [...prev, {
+        cartKey,
         slug: product.slug,
         name: product.name,
+        size,
         price: product.salePrice || product.price,
         originalPrice: product.price,
         imageUrl: product.imageUrls?.[0] || null,
@@ -50,18 +55,18 @@ export function CartProvider({ children }) {
     setIsOpen(true); // Auto-open cart when item added
   }, []);
 
-  const removeItem = useCallback((slug) => {
-    setItems(prev => prev.filter(item => item.slug !== slug));
+  const removeItem = useCallback((cartKey) => {
+    setItems(prev => prev.filter(item => item.cartKey !== cartKey));
   }, []);
 
-  const updateQuantity = useCallback((slug, quantity) => {
+  const updateQuantity = useCallback((cartKey, quantity) => {
     if (quantity <= 0) {
-      removeItem(slug);
+      removeItem(cartKey);
       return;
     }
     setItems(prev =>
       prev.map(item =>
-        item.slug === slug ? { ...item, quantity } : item
+        item.cartKey === cartKey ? { ...item, quantity } : item
       )
     );
   }, [removeItem]);
