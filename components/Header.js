@@ -22,7 +22,7 @@ export default function Header() {
             Threshold
           </p>
           <Link href="/" className="text-lg font-semibold tracking-tight">
-            Charmed & Dark
+            Charmed <span style={{ color: '#c9a96e' }}>&amp;</span> Dark
           </Link>
         </div>
 
