@@ -9,14 +9,16 @@ import DropsStickBar from '@/components/drops/DropsStickBar';
 
 export default function DropsPage() {
   const handleScrollToSection = (sectionId) => {
+    const HEADER_HEIGHT = 80;
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const top = element.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
   return (
-    <div style={{ backgroundColor: '#08080f', overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: '#08080f', overflowX: 'hidden', paddingBottom: '80px' }}>
       {/* Skip to content link for screen readers */}
       <a
         href="#main-content"
