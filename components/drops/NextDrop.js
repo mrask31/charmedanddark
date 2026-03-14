@@ -3,13 +3,21 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@sanity/client';
 
-// Initialize Sanity client — safe even if env vars are missing
-const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '',
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  apiVersion: '2024-01-01',
-  useCdn: true,
-});
+/**
+ * Lazily create the Sanity client only when projectId is available.
+ * Prevents build-time crash when env vars are missing during static prerendering.
+ */
+function getSanityClient() {
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+  if (!projectId) return null;
+
+  return createClient({
+    projectId,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2024-01-01',
+    useCdn: true,
+  });
+}
 
 const GROQ_QUERY = `*[_type == "currentDrop"][0]{
   dropName,
@@ -54,13 +62,14 @@ export default function NextDrop() {
 
   useEffect(() => {
     async function fetchDrop() {
-      if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
+      const client = getSanityClient();
+      if (!client) {
         setLoading(false);
         return;
       }
 
       try {
-        const data = await sanityClient.fetch(GROQ_QUERY);
+        const data = await client.fetch(GROQ_QUERY);
         if (data) setDropData(data);
       } catch (error) {
         console.error('Failed to fetch drop data:', error);
