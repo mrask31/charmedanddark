@@ -13,7 +13,7 @@ export function StickyNav() {
           href="/"
           className="font-serif text-xl uppercase tracking-[0.3em] text-white transition-opacity hover:opacity-80"
         >
-          Charmed & Dark
+          Charmed <span style={{ color: '#c9a96e' }}>&amp;</span> Dark
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
           <Link
