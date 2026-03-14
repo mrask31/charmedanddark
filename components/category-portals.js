@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 export function CategoryPortals() {
   return (
-    <section className="mt-12 grid min-h-[500px] grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-4">
+    <section className="mt-6 grid min-h-[500px] grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-4">
       {/* The Wardrobe */}
       <Link
         href="/shop"
