@@ -5,7 +5,6 @@ const faqs = [
   { question: 'How does Sanctuary pricing work?', answer: 'Two prices appear. Members unlock the Sanctuary Price automatically.' },
   { question: 'Do I have to buy anything?', answer: 'No. Membership simply unlocks access and pricing.' },
   { question: 'What is The Mirror?', answer: 'A private reflection and recommendation experience—quiet, personal, and on-brand.' },
-  { question: 'When is checkout live?', answer: 'Soon. Sanctuary members will be first to know.' },
 ];
 
 export default function FaqSection() {
