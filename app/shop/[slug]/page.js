@@ -1,6 +1,7 @@
 import { getProducts, getProductBySlug } from '@/lib/products';
 import { supabase } from '@/lib/supabase/client';
 import { notFound } from 'next/navigation';
+import { getShopifyVariants } from '@/lib/shopify/variants';
 import ProductDetail from '@/components/shop/ProductDetail';
 
 export async function generateStaticParams() {
@@ -86,5 +87,16 @@ export default async function ProductPage({ params }) {
 
   const relatedProducts = await getRelatedProducts(product);
 
-  return <ProductDetail product={product} relatedProducts={relatedProducts} />;
+  // Fetch Shopify variants if product has a shopify_variant_id
+  const shopifyVariants = product.shopifyVariantId
+    ? await getShopifyVariants(product.shopifyVariantId)
+    : null;
+
+  return (
+    <ProductDetail
+      product={product}
+      relatedProducts={relatedProducts}
+      shopifyVariants={shopifyVariants}
+    />
+  );
 }

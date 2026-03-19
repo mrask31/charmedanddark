@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Lock, Minus, Plus } from 'lucide-react';
@@ -125,6 +125,87 @@ function VariantSelector({ variants, selectedVariant, onSelect }) {
 }
 
 // ============================================================================
+// SHOPIFY VARIANT SELECTOR
+// ============================================================================
+function ShopifyVariantSelector({ shopifyVariants, selectedShopifyVariant, onSelect }) {
+  const { options, variants } = shopifyVariants;
+
+  // Track selected option values (e.g., { Size: "M", Color: "Black" })
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    // Default to first available variant's options
+    const firstAvailable = variants.find((v) => v.available) || variants[0];
+    if (!firstAvailable) return {};
+    return firstAvailable.selectedOptions.reduce((acc, opt) => {
+      acc[opt.name] = opt.value;
+      return acc;
+    }, {});
+  });
+
+  // Find the variant matching current selections
+  useEffect(() => {
+    const match = variants.find((v) =>
+      v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
+    );
+    if (match && match.shopifyVariantId !== selectedShopifyVariant?.shopifyVariantId) {
+      onSelect(match);
+    }
+  }, [selectedOptions, variants, onSelect, selectedShopifyVariant]);
+
+  function handleOptionChange(optionName, value) {
+    setSelectedOptions((prev) => ({ ...prev, [optionName]: value }));
+  }
+
+  // Check if a specific option value is available given current other selections
+  function isOptionAvailable(optionName, value) {
+    const testOptions = { ...selectedOptions, [optionName]: value };
+    return variants.some(
+      (v) =>
+        v.available &&
+        v.selectedOptions.every((opt) => testOptions[opt.name] === opt.value)
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {options.map((option) => (
+        <div key={option.name} className="flex flex-col gap-3">
+          <label
+            className="text-[11px] uppercase tracking-[0.2em]"
+            style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+          >
+            {option.name}
+          </label>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
+            {option.values.map((value) => {
+              const isSelected = selectedOptions[option.name] === value;
+              const available = isOptionAvailable(option.name, value);
+              return (
+                <button
+                  key={value}
+                  onClick={() => handleOptionChange(option.name, value)}
+                  disabled={!available}
+                  aria-pressed={isSelected}
+                  className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
+                    isSelected
+                      ? 'border border-[#c9a96e] text-[#c9a96e]'
+                      : available
+                      ? 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
+                      : 'border border-[rgba(201,169,110,0.1)] text-[#3a3a3a] line-through cursor-not-allowed'
+                  }`}
+                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
+                >
+                  {value}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ============================================================================
 // PRODUCT DETAILS LIST
 // ============================================================================
 function ProductDetailsList({ description }) {
@@ -222,29 +303,41 @@ function RelatedProducts({ products }) {
 // ============================================================================
 // MAIN PRODUCT DETAIL COMPONENT
 // ============================================================================
-export default function ProductDetail({ product, relatedProducts }) {
+export default function ProductDetail({ product, relatedProducts, shopifyVariants }) {
   const { isMember, loading: authLoading } = useSanctuaryAccess();
   const { addItem } = useCart();
 
   const isApparel = APPAREL_CATEGORIES.includes(product.category);
   const hasProductVariants = product.productVariants?.length > 0;
+  const hasShopifyVariants = shopifyVariants?.variants?.length > 0;
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
-  // Effective price: variant override → product price
-  const basePrice = selectedVariant?.price_override ?? product.price;
+  // Stable callback for Shopify variant selection
+  const handleShopifyVariantSelect = useCallback((variant) => {
+    setSelectedShopifyVariant(variant);
+  }, []);
+
+  // Effective price: Shopify variant → Supabase variant override → product price
+  const basePrice = selectedShopifyVariant?.price
+    ?? selectedVariant?.price_override
+    ?? product.price;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
 
-  // Variant image override (only when variant has its own image)
-  const variantImage = selectedVariant?.image_url || null;
+  // Variant image override
+  const variantImage = selectedShopifyVariant?.imageUrl
+    || selectedVariant?.image_url
+    || null;
 
   async function handleAddToCart() {
     if (cartState !== 'idle') return;
     if (isApparel && !selectedSize) return;
     if (hasProductVariants && !selectedVariant) return;
+    if (hasShopifyVariants && !selectedShopifyVariant) return;
 
     setCartState('loading');
 
@@ -254,6 +347,8 @@ export default function ProductDetail({ product, relatedProducts }) {
         price: basePrice,
         selectedSize: isApparel ? selectedSize : null,
         selectedVariant: selectedVariant,
+        // Override shopifyVariantId with the selected Shopify variant's GID
+        shopifyVariantId: selectedShopifyVariant?.shopifyVariantId || product.shopifyVariantId,
       }, quantity);
 
       setCartState('success');
@@ -264,7 +359,9 @@ export default function ProductDetail({ product, relatedProducts }) {
     }
   }
 
-  const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !selectedVariant);
+  const needsSelection = (isApparel && !selectedSize)
+    || (hasProductVariants && !selectedVariant)
+    || (hasShopifyVariants && !selectedShopifyVariant);
   const buttonDisabled = cartState === 'loading' || cartState === 'success' || needsSelection;
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
@@ -368,7 +465,7 @@ export default function ProductDetail({ product, relatedProducts }) {
               )}
 
               {/* Product variants selector (color, size from product_variants table) */}
-              {hasProductVariants && (
+              {hasProductVariants && !hasShopifyVariants && (
                 <VariantSelector
                   variants={product.productVariants}
                   selectedVariant={selectedVariant}
@@ -376,8 +473,17 @@ export default function ProductDetail({ product, relatedProducts }) {
                 />
               )}
 
-              {/* Size selector — only for apparel without product_variants */}
-              {isApparel && !hasProductVariants && (
+              {/* Shopify variants selector (fetched from Storefront API) */}
+              {hasShopifyVariants && (
+                <ShopifyVariantSelector
+                  shopifyVariants={shopifyVariants}
+                  selectedShopifyVariant={selectedShopifyVariant}
+                  onSelect={handleShopifyVariantSelect}
+                />
+              )}
+
+              {/* Size selector — only for apparel without product_variants or shopify variants */}
+              {isApparel && !hasProductVariants && !hasShopifyVariants && (
                 <div className="flex flex-col gap-3">
                   <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
                     Size

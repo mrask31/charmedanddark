@@ -32,7 +32,10 @@ export function CartProvider({ children }) {
     const variant = product.selectedVariant || null;
 
     // Variant-based cart key takes priority over size
-    const cartKey = variant
+    // Use shopifyVariantId for Shopify variants to ensure unique cart entries per variant
+    const cartKey = product.shopifyVariantId && !variant
+      ? `${product.slug}__sv_${product.shopifyVariantId}`
+      : variant
       ? `${product.slug}__v_${variant.id}`
       : size
       ? `${product.slug}__${size}`
