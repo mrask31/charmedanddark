@@ -29,7 +29,20 @@ export function CartProvider({ children }) {
 
   const addItem = useCallback((product, quantity = 1) => {
     const size = product.selectedSize || null;
-    const cartKey = size ? `${product.slug}__${size}` : product.slug;
+    const variant = product.selectedVariant || null;
+
+    // Variant-based cart key takes priority over size
+    const cartKey = variant
+      ? `${product.slug}__v_${variant.id}`
+      : size
+      ? `${product.slug}__${size}`
+      : product.slug;
+
+    // Use variant price_override if present, then salePrice, then price
+    const effectivePrice = variant?.price_override ?? product.salePrice ?? product.price;
+    const variantLabel = variant
+      ? `${variant.variant_type.charAt(0).toUpperCase() + variant.variant_type.slice(1)}: ${variant.variant_value}`
+      : null;
 
     setItems(prev => {
       const existing = prev.find(item => item.cartKey === cartKey);
@@ -45,9 +58,10 @@ export function CartProvider({ children }) {
         slug: product.slug,
         name: product.name,
         size,
-        price: product.salePrice || product.price,
+        variant: variantLabel,
+        price: effectivePrice,
         originalPrice: product.price,
-        imageUrl: product.imageUrls?.[0] || null,
+        imageUrl: variant?.image_url || product.imageUrls?.[0] || null,
         quantity,
         shopifyVariantId: product.shopifyVariantId || null,
       }];

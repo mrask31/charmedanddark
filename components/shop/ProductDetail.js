@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Lock, Minus, Plus } from 'lucide-react';
@@ -13,7 +13,7 @@ const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 // ============================================================================
 // PRODUCT GALLERY
 // ============================================================================
-function ProductGallery({ images, productName }) {
+function ProductGallery({ images, productName, overrideImage }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fading, setFading] = useState(false);
 
@@ -26,15 +26,16 @@ function ProductGallery({ images, productName }) {
     }, 180);
   }
 
-  const activeImage = images?.[activeIndex];
+  // If a variant-specific image is provided, show it as the main image
+  const displayImage = overrideImage || images?.[activeIndex];
 
   return (
     <div className="flex flex-col gap-3">
       {/* Main image */}
       <div className="relative w-full overflow-hidden" style={{ aspectRatio: '4/5', backgroundColor: '#08080f' }}>
-        {activeImage ? (
+        {displayImage ? (
           <Image
-            src={activeImage}
+            src={displayImage}
             alt={productName}
             fill
             priority
@@ -50,8 +51,8 @@ function ProductGallery({ images, productName }) {
         )}
       </div>
 
-      {/* Thumbnail strip */}
-      {images?.length > 1 && (
+      {/* Thumbnail strip — only show when no variant image override */}
+      {!overrideImage && images?.length > 1 && (
         <div className="flex gap-2">
           {images.slice(0, 5).map((img, i) => (
             <button
@@ -70,6 +71,55 @@ function ProductGallery({ images, productName }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// ============================================================================
+// VARIANT SELECTOR
+// ============================================================================
+function VariantSelector({ variants, selectedVariant, onSelect }) {
+  // Group variants by type (e.g., { color: [...], size: [...] })
+  const grouped = useMemo(() => {
+    return variants.reduce((acc, v) => {
+      if (!acc[v.variant_type]) acc[v.variant_type] = [];
+      acc[v.variant_type].push(v);
+      return acc;
+    }, {});
+  }, [variants]);
+
+  return (
+    <div className="flex flex-col gap-5">
+      {Object.entries(grouped).map(([type, options]) => (
+        <div key={type} className="flex flex-col gap-3">
+          <label
+            className="text-[11px] uppercase tracking-[0.2em]"
+            style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </label>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${type}`}>
+            {options.map((variant) => {
+              const isSelected = selectedVariant?.id === variant.id;
+              return (
+                <button
+                  key={variant.id}
+                  onClick={() => onSelect(isSelected ? null : variant)}
+                  aria-pressed={isSelected}
+                  className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
+                    isSelected
+                      ? 'border border-[#c9a96e] text-[#c9a96e]'
+                      : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
+                  }`}
+                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
+                >
+                  {variant.variant_value}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -177,23 +227,33 @@ export default function ProductDetail({ product, relatedProducts }) {
   const { addItem } = useCart();
 
   const isApparel = APPAREL_CATEGORIES.includes(product.category);
+  const hasProductVariants = product.productVariants?.length > 0;
+
   const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
-  const sanctuaryPrice = product.price ? +(product.price * 0.90).toFixed(2) : null;
+  // Effective price: variant override → product price
+  const basePrice = selectedVariant?.price_override ?? product.price;
+  const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
+
+  // Variant image override (only when variant has its own image)
+  const variantImage = selectedVariant?.image_url || null;
 
   async function handleAddToCart() {
     if (cartState !== 'idle') return;
     if (isApparel && !selectedSize) return;
+    if (hasProductVariants && !selectedVariant) return;
 
     setCartState('loading');
 
     try {
-      // Add to local cart context
       addItem({
         ...product,
+        price: basePrice,
         selectedSize: isApparel ? selectedSize : null,
+        selectedVariant: selectedVariant,
       }, quantity);
 
       setCartState('success');
@@ -204,11 +264,13 @@ export default function ProductDetail({ product, relatedProducts }) {
     }
   }
 
-  const buttonDisabled = cartState === 'loading' || cartState === 'success' || (isApparel && !selectedSize);
+  const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !selectedVariant);
+  const buttonDisabled = cartState === 'loading' || cartState === 'success' || needsSelection;
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added to Cart ✓'
     : cartState === 'error' ? 'Something went wrong'
+    : needsSelection ? 'Select an option'
     : 'Add to Cart';
 
   return (
@@ -229,7 +291,11 @@ export default function ProductDetail({ product, relatedProducts }) {
         <div className="flex flex-col items-start gap-10 md:flex-row lg:gap-16">
           {/* Left: gallery (60%) */}
           <div className="w-full md:w-[60%]">
-            <ProductGallery images={product.imageUrls} productName={product.name} />
+            <ProductGallery
+              images={product.imageUrls}
+              productName={product.name}
+              overrideImage={variantImage}
+            />
             <div className="mt-10 hidden md:block">
               <ProductDetailsList description={product.description} />
             </div>
@@ -252,13 +318,13 @@ export default function ProductDetail({ product, relatedProducts }) {
               </h1>
 
               {/* Price block */}
-              {product.price && (
+              {basePrice && (
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-baseline gap-4">
                     {isMember ? (
                       <>
                         <span className="font-light text-xl line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                          ${product.price.toFixed(2)}
+                          ${basePrice.toFixed(2)}
                         </span>
                         <span className="font-light text-[18px]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
                           ${sanctuaryPrice?.toFixed(2)}
@@ -270,7 +336,7 @@ export default function ProductDetail({ product, relatedProducts }) {
                     ) : (
                       <>
                         <span className="font-light text-xl" style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif' }}>
-                          ${product.price.toFixed(2)}
+                          ${basePrice.toFixed(2)}
                         </span>
                         <div className="flex items-center gap-1.5">
                           <Lock size={12} className="shrink-0" style={{ color: '#c9a96e', opacity: 0.8 }} aria-hidden="true" />
@@ -301,8 +367,17 @@ export default function ProductDetail({ product, relatedProducts }) {
                 </p>
               )}
 
-              {/* Size selector — only for apparel */}
-              {isApparel && (
+              {/* Product variants selector (color, size from product_variants table) */}
+              {hasProductVariants && (
+                <VariantSelector
+                  variants={product.productVariants}
+                  selectedVariant={selectedVariant}
+                  onSelect={setSelectedVariant}
+                />
+              )}
+
+              {/* Size selector — only for apparel without product_variants */}
+              {isApparel && !hasProductVariants && (
                 <div className="flex flex-col gap-3">
                   <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
                     Size
@@ -375,8 +450,10 @@ export default function ProductDetail({ product, relatedProducts }) {
                     ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
                     : cartState === 'error'
                     ? 'border-red-500/50 text-red-400'
+                    : needsSelection
+                    ? 'border-[rgba(201,169,110,0.25)] text-[#6b6760] cursor-not-allowed'
                     : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                } disabled:opacity-50`}
                 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
               >
                 {buttonLabel}

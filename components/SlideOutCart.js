@@ -75,7 +75,8 @@ export default function SlideOutCart() {
                 <div className="flex-1">
                   <h3 className="text-white text-sm">
                     {item.name}
-                    {item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
+                    {item.variant && <span className="text-zinc-500 ml-2">({item.variant})</span>}
+                    {!item.variant && item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
                   </h3>
                   <p className="text-zinc-400 text-sm mt-1">${item.price.toFixed(2)}</p>
                   <div className="flex items-center gap-3 mt-2">
