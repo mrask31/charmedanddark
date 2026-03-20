@@ -104,7 +104,7 @@ export default function ProductCard({ product, isMember }) {
                   ).join(' · ')}
                 </p>
               )}
-              {!product.variantSummary?.length && product.shopifyVariantId && (
+              {!product.variantSummary?.length && product.hasShopifyOptions && (
                 <p
                   className="mt-1 text-[11px] uppercase tracking-[0.15em]"
                   style={{ color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
