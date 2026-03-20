@@ -92,6 +92,26 @@ export default function ProductCard({ product, isMember }) {
                   </div>
                 </div>
               )}
+
+              {/* Variant availability summary */}
+              {product.variantSummary?.length > 0 && (
+                <p
+                  className="mt-1 text-[11px] uppercase tracking-[0.15em]"
+                  style={{ color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+                >
+                  {product.variantSummary.map((v) =>
+                    `${v.count} ${v.count === 1 ? v.type : v.type + 's'} available`
+                  ).join(' · ')}
+                </p>
+              )}
+              {!product.variantSummary?.length && product.shopifyVariantId && (
+                <p
+                  className="mt-1 text-[11px] uppercase tracking-[0.15em]"
+                  style={{ color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+                >
+                  Options available
+                </p>
+              )}
             </div>
           )}
         </div>
