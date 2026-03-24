@@ -10,10 +10,12 @@ import { useSanctuaryAccess } from "@/hooks/useSanctuaryAccess";
 // Category mapping for filter bar - matches exact Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
-  HOME: ["home-decor"],
-  RITUAL: ["ritual"],
-  ACCESSORIES: ["accessories"],
-  APPAREL: ["T-Shirt", "Tank Top", "Hoodie", "Hats"],
+  HOME: ["Home Decor"],
+  RITUAL: ["Ritual"],
+  ACCESSORIES: ["Accessories"],
+  APPAREL: ["Apparel"],
+  WALL_ART: ["Wall Art"],
+  STICKERS: ["Stickers"],
 };
 
 // Section configuration - matches exact Supabase category values
@@ -21,22 +23,32 @@ const SECTIONS = {
   HOME: {
     title: "The Sanctuary",
     subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
-    categories: ["home-decor"],
+    categories: ["Home Decor"],
   },
   RITUAL: {
     title: "The Ritual",
     subtitle: "Tools for transformation, ceremony, and quiet devotion",
-    categories: ["ritual"],
+    categories: ["Ritual"],
   },
   ACCESSORIES: {
     title: "Adornments",
     subtitle: "Jewelry and accessories for those who move between worlds",
-    categories: ["accessories"],
+    categories: ["Accessories"],
   },
   APPAREL: {
     title: "The Wardrobe",
     subtitle: "Wearable darkness, crafted for those who move between worlds",
-    categories: ["T-Shirt", "Tank Top", "Hoodie", "Hats"],
+    categories: ["Apparel"],
+  },
+  WALL_ART: {
+    title: "The Gallery",
+    subtitle: "Dark art for walls that refuse to be ordinary",
+    categories: ["Wall Art"],
+  },
+  STICKERS: {
+    title: "The Sigils",
+    subtitle: "Mark your world with darkness",
+    categories: ["Stickers"],
   },
 };
 
@@ -106,6 +118,8 @@ export default function ShopPageClient({ products }) {
       RITUAL: ["RITUAL"],
       ACCESSORIES: ["ACCESSORIES"],
       APPAREL: ["APPAREL"],
+      WALL_ART: ["WALL_ART"],
+      STICKERS: ["STICKERS"],
     };
     
     return filterToSection[activeFilter] || [];
