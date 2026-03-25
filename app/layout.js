@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import Script from 'next/script';
 import { StickyNav } from "@/components/StickyNav";
 import MobileTabNav from "@/components/MobileTabNav";
 import SlideOutCart from "@/components/SlideOutCart";
@@ -69,6 +70,11 @@ export default function RootLayout({ children }) {
             <MobileTabNav />
           </CartProvider>
         </div>
+        <Script
+          id="klaviyo-onsite"
+          src={`https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=${process.env.NEXT_PUBLIC_KLAVIYO_SITE_ID}`}
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
