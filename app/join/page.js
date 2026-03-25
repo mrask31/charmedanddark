@@ -30,6 +30,12 @@ async function handleJoinSubmit(email, setStatus) {
       throw new Error(err.error || 'Subscription failed')
     }
 
+    const data = await klaviyoRes.json()
+    if (data.alreadyMember) {
+      setStatus({ type: 'success', message: "You're already one of us.", alreadyMember: true })
+      return
+    }
+
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
   } catch (err) {
     console.error('Join form error:', err)
@@ -50,10 +56,10 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
     return (
       <div style={{ textAlign: 'center', padding: '1rem 0' }}>
         <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '22px', fontStyle: 'italic' }}>
-          {status.message}
+          {status.alreadyMember ? "You're already one of us." : "You're in. Welcome to the Sanctuary."}
         </p>
         <p style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '8px' }}>
-          Check your inbox — a welcome awaits.
+          {status.alreadyMember ? "The Sanctuary remembers you." : "Check your inbox — a welcome awaits."}
         </p>
       </div>
     )
@@ -122,9 +128,14 @@ function CtaForm() {
 
   if (status?.type === 'success') {
     return (
-      <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '20px', fontStyle: 'italic', textAlign: 'center', padding: '1rem 0' }}>
-        You&apos;re in. Welcome to the Sanctuary.
-      </p>
+      <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+        <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '20px', fontStyle: 'italic' }}>
+          {status.alreadyMember ? "You're already one of us." : "You're in. Welcome to the Sanctuary."}
+        </p>
+        <p style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '8px' }}>
+          {status.alreadyMember ? "The Sanctuary remembers you." : "Check your inbox — a welcome awaits."}
+        </p>
+      </div>
     )
   }
 

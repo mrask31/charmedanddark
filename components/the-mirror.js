@@ -4,6 +4,29 @@ import { useState } from "react";
 
 export function TheMirror() {
   const [mood, setMood] = useState("");
+  const [reading, setReading] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleReceiveReading = async () => {
+    if (!mood.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/mirror', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mood }),
+      });
+      const data = await res.json();
+      setReading(data);
+    } catch {
+      setReading({
+        validation: 'The mirror is quiet tonight.',
+        prescription: 'Return when the mood finds words.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="bg-black px-8 py-32 lg:px-16">
@@ -25,9 +48,20 @@ export function TheMirror() {
           />
         </div>
 
-        <button className="mt-10 bg-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-black transition-opacity duration-160 hover:opacity-90">
-          Receive Reading
+        <button
+          onClick={handleReceiveReading}
+          disabled={loading || !mood.trim()}
+          className="mt-10 bg-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-black transition-opacity duration-160 hover:opacity-90 disabled:opacity-50"
+        >
+          {loading ? 'Reading...' : 'Receive Reading'}
         </button>
+
+        {reading && (
+          <div className="mt-10 space-y-4 text-left border-t border-zinc-800 pt-10">
+            <p className="text-sm text-zinc-300 italic">{reading.validation}</p>
+            <p className="text-xs uppercase tracking-widest text-[#B89C6D]">{reading.prescription}</p>
+          </div>
+        )}
       </div>
     </section>
   );

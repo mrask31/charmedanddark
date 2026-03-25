@@ -73,6 +73,24 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Profile ID not found' }, { status: 500 })
     }
 
+    // Check if already in Sanctuary Members list
+    const memberCheckRes = await fetch(
+      `https://a.klaviyo.com/api/lists/${KLAVIYO_SANCTUARY_LIST_ID}/relationships/profiles/`,
+      {
+        headers: {
+          'Authorization': `Klaviyo-API-Key ${KLAVIYO_PRIVATE_API_KEY}`,
+          'Content-Type': 'application/json',
+          'revision': '2024-02-15',
+        },
+      }
+    )
+    const memberCheckData = await memberCheckRes.json()
+    const alreadyMember = memberCheckData?.data?.some(p => p.id === profileId) || false
+
+    if (alreadyMember) {
+      return NextResponse.json({ success: true, alreadyMember: true })
+    }
+
     // Step 2: Add profile to Sanctuary Members list
     const listRes = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_SANCTUARY_LIST_ID}/relationships/profiles/`, {
       method: 'POST',
