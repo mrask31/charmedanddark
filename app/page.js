@@ -2,7 +2,7 @@ import { Hero } from "@/components/hero";
 import { CategoryPortals } from "@/components/category-portals";
 import { FeaturedProducts } from "@/components/featured-products";
 import { EditorialBreak } from "@/components/editorial-break";
-import { TheMirror } from "@/components/the-mirror";
+import TheMirror from "@/components/the-mirror";
 import { MembershipPitch } from "@/components/membership-pitch";
 import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
