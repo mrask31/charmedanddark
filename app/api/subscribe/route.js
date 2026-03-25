@@ -35,6 +35,21 @@ export async function POST(request) {
 
     if (error) throw error;
 
+    // Also send to Klaviyo (fire-and-forget, don't block the response)
+    try {
+      const klaviyoUrl = new URL('/api/klaviyo/subscribe', request.url);
+      fetch(klaviyoUrl.toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: normalizedEmail,
+          source: source || 'website',
+        }),
+      }).catch((err) => console.error('Klaviyo sync failed:', err.message));
+    } catch (klaviyoErr) {
+      console.error('Klaviyo call setup failed:', klaviyoErr.message);
+    }
+
     return NextResponse.json({ success: true, alreadySubscribed: alreadyExists });
   } catch (err) {
     console.error('Subscribe error:', err);

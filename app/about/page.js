@@ -4,7 +4,7 @@ import CardsSection from '@/components/about/CardsSection';
 import CtaBlock from '@/components/about/CtaBlock';
 
 export const metadata = {
-  title: 'About — Charmed & Dark',
+  title: 'About',
   description: 'A boutique for the modern shadow—crafted for quiet, beauty, and ritual.',
 };
 

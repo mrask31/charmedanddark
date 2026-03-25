@@ -3,7 +3,7 @@ import JournalHero from '@/components/journal/JournalHero';
 import PostGrid from '@/components/journal/PostGrid';
 
 export const metadata = {
-  title: 'Journal | Charmed & Dark',
+  title: 'Journal',
   description: 'Quiet reflections, ritual notes, and gothic musings.',
 };
 

@@ -30,7 +30,7 @@ export const metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'Charmed & Dark',
-    images: [{ url: '/og-default.jpg', width: 1200, height: 630, alt: 'Charmed & Dark' }],
+    images: [{ url: '/og-default.svg', width: 1200, height: 630, alt: 'Charmed & Dark' }],
   },
   robots: { index: true, follow: true },
 };

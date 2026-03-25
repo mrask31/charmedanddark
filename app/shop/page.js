@@ -5,7 +5,7 @@ import ShopPageClient from "./page-new";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "The Atelier | Charmed & Dark",
+  title: "The Atelier",
   description: "Curated darkness for the modern mystic. Gothic home decor, ritual tools, and wearable art.",
 };
 

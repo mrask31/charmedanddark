@@ -6,7 +6,7 @@ import FaqSection from '@/components/join/FaqSection';
 import JoinCta from '@/components/join/JoinCta';
 
 export const metadata = {
-  title: 'Join the Sanctuary | Charmed & Dark — Save 10% Forever',
+  title: 'Join the Sanctuary — Save 10% Forever',
   description:
     'Step into the Sanctuary at Charmed & Dark to unlock permanent 10% off, early access to Drops, and a private archive of your Mirror readings. Join free in seconds.',
 };

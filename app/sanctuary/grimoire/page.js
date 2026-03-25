@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "The Grimoire | Charmed & Dark",
+  title: "The Grimoire",
   description:
     "A private ledger of your readings, rituals, and quiet rewards.",
 };

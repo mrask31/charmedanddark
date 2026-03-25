@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Haunted America 2026 | Charmed & Dark",
+  title: "Haunted America 2026",
   description:
     "A gothic convention experience. Details and registration coming soon.",
 };
