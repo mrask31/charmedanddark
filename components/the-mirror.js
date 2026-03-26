@@ -194,7 +194,7 @@ export default function TheMirror() {
                       color: '#c9a96e',
                       letterSpacing: '0.05em',
                     }}>
-                      ${parseFloat(product.price).toFixed(2)} — View →
+                      {product.price ? `$${parseFloat(product.price).toFixed(2)}` : ''} — View →
                     </div>
                   </a>
                 ))}

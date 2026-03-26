@@ -96,10 +96,19 @@ Format: {"validation":"string — poetic description of who this person is","pre
       parsed = null
     }
 
+    const enrichedProducts = (parsed?.products || []).map(p => {
+      const realProduct = productList.find(sp => sp.handle === p.handle)
+      return {
+        ...p,
+        price: realProduct?.price || p.price,
+        title: realProduct?.title || p.title,
+      }
+    })
+
     return NextResponse.json({
       validation: parsed?.validation || 'The mirror sees you.',
       prescription: parsed?.prescription || 'Light a candle. Let the dark hold you for a moment.',
-      products: parsed?.products || [],
+      products: enrichedProducts,
       mode,
     })
   } catch (err) {
