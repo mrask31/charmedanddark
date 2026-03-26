@@ -147,16 +147,6 @@ function ShopifyVariantSelector({ shopifyVariants, selectedShopifyVariant, onSel
     setSelectedOptions((prev) => ({ ...prev, [optionName]: value }));
   }
 
-  // Check if a specific option value is available given current other selections
-  function isOptionAvailable(optionName, value) {
-    const testOptions = { ...selectedOptions, [optionName]: value };
-    return variants.some(
-      (v) =>
-        v.available &&
-        v.selectedOptions.every((opt) => testOptions[opt.name] === opt.value)
-    );
-  }
-
   return (
     <div className="flex flex-col gap-5">
       {options.map((option) => (
@@ -170,21 +160,17 @@ function ShopifyVariantSelector({ shopifyVariants, selectedShopifyVariant, onSel
           <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
             {option.values.map((value) => {
               const isSelected = selectedOptions[option.name] === value;
-              const available = isOptionAvailable(option.name, value);
               return (
                 <button
                   key={value}
                   onClick={() => handleOptionChange(option.name, value)}
-                  disabled={!available}
                   aria-pressed={isSelected}
                   className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
                     isSelected
                       ? 'border border-[#c9a96e] text-[#c9a96e]'
-                      : available
-                      ? 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                      : 'border border-[rgba(201,169,110,0.1)] text-[#3a3a3a] line-through cursor-not-allowed'
+                      : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
                   }`}
-                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
+                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
                 >
                   {value}
                 </button>
