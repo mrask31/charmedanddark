@@ -131,15 +131,7 @@ function ShopifyVariantSelector({ shopifyVariants, selectedShopifyVariant, onSel
   const { options, variants } = shopifyVariants;
 
   // Track selected option values (e.g., { Size: "M", Color: "Black" })
-  const [selectedOptions, setSelectedOptions] = useState(() => {
-    // Default to first available variant's options
-    const firstAvailable = variants.find((v) => v.available) || variants[0];
-    if (!firstAvailable) return {};
-    return firstAvailable.selectedOptions.reduce((acc, opt) => {
-      acc[opt.name] = opt.value;
-      return acc;
-    }, {});
-  });
+  const [selectedOptions, setSelectedOptions] = useState({});
 
   // Find the variant matching current selections
   useEffect(() => {

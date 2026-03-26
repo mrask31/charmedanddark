@@ -96,14 +96,19 @@ Format: {"validation":"string — poetic description of who this person is","pre
       parsed = null
     }
 
-    const enrichedProducts = (parsed?.products || []).map(p => {
-      const realProduct = productList.find(sp => sp.handle === p.handle)
-      return {
-        ...p,
-        price: realProduct?.price || p.price,
-        title: realProduct?.title || p.title,
+    const enrichedProducts = (parsed?.products || []).map(claudeProduct => {
+      let match = productList.find(p => p.handle === claudeProduct.handle)
+      if (!match && claudeProduct.title) {
+        match = productList.find(p => p.title.toLowerCase() === claudeProduct.title.toLowerCase())
       }
-    })
+      return {
+        title: match?.title || claudeProduct.title,
+        handle: match?.handle || claudeProduct.handle,
+        price: match?.price ?? null,
+        category: match?.category || claudeProduct.category,
+        reason: claudeProduct.reason,
+      }
+    }).filter(p => p.handle)
 
     return NextResponse.json({
       validation: parsed?.validation || 'The mirror sees you.',

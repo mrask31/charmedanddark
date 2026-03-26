@@ -1,10 +1,10 @@
 "use client";
 
-export default function StickyFilterBar({ 
-  activeFilter, 
-  onFilterChange, 
-  sortOption, 
-  onSortChange 
+export default function StickyFilterBar({
+  activeFilter,
+  onFilterChange,
+  sortOption,
+  onSortChange
 }) {
   const filters = [
     { id: "ALL", label: "ALL" },
@@ -25,17 +25,39 @@ export default function StickyFilterBar({
 
   return (
     <div className="sticky top-[72px] z-40 border-b border-white/10 bg-black/95 backdrop-blur-sm">
+      <style>{`.filter-scroll::-webkit-scrollbar { display: none }`}</style>
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-        <div className="flex flex-wrap gap-2">
+        <div
+          className="filter-scroll"
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            overflowX: 'auto',
+            gap: '8px',
+            padding: '0 16px 8px',
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch',
+            flex: 1,
+          }}
+        >
           {filters.map((filter) => (
             <button
               key={filter.id}
               onClick={() => onFilterChange(filter.id)}
-              className={`px-4 py-2 text-xs uppercase tracking-[0.2em] transition ${
-                activeFilter === filter.id
-                  ? "text-white"
-                  : "text-zinc-400 hover:text-white"
-              }`}
+              style={{
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+                padding: '6px 14px',
+                fontSize: '11px',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                fontFamily: 'Inter, sans-serif',
+                border: 'none',
+                background: 'transparent',
+                color: activeFilter === filter.id ? '#c9a96e' : 'rgba(255,255,255,0.4)',
+                borderBottom: activeFilter === filter.id ? '1px solid #c9a96e' : '1px solid transparent',
+                cursor: 'pointer',
+              }}
             >
               {filter.label}
             </button>

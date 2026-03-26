@@ -76,6 +76,7 @@ function transformRow(row) {
     price: row.sale_price || row.price,
     imageUrls: row.image_urls || (row.image_url ? [row.image_url] : []),
     shopifyVariantId: row.shopify_variant_id,
+    shopify_id: row.shopify_id,
   };
 }
 
@@ -87,9 +88,9 @@ export default async function ProductPage({ params }) {
 
   const relatedProducts = await getRelatedProducts(product);
 
-  // Fetch Shopify variants if product has a shopify_variant_id
-  const shopifyVariants = product.shopifyVariantId
-    ? await getShopifyVariants(product.shopifyVariantId)
+  // Fetch Shopify variants using the product GID (shopify_id)
+  const shopifyVariants = product.shopify_id
+    ? await getShopifyVariants(product.shopify_id)
     : null;
 
   return (
