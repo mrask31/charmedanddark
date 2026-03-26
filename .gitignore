@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Prelaunch Checklist
+charmed_dark_prelaunch_checklist.docx
