@@ -77,6 +77,25 @@ export default function ShopPageClient({ products }) {
   const [sortOption, setSortOption] = useState("Featured");
   const { isMember } = useSanctuaryAccess();
 
+  // Save scroll position continuously
+  useEffect(() => {
+    const saveScroll = () => {
+      sessionStorage.setItem('shopScrollY', window.scrollY.toString())
+    }
+    window.addEventListener('scroll', saveScroll, { passive: true })
+    return () => window.removeEventListener('scroll', saveScroll)
+  }, [])
+
+  // Restore scroll on mount
+  useEffect(() => {
+    const saved = sessionStorage.getItem('shopScrollY')
+    if (saved && parseInt(saved) > 100) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(saved))
+      }, 150)
+    }
+  }, [])
+
   // Filter products based on active filter
   const filteredProducts = useMemo(() => {
     let filtered = products.filter((p) => !p.hidden);
