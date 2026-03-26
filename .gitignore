@@ -42,3 +42,7 @@ next-env.d.ts
 
 # Prelaunch Checklist
 charmed_dark_prelaunch_checklist.docx
+
+# Claude worktrees and data files
+.claude/worktrees/
+charmed_dark_products_updated.csv
