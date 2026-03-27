@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Lock, Minus, Plus } from 'lucide-react';
 import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 import { useCart } from '@/context/CartContext';
+import AddToCart from '@/app/shop/[slug]/AddToCart';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -125,65 +126,6 @@ function VariantSelector({ variants, selectedVariant, onSelect }) {
 }
 
 // ============================================================================
-// SHOPIFY VARIANT SELECTOR
-// ============================================================================
-function ShopifyVariantSelector({ shopifyVariants, selectedShopifyVariant, onSelect }) {
-  const { options, variants } = shopifyVariants;
-
-  // Track selected option values (e.g., { Size: "M", Color: "Black" })
-  const [selectedOptions, setSelectedOptions] = useState({});
-
-  // Find the variant matching current selections
-  useEffect(() => {
-    const match = variants.find((v) =>
-      v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
-    );
-    if (match && match.shopifyVariantId !== selectedShopifyVariant?.shopifyVariantId) {
-      onSelect(match);
-    }
-  }, [selectedOptions, variants, onSelect, selectedShopifyVariant]);
-
-  function handleOptionChange(optionName, value) {
-    setSelectedOptions((prev) => ({ ...prev, [optionName]: value }));
-  }
-
-  return (
-    <div className="flex flex-col gap-5">
-      {options.map((option) => (
-        <div key={option.name} className="flex flex-col gap-3">
-          <label
-            className="text-[11px] uppercase tracking-[0.2em]"
-            style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-          >
-            {option.name}
-          </label>
-          <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
-            {option.values.map((value) => {
-              const isSelected = selectedOptions[option.name] === value;
-              return (
-                <button
-                  key={value}
-                  onClick={() => handleOptionChange(option.name, value)}
-                  aria-pressed={isSelected}
-                  className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                    isSelected
-                      ? 'border border-[#c9a96e] text-[#c9a96e]'
-                      : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                  }`}
-                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
-                >
-                  {value}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ============================================================================
 // PRODUCT DETAILS LIST
 // ============================================================================
 function ProductDetailsList({ description }) {
@@ -291,14 +233,10 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  // Tracks the Shopify variant chosen inside <AddToCart> (for price display only)
   const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
-
-  // Stable callback for Shopify variant selection
-  const handleShopifyVariantSelect = useCallback((variant) => {
-    setSelectedShopifyVariant(variant);
-  }, []);
 
   // Effective price: Shopify variant → Supabase variant override → product price
   const basePrice = selectedShopifyVariant?.price
@@ -311,11 +249,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     || selectedVariant?.image_url
     || null;
 
+  // Non-Shopify add-to-cart handler (apparel sizes + product_variants)
   async function handleAddToCart() {
     if (cartState !== 'idle') return;
     if (isApparel && !selectedSize) return;
     if (hasProductVariants && !selectedVariant) return;
-    if (hasShopifyVariants && !selectedShopifyVariant) return;
 
     setCartState('loading');
 
@@ -325,8 +263,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         price: basePrice,
         selectedSize: isApparel ? selectedSize : null,
         selectedVariant: selectedVariant,
-        // Override shopifyVariantId with the selected Shopify variant's GID
-        shopifyVariantId: selectedShopifyVariant?.shopifyVariantId || product.shopifyVariantId,
+        shopifyVariantId: product.shopifyVariantId,
       }, quantity);
 
       setCartState('success');
@@ -337,9 +274,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     }
   }
 
-  const needsSelection = (isApparel && !selectedSize)
-    || (hasProductVariants && !selectedVariant)
-    || (hasShopifyVariants && !selectedShopifyVariant);
+  const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !selectedVariant);
   const buttonDisabled = cartState === 'loading' || cartState === 'success' || needsSelection;
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
@@ -442,106 +377,108 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 </p>
               )}
 
-              {/* Product variants selector (color, size from product_variants table) */}
-              {hasProductVariants && !hasShopifyVariants && (
-                <VariantSelector
-                  variants={product.productVariants}
-                  selectedVariant={selectedVariant}
-                  onSelect={setSelectedVariant}
-                />
-              )}
-
-              {/* Shopify variants selector (fetched from Storefront API) */}
-              {hasShopifyVariants && (
-                <ShopifyVariantSelector
+              {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
+              {hasShopifyVariants ? (
+                <AddToCart
                   shopifyVariants={shopifyVariants}
-                  selectedShopifyVariant={selectedShopifyVariant}
-                  onSelect={handleShopifyVariantSelect}
+                  product={product}
+                  onVariantChange={setSelectedShopifyVariant}
                 />
-              )}
-
-              {/* Size selector — only for apparel without product_variants or shopify variants */}
-              {isApparel && !hasProductVariants && !hasShopifyVariants && (
-                <div className="flex flex-col gap-3">
-                  <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
-                    Size
-                  </label>
-                  <div className="flex flex-wrap gap-2" role="group" aria-label="Select size">
-                    {SIZES.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        aria-pressed={selectedSize === size}
-                        className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                          selectedSize === size
-                            ? 'border border-[#c9a96e] text-[#c9a96e]'
-                            : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                        }`}
-                        style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                  {isApparel && !selectedSize && (
-                    <p className="text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                      Select a size to add to cart
-                    </p>
+              ) : (
+                <>
+                  {/* Product variants selector (color, size from product_variants table) */}
+                  {hasProductVariants && (
+                    <VariantSelector
+                      variants={product.productVariants}
+                      selectedVariant={selectedVariant}
+                      onSelect={setSelectedVariant}
+                    />
                   )}
-                </div>
-              )}
 
-              {/* Quantity selector */}
-              <div className="flex flex-col gap-3">
-                <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
-                  Qty
-                </label>
-                <div className="flex items-center" role="group" aria-label="Select quantity">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    aria-label="Decrease quantity"
-                    className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
-                    style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <div
-                    className="flex h-10 w-12 items-center justify-center text-sm font-light"
-                    style={{ color: '#e8e4dc', borderTop: '1px solid rgba(201,169,110,0.2)', borderBottom: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
-                    aria-live="polite"
-                  >
-                    {quantity}
+                  {/* Size selector — only for apparel without product_variants */}
+                  {isApparel && !hasProductVariants && (
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
+                        Size
+                      </label>
+                      <div className="flex flex-wrap gap-2" role="group" aria-label="Select size">
+                        {SIZES.map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => setSelectedSize(size)}
+                            aria-pressed={selectedSize === size}
+                            className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
+                              selectedSize === size
+                                ? 'border border-[#c9a96e] text-[#c9a96e]'
+                                : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
+                            }`}
+                            style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                      {!selectedSize && (
+                        <p className="text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                          Select a size to add to cart
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Quantity selector */}
+                  <div className="flex flex-col gap-3">
+                    <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
+                      Qty
+                    </label>
+                    <div className="flex items-center" role="group" aria-label="Select quantity">
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        aria-label="Decrease quantity"
+                        className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
+                        style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <div
+                        className="flex h-10 w-12 items-center justify-center text-sm font-light"
+                        style={{ color: '#e8e4dc', borderTop: '1px solid rgba(201,169,110,0.2)', borderBottom: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
+                        aria-live="polite"
+                      >
+                        {quantity}
+                      </div>
+                      <button
+                        onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+                        aria-label="Increase quantity"
+                        className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
+                        style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => setQuantity((q) => Math.min(10, q + 1))}
-                    aria-label="Increase quantity"
-                    className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
-                    style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-              </div>
 
-              {/* Add to cart */}
-              <button
-                onClick={handleAddToCart}
-                disabled={buttonDisabled}
-                className={`h-[52px] w-full rounded-full border text-sm uppercase tracking-[0.15em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                  cartState === 'loading' ? 'animate-pulse' : ''
-                } ${
-                  cartState === 'success'
-                    ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
-                    : cartState === 'error'
-                    ? 'border-red-500/50 text-red-400'
-                    : needsSelection
-                    ? 'border-[rgba(201,169,110,0.25)] text-[#6b6760] cursor-not-allowed'
-                    : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
-                } disabled:opacity-50`}
-                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-              >
-                {buttonLabel}
-              </button>
+                  {/* Add to cart */}
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={buttonDisabled}
+                    className={`h-[52px] w-full rounded-full border text-sm uppercase tracking-[0.15em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
+                      cartState === 'loading' ? 'animate-pulse' : ''
+                    } ${
+                      cartState === 'success'
+                        ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
+                        : cartState === 'error'
+                        ? 'border-red-500/50 text-red-400'
+                        : needsSelection
+                        ? 'border-[rgba(201,169,110,0.25)] text-[#6b6760] cursor-not-allowed'
+                        : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
+                    } disabled:opacity-50`}
+                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+                  >
+                    {buttonLabel}
+                  </button>
+                </>
+              )}
 
               {/* Shipping note */}
               <p className="text-center text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
