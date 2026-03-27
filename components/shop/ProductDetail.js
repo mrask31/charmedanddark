@@ -55,7 +55,7 @@ function ProductGallery({ images, productName, overrideImage }) {
       {/* Thumbnail strip — only show when no variant image override */}
       {!overrideImage && images?.length > 1 && (
         <div className="flex gap-2">
-          {images.slice(0, 5).map((img, i) => (
+          {images.map((img, i) => (
             <button
               key={i}
               onClick={() => handleThumbnailClick(i)}

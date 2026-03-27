@@ -20,10 +20,16 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
 
   const { options, variants } = shopifyVariants;
 
-  // Find variant whose selectedOptions all match current selections
-  const selectedVariant = variants.find((v) =>
-    v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
-  ) ?? null;
+  const allOptionsSelected = options.every((opt) => selectedOptions[opt.name]);
+
+  // Only attempt a match once every option has a value — prevents variants with
+  // empty selectedOptions (e.g. "Default Title") from matching prematurely via
+  // [].every() → true.
+  const selectedVariant = allOptionsSelected
+    ? variants.find((v) =>
+        v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
+      ) ?? null
+    : null;
 
   function handleOptionChange(optionName, value) {
     const next = { ...selectedOptions, [optionName]: value };
@@ -31,14 +37,15 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
 
     // Notify parent of the newly matched variant (or null)
     if (onVariantChange) {
-      const match = variants.find((v) =>
-        v.selectedOptions.every((opt) => next[opt.name] === opt.value)
-      ) ?? null;
+      const allSelected = options.every((opt) => next[opt.name]);
+      const match = allSelected
+        ? variants.find((v) =>
+            v.selectedOptions.every((opt) => next[opt.name] === opt.value)
+          ) ?? null
+        : null;
       onVariantChange(match);
     }
   }
-
-  const allOptionsSelected = options.every((opt) => selectedOptions[opt.name]);
 
   async function handleAddToCart() {
     if (cartState !== 'idle' || !selectedVariant) return;
@@ -62,11 +69,12 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
 
   const needsSelection = !allOptionsSelected;
   const buttonDisabled = cartState !== 'idle' || needsSelection;
+  const missingOptions = options.filter((opt) => !selectedOptions[opt.name]);
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added to Cart ✓'
     : cartState === 'error' ? 'Something went wrong'
-    : needsSelection ? 'Select an option'
+    : needsSelection ? `Select ${missingOptions.map((o) => o.name.toLowerCase()).join(' and ')}`
     : 'Add to Cart';
 
   return (
