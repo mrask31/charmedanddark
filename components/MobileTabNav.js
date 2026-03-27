@@ -12,7 +12,7 @@ const tabs = [
 
 export default function MobileTabNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[60] border-t border-white/10 bg-black/90 backdrop-blur md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-[60] border-t border-white/10 bg-black md:hidden">
       <div className="mx-auto grid max-w-5xl grid-cols-5 gap-1 px-4 py-3 text-center text-xs text-white/70">
         {tabs.map((tab) => (
           <Link
