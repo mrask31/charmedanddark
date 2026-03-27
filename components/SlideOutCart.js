@@ -43,8 +43,8 @@ export default function SlideOutCart() {
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Cart Panel */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-black border-l border-zinc-800 z-50 flex flex-col">
+      {/* Cart Panel — z-[55] keeps it above the backdrop (z-40) but below MobileTabNav (z-[60]) */}
+      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-black border-l border-zinc-800 z-[55] flex flex-col">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-800">

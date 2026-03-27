@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
@@ -17,6 +17,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
   const [selectedOptions, setSelectedOptions] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
+  const isAddingRef = useRef(false); // sync guard against rapid double-taps
 
   const { options, variants } = shopifyVariants;
 
@@ -48,9 +49,13 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
   }
 
   async function handleAddToCart() {
-    if (cartState !== 'idle' || !selectedVariant) return;
+    if (isAddingRef.current || cartState !== 'idle' || !selectedVariant) return;
+    isAddingRef.current = true;
     setCartState('loading');
     try {
+      console.log('All variants:', variants.map(v => ({ id: v.shopifyVariantId, title: v.title, options: v.selectedOptions })));
+      console.log('User selected:', selectedOptions);
+      console.log('Matched variant:', selectedVariant?.shopifyVariantId, selectedVariant?.title);
       addItem(
         {
           ...product,
@@ -64,6 +69,8 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
     } catch (err) {
       console.error('Add to cart failed:', err);
       setCartState('error');
+    } finally {
+      isAddingRef.current = false;
     }
   }
 
