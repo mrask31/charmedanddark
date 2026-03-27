@@ -12,7 +12,7 @@ import { useCart } from '@/context/CartContext';
  *   product          product row (slug, name, price, imageUrls, ...)
  *   onVariantChange  optional callback(variant|null) — lets parent track selected variant for price display
  */
-export default function AddToCart({ shopifyVariants, product, onVariantChange }) {
+export default function AddToCart({ shopifyVariants, product, onVariantChange, onColorSelect }) {
   const { addItem } = useCart();
   const [selectedOptions, setSelectedOptions] = useState({});
   const [quantity, setQuantity] = useState(1);
@@ -35,6 +35,14 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
   function handleOptionChange(optionName, value) {
     const next = { ...selectedOptions, [optionName]: value };
     setSelectedOptions(next);
+
+    // Notify parent of color-variant image URL (fires even before all options selected)
+    if (onColorSelect && optionName === 'Color') {
+      const colorVariant = variants.find((v) =>
+        v.selectedOptions.some((opt) => opt.name === 'Color' && opt.value === value)
+      );
+      onColorSelect(colorVariant?.imageUrl || null);
+    }
 
     // Notify parent of the newly matched variant (or null)
     if (onVariantChange) {
@@ -61,6 +69,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange })
           ...product,
           price: selectedVariant.price,
           shopifyVariantId: selectedVariant.shopifyVariantId,
+          imageUrl: selectedVariant.imageUrl || product.imageUrls?.[0] || null,
         },
         quantity
       );

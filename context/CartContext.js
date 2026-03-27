@@ -64,7 +64,7 @@ export function CartProvider({ children }) {
         variant: variantLabel,
         price: effectivePrice,
         originalPrice: product.price,
-        imageUrl: variant?.image_url || product.imageUrls?.[0] || null,
+        imageUrl: variant?.image_url || product.imageUrl || product.imageUrls?.[0] || null,
         quantity,
         shopifyVariantId: product.shopifyVariantId || null,
       }];

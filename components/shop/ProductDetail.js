@@ -14,7 +14,7 @@ const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 // ============================================================================
 // PRODUCT GALLERY
 // ============================================================================
-function ProductGallery({ images, productName, overrideImage }) {
+function ProductGallery({ images, productName, overrideImage, shopifyVariants }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fading, setFading] = useState(false);
 
@@ -26,6 +26,19 @@ function ProductGallery({ images, productName, overrideImage }) {
       setFading(false);
     }, 180);
   }
+
+  // Build a lookup: imageUrl → color name from Shopify variant selectedOptions
+  const imageColorMap = useMemo(() => {
+    if (!shopifyVariants?.variants) return {};
+    const map = {};
+    for (const v of shopifyVariants.variants) {
+      if (v.imageUrl) {
+        const colorOpt = v.selectedOptions?.find((o) => o.name === 'Color');
+        if (colorOpt) map[v.imageUrl] = colorOpt.value;
+      }
+    }
+    return map;
+  }, [shopifyVariants]);
 
   // If a variant-specific image is provided, show it as the main image
   const displayImage = overrideImage || images?.[activeIndex];
@@ -52,24 +65,36 @@ function ProductGallery({ images, productName, overrideImage }) {
         )}
       </div>
 
-      {/* Thumbnail strip — only show when no variant image override */}
-      {!overrideImage && images?.length > 1 && (
+      {/* Thumbnail strip — always show when multiple images; include color labels */}
+      {images?.length > 1 && (
         <div className="flex gap-2">
-          {images.map((img, i) => (
-            <button
-              key={i}
-              onClick={() => handleThumbnailClick(i)}
-              aria-label={`View image ${i + 1}`}
-              className={`relative flex-1 overflow-hidden transition-all duration-200 focus-visible:outline-none ${
-                i === activeIndex
-                  ? 'ring-1 ring-[#c9a96e] ring-offset-1 ring-offset-[#08080f]'
-                  : 'opacity-50 hover:opacity-80'
-              }`}
-              style={{ aspectRatio: '1/1', backgroundColor: '#08080f' }}
-            >
-              <Image src={img} alt={`${productName} ${i + 1}`} fill className="object-cover" sizes="12vw" />
-            </button>
-          ))}
+          {images.map((img, i) => {
+            const colorLabel = imageColorMap[img];
+            return (
+              <div key={i} className="flex flex-1 flex-col items-center gap-1">
+                <button
+                  onClick={() => handleThumbnailClick(i)}
+                  aria-label={colorLabel ? `View ${colorLabel}` : `View image ${i + 1}`}
+                  className={`relative w-full overflow-hidden transition-all duration-200 focus-visible:outline-none ${
+                    i === activeIndex && !overrideImage
+                      ? 'ring-1 ring-[#c9a96e] ring-offset-1 ring-offset-[#08080f]'
+                      : 'opacity-50 hover:opacity-80'
+                  }`}
+                  style={{ aspectRatio: '1/1', backgroundColor: '#08080f' }}
+                >
+                  <Image src={img} alt={colorLabel || `${productName} ${i + 1}`} fill className="object-cover" sizes="12vw" />
+                </button>
+                {colorLabel && (
+                  <span
+                    className="text-[9px] uppercase tracking-[0.15em]"
+                    style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+                  >
+                    {colorLabel}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -235,6 +260,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [selectedVariant, setSelectedVariant] = useState(null);
   // Tracks the Shopify variant chosen inside <AddToCart> (for price display only)
   const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
+  // Tracks the image URL from a color selection (fires before all options chosen)
+  const [colorImage, setColorImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
@@ -244,8 +271,9 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     ?? product.price;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
 
-  // Variant image override
-  const variantImage = selectedShopifyVariant?.imageUrl
+  // Variant image override: color selection fires first, full variant match refines it
+  const variantImage = colorImage
+    || selectedShopifyVariant?.imageUrl
     || selectedVariant?.image_url
     || null;
 
@@ -305,6 +333,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               images={product.imageUrls}
               productName={product.name}
               overrideImage={variantImage}
+              shopifyVariants={shopifyVariants}
             />
             <div className="mt-10 hidden md:block">
               <ProductDetailsList description={product.description} />
@@ -383,6 +412,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                   shopifyVariants={shopifyVariants}
                   product={product}
                   onVariantChange={setSelectedShopifyVariant}
+                  onColorSelect={setColorImage}
                 />
               ) : (
                 <>
