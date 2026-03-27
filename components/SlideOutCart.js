@@ -37,14 +37,17 @@ export default function SlideOutCart() {
 
   return (
     <>
-      {/* Backdrop — stops above mobile nav on small screens */}
-      <div
-        className="fixed inset-x-0 top-0 bottom-14 md:bottom-0 bg-black/60 z-40"
-        onClick={() => setIsOpen(false)}
-      />
+      {/* Outer container — physically stops above mobile nav; pointer-events-none so nav stays clickable */}
+      <div className="fixed inset-x-0 top-0 bottom-14 md:bottom-0 z-40 pointer-events-none">
+        {/* Backdrop fills the safe zone above the nav */}
+        <div
+          className="absolute inset-0 bg-black/60 pointer-events-auto"
+          onClick={() => setIsOpen(false)}
+        />
+      </div>
 
       {/* Cart Panel — stops above mobile nav (bottom-14) on small screens, full height on md+ */}
-      <div className="fixed right-0 top-0 bottom-14 md:bottom-0 w-full max-w-md bg-black border-l border-zinc-800 z-[55] flex flex-col">
+      <div className="fixed right-0 top-0 bottom-14 md:bottom-0 w-full max-w-md bg-[#08080f] border-l border-zinc-800 z-[55] flex flex-col pointer-events-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-800">
@@ -108,7 +111,7 @@ export default function SlideOutCart() {
 
         {/* Footer with pricing and checkout */}
         {items.length > 0 && (
-          <div className="border-t border-zinc-800 p-6 space-y-4">
+          <div className="border-t border-zinc-800 p-6 space-y-4 bg-[#08080f]">
             <div className="flex justify-between text-sm">
               <span className="text-zinc-400 uppercase tracking-wider">Public Price</span>
               <span className="text-zinc-400 line-through">${subtotal.toFixed(2)}</span>
