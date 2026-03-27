@@ -26,31 +26,36 @@ export default function Header() {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="transition-colors hover:text-white"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="flex items-center gap-4">
+          <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
           <button
             onClick={() => setIsOpen(true)}
             className="relative text-white/70 hover:text-white transition-colors"
+            aria-label="Open cart"
           >
-            <span className="uppercase tracking-wider text-sm">Cart</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
             {itemCount > 0 && (
-              <span
-                className="absolute -top-2 -right-3 bg-[#B89C6D] text-black text-xs w-5 h-5 flex items-center justify-center font-medium"
-                style={{ borderRadius: '0px' }}
-              >
+              <span className="absolute -top-2 -right-2 bg-[#c9a96e] text-black text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center font-medium px-0.5">
                 {itemCount}
               </span>
             )}
           </button>
-        </nav>
+        </div>
       </div>
     </header>
   );

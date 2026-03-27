@@ -89,10 +89,27 @@ export default function ShopPageClient({ products }) {
   // Restore scroll on mount
   useEffect(() => {
     const saved = sessionStorage.getItem('shopScrollY')
-    if (saved && parseInt(saved) > 100) {
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(saved))
-      }, 150)
+    if (!saved) return
+
+    const targetY = parseInt(saved)
+    if (targetY < 50) return
+
+    const observer = new MutationObserver(() => {
+      if (document.body.scrollHeight > targetY) {
+        window.scrollTo({ top: targetY, behavior: 'instant' })
+        observer.disconnect()
+      }
+    })
+    observer.observe(document.body, { childList: true, subtree: true })
+
+    const fallback = setTimeout(() => {
+      window.scrollTo({ top: targetY, behavior: 'instant' })
+      observer.disconnect()
+    }, 1000)
+
+    return () => {
+      observer.disconnect()
+      clearTimeout(fallback)
     }
   }, [])
 
