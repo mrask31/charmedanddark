@@ -37,17 +37,14 @@ export default function SlideOutCart() {
 
   return (
     <>
-      {/* Outer container — physically stops above mobile nav; pointer-events-none so nav stays clickable */}
-      <div className="fixed inset-x-0 top-0 bottom-14 md:bottom-0 z-40 pointer-events-none">
-        {/* Backdrop fills the safe zone above the nav */}
-        <div
-          className="absolute inset-0 bg-black/60 pointer-events-auto"
-          onClick={() => setIsOpen(false)}
-        />
-      </div>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 z-40"
+        onClick={() => setIsOpen(false)}
+      />
 
-      {/* Cart Panel — stops above mobile nav (bottom-14) on small screens, full height on md+ */}
-      <div className="fixed right-0 top-0 bottom-14 md:bottom-0 w-full max-w-md bg-[#08080f] border-l border-zinc-800 z-[55] flex flex-col pointer-events-auto">
+      {/* Cart Panel */}
+      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#08080f] border-l border-zinc-800 z-50 flex flex-col">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-800">

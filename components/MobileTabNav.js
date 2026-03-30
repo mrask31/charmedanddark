@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCart } from "@/context/CartContext";
 
 const tabs = [
   { href: "/", label: "Home" },
@@ -11,8 +12,11 @@ const tabs = [
 ];
 
 export default function MobileTabNav() {
+  const { isOpen } = useCart();
+  if (isOpen) return null;
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[60] border-t border-white/10 bg-black md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black md:hidden">
       <div className="mx-auto grid max-w-5xl grid-cols-5 gap-1 px-4 py-3 text-center text-xs text-white/70">
         {tabs.map((tab) => (
           <Link

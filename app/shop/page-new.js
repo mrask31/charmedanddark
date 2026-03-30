@@ -77,40 +77,26 @@ export default function ShopPageClient({ products }) {
   const [sortOption, setSortOption] = useState("Featured");
   const { isMember } = useSanctuaryAccess();
 
-  // Save scroll position continuously
+  const SCROLL_KEY = 'charmed-shop-scroll';
+
   useEffect(() => {
-    const saveScroll = () => {
-      sessionStorage.setItem('shopScrollY', window.scrollY.toString())
+    // Restore
+    const saved = sessionStorage.getItem(SCROLL_KEY);
+    if (saved) {
+      const targetY = parseInt(saved, 10);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: targetY, behavior: 'instant' });
+        });
+      });
     }
-    window.addEventListener('scroll', saveScroll, { passive: true })
-    return () => window.removeEventListener('scroll', saveScroll)
-  }, [])
 
-  // Restore scroll on mount
-  useEffect(() => {
-    const saved = sessionStorage.getItem('shopScrollY')
-    if (!saved) return
-
-    const targetY = parseInt(saved)
-    if (targetY < 50) return
-
-    const observer = new MutationObserver(() => {
-      if (document.body.scrollHeight > targetY) {
-        window.scrollTo({ top: targetY, behavior: 'instant' })
-        observer.disconnect()
-      }
-    })
-    observer.observe(document.body, { childList: true, subtree: true })
-
-    const fallback = setTimeout(() => {
-      window.scrollTo({ top: targetY, behavior: 'instant' })
-      observer.disconnect()
-    }, 1000)
-
-    return () => {
-      observer.disconnect()
-      clearTimeout(fallback)
-    }
+    // Save continuously
+    const handleScroll = () => {
+      sessionStorage.setItem(SCROLL_KEY, String(Math.round(window.scrollY)));
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [])
 
   // Filter products based on active filter

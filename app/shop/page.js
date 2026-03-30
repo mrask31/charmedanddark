@@ -1,6 +1,5 @@
 import { getProducts } from "@/lib/products";
 import ShopPageClient from "./page-new";
-import ShopScrollRestore from "./ShopScrollRestore";
 
 // ISR: Revalidate every hour to keep product data fresh
 export const revalidate = 3600;
@@ -12,11 +11,6 @@ export const metadata = {
 
 export default async function ShopPage() {
   const products = await getProducts();
-  
-  return (
-    <>
-      <ShopScrollRestore />
-      <ShopPageClient products={products} />
-    </>
-  );
+
+  return <ShopPageClient products={products} />;
 }
