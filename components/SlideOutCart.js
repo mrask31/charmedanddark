@@ -33,6 +33,23 @@ export default function SlideOutCart() {
     }
   }
 
+  const FREE_SHIPPING_THRESHOLD = 100;
+  const MID_TIER_THRESHOLD = 50;
+
+  function getShippingBanner(subtotal) {
+    if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+      return { message: "🖤 You've unlocked free shipping!", type: 'success' };
+    }
+    if (subtotal >= MID_TIER_THRESHOLD) {
+      const remaining = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2);
+      return { message: `You're $${remaining} away from FREE shipping!`, type: 'progress' };
+    }
+    const remaining = (MID_TIER_THRESHOLD - subtotal).toFixed(2);
+    return { message: `You're $${remaining} away from discounted shipping ($4.99)!`, type: 'progress' };
+  }
+
+  const shippingBanner = getShippingBanner(subtotal);
+
   if (!isOpen) return null;
 
   return (
@@ -56,6 +73,25 @@ export default function SlideOutCart() {
             Close
           </button>
         </div>
+
+        {/* Shipping Progress Banner */}
+        {items.length > 0 && (
+          <div className={`mx-4 mt-3 mb-1 rounded-md px-3 py-2 text-center text-sm transition-all duration-300 ${
+            shippingBanner.type === 'success'
+              ? 'bg-[#c9a96e]/20 text-[#c9a96e] border border-[#c9a96e]/40'
+              : 'bg-[#1a1a2e] text-[#e8e4dc]/80 border border-white/10'
+          }`}>
+            {shippingBanner.type === 'progress' && (
+              <div className="w-full bg-white/10 rounded-full h-1 mb-2">
+                <div
+                  className="bg-[#c9a96e] h-1 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min((subtotal / 100) * 100, 100)}%` }}
+                />
+              </div>
+            )}
+            <span>{shippingBanner.message}</span>
+          </div>
+        )}
 
         {/* Items */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
