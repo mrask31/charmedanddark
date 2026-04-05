@@ -127,14 +127,6 @@ export async function POST(request) {
 
     for (const sp of shopifyProducts) {
       try {
-        // Debug: log raw price on first product
-        if (productsSynced === 0 && productsSkipped === 0) {
-          console.log('[PRICE DEBUG] First product:', sp.title);
-          console.log('[PRICE DEBUG] priceRange.minVariantPrice.amount:', sp.priceRange?.minVariantPrice?.amount);
-          console.log('[PRICE DEBUG] typeof:', typeof sp.priceRange?.minVariantPrice?.amount);
-          console.log('[PRICE DEBUG] first variant price:', sp.variants.edges[0]?.node?.price);
-          console.log('[PRICE DEBUG] vendor:', sp.vendor);
-        }
 
         // Skip stickers
         if (sp.productType === 'Paper products') {
@@ -158,7 +150,13 @@ export async function POST(request) {
           position: i,
         }));
         const imageUrls = imageObjects.map((img) => img.url);
-        const minPrice = parseDollars(sp.priceRange?.minVariantPrice?.amount);
+
+        // Price parsing with debug logging
+        const rawMinPrice = sp.priceRange?.minVariantPrice?.amount;
+        const rawVariantPrice = sp.variants.edges[0]?.node?.price;
+        console.log(`[PRICE] ${sp.title} | raw minPrice: ${rawMinPrice} (${typeof rawMinPrice}) | raw variant price: ${rawVariantPrice} (${typeof rawVariantPrice}) | vendor: ${sp.vendor}`);
+        const minPrice = parseDollars(rawMinPrice);
+        console.log(`[PRICE] ${sp.title} | parsed: ${minPrice}`);
 
         // Stock: Printify POD products use deny inventory policy, so override to 999
         const variants = sp.variants.edges.map(({ node }) => node);
@@ -219,6 +217,9 @@ export async function POST(request) {
           const variantRows = [];
           for (let i = 0; i < variants.length; i++) {
             const v = variants[i];
+            if (i === 0) {
+              console.log(`[VARIANT PRICE] ${sp.title} | variant[0] raw price: ${v.price} (${typeof v.price}) | parsed: ${parseDollars(v.price)}`);
+            }
             for (const opt of v.selectedOptions) {
               if (opt.name === 'Title' && opt.value === 'Default Title') continue;
               variantRows.push({
