@@ -40,11 +40,12 @@ function refineCategoryByTags(category, tags) {
   return category;
 }
 
-// Parse a Shopify price value safely as dollars (no cents multiplication)
+// Parse a Shopify price value safely as dollars — NO multiplication.
+// Shopify Admin API returns amount as a string like "18.81" (dollars).
 function parseDollars(value) {
-  if (value == null) return 0;
-  const n = parseFloat(String(value));
-  return isNaN(n) ? 0 : n;
+  if (!value) return 0;
+  const parsed = parseFloat(String(value).replace(/[^0-9.]/g, ''));
+  return isNaN(parsed) ? 0 : parsed;
 }
 
 const ADMIN_PRODUCTS_QUERY = `
@@ -175,6 +176,12 @@ export async function POST(request) {
         console.log(`[PRICE] ${sp.title} | raw minPrice: ${rawMinPrice} (${typeof rawMinPrice}) | raw variant price: ${rawVariantPrice} (${typeof rawVariantPrice}) | vendor: ${sp.vendor}`);
         const minPrice = parseDollars(rawMinPrice);
         console.log(`[PRICE] ${sp.title} | parsed: ${minPrice}`);
+
+        // Safety: warn if price looks like cents (> $500 for non-bedding/furniture)
+        const highPriceCategories = ['Bedding', 'Furniture', 'Home Decor'];
+        if (minPrice > 500 && !highPriceCategories.includes(category)) {
+          console.warn(`[PRICE WARNING] Suspicious price for ${sp.title}: $${minPrice} — may be in cents`);
+        }
 
         // Stock: made-to-order products (Printify, Charmed & Dark) use deny inventory policy
         const variants = sp.variants.edges.map(({ node }) => node);
