@@ -122,7 +122,12 @@ export async function POST(request) {
 
         const isActive = sp.status === 'ACTIVE';
         const category = mapCategory(sp.productType);
-        const images = sp.images.edges.map(({ node }) => node.url);
+        const imageObjects = sp.images.edges.map(({ node }, i) => ({
+          url: node.url,
+          alt: node.altText || '',
+          position: i,
+        }));
+        const imageUrls = imageObjects.map((img) => img.url);
         const minPrice = parseFloat(sp.priceRange?.minVariantPrice?.amount || 0);
 
         // Upsert product
@@ -130,6 +135,7 @@ export async function POST(request) {
           .from('products')
           .upsert({
             shopify_id: sp.id,
+            shopify_handle: sp.handle,
             name: sp.title,
             title: sp.title,
             handle: sp.handle,
@@ -139,13 +145,9 @@ export async function POST(request) {
             price: minPrice,
             is_available: isActive,
             hidden: !isActive,
-            image_url: images[0] || null,
-            image_urls: images,
-            images: sp.images.edges.map(({ node }, i) => ({
-              url: node.url,
-              alt: node.altText || '',
-              position: i,
-            })),
+            image_url: imageUrls[0] ?? null,
+            image_urls: imageUrls,
+            images: imageObjects,
             tags: sp.tags || [],
           }, { onConflict: 'handle' })
           .select('id');
