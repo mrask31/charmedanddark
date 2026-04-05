@@ -18,6 +18,18 @@ function mapCategory(productType) {
   return 'Home Decor';
 }
 
+// Vendor-based category fallback
+const VENDOR_CATEGORY_MAP = {
+  'COMECO INC': 'Accessories',
+  'The Gilded Witch': 'Accessories',
+  'Candles Meta': 'Ritual',
+  'Something Different Wholesale': 'Ritual',
+  'Picki Nicki': 'Ritual',
+  'Primitives by Kathy': 'Ritual',
+  'Black Market Art': 'Wall Art',
+  'Charmed & Dark': 'Apparel',
+};
+
 // Tag-based category fallback when productType mapping returns default
 function refineCategoryByTags(category, tags) {
   if (category !== 'Home Decor' || !tags?.length) return category;
@@ -141,8 +153,14 @@ export async function POST(request) {
         }
 
         const isPrintify = sp.vendor === 'Printify' || (sp.tags && sp.tags.includes('Printify'));
-        const isActive = sp.status === 'ACTIVE' || isPrintify;
+        const isMadeToOrder = isPrintify || sp.vendor === 'Charmed & Dark';
+        const isActive = sp.status === 'ACTIVE' || isMadeToOrder;
         let category = mapCategory(sp.productType);
+        // Vendor-based fallback
+        if (category === 'Home Decor' && VENDOR_CATEGORY_MAP[sp.vendor]) {
+          category = VENDOR_CATEGORY_MAP[sp.vendor];
+        }
+        // Tag-based fallback
         category = refineCategoryByTags(category, sp.tags);
         const imageObjects = sp.images.edges.map(({ node }, i) => ({
           url: node.url,
@@ -158,9 +176,9 @@ export async function POST(request) {
         const minPrice = parseDollars(rawMinPrice);
         console.log(`[PRICE] ${sp.title} | parsed: ${minPrice}`);
 
-        // Stock: Printify POD products use deny inventory policy, so override to 999
+        // Stock: made-to-order products (Printify, Charmed & Dark) use deny inventory policy
         const variants = sp.variants.edges.map(({ node }) => node);
-        const stockQty = isPrintify
+        const stockQty = isMadeToOrder
           ? 999
           : (sp.totalInventory ?? variants.reduce((sum, v) => sum + (v.inventoryQuantity || 0), 0));
 
@@ -227,7 +245,7 @@ export async function POST(request) {
                 variant_type: opt.name.toLowerCase(),
                 variant_value: opt.value,
                 price_override: parseDollars(v.price),
-                is_available: isPrintify ? true : v.availableForSale,
+                is_available: isMadeToOrder ? true : v.availableForSale,
                 sku: v.sku || null,
                 sort_order: i,
               });
