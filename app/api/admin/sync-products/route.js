@@ -1,174 +1,254 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { getAllShopifyProducts } from '@/lib/shopify/queries';
-import { generateProductContent } from '@/lib/ai/generate-lore';
 import { NextResponse } from 'next/server';
 
-// Simple auth check — replace with proper admin auth in Phase 2
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
-  return authHeader === `Bearer ${process.env.SYNC_API_SECRET}`;
+  return authHeader === `Bearer ${process.env.SYNC_SECRET_KEY}`;
 }
 
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+// Category mapping from Shopify productType
+function mapCategory(productType) {
+  if (!productType) return 'Home Decor';
+  const t = productType.trim();
+  if (['Hoodie', 'T-Shirt', 'Tank Top', 'Hats', 'Apparel'].includes(t)) return 'Apparel';
+  if (['Candle', 'Ritual'].includes(t)) return 'Ritual';
+  if (t === 'Home Decor') return 'Home Decor';
+  if (t === 'Wall Art') return 'Wall Art';
+  if (t === 'Accessories') return 'Accessories';
+  return 'Home Decor';
 }
 
-function sanitizeHandle(handle) {
-  return handle
-    .toLowerCase()
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/(^-|-$)/g, '');
+const ADMIN_PRODUCTS_QUERY = `
+  query Products($first: Int!, $after: String) {
+    products(first: $first, after: $after) {
+      pageInfo { hasNextPage endCursor }
+      edges {
+        node {
+          id
+          title
+          handle
+          descriptionHtml
+          productType
+          status
+          tags
+          images(first: 10) {
+            edges { node { url altText } }
+          }
+          variants(first: 50) {
+            edges {
+              node {
+                id
+                title
+                sku
+                price
+                availableForSale
+                selectedOptions { name value }
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice { amount currencyCode }
+          }
+        }
+      }
+    }
+  }
+`;
+
+async function adminFetch(query, variables = {}) {
+  const domain = process.env.SHOPIFY_STORE_DOMAIN;
+  const token = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
+  const url = `https://${domain}/admin/api/2024-01/graphql.json`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Access-Token': token,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0]?.message || 'Shopify Admin API error');
+  return json.data;
 }
 
-function transformShopifyProduct(shopifyProduct) {
-  const variant = shopifyProduct.variants.edges[0]?.node;
-  const images = shopifyProduct.images.edges.map(({ node }) => node.url);
+async function fetchAllProducts() {
+  const all = [];
+  let hasNextPage = true;
+  let after = null;
 
-  return {
-    shopify_id: shopifyProduct.id,
-    shopify_variant_id: variant?.id || null,
-    name: shopifyProduct.title,
-    slug: sanitizeHandle(shopifyProduct.handle),
-    handle: sanitizeHandle(shopifyProduct.handle),
-    title: shopifyProduct.title,
-    category: shopifyProduct.productType || null,
-    description: shopifyProduct.description || null,
-    price: variant?.compareAtPrice?.amount
-      ? parseFloat(variant.compareAtPrice.amount)
-      : parseFloat(variant?.price?.amount || 0),
-    sale_price: parseFloat(variant?.price?.amount || 0),
-    sku: variant?.sku || null,
-    qty: variant?.quantityAvailable || 0,
-    stock_quantity: variant?.quantityAvailable || 0,
-    hidden: false,
-    image_urls: images,
-    image_url: images[0] || null,
-    tags: shopifyProduct.tags || [],
-  };
+  while (hasNextPage) {
+    const data = await adminFetch(ADMIN_PRODUCTS_QUERY, { first: 250, after });
+    const products = data.products.edges.map(({ node }) => node);
+    all.push(...products);
+    hasNextPage = data.products.pageInfo.hasNextPage;
+    after = data.products.pageInfo.endCursor;
+  }
+
+  return all;
 }
 
 export async function POST(request) {
-  // Auth check
   if (!isAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const startTime = Date.now();
+  let productsSynced = 0;
+  let variantsSynced = 0;
+  let productsSkipped = 0;
+  const errors = [];
+
   try {
-    // Check for force regeneration flag
-    const url = new URL(request.url);
-    const forceRegenerate = url.searchParams.get('force') === 'true';
-    
-    console.log('Starting Vault Sync...');
-    if (forceRegenerate) {
-      console.log('Force regeneration enabled - will regenerate all lore');
-    }
-
-    // 1. Pull from Shopify
-    const shopifyProducts = await getAllShopifyProducts();
-    console.log(`Fetched ${shopifyProducts.length} products from Shopify`);
-
-    // 2. Transform and upsert to Supabase
-    let synced = 0;
-    let loreGenerated = 0;
-    let preserved = 0;
-    let errors = [];
+    console.log('Starting Shopify Admin sync...');
+    const shopifyProducts = await fetchAllProducts();
+    console.log(`Fetched ${shopifyProducts.length} products from Shopify Admin`);
 
     for (const sp of shopifyProducts) {
-      const shopifyData = transformShopifyProduct(sp);
-
-      // Check if product already exists
-      const { data: existing } = await supabaseAdmin
-        .from('products')
-        .select('id, name, title, lore')
-        .eq('handle', shopifyData.handle)
-        .single();
-
-      let record;
-      
-      if (existing) {
-        // Product exists - preserve custom name and lore (unless force regenerate)
-        record = {
-          ...shopifyData,
-          // Preserve custom name if it differs from Shopify title
-          name: (existing.name && existing.name !== shopifyData.title) 
-            ? existing.name 
-            : shopifyData.name,
-          // Preserve existing lore (unless force regenerate)
-          lore: forceRegenerate ? undefined : (existing.lore || undefined),
-        };
-        
-        if (!forceRegenerate && (existing.name !== shopifyData.title || existing.lore)) {
-          preserved++;
-          console.log(`Preserving custom content for: ${existing.name || shopifyData.name}`);
+      try {
+        // Skip stickers
+        if (sp.productType === 'Paper products') {
+          productsSkipped++;
+          continue;
         }
-      } else {
-        // New product - use all Shopify data
-        record = shopifyData;
-      }
 
-      // Upsert product data
-      const { error: upsertError } = await supabaseAdmin
-        .from('products')
-        .upsert(record, { onConflict: 'handle' });
+        // Skip drafts entirely
+        if (sp.status === 'DRAFT') {
+          productsSkipped++;
+          continue;
+        }
 
-      if (upsertError) {
-        errors.push({ product: record.name, error: upsertError.message });
-        console.error(`Sync error for ${record.name}:`, upsertError.message);
-        continue;
-      }
-      synced++;
+        const isActive = sp.status === 'ACTIVE';
+        const category = mapCategory(sp.productType);
+        const images = sp.images.edges.map(({ node }) => node.url);
+        const minPrice = parseFloat(sp.priceRange?.minVariantPrice?.amount || 0);
 
-      // Generate content (name + lore) for products without it OR if force regenerate is enabled
-      if (!existing?.lore || forceRegenerate) {
-        try {
-          console.log(`Generating content for: ${record.name}`);
-          const content = await generateProductContent(record);
-          console.log('Claude returned:', JSON.stringify(content));
-          
-          if (content) {
-            const updateFields = {};
-            if (content.lore) updateFields.lore = content.lore;
-            if (content.name) updateFields.name = content.name;
-            
-            if (Object.keys(updateFields).length > 0) {
-              await supabaseAdmin
-                .from('products')
-                .update(updateFields)
-                .eq('handle', record.handle);
-              loreGenerated++;
-              console.log(`Content generated for: ${content.name || record.name}`);
+        // Upsert product
+        const { data: upserted, error: upsertErr } = await supabaseAdmin
+          .from('products')
+          .upsert({
+            shopify_id: sp.id,
+            name: sp.title,
+            title: sp.title,
+            handle: sp.handle,
+            slug: sp.handle,
+            description: sp.descriptionHtml,
+            category,
+            price: minPrice,
+            is_available: isActive,
+            hidden: !isActive,
+            image_url: images[0] || null,
+            image_urls: images,
+            images: sp.images.edges.map(({ node }, i) => ({
+              url: node.url,
+              alt: node.altText || '',
+              position: i,
+            })),
+            tags: sp.tags || [],
+          }, { onConflict: 'handle' })
+          .select('id');
+
+        if (upsertErr) {
+          errors.push({ product: sp.title, error: upsertErr.message });
+          continue;
+        }
+
+        const productId = upserted?.[0]?.id;
+        if (!productId) {
+          errors.push({ product: sp.title, error: 'No product ID returned after upsert' });
+          continue;
+        }
+
+        productsSynced++;
+
+        // Delete existing variants for this product
+        await supabaseAdmin
+          .from('product_variants')
+          .delete()
+          .eq('product_id', productId);
+
+        // Re-insert variants
+        const variants = sp.variants.edges.map(({ node }) => node);
+        // Skip single "Default Title" variant (not a real option)
+        const hasRealOptions = variants.length > 1 ||
+          (variants.length === 1 && variants[0].title !== 'Default Title');
+
+        if (hasRealOptions) {
+          const variantRows = [];
+          for (let i = 0; i < variants.length; i++) {
+            const v = variants[i];
+            for (const opt of v.selectedOptions) {
+              if (opt.name === 'Title' && opt.value === 'Default Title') continue;
+              variantRows.push({
+                product_id: productId,
+                variant_type: opt.name.toLowerCase(),
+                variant_value: opt.value,
+                price_override: parseFloat(v.price) || null,
+                is_available: v.availableForSale,
+                sku: v.sku || null,
+                sort_order: i,
+              });
             }
           }
-        } catch (contentError) {
-          console.error(`Content generation failed for ${record.name}:`, contentError.message);
-          // Don't add to errors array — content generation failure shouldn't block the sync
+
+          // Deduplicate by variant_type + variant_value
+          const seen = new Set();
+          const uniqueRows = variantRows.filter((row) => {
+            const key = `${row.variant_type}:${row.variant_value}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+
+          if (uniqueRows.length > 0) {
+            const { error: variantErr } = await supabaseAdmin
+              .from('product_variants')
+              .insert(uniqueRows);
+
+            if (variantErr) {
+              errors.push({ product: sp.title, error: `Variants: ${variantErr.message}` });
+            } else {
+              variantsSynced += uniqueRows.length;
+            }
+          }
         }
+      } catch (productErr) {
+        errors.push({ product: sp.title, error: productErr.message });
       }
     }
 
-    // 3. Return summary
+    const durationMs = Date.now() - startTime;
+
+    // Log to sync_log table (best-effort)
+    try {
+      await supabaseAdmin.from('sync_log').insert({
+        products_synced: productsSynced,
+        variants_synced: variantsSynced,
+        products_skipped: productsSkipped,
+        errors,
+        duration_ms: durationMs,
+      });
+    } catch (logErr) {
+      console.error('Failed to write sync_log:', logErr.message);
+    }
+
     const summary = {
       success: true,
-      total_shopify: shopifyProducts.length,
-      synced,
-      preserved_custom_content: preserved,
-      lore_generated: loreGenerated,
-      force_regenerate: forceRegenerate,
-      errors: errors.length,
-      error_details: errors,
-      synced_at: new Date().toISOString(),
+      products_synced: productsSynced,
+      variants_synced: variantsSynced,
+      products_skipped: productsSkipped,
+      errors,
+      duration_ms: durationMs,
     };
 
-    console.log('Vault Sync complete:', summary);
+    console.log('Sync complete:', summary);
     return NextResponse.json(summary);
   } catch (err) {
-    console.error('Vault Sync failed:', err);
+    console.error('Sync failed:', err);
     return NextResponse.json(
-      { error: 'Sync failed', message: err.message },
+      { success: false, error: err.message, products_synced: productsSynced, errors },
       { status: 500 }
     );
   }
