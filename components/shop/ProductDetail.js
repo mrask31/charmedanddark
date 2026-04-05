@@ -156,8 +156,9 @@ function VariantSelector({ variants, selectedVariant, onSelect }) {
 function ProductDetailsList({ description }) {
   if (!description) return null;
 
-  // Split description into bullet points if it contains periods
-  const lines = description.split(/\.\s+/).filter(Boolean).map((l) => l.replace(/\.$/, ''));
+  // Strip HTML tags, then split into bullet points
+  const plainText = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const lines = plainText.split(/\.\s+/).filter(Boolean).map((l) => l.replace(/\.$/, ''));
 
   return (
     <div>
@@ -266,8 +267,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
   // Effective price: Shopify variant → Supabase variant override → product price
+  const variantPriceOverride = selectedVariant?.price_override != null
+    ? parseFloat(selectedVariant.price_override)
+    : null;
   const basePrice = selectedShopifyVariant?.price
-    ?? selectedVariant?.price_override
+    ?? variantPriceOverride
     ?? product.price;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
 
@@ -399,11 +403,13 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
 
-              {/* Description */}
+              {/* Description — rendered as HTML from Shopify */}
               {product.description && (
-                <p className="text-[15px] font-light leading-relaxed" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                  {product.description}
-                </p>
+                <div
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                  className="text-[15px] font-light leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-4 [&_li]:mb-1 [&_br]:block [&_a]:underline [&_a]:underline-offset-2"
+                  style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+                />
               )}
 
               {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
