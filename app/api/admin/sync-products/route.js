@@ -46,8 +46,10 @@ const ADMIN_PRODUCTS_QUERY = `
           handle
           descriptionHtml
           productType
+          vendor
           status
           tags
+          totalInventory
           images(first: 10) {
             edges { node { url altText } }
           }
@@ -125,6 +127,15 @@ export async function POST(request) {
 
     for (const sp of shopifyProducts) {
       try {
+        // Debug: log raw price on first product
+        if (productsSynced === 0 && productsSkipped === 0) {
+          console.log('[PRICE DEBUG] First product:', sp.title);
+          console.log('[PRICE DEBUG] priceRange.minVariantPrice.amount:', sp.priceRange?.minVariantPrice?.amount);
+          console.log('[PRICE DEBUG] typeof:', typeof sp.priceRange?.minVariantPrice?.amount);
+          console.log('[PRICE DEBUG] first variant price:', sp.variants.edges[0]?.node?.price);
+          console.log('[PRICE DEBUG] vendor:', sp.vendor);
+        }
+
         // Skip stickers
         if (sp.productType === 'Paper products') {
           productsSkipped++;
@@ -137,7 +148,8 @@ export async function POST(request) {
           continue;
         }
 
-        const isActive = sp.status === 'ACTIVE';
+        const isPrintify = sp.vendor === 'Printify' || (sp.tags && sp.tags.includes('Printify'));
+        const isActive = sp.status === 'ACTIVE' || isPrintify;
         let category = mapCategory(sp.productType);
         category = refineCategoryByTags(category, sp.tags);
         const imageObjects = sp.images.edges.map(({ node }, i) => ({
@@ -147,6 +159,12 @@ export async function POST(request) {
         }));
         const imageUrls = imageObjects.map((img) => img.url);
         const minPrice = parseDollars(sp.priceRange?.minVariantPrice?.amount);
+
+        // Stock: Printify POD products use deny inventory policy, so override to 999
+        const variants = sp.variants.edges.map(({ node }) => node);
+        const stockQty = isPrintify
+          ? 999
+          : (sp.totalInventory ?? variants.reduce((sum, v) => sum + (v.inventoryQuantity || 0), 0));
 
         // Upsert product
         const { data: upserted, error: upsertErr } = await supabaseAdmin
@@ -161,12 +179,15 @@ export async function POST(request) {
             description: sp.descriptionHtml,
             category,
             price: minPrice,
+            stock_quantity: stockQty,
+            qty: stockQty,
             is_available: isActive,
             hidden: !isActive,
             image_url: imageUrls[0] ?? null,
             image_urls: imageUrls,
             images: imageObjects,
             tags: sp.tags || [],
+            vendor: sp.vendor || null,
           }, { onConflict: 'handle' })
           .select('id');
 
@@ -190,7 +211,6 @@ export async function POST(request) {
           .eq('product_id', productId);
 
         // Re-insert variants
-        const variants = sp.variants.edges.map(({ node }) => node);
         // Skip single "Default Title" variant (not a real option)
         const hasRealOptions = variants.length > 1 ||
           (variants.length === 1 && variants[0].title !== 'Default Title');
@@ -206,7 +226,7 @@ export async function POST(request) {
                 variant_type: opt.name.toLowerCase(),
                 variant_value: opt.value,
                 price_override: parseDollars(v.price),
-                is_available: v.availableForSale,
+                is_available: isPrintify ? true : v.availableForSale,
                 sku: v.sku || null,
                 sort_order: i,
               });
