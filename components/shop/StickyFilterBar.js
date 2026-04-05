@@ -13,7 +13,6 @@ export default function StickyFilterBar({
     { id: "ACCESSORIES", label: "ACCESSORIES" },
     { id: "RITUAL", label: "RITUAL" },
     { id: "WALL_ART", label: "WALL ART" },
-    { id: "STICKERS", label: "STICKERS" },
   ];
 
   const sortOptions = [

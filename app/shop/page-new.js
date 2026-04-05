@@ -15,7 +15,6 @@ const CATEGORY_MAP = {
   ACCESSORIES: ["Accessories"],
   APPAREL: ["Apparel"],
   WALL_ART: ["Wall Art"],
-  STICKERS: ["Stickers"],
 };
 
 // Section configuration - matches exact Supabase category values
@@ -44,11 +43,6 @@ const SECTIONS = {
     title: "The Gallery",
     subtitle: "Dark art for walls that refuse to be ordinary",
     categories: ["Wall Art"],
-  },
-  STICKERS: {
-    title: "The Sigils",
-    subtitle: "Mark your world with darkness",
-    categories: ["Stickers"],
   },
 };
 
@@ -141,7 +135,6 @@ export default function ShopPageClient({ products }) {
       ACCESSORIES: ["ACCESSORIES"],
       APPAREL: ["APPAREL"],
       WALL_ART: ["WALL_ART"],
-      STICKERS: ["STICKERS"],
     };
     
     return filterToSection[activeFilter] || [];
