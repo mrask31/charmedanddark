@@ -199,38 +199,67 @@ export async function POST(request) {
           ? 999
           : (sp.totalInventory ?? variants.reduce((sum, v) => sum + (v.inventoryQuantity || 0), 0));
 
-        // Upsert product on shopify_handle
+        // Select → Update or Insert (avoids upsert conflict issues)
         const cleanHandle = sanitizeHandle(sp.handle);
-        const { data: upserted, error: upsertErr } = await supabaseAdmin
-          .from('products')
-          .upsert({
-            shopify_id: sp.id,
-            shopify_handle: cleanHandle,
-            name: sp.title,
-            title: sp.title,
-            description: sp.descriptionHtml,
-            category,
-            price: minPrice,
-            stock_quantity: stockQty,
-            qty: stockQty,
-            is_available: isActive,
-            hidden: !isActive,
-            image_url: imageUrls[0] ?? null,
-            image_urls: imageUrls,
-            images: imageObjects,
-            tags: sp.tags || [],
-            vendor: sp.vendor || null,
-          }, { onConflict: 'shopify_handle', ignoreDuplicates: false })
-          .select('id');
+        const productData = {
+          shopify_id: sp.id,
+          shopify_handle: cleanHandle,
+          handle: cleanHandle,
+          slug: cleanHandle,
+          name: sp.title,
+          title: sp.title,
+          description: sp.descriptionHtml,
+          category,
+          price: minPrice,
+          stock_quantity: stockQty,
+          qty: stockQty,
+          is_available: isActive,
+          hidden: !isActive,
+          image_url: imageUrls[0] ?? null,
+          image_urls: imageUrls,
+          images: imageObjects,
+          tags: sp.tags || [],
+          vendor: sp.vendor || null,
+        };
 
-        if (upsertErr) {
-          errors.push({ product: sp.title, error: upsertErr.message });
-          continue;
+        // Check if product already exists by shopify_handle
+        const { data: existing } = await supabaseAdmin
+          .from('products')
+          .select('id')
+          .eq('shopify_handle', cleanHandle)
+          .maybeSingle();
+
+        let productId;
+
+        if (existing) {
+          // Update existing product
+          const { error: updateErr } = await supabaseAdmin
+            .from('products')
+            .update(productData)
+            .eq('id', existing.id);
+
+          if (updateErr) {
+            errors.push({ product: sp.title, error: `Update: ${updateErr.message}` });
+            continue;
+          }
+          productId = existing.id;
+        } else {
+          // Insert new product
+          const { data: inserted, error: insertErr } = await supabaseAdmin
+            .from('products')
+            .insert(productData)
+            .select('id')
+            .single();
+
+          if (insertErr) {
+            errors.push({ product: sp.title, error: `Insert: ${insertErr.message}` });
+            continue;
+          }
+          productId = inserted.id;
         }
 
-        const productId = upserted?.[0]?.id;
         if (!productId) {
-          errors.push({ product: sp.title, error: 'No product ID returned after upsert' });
+          errors.push({ product: sp.title, error: 'No product ID after select→update/insert' });
           continue;
         }
 
