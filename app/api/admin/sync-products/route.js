@@ -6,6 +6,16 @@ function isAuthorized(request) {
   return authHeader === `Bearer ${process.env.SYNC_SECRET_KEY}`;
 }
 
+// Sanitize Shopify handles — remove emoji and non-ASCII characters
+function sanitizeHandle(handle) {
+  if (!handle) return handle;
+  return handle
+    .replace(/[^\x00-\x7F]/g, '')
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 // Category mapping from Shopify productType
 function mapCategory(productType) {
   if (!productType) return 'Home Decor';
@@ -194,11 +204,11 @@ export async function POST(request) {
           .from('products')
           .upsert({
             shopify_id: sp.id,
-            shopify_handle: sp.handle,
+            shopify_handle: sanitizeHandle(sp.handle),
             name: sp.title,
             title: sp.title,
-            handle: sp.handle,
-            slug: sp.handle,
+            handle: sanitizeHandle(sp.handle),
+            slug: sanitizeHandle(sp.handle),
             description: sp.descriptionHtml,
             category,
             price: minPrice,
