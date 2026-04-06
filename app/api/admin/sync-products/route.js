@@ -199,16 +199,15 @@ export async function POST(request) {
           ? 999
           : (sp.totalInventory ?? variants.reduce((sum, v) => sum + (v.inventoryQuantity || 0), 0));
 
-        // Upsert product
+        // Upsert product on shopify_handle
+        const cleanHandle = sanitizeHandle(sp.handle);
         const { data: upserted, error: upsertErr } = await supabaseAdmin
           .from('products')
           .upsert({
             shopify_id: sp.id,
-            shopify_handle: sanitizeHandle(sp.handle),
+            shopify_handle: cleanHandle,
             name: sp.title,
             title: sp.title,
-            handle: sanitizeHandle(sp.handle),
-            slug: sanitizeHandle(sp.handle),
             description: sp.descriptionHtml,
             category,
             price: minPrice,
@@ -221,7 +220,7 @@ export async function POST(request) {
             images: imageObjects,
             tags: sp.tags || [],
             vendor: sp.vendor || null,
-          }, { onConflict: 'handle' })
+          }, { onConflict: 'shopify_handle', ignoreDuplicates: false })
           .select('id');
 
         if (upsertErr) {
