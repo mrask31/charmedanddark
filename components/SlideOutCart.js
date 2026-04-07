@@ -162,7 +162,7 @@ export default function SlideOutCart() {
               <span className="text-[#B89C6D] uppercase tracking-wider">House Price</span>
               <span className="text-[#B89C6D] font-medium">${sanctuarySubtotal.toFixed(2)}</span>
             </div>
-            <p className="text-zinc-600 text-xs">10% Sanctuary discount applied at checkout.</p>
+            <p className="text-zinc-600 text-xs">Final price calculated by Shopify at checkout.</p>
 
             <button
               onClick={handleCheckout}

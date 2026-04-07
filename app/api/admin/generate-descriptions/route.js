@@ -111,46 +111,78 @@ IMPORTANT: Return ONLY the plain description text. No JSON. No markdown. No back
 async function updateShopifyDescription(handle, descriptionHtml) {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
   const token = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
-  if (!domain || !token || !handle) return;
+  if (!domain || !token || !handle) return { error: 'Missing domain, token, or handle' };
 
-  // First find the product by handle
-  const searchRes = await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': token,
-    },
-    body: JSON.stringify({
-      query: `query { products(first: 1, query: "handle:${handle}") { edges { node { id } } } }`,
-    }),
-  });
-
-  const searchData = await searchRes.json();
-  const shopifyId = searchData?.data?.products?.edges?.[0]?.node?.id;
-  if (!shopifyId) return;
-
-  // Update the product description
-  await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': token,
-    },
-    body: JSON.stringify({
-      query: `mutation productUpdate($input: ProductInput!) {
-        productUpdate(input: $input) {
-          product { id }
-          userErrors { message }
-        }
-      }`,
-      variables: {
-        input: {
-          id: shopifyId,
-          descriptionHtml: `<p>${descriptionHtml}</p>`,
-        },
+  try {
+    // First find the product by handle
+    const searchRes = await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': token,
       },
-    }),
-  });
+      body: JSON.stringify({
+        query: `query { products(first: 1, query: "handle:${handle}") { edges { node { id } } } }`,
+      }),
+    });
+
+    const searchData = await searchRes.json();
+    const shopifyGid = searchData?.data?.products?.edges?.[0]?.node?.id;
+
+    if (!shopifyGid) {
+      console.warn(`[SHOPIFY DESC] No product found for handle: ${handle}`);
+      return { error: `No Shopify product found for handle: ${handle}` };
+    }
+
+    // Verify GID format
+    if (!shopifyGid.startsWith('gid://shopify/Product/')) {
+      console.error(`[SHOPIFY DESC] Unexpected GID format: ${shopifyGid}`);
+      return { error: `Unexpected GID format: ${shopifyGid}` };
+    }
+
+    console.log(`[SHOPIFY DESC] Updating ${handle} (${shopifyGid})`);
+
+    // Update the product description
+    const updateRes = await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': token,
+      },
+      body: JSON.stringify({
+        query: `mutation productUpdate($input: ProductInput!) {
+          productUpdate(input: $input) {
+            product { id }
+            userErrors { field message }
+          }
+        }`,
+        variables: {
+          input: {
+            id: shopifyGid,
+            descriptionHtml: `<p>${descriptionHtml}</p>`,
+          },
+        },
+      }),
+    });
+
+    const updateData = await updateRes.json();
+    const userErrors = updateData?.data?.productUpdate?.userErrors;
+
+    if (userErrors?.length > 0) {
+      console.error(`[SHOPIFY DESC] Update errors for ${handle}:`, userErrors);
+      return { error: userErrors.map((e) => e.message).join(', ') };
+    }
+
+    if (updateData.errors) {
+      console.error(`[SHOPIFY DESC] GraphQL errors for ${handle}:`, updateData.errors);
+      return { error: updateData.errors[0]?.message || 'GraphQL error' };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error(`[SHOPIFY DESC] Exception for ${handle}:`, err.message);
+    return { error: err.message };
+  }
 }
 
 function sleep(ms) {
@@ -207,9 +239,12 @@ export async function POST(request) {
           const handle = product.shopify_handle || product.handle;
           if (handle) {
             try {
-              await updateShopifyDescription(handle, description);
+              const shopifyResult = await updateShopifyDescription(handle, description);
+              if (shopifyResult?.error) {
+                console.error(`[SHOPIFY DESC] Failed for ${product.name}: ${shopifyResult.error}`);
+              }
             } catch (shopifyErr) {
-              console.error(`Shopify update failed for ${product.name}:`, shopifyErr.message);
+              console.error(`Shopify update exception for ${product.name}:`, shopifyErr.message);
             }
           }
 
