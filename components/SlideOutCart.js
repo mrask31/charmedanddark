@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 
 export default function SlideOutCart() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, sanctuarySubtotal, clearCart } = useCart();
+  const { isMember } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   async function handleCheckout() {
@@ -90,6 +92,13 @@ export default function SlideOutCart() {
               </div>
             )}
             <span>{shippingBanner.message}</span>
+          </div>
+        )}
+
+        {/* Member discount badge */}
+        {items.length > 0 && isMember && (
+          <div className="mx-4 mt-1 mb-2 text-center text-xs text-[#c9a96e]">
+            🖤 Sanctuary member discount applied
           </div>
         )}
 

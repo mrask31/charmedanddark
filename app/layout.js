@@ -5,6 +5,7 @@ import { StickyNav } from "@/components/StickyNav";
 import MobileTabNav from "@/components/MobileTabNav";
 import SlideOutCart from "@/components/SlideOutCart";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -63,12 +64,14 @@ export default function RootLayout({ children }) {
           }}
         />
         <div className="min-h-screen bg-black text-white">
-          <CartProvider>
-            <StickyNav />
-            {children}
-            <SlideOutCart />
-            <MobileTabNav />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <StickyNav />
+              {children}
+              <SlideOutCart />
+              <MobileTabNav />
+            </CartProvider>
+          </AuthProvider>
         </div>
         <Script
           id="klaviyo-onsite"

@@ -1,72 +1,104 @@
 'use client'
 
 import { useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
 
-async function handleJoinSubmit(email, setStatus) {
+async function handleJoinSubmit(email, password, firstName, setStatus, signUp, resetPassword) {
   if (!email || !email.includes('@')) {
     setStatus({ type: 'error', message: 'Please enter a valid email address.' })
+    return
+  }
+  if (!password || password.length < 8) {
+    setStatus({ type: 'error', message: 'Password must be at least 8 characters.' })
     return
   }
 
   setStatus({ type: 'loading', message: 'Entering the Sanctuary...' })
 
   try {
+    // Supabase auth signUp
+    const { error: authError } = await signUp(email, password, {
+      is_sanctuary_member: true,
+      first_name: firstName || undefined,
+    });
+
+    if (authError) {
+      if (authError.message?.includes('already') || authError.status === 422) {
+        await resetPassword(email);
+        setStatus({ type: 'success', message: 'An account exists — check your email to set your password.', alreadyMember: true })
+        return
+      }
+      throw authError;
+    }
+
     // Subscribe to Klaviyo Sanctuary Members list
     const klaviyoRes = await fetch('/api/klaviyo/sanctuary', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, source: 'join-page' }),
+      body: JSON.stringify({ email, firstName, source: 'join-page' }),
     })
 
     // Also subscribe to newsletter list
     await fetch('/api/klaviyo/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, source: 'sanctuary-join' }),
+      body: JSON.stringify({ email, firstName, source: 'sanctuary-join' }),
     })
-
-    if (!klaviyoRes.ok) {
-      const err = await klaviyoRes.json().catch(() => ({}))
-      throw new Error(err.error || 'Subscription failed')
-    }
-
-    const data = await klaviyoRes.json()
-    if (data.alreadyMember) {
-      setStatus({ type: 'success', message: "You're already one of us.", alreadyMember: true })
-      return
-    }
 
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
   } catch (err) {
     console.error('Join form error:', err)
-    setStatus({ type: 'error', message: 'Something went wrong. Please try again.' })
+    setStatus({ type: 'error', message: err.message || 'Something went wrong. Please try again.' })
   }
 }
 
 function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' }) {
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [status, setStatus] = useState(null)
+  const { signUp, resetPassword } = useAuth()
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    await handleJoinSubmit(email, setStatus)
+    await handleJoinSubmit(email, password, firstName, setStatus, signUp, resetPassword)
   }
 
   if (status?.type === 'success') {
     return (
       <div style={{ textAlign: 'center', padding: '1rem 0' }}>
         <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '22px', fontStyle: 'italic' }}>
-          {status.alreadyMember ? "You're already one of us." : "You're in. Welcome to the Sanctuary."}
+          {status.alreadyMember ? "An account exists — check your email." : "You're in. Welcome to the Sanctuary."}
         </p>
         <p style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '8px' }}>
-          {status.alreadyMember ? "The Sanctuary remembers you." : "Check your inbox — a welcome awaits."}
+          {status.alreadyMember ? "We sent a password reset link." : "Check your inbox — a welcome awaits."}
         </p>
       </div>
     )
   }
 
+  const inputStyle = {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(201,169,110,0.3)',
+    borderRadius: '0px',
+    color: '#e8e4dc',
+    fontFamily: 'Inter, sans-serif',
+  };
+
   return (
-    <form onSubmit={onSubmit} className="flex w-full max-w-md flex-col items-center gap-4">
+    <form onSubmit={onSubmit} className="flex w-full max-w-md flex-col items-center gap-3">
+      <label htmlFor={`${inputId}-name`} className="sr-only">First name</label>
+      <input
+        id={`${inputId}-name`}
+        type="text"
+        placeholder="First name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+        disabled={status?.type === 'loading'}
+        className="w-full px-5 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#08080f]"
+        style={inputStyle}
+      />
       <label htmlFor={inputId} className="sr-only">Email address</label>
       <input
         id={inputId}
@@ -78,14 +110,31 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
         onChange={(e) => setEmail(e.target.value)}
         disabled={status?.type === 'loading'}
         className="w-full px-5 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#08080f]"
-        style={{
-          backgroundColor: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(201,169,110,0.3)',
-          borderRadius: '0px',
-          color: '#e8e4dc',
-          fontFamily: 'Inter, sans-serif',
-        }}
+        style={inputStyle}
       />
+      <div className="relative w-full">
+        <label htmlFor={`${inputId}-pw`} className="sr-only">Password</label>
+        <input
+          id={`${inputId}-pw`}
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Password (min 8 characters)"
+          required
+          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={status?.type === 'loading'}
+          className="w-full px-5 py-3 pr-16 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#08080f]"
+          style={inputStyle}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] uppercase tracking-wider"
+          style={{ color: '#6b6760' }}
+        >
+          {showPassword ? 'Hide' : 'Show'}
+        </button>
+      </div>
 
       {status?.type === 'error' && (
         <p style={{ color: '#e24b4a', fontSize: '13px', fontFamily: 'Inter, sans-serif' }}>
@@ -93,7 +142,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
         </p>
       )}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-3 sm:flex-row mt-1">
         <button
           type="submit"
           disabled={status?.type === 'loading'}

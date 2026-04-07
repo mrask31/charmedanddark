@@ -1,10 +1,27 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { User } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import AuthModal from "@/components/AuthModal";
 
 export function StickyNav() {
   const { itemCount, setIsOpen } = useCart();
+  const { user, isMember, signOut } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [dropdownOpen]);
 
   return (
     <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm">
@@ -57,8 +74,47 @@ export function StickyNav() {
               </span>
             )}
           </button>
+
+          {/* User / Auth */}
+          {user ? (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="relative text-zinc-400 transition-colors duration-160 hover:text-white"
+                aria-label="Account"
+              >
+                <User size={18} />
+                {isMember && (
+                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#c9a96e]" />
+                )}
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 py-2" style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)', zIndex: 60 }}>
+                  {isMember && (
+                    <p className="px-4 py-2 text-xs" style={{ color: '#c9a96e' }}>🖤 Sanctuary Member</p>
+                  )}
+                  <button
+                    onClick={() => { signOut(); setDropdownOpen(false); }}
+                    className="w-full px-4 py-2 text-left text-xs uppercase tracking-wider text-zinc-400 hover:text-white transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="text-zinc-400 transition-colors duration-160 hover:text-white"
+              aria-label="Sign in"
+            >
+              <User size={18} />
+            </button>
+          )}
         </nav>
       </div>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode="signin" />
     </header>
   );
 }

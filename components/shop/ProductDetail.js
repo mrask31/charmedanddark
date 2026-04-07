@@ -67,8 +67,8 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
 
       {/* Thumbnail strip — always show when multiple images; include color labels */}
       {images?.length > 1 && (
-        <div className="flex gap-2">
-          {images.map((img, i) => {
+        <div className="flex gap-2 overflow-hidden">
+          {images.slice(0, 6).map((img, i) => {
             const colorLabel = imageColorMap[img];
             return (
               <div key={i} className="flex flex-1 flex-col items-center gap-1">
@@ -332,7 +332,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         {/* Two-column layout */}
         <div className="flex flex-col items-start gap-10 md:flex-row lg:gap-16">
           {/* Left: gallery (60%) */}
-          <div className="w-full md:w-[60%]">
+          <div className="w-full overflow-hidden md:w-[60%]">
             <ProductGallery
               images={product.imageUrls}
               productName={product.name}
@@ -517,8 +517,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               )}
 
               {/* Shipping note */}
-              <p className="text-center text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                Free shipping on orders over $75. Members always save 10%.
+              <p className="text-xs text-[#e8e4dc]/50 mt-1 text-center">
+                Free shipping on orders $100+ · Ships to continental US only
               </p>
 
               {/* Divider */}
