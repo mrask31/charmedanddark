@@ -41,6 +41,30 @@ function isAuthorized(request) {
   return request.headers.get('authorization') === `Bearer ${process.env.SYNC_SECRET_KEY}`;
 }
 
+function sanitizeDescription(text) {
+  if (!text) return text;
+  // Remove markdown code fences
+  text = text.replace(/^```json\s*/i, '');
+  text = text.replace(/^```\s*/i, '');
+  text = text.replace(/```\s*$/i, '');
+  // If it looks like a JSON object, try to extract the description field
+  if (text.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(text);
+      text = parsed.lore || parsed.description || parsed.text || parsed.content || Object.values(parsed)[0];
+    } catch {
+      text = text.replace(/^\{[^"]*"[^"]*"\s*:\s*"/, '');
+      text = text.replace(/"\s*\}$/, '');
+    }
+  }
+  // Remove leading field labels
+  text = text.replace(/^"?lore"?\s*:\s*"?/i, '');
+  text = text.replace(/^"?description"?\s*:\s*"?/i, '');
+  // Remove trailing quote+brace
+  text = text.replace(/"?\s*\}?\s*`*$/, '');
+  return text.trim();
+}
+
 async function generateDescription(product) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -68,7 +92,9 @@ Rules:
 - Evocative, atmospheric language
 - End with one sentence about who it's for
 - Never use the words: "perfect", "stunning", "beautiful", "amazing", "great"
-- Return ONLY the description text, no quotes, no preamble`,
+- Return ONLY the description text, no quotes, no preamble
+
+IMPORTANT: Return ONLY the plain description text. No JSON. No markdown. No backticks. No field names like 'lore' or 'name'. No curly braces. Just the raw paragraph text of the description itself, nothing else.`,
       }],
     }),
   });
@@ -79,7 +105,7 @@ Rules:
   }
 
   const data = await res.json();
-  return data.content?.[0]?.text?.trim() || null;
+  return sanitizeDescription(data.content?.[0]?.text?.trim()) || null;
 }
 
 async function updateShopifyDescription(handle, descriptionHtml) {

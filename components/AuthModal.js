@@ -44,17 +44,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
     e.preventDefault();
     setStatus({ type: 'loading' });
     try {
+      console.log('Attempting sign in with:', email);
       const { data, error } = await signIn(email, password);
+      console.log('Sign in result:', { data: !!data, error });
       if (error) {
         setStatus({ type: 'error', message: error.message });
         return;
       }
-      // Success — close modal and show toast
       setStatus(null);
       onClose();
       setToast('🖤 Welcome back to the Sanctuary');
       setTimeout(() => setToast(null), 3000);
     } catch (err) {
+      console.error('Sign in exception:', err);
       setStatus({ type: 'error', message: err.message || 'Sign in failed. Please try again.' });
     }
   }
@@ -111,11 +113,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
           {toast}
         </div>
       )}
-      <div className="fixed inset-0 z-[100] flex items-center justify-center" onClick={onClose}>
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div
+        className="fixed inset-0 z-[150] flex items-center justify-center p-4"
+        style={{ backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0,0,0,0.7)' }}
+        onClick={onClose}
+      >
         <div
-          className="relative w-full max-w-sm mx-4 p-8 flex flex-col gap-5"
-          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)' }}
+          className="relative w-full max-w-md p-8 flex flex-col gap-5 shadow-2xl"
+          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)', maxHeight: '90vh', overflowY: 'auto' }}
           onClick={(e) => e.stopPropagation()}
         >
           <button onClick={onClose} className="absolute top-4 right-4 text-[#6b6760] hover:text-[#e8e4dc] text-sm">✕</button>
