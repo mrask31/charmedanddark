@@ -73,7 +73,7 @@ function transformRow(row) {
     slug: row.slug || row.handle,
     category: row.category,
     description: row.description || row.lore,
-    price: row.sale_price || row.price,
+    price: row.price,
     imageUrls: row.image_urls || (row.image_url ? [row.image_url] : []),
     shopifyVariantId: row.shopify_variant_id,
     shopify_id: row.shopify_id,
