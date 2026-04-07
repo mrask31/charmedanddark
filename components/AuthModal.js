@@ -39,6 +39,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
     return () => document.removeEventListener('keydown', handleKey);
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (status?.type === 'joined') {
+      const timer = setTimeout(() => {
+        onClose();
+        window.location.href = '/shop';
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [status, onClose]);
+
   const inputStyle = {
     backgroundColor: 'rgba(255,255,255,0.05)',
     border: '1px solid rgba(201,169,110,0.3)',
@@ -158,19 +168,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
             <div style={{ textAlign: 'center', padding: '1rem 0' }}>
               <p style={{ color: '#c9a96e', fontSize: '1.5rem' }}>🖤</p>
               <h2 style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
-                You're in. Almost.
+                You're in. Welcome to the Sanctuary. 🖤
               </h2>
               <p style={{ color: 'rgba(232,228,220,0.7)', marginBottom: '0.5rem', fontFamily: 'Inter, sans-serif', fontSize: '0.875rem' }}>
-                Check your inbox and verify your email to activate your Sanctuary membership.
+                Your 10% member discount is now active. Sign in to unlock it on every order.
               </p>
               <p style={{ color: 'rgba(232,228,220,0.4)', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif' }}>
-                Your 10% member discount will apply automatically once your email is confirmed.
+                Redirecting to the shop...
               </p>
-              <button onClick={onClose}
-                style={{ marginTop: '1.5rem', padding: '0.5rem 1.5rem', border: '1px solid rgba(201,169,110,0.3)',
-                  color: '#c9a96e', background: 'none', cursor: 'pointer', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif' }}>
-                Close
-              </button>
             </div>
           ) : (
           <>
