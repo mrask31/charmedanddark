@@ -225,17 +225,34 @@ export async function POST(request) {
         // Check if product already exists by shopify_handle
         const { data: existing } = await supabaseAdmin
           .from('products')
-          .select('id')
+          .select('id, description')
           .eq('shopify_handle', cleanHandle)
           .maybeSingle();
 
         let productId;
 
         if (existing) {
+          // Check if existing description is clean — if so, preserve it
+          const existingDesc = existing.description || '';
+          const isClean = existingDesc.length > 80
+            && !existingDesc.includes('```')
+            && !existingDesc.includes('"lore"')
+            && !existingDesc.includes('"name":')
+            && !existingDesc.includes('Gildan')
+            && !existingDesc.includes('ring-spun')
+            && !existingDesc.includes('Place your custom')
+            && !existingDesc.includes('Printify')
+            && !existingDesc.includes('.: Materials');
+
+          const updateData = {
+            ...productData,
+            description: isClean ? existingDesc : productData.description,
+          };
+
           // Update existing product
           const { error: updateErr } = await supabaseAdmin
             .from('products')
-            .update(productData)
+            .update(updateData)
             .eq('id', existing.id);
 
           if (updateErr) {
