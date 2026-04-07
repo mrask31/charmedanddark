@@ -99,7 +99,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, firstName, userId }),
       }).catch(() => {});
-      onClose();
+      setStatus({ type: 'joined' });
     }
   }
 
@@ -152,6 +152,26 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
             }}
           >✕</button>
 
+          {status?.type === 'joined' ? (
+            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+              <p style={{ color: '#c9a96e', fontSize: '1.5rem' }}>🖤</p>
+              <h2 style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
+                You're in. Almost.
+              </h2>
+              <p style={{ color: 'rgba(232,228,220,0.7)', marginBottom: '0.5rem', fontFamily: 'Inter, sans-serif', fontSize: '0.875rem' }}>
+                Check your inbox and verify your email to activate your Sanctuary membership.
+              </p>
+              <p style={{ color: 'rgba(232,228,220,0.4)', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif' }}>
+                Your 10% member discount will apply automatically once your email is confirmed.
+              </p>
+              <button onClick={onClose}
+                style={{ marginTop: '1.5rem', padding: '0.5rem 1.5rem', border: '1px solid rgba(201,169,110,0.3)',
+                  color: '#c9a96e', background: 'none', cursor: 'pointer', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif' }}>
+                Close
+              </button>
+            </div>
+          ) : (
+          <>
           <h2 style={{
             fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '1.5rem',
             textAlign: 'center', color: '#e8e4dc', marginBottom: '1.25rem',
@@ -212,6 +232,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
               {mode === 'signin' ? 'New member? Join here' : 'Already a member? Sign in'}
             </button>
           </div>
+          </>
+          )}
         </div>
       </div>
     </>

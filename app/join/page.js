@@ -75,13 +75,29 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
   }
 
   if (status?.type === 'success') {
+    if (status.alreadyMember) {
+      return (
+        <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+          <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '22px', fontStyle: 'italic' }}>
+            An account exists — check your email.
+          </p>
+          <p style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '8px' }}>
+            We sent a password reset link.
+          </p>
+        </div>
+      )
+    }
     return (
-      <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-        <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '22px', fontStyle: 'italic' }}>
-          {status.alreadyMember ? "An account exists — check your email." : "You're in. Welcome to the Sanctuary."}
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#c9a96e', fontSize: '1.5rem' }}>🖤</p>
+        <h2 style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
+          You're in. Almost.
+        </h2>
+        <p style={{ color: 'rgba(232,228,220,0.7)', marginBottom: '0.5rem' }}>
+          Check your inbox and verify your email to activate your Sanctuary membership.
         </p>
-        <p style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '8px' }}>
-          {status.alreadyMember ? "We sent a password reset link." : "Check your inbox — a welcome awaits."}
+        <p style={{ color: 'rgba(232,228,220,0.4)', fontSize: '0.85rem' }}>
+          Your 10% member discount will apply automatically once your email is confirmed.
         </p>
       </div>
     )
@@ -186,12 +202,16 @@ function CtaForm() {
 
   if (status?.type === 'success') {
     return (
-      <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-        <p style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '20px', fontStyle: 'italic' }}>
-          {status.alreadyMember ? "You're already one of us." : "You're in. Welcome to the Sanctuary."}
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#c9a96e', fontSize: '1.5rem' }}>🖤</p>
+        <h2 style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
+          You're in. Almost.
+        </h2>
+        <p style={{ color: 'rgba(232,228,220,0.7)', marginBottom: '0.5rem' }}>
+          Check your inbox and verify your email to activate your Sanctuary membership.
         </p>
-        <p style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '8px' }}>
-          {status.alreadyMember ? "The Sanctuary remembers you." : "Check your inbox — a welcome awaits."}
+        <p style={{ color: 'rgba(232,228,220,0.4)', fontSize: '0.85rem' }}>
+          Your 10% member discount will apply automatically once your email is confirmed.
         </p>
       </div>
     )
