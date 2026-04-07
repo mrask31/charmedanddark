@@ -123,7 +123,17 @@ export default function SlideOutCart() {
                     {item.variant && <span className="text-zinc-500 ml-2">({item.variant})</span>}
                     {!item.variant && item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
                   </h3>
-                  <p className="text-zinc-400 text-sm mt-1">${item.price.toFixed(2)}</p>
+                  <p className="text-zinc-400 text-sm mt-1">
+                    {isMember ? (
+                      <>
+                        <span className="line-through text-zinc-600">${item.price.toFixed(2)}</span>
+                        {' '}
+                        <span className="text-[#c9a96e]">${(item.price * 0.9).toFixed(2)}</span>
+                      </>
+                    ) : (
+                      `$${item.price.toFixed(2)}`
+                    )}
+                  </p>
                   <div className="flex items-center gap-3 mt-2">
                     <button
                       onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity - 1)}
@@ -156,12 +166,14 @@ export default function SlideOutCart() {
           <div className="border-t border-zinc-800 p-6 space-y-4 bg-[#08080f]">
             <div className="flex justify-between text-sm">
               <span className="text-zinc-400 uppercase tracking-wider">Public Price</span>
-              <span className="text-zinc-400 line-through">${subtotal.toFixed(2)}</span>
+              <span className={`text-zinc-400 ${isMember ? 'line-through' : ''}`}>${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#B89C6D] uppercase tracking-wider">House Price</span>
-              <span className="text-[#B89C6D] font-medium">${sanctuarySubtotal.toFixed(2)}</span>
-            </div>
+            {isMember && (
+              <div className="flex justify-between text-sm">
+                <span className="text-[#B89C6D] uppercase tracking-wider">Sanctuary Price</span>
+                <span className="text-[#B89C6D] font-medium">${sanctuarySubtotal.toFixed(2)}</span>
+              </div>
+            )}
             <p className="text-zinc-600 text-xs">Final price calculated by Shopify at checkout.</p>
 
             <button
