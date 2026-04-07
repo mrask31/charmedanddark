@@ -10,6 +10,9 @@ function SyncPanel() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [descLoading, setDescLoading] = useState(false);
+  const [descResult, setDescResult] = useState(null);
+  const [descError, setDescError] = useState(null);
 
   if (key !== "charmed-dark-admin") return null;
 
@@ -34,6 +37,30 @@ function SyncPanel() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDescriptions() {
+    setDescLoading(true);
+    setDescResult(null);
+    setDescError(null);
+
+    try {
+      const res = await fetch("/api/admin/generate-descriptions", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer charmed-dark-sync-2026",
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Generation failed");
+      setDescResult(data);
+    } catch (err) {
+      setDescError(err.message);
+    } finally {
+      setDescLoading(false);
     }
   }
 
@@ -117,6 +144,56 @@ function SyncPanel() {
       {error && (
         <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
           {error}
+        </p>
+      )}
+
+      {/* Divider */}
+      <div style={{ width: '200px', height: '1px', backgroundColor: 'rgba(201,169,110,0.2)', margin: '2.5rem 0' }} />
+
+      {/* AI Description Generator */}
+      <button
+        onClick={handleDescriptions}
+        disabled={descLoading || loading}
+        style={{
+          padding: "0.75rem 2rem",
+          fontSize: "0.8rem",
+          fontWeight: 300,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: descLoading ? "#6b6760" : "#c9a96e",
+          backgroundColor: "transparent",
+          border: `1px solid ${descLoading ? "#3a3a3a" : "#c9a96e"}`,
+          borderRadius: 0,
+          cursor: descLoading ? "not-allowed" : "pointer",
+          fontFamily: "Inter, sans-serif",
+          transition: "all 0.2s",
+        }}
+      >
+        {descLoading ? "Generating descriptions... This may take 2-3 minutes." : "Generate Descriptions with AI"}
+      </button>
+
+      {descResult && (
+        <div style={{ marginTop: "2rem", textAlign: "center", fontSize: "0.85rem" }}>
+          <p style={{ color: "#c9a96e", marginBottom: "0.5rem" }}>Descriptions Complete</p>
+          <p>Generated: {descResult.generated}</p>
+          <p>Skipped: {descResult.skipped} (already had descriptions)</p>
+          <p style={{ color: "#6b6760" }}>Duration: {descResult.duration_ms}ms</p>
+          {descResult.errors?.length > 0 && (
+            <div style={{ marginTop: "1rem", color: "#e55" }}>
+              <p>Errors ({descResult.errors.length}):</p>
+              {descResult.errors.map((e, i) => (
+                <p key={i} style={{ fontSize: "0.75rem" }}>
+                  {e.product || 'Unknown'}: {e.error}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {descError && (
+        <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
+          {descError}
         </p>
       )}
     </div>
