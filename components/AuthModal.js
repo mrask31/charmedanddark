@@ -114,16 +114,17 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
         </div>
       )}
       <div
-        className="fixed inset-0 z-[150] flex items-center justify-center p-4"
-        style={{ backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0,0,0,0.7)' }}
+        className="fixed inset-0 z-[150] overflow-y-auto"
+        style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
         onClick={onClose}
       >
+        <div className="flex min-h-full items-center justify-center p-4">
         <div
           className="relative w-full max-w-md p-8 flex flex-col gap-5 shadow-2xl"
-          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)', maxHeight: '90vh', overflowY: 'auto' }}
+          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)' }}
           onClick={(e) => e.stopPropagation()}
         >
-          <button onClick={onClose} className="absolute top-4 right-4 text-[#6b6760] hover:text-[#e8e4dc] text-sm">✕</button>
+          <button onClick={onClose} className="absolute top-4 right-4 text-[#e8e4dc]/40 hover:text-[#e8e4dc] transition-colors">✕</button>
 
           <h2 className="font-serif text-2xl text-center" style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, Georgia, serif' }}>
             {mode === 'signin' ? '🖤 Welcome Back' : 'Join the Sanctuary'}
@@ -164,6 +165,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
               {mode === 'signin' ? 'New member? Join here' : 'Already a member? Sign in'}
             </button>
           </div>
+        </div>
         </div>
       </div>
     </>
