@@ -1,20 +1,40 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 
-const BAD_PHRASES = [
+const NEEDS_REGENERATION = [
+  // Printify boilerplate
   'Place your custom',
   'Add your own design',
   '.: Materials',
   '.: Comes in',
   '.: Please note',
   'Printify',
+  // Gildan/generic apparel boilerplate
+  'Gildan Softstyle',
+  'ring-spun cotton',
+  'Comfort Colors introduces',
+  'garment-dyed t-shirt',
+  'fully customizable',
+  // Faire vendor boilerplate (generic, non-brand copy)
+  'kitch piece',
+  'kitsh accessory',
+  'Embrace whimsical charm',
+  'Embrace celestial beauty',
+  'Show off your love for',
+  'Take your Halloween',
+  'redefines casual comfort',
+  // Generic marketing language
+  'Pop them in and you',
+  "you won't want to take them off",
+  'does all the layering',
 ];
 
 function needsDescription(desc) {
   if (!desc || desc.trim().length === 0) return true;
   const plain = desc.replace(/<[^>]*>/g, '').trim();
-  if (plain.length < 50) return true;
-  return BAD_PHRASES.some((phrase) => desc.includes(phrase));
+  if (plain.length < 80) return true;
+  // Check both raw HTML and stripped text for trigger phrases
+  return NEEDS_REGENERATION.some((phrase) => desc.includes(phrase) || plain.includes(phrase));
 }
 
 function isAuthorized(request) {
