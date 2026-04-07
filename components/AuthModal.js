@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   const { signIn, signUp, resetPassword } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [mode, setMode] = useState(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,6 +14,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState(null);
   const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -30,14 +37,15 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
     return () => document.removeEventListener('keydown', handleKey);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   const inputStyle = {
     backgroundColor: 'rgba(255,255,255,0.05)',
     border: '1px solid rgba(201,169,110,0.3)',
     borderRadius: '0px',
     color: '#e8e4dc',
     fontFamily: 'Inter, sans-serif',
+    width: '100%',
+    padding: '0.75rem 1rem',
+    fontSize: '0.875rem',
   };
 
   async function handleSignIn(e) {
@@ -81,7 +89,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       setStatus({ type: 'error', message: error.message });
     } else {
       const userId = signUpData?.user?.id;
-      // Subscribe to Klaviyo + save to tables with userId
       fetch('/api/klaviyo/sanctuary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -105,62 +112,103 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
     setStatus({ type: 'info', message: 'Password reset link sent — check your email.' });
   }
 
-  return (
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
     <>
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-full text-sm shadow-lg"
-          style={{ backgroundColor: '#1a1a2e', border: '1px solid rgba(201,169,110,0.4)', color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{
+          position: 'fixed', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)',
+          zIndex: 100000, padding: '0.75rem 1.5rem', borderRadius: '9999px', fontSize: '0.875rem',
+          backgroundColor: '#1a1a2e', border: '1px solid rgba(201,169,110,0.4)',
+          color: '#c9a96e', fontFamily: 'Inter, sans-serif', boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+        }}>
           {toast}
         </div>
       )}
       <div
-        className="fixed inset-0 z-[150] overflow-y-auto"
-        style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          zIndex: 99999, backgroundColor: 'rgba(0,0,0,0.75)',
+          backdropFilter: 'blur(4px)', overflowY: 'auto',
+        }}
         onClick={onClose}
       >
         <div
-          className="relative w-full max-w-md mx-auto mt-24 mb-8 p-8 flex flex-col gap-5 shadow-2xl"
-          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)' }}
+          style={{
+            position: 'relative', width: '100%', maxWidth: '28rem',
+            margin: '6rem auto 2rem auto', backgroundColor: '#0e0e1a',
+            border: '1px solid rgba(201,169,110,0.2)', borderRadius: '0.5rem',
+            padding: '2rem', boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+          }}
           onClick={(e) => e.stopPropagation()}
         >
-          <button onClick={onClose} className="absolute top-4 right-4 text-[#e8e4dc]/40 hover:text-[#e8e4dc] transition-colors text-lg">✕</button>
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute', top: '1rem', right: '1rem',
+              color: 'rgba(232,228,220,0.4)', background: 'none',
+              border: 'none', fontSize: '1.25rem', cursor: 'pointer',
+            }}
+          >✕</button>
 
-          <h2 className="font-serif text-2xl text-center" style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, Georgia, serif' }}>
+          <h2 style={{
+            fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '1.5rem',
+            textAlign: 'center', color: '#e8e4dc', marginBottom: '1.25rem',
+          }}>
             {mode === 'signin' ? '🖤 Welcome Back' : 'Join the Sanctuary'}
           </h2>
 
-          <form onSubmit={mode === 'signin' ? handleSignIn : handleJoin} className="flex flex-col gap-3">
+          <form onSubmit={mode === 'signin' ? handleSignIn : handleJoin} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {mode === 'join' && (
-              <input type="text" placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e]" style={inputStyle} />
+              <input type="text" placeholder="First name" value={firstName}
+                onChange={(e) => setFirstName(e.target.value)} style={inputStyle} />
             )}
-            <input type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e]" style={inputStyle} />
-            <div className="relative">
-              <input type={showPassword ? 'text' : 'password'} placeholder="Password" required minLength={mode === 'join' ? 8 : undefined}
+            <input type="email" placeholder="Email" required value={email}
+              onChange={(e) => setEmail(e.target.value)} style={inputStyle} />
+            <div style={{ position: 'relative' }}>
+              <input type={showPassword ? 'text' : 'password'} placeholder="Password"
+                required minLength={mode === 'join' ? 8 : undefined}
                 value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-14 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e]" style={inputStyle} />
+                style={{ ...inputStyle, paddingRight: '3.5rem' }} />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-wider" style={{ color: '#6b6760' }}>
+                style={{
+                  position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)',
+                  color: '#6b6760', background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.1em',
+                }}>
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
 
-            {status?.type === 'error' && <p className="text-xs" style={{ color: '#e24b4a' }}>{status.message}</p>}
-            {status?.type === 'info' && <p className="text-xs" style={{ color: '#c9a96e' }}>{status.message}</p>}
+            {status?.type === 'error' && (
+              <p style={{ color: '#e24b4a', fontSize: '0.75rem', fontFamily: 'Inter, sans-serif' }}>{status.message}</p>
+            )}
+            {status?.type === 'info' && (
+              <p style={{ color: '#c9a96e', fontSize: '0.75rem', fontFamily: 'Inter, sans-serif' }}>{status.message}</p>
+            )}
 
             <button type="submit" disabled={status?.type === 'loading'}
-              className="w-full py-3 text-sm uppercase tracking-[0.12em] font-medium transition-colors hover:bg-[#c9a96e]/10 disabled:opacity-50"
-              style={{ border: '1px solid #c9a96e', color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
+              style={{
+                width: '100%', padding: '0.75rem', fontSize: '0.875rem',
+                textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 500,
+                border: '1px solid #c9a96e', color: '#c9a96e', backgroundColor: 'transparent',
+                cursor: status?.type === 'loading' ? 'not-allowed' : 'pointer',
+                opacity: status?.type === 'loading' ? 0.5 : 1,
+                fontFamily: 'Inter, sans-serif',
+              }}>
               {status?.type === 'loading' ? 'Loading...' : mode === 'signin' ? 'Enter the Sanctuary' : 'Join'}
             </button>
           </form>
 
-          <div className="flex flex-col items-center gap-2 text-xs" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', fontSize: '0.75rem', color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
             {mode === 'signin' && (
-              <button onClick={handleForgot} className="hover:text-[#c9a96e] transition-colors">Forgot password?</button>
+              <button onClick={handleForgot} style={{ background: 'none', border: 'none', color: '#6b6760', cursor: 'pointer' }}>
+                Forgot password?
+              </button>
             )}
-            <button onClick={() => { setMode(mode === 'signin' ? 'join' : 'signin'); setStatus(null); }} className="hover:text-[#e8e4dc] transition-colors">
+            <button onClick={() => { setMode(mode === 'signin' ? 'join' : 'signin'); setStatus(null); }}
+              style={{ background: 'none', border: 'none', color: '#6b6760', cursor: 'pointer' }}>
               {mode === 'signin' ? 'New member? Join here' : 'Already a member? Sign in'}
             </button>
           </div>
@@ -168,4 +216,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       </div>
     </>
   );
+
+  return createPortal(modalContent, document.body);
 }
