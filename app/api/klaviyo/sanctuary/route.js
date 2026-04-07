@@ -17,6 +17,15 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
 
+    // Convert YYYY-MM-DD to MM/DD for Klaviyo's native birthday field
+    function formatBirthdayForKlaviyo(bday) {
+      if (!bday) return null;
+      const parts = bday.split('-');
+      if (parts.length !== 3) return null;
+      return `${parts[1]}/${parts[2]}`;
+    }
+    const formattedBirthday = formatBirthdayForKlaviyo(birthday);
+
     // Step 1: Create or update profile in Klaviyo
     const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
       method: 'POST',
@@ -31,13 +40,13 @@ export async function POST(request) {
           attributes: {
             email,
             first_name: body.firstName || undefined,
-            ...(birthday ? { birthday } : {}),
+            ...(formattedBirthday ? { birthday: formattedBirthday } : {}),
             properties: {
               sanctuary_member: true,
               source: source || 'join-page',
               signup_date: new Date().toISOString(),
               joined_at: new Date().toISOString(),
-              Birthday: birthday || null,
+              Birthday: formattedBirthday || null,
             },
             subscriptions: {
               email: {
@@ -74,9 +83,10 @@ export async function POST(request) {
         profileId = searchData?.data?.[0]?.id
       }
     } else {
-      const errText = await profileRes.text()
-      console.error('Klaviyo profile creation failed:', profileRes.status, errText)
-      return NextResponse.json({ error: 'Failed to create profile' }, { status: 500 })
+      const errData = await profileRes.json().catch(() => null);
+      console.error('Klaviyo profile creation failed:', profileRes.status, JSON.stringify(errData));
+      // Don't block signup — return success anyway
+      return NextResponse.json({ success: true, warning: 'Klaviyo profile creation failed' })
     }
 
     if (!profileId) {
