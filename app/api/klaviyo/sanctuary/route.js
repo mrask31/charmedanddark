@@ -12,8 +12,14 @@ export async function POST(request) {
     const KLAVIYO_PRIVATE_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY
     const KLAVIYO_SANCTUARY_LIST_ID = process.env.KLAVIYO_SANCTUARY_LIST_ID
 
+    console.log('[KLAVIYO] Env check:', {
+      hasPrivateKey: !!KLAVIYO_PRIVATE_API_KEY,
+      keyPrefix: KLAVIYO_PRIVATE_API_KEY?.substring(0, 6),
+      hasListId: !!KLAVIYO_SANCTUARY_LIST_ID,
+    });
+
     if (!KLAVIYO_PRIVATE_API_KEY || !KLAVIYO_SANCTUARY_LIST_ID) {
-      console.error('Missing Klaviyo env vars')
+      console.error('[KLAVIYO] Missing env vars — KLAVIYO_PRIVATE_API_KEY:', !!KLAVIYO_PRIVATE_API_KEY, 'KLAVIYO_SANCTUARY_LIST_ID:', !!KLAVIYO_SANCTUARY_LIST_ID)
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
 
@@ -60,14 +66,18 @@ export async function POST(request) {
       }),
     })
 
+    const profileResText = await profileRes.text();
+    console.log('[KLAVIYO] Profile create status:', profileRes.status);
+    console.log('[KLAVIYO] Profile create response:', profileResText.substring(0, 500));
+
+    let profileResData;
+    try { profileResData = JSON.parse(profileResText); } catch { profileResData = null; }
+
     let profileId
     if (profileRes.status === 201) {
-      const profileData = await profileRes.json()
-      profileId = profileData.data.id
+      profileId = profileResData?.data?.id;
     } else if (profileRes.status === 409) {
-      // Profile already exists — get the ID from the conflict response
-      const conflictData = await profileRes.json()
-      profileId = conflictData?.errors?.[0]?.meta?.duplicate_profile_id
+      profileId = profileResData?.errors?.[0]?.meta?.duplicate_profile_id;
       if (!profileId) {
         // Search for the profile by email
         const searchRes = await fetch(
@@ -83,9 +93,7 @@ export async function POST(request) {
         profileId = searchData?.data?.[0]?.id
       }
     } else {
-      const errData = await profileRes.json().catch(() => null);
-      console.error('Klaviyo profile creation failed:', profileRes.status, JSON.stringify(errData));
-      // Don't block signup — return success anyway
+      console.error('[KLAVIYO] Profile creation failed:', profileRes.status, profileResText.substring(0, 500));
       return NextResponse.json({ success: true, warning: 'Klaviyo profile creation failed' })
     }
 
