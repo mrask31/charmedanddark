@@ -30,10 +30,19 @@ export async function POST(request) {
           type: 'profile',
           attributes: {
             email,
+            first_name: body.firstName || undefined,
             properties: {
               sanctuary_member: true,
               source: source || 'join-page',
+              signup_date: new Date().toISOString(),
               joined_at: new Date().toISOString(),
+            },
+            subscriptions: {
+              email: {
+                marketing: {
+                  consent: 'SUBSCRIBED',
+                },
+              },
             },
           },
         },
