@@ -136,6 +136,9 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const url = new URL(request.url);
+  const forceAll = url.searchParams.get('force') === 'true';
+
   const startTime = Date.now();
   let generated = 0;
   let skipped = 0;
@@ -151,11 +154,10 @@ export async function POST(request) {
 
     if (fetchErr) throw new Error(`Supabase fetch: ${fetchErr.message}`);
 
-    const toProcess = products.filter((p) => needsDescription(p.description));
-    const toSkip = products.length - toProcess.length;
-    skipped = toSkip;
+    const toProcess = forceAll ? products : products.filter((p) => needsDescription(p.description));
+    skipped = products.length - toProcess.length;
 
-    console.log(`[DESCRIPTIONS] ${products.length} total, ${toProcess.length} need generation, ${toSkip} already good`);
+    console.log(`[DESCRIPTIONS] ${products.length} total, ${toProcess.length} to generate${forceAll ? ' (FORCE ALL)' : ''}, ${skipped} skipped`);
 
     // Process in batches of 5
     const BATCH_SIZE = 5;

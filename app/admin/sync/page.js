@@ -13,6 +13,9 @@ function SyncPanel() {
   const [descLoading, setDescLoading] = useState(false);
   const [descResult, setDescResult] = useState(null);
   const [descError, setDescError] = useState(null);
+  const [forceLoading, setForceLoading] = useState(false);
+  const [forceResult, setForceResult] = useState(null);
+  const [forceError, setForceError] = useState(null);
 
   if (key !== "charmed-dark-admin") return null;
 
@@ -61,6 +64,30 @@ function SyncPanel() {
       setDescError(err.message);
     } finally {
       setDescLoading(false);
+    }
+  }
+
+  async function handleForceRegenerate() {
+    setForceLoading(true);
+    setForceResult(null);
+    setForceError(null);
+
+    try {
+      const res = await fetch("/api/admin/generate-descriptions?force=true", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer charmed-dark-sync-2026",
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Force generation failed");
+      setForceResult(data);
+    } catch (err) {
+      setForceError(err.message);
+    } finally {
+      setForceLoading(false);
     }
   }
 
@@ -194,6 +221,59 @@ function SyncPanel() {
       {descError && (
         <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
           {descError}
+        </p>
+      )}
+
+      {/* Divider */}
+      <div style={{ width: '200px', height: '1px', backgroundColor: 'rgba(232,228,220,0.1)', margin: '2.5rem 0' }} />
+
+      {/* Force Regenerate ALL */}
+      <button
+        onClick={handleForceRegenerate}
+        disabled={forceLoading || descLoading || loading}
+        style={{
+          padding: "0.6rem 1.5rem",
+          fontSize: "0.7rem",
+          fontWeight: 300,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: forceLoading ? "#6b6760" : "rgba(232,228,220,0.5)",
+          backgroundColor: "transparent",
+          border: `1px solid ${forceLoading ? "#3a3a3a" : "rgba(232,228,220,0.2)"}`,
+          borderRadius: 0,
+          cursor: forceLoading ? "not-allowed" : "pointer",
+          fontFamily: "Inter, sans-serif",
+          transition: "all 0.2s",
+        }}
+      >
+        {forceLoading ? "Regenerating all descriptions... This will take 4-5 minutes." : "Force Regenerate ALL Descriptions"}
+      </button>
+      <p style={{ marginTop: "0.5rem", fontSize: "0.65rem", color: "rgba(232,228,220,0.3)" }}>
+        Warning: Overwrites all descriptions. Run only once.
+      </p>
+
+      {forceResult && (
+        <div style={{ marginTop: "2rem", textAlign: "center", fontSize: "0.85rem" }}>
+          <p style={{ color: "#c9a96e", marginBottom: "0.5rem" }}>Force Regeneration Complete</p>
+          <p>Generated: {forceResult.generated}</p>
+          <p>Skipped: {forceResult.skipped}</p>
+          <p style={{ color: "#6b6760" }}>Duration: {forceResult.duration_ms}ms</p>
+          {forceResult.errors?.length > 0 && (
+            <div style={{ marginTop: "1rem", color: "#e55" }}>
+              <p>Errors ({forceResult.errors.length}):</p>
+              {forceResult.errors.map((e, i) => (
+                <p key={i} style={{ fontSize: "0.75rem" }}>
+                  {e.product || 'Unknown'}: {e.error}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {forceError && (
+        <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
+          {forceError}
         </p>
       )}
     </div>
