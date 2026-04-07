@@ -401,8 +401,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
 
-              {/* Description — rendered as HTML from Shopify */}
-              {console.log('[RENDER DESC]', typeof window !== 'undefined' ? 'client' : 'server', product.description?.substring(0, 100))}
+              {/* Description — rendered as HTML */}
               {product.description && (
                 <div
                   dangerouslySetInnerHTML={{ __html: product.description }}
