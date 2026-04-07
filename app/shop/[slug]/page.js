@@ -86,6 +86,13 @@ export default async function ProductPage({ params }) {
 
   if (!product) return notFound();
 
+  console.log('[PRODUCT DEBUG]', {
+    slug,
+    lore: product.lore?.substring(0, 100),
+    description: product.description?.substring(0, 100),
+    finalDescription: (product.description || product.lore)?.substring(0, 100),
+  });
+
   const relatedProducts = await getRelatedProducts(product);
 
   // Fetch Shopify variants using the product GID (shopify_id)
