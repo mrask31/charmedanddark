@@ -16,13 +16,13 @@ export async function generateMetadata({ params }) {
   if (!product) return { title: 'Product Not Found' };
 
   return {
-    title: `${product.name} | Charmed & Dark`,
+    title: product.name,
     description:
-      product.description?.slice(0, 160) ||
+      product.description?.replace(/<[^>]*>/g, '').slice(0, 160) ||
       'Discover this artifact at Charmed & Dark.',
     openGraph: {
-      title: `${product.name} | Charmed & Dark`,
-      description: product.description?.slice(0, 160),
+      title: product.name,
+      description: product.description?.replace(/<[^>]*>/g, '').slice(0, 160),
       images: product.imageUrls?.[0]
         ? [{ url: product.imageUrls[0], width: 800, height: 800 }]
         : [],
