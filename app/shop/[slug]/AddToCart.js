@@ -61,9 +61,6 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
     isAddingRef.current = true;
     setCartState('loading');
     try {
-      console.log('All variants:', variants.map(v => ({ id: v.shopifyVariantId, title: v.title, options: v.selectedOptions })));
-      console.log('User selected:', selectedOptions);
-      console.log('Matched variant:', selectedVariant?.shopifyVariantId, selectedVariant?.title);
       addItem(
         {
           ...product,

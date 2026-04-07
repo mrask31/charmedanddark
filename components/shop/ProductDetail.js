@@ -259,7 +259,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  // Tracks the Shopify variant chosen inside <AddToCart> (for price display only)
+  // Tracks the Shopify variant chosen inside <AddToCart> (for image display)
   const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
   // Tracks the image URL from a color selection (fires before all options chosen)
   const [colorImage, setColorImage] = useState(null);
