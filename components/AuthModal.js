@@ -43,12 +43,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   async function handleSignIn(e) {
     e.preventDefault();
     setStatus({ type: 'loading' });
-    const { error } = await signIn(email, password);
-    if (error) {
-      setStatus({ type: 'error', message: error.message });
-    } else {
+    try {
+      const { data, error } = await signIn(email, password);
+      if (error) {
+        setStatus({ type: 'error', message: error.message });
+        return;
+      }
+      // Success — close modal and show toast
+      setStatus(null);
+      onClose();
       setToast('🖤 Welcome back to the Sanctuary');
-      setTimeout(() => { setToast(null); onClose(); }, 1500);
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      setStatus({ type: 'error', message: err.message || 'Sign in failed. Please try again.' });
     }
   }
 
@@ -71,8 +78,13 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       }
       setStatus({ type: 'error', message: error.message });
     } else {
-      // Also subscribe to Klaviyo
+      // Subscribe to Klaviyo + save to tables
       fetch('/api/klaviyo/sanctuary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, firstName }),
+      }).catch(() => {});
+      fetch('/api/auth/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, firstName }),
@@ -93,8 +105,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   return (
     <>
       {toast && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[110] px-6 py-3 text-sm"
-          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.4)', color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-full text-sm shadow-lg"
+          style={{ backgroundColor: '#1a1a2e', border: '1px solid rgba(201,169,110,0.4)', color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
           {toast}
         </div>
       )}

@@ -45,6 +45,13 @@ async function handleJoinSubmit(email, password, firstName, setStatus, signUp, r
       body: JSON.stringify({ email, firstName, source: 'sanctuary-join' }),
     })
 
+    // Save to email_subscribers + memberships tables (server-side, bypasses RLS)
+    await fetch('/api/auth/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, firstName }),
+    })
+
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
   } catch (err) {
     console.error('Join form error:', err)
