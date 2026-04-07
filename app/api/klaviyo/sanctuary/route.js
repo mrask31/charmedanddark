@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request) {
   try {
     const body = await request.json()
-    const { email, source } = body
+    const { email, source, firstName, birthday } = body
 
     if (!email || !email.includes('@')) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 })
@@ -31,11 +31,13 @@ export async function POST(request) {
           attributes: {
             email,
             first_name: body.firstName || undefined,
+            ...(birthday ? { birthday } : {}),
             properties: {
               sanctuary_member: true,
               source: source || 'join-page',
               signup_date: new Date().toISOString(),
               joined_at: new Date().toISOString(),
+              Birthday: birthday || null,
             },
             subscriptions: {
               email: {

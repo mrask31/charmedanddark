@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 
-async function handleJoinSubmit(email, password, firstName, setStatus, signUp, resetPassword) {
+async function handleJoinSubmit(email, password, firstName, birthday, setStatus, signUp, resetPassword) {
   if (!email || !email.includes('@')) {
     setStatus({ type: 'error', message: 'Please enter a valid email address.' })
     return
@@ -37,7 +37,7 @@ async function handleJoinSubmit(email, password, firstName, setStatus, signUp, r
     const klaviyoRes = await fetch('/api/klaviyo/sanctuary', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName, source: 'join-page' }),
+      body: JSON.stringify({ email, firstName, birthday: birthday || null, source: 'join-page' }),
     })
 
     // Also subscribe to newsletter list
@@ -51,7 +51,7 @@ async function handleJoinSubmit(email, password, firstName, setStatus, signUp, r
     await fetch('/api/auth/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName, userId }),
+      body: JSON.stringify({ email, firstName, userId, birthday: birthday || null }),
     })
 
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
@@ -66,12 +66,13 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [birthday, setBirthday] = useState('')
   const [status, setStatus] = useState(null)
   const { signUp, resetPassword } = useAuth()
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    await handleJoinSubmit(email, password, firstName, setStatus, signUp, resetPassword)
+    await handleJoinSubmit(email, password, firstName, birthday, setStatus, signUp, resetPassword)
   }
 
   if (status?.type === 'success') {
@@ -159,6 +160,27 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
         >
           {showPassword ? 'Hide' : 'Show'}
         </button>
+      </div>
+
+      {/* Birthday (optional) */}
+      <div className="w-full">
+        <label
+          htmlFor={`${inputId}-bday`}
+          style={{ display: 'block', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(232,228,220,0.5)', marginBottom: '0.5rem', fontFamily: 'Inter, sans-serif' }}
+        >
+          Birthday <span style={{ color: 'rgba(232,228,220,0.3)' }}>(optional)</span>
+        </label>
+        <input
+          id={`${inputId}-bday`}
+          type="date"
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+          disabled={status?.type === 'loading'}
+          style={{ ...inputStyle, width: '100%' }}
+        />
+        <p style={{ fontSize: '0.75rem', color: 'rgba(232,228,220,0.3)', marginTop: '0.35rem' }}>
+          We'll send you something special on your birthday 🖤
+        </p>
       </div>
 
       {status?.type === 'error' && (

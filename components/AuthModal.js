@@ -12,6 +12,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [birthday, setBirthday] = useState('');
   const [status, setStatus] = useState(null);
   const [toast, setToast] = useState(null);
 
@@ -26,6 +27,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       setEmail('');
       setPassword('');
       setFirstName('');
+      setBirthday('');
       setStatus(null);
     }
   }, [isOpen, initialMode]);
@@ -92,12 +94,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       fetch('/api/klaviyo/sanctuary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName }),
+        body: JSON.stringify({ email, firstName, birthday: birthday || null }),
       }).catch(() => {});
       fetch('/api/auth/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, userId }),
+        body: JSON.stringify({ email, firstName, userId, birthday: birthday || null }),
       }).catch(() => {});
       setStatus({ type: 'joined' });
     }
@@ -200,6 +202,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
+
+            {mode === 'join' && (
+              <div>
+                <label style={{ display: 'block', fontSize: '0.625rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(232,228,220,0.5)', marginBottom: '0.4rem', fontFamily: 'Inter, sans-serif' }}>
+                  Birthday <span style={{ color: 'rgba(232,228,220,0.3)' }}>(optional)</span>
+                </label>
+                <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)}
+                  style={inputStyle} />
+                <p style={{ fontSize: '0.7rem', color: 'rgba(232,228,220,0.3)', marginTop: '0.3rem', fontFamily: 'Inter, sans-serif' }}>
+                  We'll send you something special on your birthday 🖤
+                </p>
+              </div>
+            )}
 
             {status?.type === 'error' && (
               <p style={{ color: '#e24b4a', fontSize: '0.75rem', fontFamily: 'Inter, sans-serif' }}>{status.message}</p>

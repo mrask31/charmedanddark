@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(request) {
   try {
-    const { email, firstName, userId } = await request.json();
+    const { email, firstName, userId, birthday } = await request.json();
 
     if (!email) {
       return NextResponse.json({ error: 'Email required' }, { status: 400 });
@@ -19,6 +19,7 @@ export async function POST(request) {
         first_name: firstName || null,
         source: 'sanctuary_join',
         subscribed: true,
+        birthday: birthday || null,
       }, { onConflict: 'email' });
 
     if (subError) {
