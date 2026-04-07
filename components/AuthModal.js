@@ -66,7 +66,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       return;
     }
     setStatus({ type: 'loading' });
-    const { error } = await signUp(email, password, {
+    const { data: signUpData, error } = await signUp(email, password, {
       is_sanctuary_member: true,
       first_name: firstName || undefined,
     });
@@ -78,7 +78,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       }
       setStatus({ type: 'error', message: error.message });
     } else {
-      // Subscribe to Klaviyo + save to tables
+      const userId = signUpData?.user?.id;
+      // Subscribe to Klaviyo + save to tables with userId
       fetch('/api/klaviyo/sanctuary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,7 +88,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       fetch('/api/auth/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName }),
+        body: JSON.stringify({ email, firstName, userId }),
       }).catch(() => {});
       onClose();
     }

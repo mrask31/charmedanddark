@@ -17,7 +17,7 @@ async function handleJoinSubmit(email, password, firstName, setStatus, signUp, r
 
   try {
     // Supabase auth signUp
-    const { error: authError } = await signUp(email, password, {
+    const { data: signUpData, error: authError } = await signUp(email, password, {
       is_sanctuary_member: true,
       first_name: firstName || undefined,
     });
@@ -30,6 +30,8 @@ async function handleJoinSubmit(email, password, firstName, setStatus, signUp, r
       }
       throw authError;
     }
+
+    const userId = signUpData?.user?.id;
 
     // Subscribe to Klaviyo Sanctuary Members list
     const klaviyoRes = await fetch('/api/klaviyo/sanctuary', {
@@ -49,7 +51,7 @@ async function handleJoinSubmit(email, password, firstName, setStatus, signUp, r
     await fetch('/api/auth/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName }),
+      body: JSON.stringify({ email, firstName, userId }),
     })
 
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })

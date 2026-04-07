@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(request) {
   try {
-    const { email, firstName } = await request.json();
+    const { email, firstName, userId } = await request.json();
 
     if (!email) {
       return NextResponse.json({ error: 'Email required' }, { status: 400 });
@@ -11,7 +11,7 @@ export async function POST(request) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Upsert into email_subscribers
+    // Upsert into email_subscribers (has email column)
     const { error: subError } = await supabaseAdmin
       .from('email_subscribers')
       .upsert({
@@ -25,18 +25,20 @@ export async function POST(request) {
       console.error('email_subscribers upsert error:', subError.message);
     }
 
-    // Insert into memberships
-    const { error: memError } = await supabaseAdmin
-      .from('memberships')
-      .upsert({
-        email: normalizedEmail,
-        first_name: firstName || null,
-        joined_at: new Date().toISOString(),
-        status: 'active',
-      }, { onConflict: 'email' });
+    // Insert into memberships using user_id UUID
+    if (userId) {
+      const { error: memError } = await supabaseAdmin
+        .from('memberships')
+        .upsert({
+          user_id: userId,
+          status: 'active',
+        }, { onConflict: 'user_id' });
 
-    if (memError) {
-      console.error('memberships insert error:', memError.message);
+      if (memError) {
+        console.error('memberships insert error:', memError.message);
+      }
+    } else {
+      console.warn('No userId provided for memberships insert');
     }
 
     return NextResponse.json({ success: true });
