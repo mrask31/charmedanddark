@@ -67,7 +67,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
       addItem(
         {
           ...product,
-          price: selectedVariant.price,
+          price: product.price, // Always use Supabase price, not Shopify variant price
           shopifyVariantId: selectedVariant.shopifyVariantId,
           imageUrl: selectedVariant.imageUrl || product.imageUrls?.[0] || null,
         },

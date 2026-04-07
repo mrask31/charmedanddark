@@ -266,13 +266,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
-  // Effective price: Shopify variant → Supabase variant override → product price
+  // Effective price: always use Supabase price, with Supabase variant override if applicable
   const variantPriceOverride = selectedVariant?.price_override != null
     ? parseFloat(selectedVariant.price_override)
     : null;
-  const basePrice = selectedShopifyVariant?.price
-    ?? variantPriceOverride
-    ?? product.price;
+  const basePrice = variantPriceOverride ?? product.price;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
 
   // Variant image override: color selection fires first, full variant match refines it
