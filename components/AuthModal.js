@@ -114,17 +114,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
         </div>
       )}
       <div
-        className="fixed inset-0 z-[150]"
+        className="fixed inset-0 z-[150] overflow-y-auto"
         style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
         onClick={onClose}
       >
         <div
-          className="flex h-full w-full items-center justify-center px-4 py-16"
+          className="relative w-full max-w-md mx-auto mt-24 mb-8 p-8 flex flex-col gap-5 shadow-2xl"
+          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)' }}
           onClick={(e) => e.stopPropagation()}
-        >
-        <div
-          className="relative w-full max-w-md p-8 flex flex-col gap-5 shadow-2xl overflow-y-auto"
-          style={{ backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)', maxHeight: 'calc(100vh - 8rem)' }}
         >
           <button onClick={onClose} className="absolute top-4 right-4 text-[#e8e4dc]/40 hover:text-[#e8e4dc] transition-colors text-lg">✕</button>
 
@@ -167,7 +164,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
               {mode === 'signin' ? 'New member? Join here' : 'Already a member? Sign in'}
             </button>
           </div>
-        </div>
         </div>
       </div>
     </>
