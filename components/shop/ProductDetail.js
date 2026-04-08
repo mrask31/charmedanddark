@@ -266,7 +266,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
-  // Effective price: always use Supabase price, with Supabase variant override if applicable
+  // Effective price: Supabase product_variants.price_override → Supabase product.price
+  // Never reads from Shopify variant data
   const variantPriceOverride = selectedVariant?.price_override != null
     ? parseFloat(selectedVariant.price_override)
     : null;
