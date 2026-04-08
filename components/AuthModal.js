@@ -12,7 +12,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [birthday, setBirthday] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [birthDay, setBirthDay] = useState('');
   const [status, setStatus] = useState(null);
   const [toast, setToast] = useState(null);
 
@@ -27,7 +28,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       setEmail('');
       setPassword('');
       setFirstName('');
-      setBirthday('');
+      setBirthMonth('');
+      setBirthDay('');
       setStatus(null);
     }
   }, [isOpen, initialMode]);
@@ -101,15 +103,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       setStatus({ type: 'error', message: error.message });
     } else {
       const userId = signUpData?.user?.id;
+      const birthday = birthMonth && birthDay ? `${birthMonth}/${birthDay}` : null;
       fetch('/api/klaviyo/sanctuary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, birthday: birthday || null }),
+        body: JSON.stringify({ email, firstName, birthday }),
       }).catch(() => {});
       fetch('/api/auth/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, userId, birthday: birthday || null }),
+        body: JSON.stringify({ email, firstName, userId, birthday }),
       }).catch(() => {});
       setStatus({ type: 'joined' });
     }
@@ -213,8 +216,26 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                 <label style={{ display: 'block', fontSize: '0.625rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(232,228,220,0.5)', marginBottom: '0.4rem', fontFamily: 'Inter, sans-serif' }}>
                   Birthday <span style={{ color: 'rgba(232,228,220,0.3)' }}>(optional)</span>
                 </label>
-                <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)}
-                  style={inputStyle} />
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <select value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)}
+                    style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}>
+                    <option value="">Month</option>
+                    <option value="01">January</option><option value="02">February</option>
+                    <option value="03">March</option><option value="04">April</option>
+                    <option value="05">May</option><option value="06">June</option>
+                    <option value="07">July</option><option value="08">August</option>
+                    <option value="09">September</option><option value="10">October</option>
+                    <option value="11">November</option><option value="12">December</option>
+                  </select>
+                  <select value={birthDay} onChange={(e) => setBirthDay(e.target.value)}
+                    style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}>
+                    <option value="">Day</option>
+                    {Array.from({ length: 31 }, (_, i) => {
+                      const d = String(i + 1).padStart(2, '0');
+                      return <option key={d} value={d}>{i + 1}</option>;
+                    })}
+                  </select>
+                </div>
                 <p style={{ fontSize: '0.7rem', color: 'rgba(232,228,220,0.3)', marginTop: '0.3rem', fontFamily: 'Inter, sans-serif' }}>
                   We'll send you something special on your birthday 🖤
                 </p>

@@ -23,14 +23,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
 
-    // Convert YYYY-MM-DD to MM/DD for Klaviyo's native birthday field
-    function formatBirthdayForKlaviyo(bday) {
-      if (!bday) return null;
-      const parts = bday.split('-');
-      if (parts.length !== 3) return null;
-      return `${parts[1]}/${parts[2]}`;
-    }
-    const formattedBirthday = formatBirthdayForKlaviyo(birthday);
+    // Birthday already comes as MM/DD from frontend dropdowns
+    const formattedBirthday = birthday || null;
 
     // Step 1: Create or update profile in Klaviyo
     const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {

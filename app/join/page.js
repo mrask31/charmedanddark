@@ -66,12 +66,14 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [birthday, setBirthday] = useState('')
+  const [birthMonth, setBirthMonth] = useState('')
+  const [birthDay, setBirthDay] = useState('')
   const [status, setStatus] = useState(null)
   const { signUp, resetPassword } = useAuth()
 
   const onSubmit = async (e) => {
     e.preventDefault()
+    const birthday = birthMonth && birthDay ? `${birthMonth}/${birthDay}` : null
     await handleJoinSubmit(email, password, firstName, birthday, setStatus, signUp, resetPassword)
   }
 
@@ -162,19 +164,44 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
       {/* Birthday (optional) */}
       <div className="w-full">
         <label
-          htmlFor={`${inputId}-bday`}
           style={{ display: 'block', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(232,228,220,0.5)', marginBottom: '0.5rem', fontFamily: 'Inter, sans-serif' }}
         >
           Birthday <span style={{ color: 'rgba(232,228,220,0.3)' }}>(optional)</span>
         </label>
-        <input
-          id={`${inputId}-bday`}
-          type="date"
-          value={birthday}
-          onChange={(e) => setBirthday(e.target.value)}
-          disabled={status?.type === 'loading'}
-          style={{ ...inputStyle, width: '100%' }}
-        />
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <select
+            value={birthMonth}
+            onChange={(e) => setBirthMonth(e.target.value)}
+            disabled={status?.type === 'loading'}
+            style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}
+          >
+            <option value="">Month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+          <select
+            value={birthDay}
+            onChange={(e) => setBirthDay(e.target.value)}
+            disabled={status?.type === 'loading'}
+            style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}
+          >
+            <option value="">Day</option>
+            {Array.from({ length: 31 }, (_, i) => {
+              const day = String(i + 1).padStart(2, '0');
+              return <option key={day} value={day}>{i + 1}</option>;
+            })}
+          </select>
+        </div>
         <p style={{ fontSize: '0.75rem', color: 'rgba(232,228,220,0.3)', marginTop: '0.35rem' }}>
           We'll send you something special on your birthday 🖤
         </p>
