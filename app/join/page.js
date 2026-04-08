@@ -173,7 +173,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
             value={birthMonth}
             onChange={(e) => setBirthMonth(e.target.value)}
             disabled={status?.type === 'loading'}
-            style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}
+            style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)', colorScheme: 'dark' }}
           >
             <option value="">Month</option>
             <option value="01">January</option>
@@ -193,7 +193,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
             value={birthDay}
             onChange={(e) => setBirthDay(e.target.value)}
             disabled={status?.type === 'loading'}
-            style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}
+            style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)', colorScheme: 'dark' }}
           >
             <option value="">Day</option>
             {Array.from({ length: 31 }, (_, i) => {

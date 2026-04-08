@@ -218,7 +218,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                 </label>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <select value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)}
-                    style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}>
+                    style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)', colorScheme: 'dark' }}>
                     <option value="">Month</option>
                     <option value="01">January</option><option value="02">February</option>
                     <option value="03">March</option><option value="04">April</option>
@@ -228,7 +228,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                     <option value="11">November</option><option value="12">December</option>
                   </select>
                   <select value={birthDay} onChange={(e) => setBirthDay(e.target.value)}
-                    style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)' }}>
+                    style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)', colorScheme: 'dark' }}>
                     <option value="">Day</option>
                     {Array.from({ length: 31 }, (_, i) => {
                       const d = String(i + 1).padStart(2, '0');
