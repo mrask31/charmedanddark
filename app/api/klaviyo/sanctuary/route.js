@@ -4,7 +4,7 @@ export async function POST(request) {
   try {
     const { email, firstName, birthday } = await request.json();
 
-    const apiKey = process.env.KLAVIYO_API_KEY;
+    const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY;
     const listId = process.env.KLAVIYO_SANCTUARY_LIST_ID || 'WTaWTH';
 
     console.log('[KLAVIYO] Starting with key prefix:', apiKey?.substring(0, 8));
