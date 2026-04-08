@@ -1,141 +1,99 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const body = await request.json()
-    const { email, source, firstName, birthday } = body
+    const { email, firstName, birthday } = await request.json();
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: 'Valid email required' }, { status: 400 })
-    }
+    const apiKey = process.env.KLAVIYO_API_KEY;
+    const listId = process.env.KLAVIYO_SANCTUARY_LIST_ID || 'WTaWTH';
 
-    const KLAVIYO_PRIVATE_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY
-    const KLAVIYO_SANCTUARY_LIST_ID = process.env.KLAVIYO_SANCTUARY_LIST_ID
+    console.log('[KLAVIYO] Starting with key prefix:', apiKey?.substring(0, 8));
+    console.log('[KLAVIYO] List ID:', listId);
+    console.log('[KLAVIYO] Email:', email);
 
-    console.log('[KLAVIYO] Env check:', {
-      hasPrivateKey: !!KLAVIYO_PRIVATE_API_KEY,
-      keyPrefix: KLAVIYO_PRIVATE_API_KEY?.substring(0, 6),
-      hasListId: !!KLAVIYO_SANCTUARY_LIST_ID,
-    });
-
-    if (!KLAVIYO_PRIVATE_API_KEY || !KLAVIYO_SANCTUARY_LIST_ID) {
-      console.error('[KLAVIYO] Missing env vars — KLAVIYO_PRIVATE_API_KEY:', !!KLAVIYO_PRIVATE_API_KEY, 'KLAVIYO_SANCTUARY_LIST_ID:', !!KLAVIYO_SANCTUARY_LIST_ID)
-      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
-    }
-
-    // Birthday already comes as MM/DD from frontend dropdowns
-    const formattedBirthday = birthday || null;
-
-    // Step 1: Create or update profile in Klaviyo
-    const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Klaviyo-API-Key ${KLAVIYO_PRIVATE_API_KEY}`,
-        'Content-Type': 'application/json',
-        'revision': '2024-02-15',
-      },
-      body: JSON.stringify({
-        data: {
-          type: 'profile',
-          attributes: {
-            email,
-            first_name: body.firstName || undefined,
-            ...(formattedBirthday ? { birthday: formattedBirthday } : {}),
-            properties: {
-              sanctuary_member: true,
-              source: source || 'join-page',
-              signup_date: new Date().toISOString(),
-              joined_at: new Date().toISOString(),
-              Birthday: formattedBirthday || null,
-            },
-            subscriptions: {
-              email: {
-                marketing: {
-                  consent: 'SUBSCRIBED',
-                },
+    // Step 1: Create/update profile
+    const profilePayload = {
+      data: {
+        type: 'profile',
+        attributes: {
+          email,
+          first_name: firstName || '',
+          ...(birthday && { birthday }),
+          subscriptions: {
+            email: {
+              marketing: {
+                consent: 'SUBSCRIBED',
               },
             },
           },
+          properties: {
+            sanctuary_member: true,
+            source: 'sanctuary-join',
+            signup_date: new Date().toISOString(),
+            ...(birthday && { Birthday: birthday }),
+          },
         },
-      }),
-    })
+      },
+    };
 
-    const profileResText = await profileRes.text();
-    console.log('[KLAVIYO] Profile create status:', profileRes.status);
-    console.log('[KLAVIYO] Profile create response:', profileResText.substring(0, 500));
+    console.log('[KLAVIYO] Payload:', JSON.stringify(profilePayload));
 
-    let profileResData;
-    try { profileResData = JSON.parse(profileResText); } catch { profileResData = null; }
-
-    let profileId
-    if (profileRes.status === 201) {
-      profileId = profileResData?.data?.id;
-    } else if (profileRes.status === 409) {
-      profileId = profileResData?.errors?.[0]?.meta?.duplicate_profile_id;
-      if (!profileId) {
-        // Search for the profile by email
-        const searchRes = await fetch(
-          `https://a.klaviyo.com/api/profiles/?filter=equals(email,"${encodeURIComponent(email)}")`,
-          {
-            headers: {
-              'Authorization': `Klaviyo-API-Key ${KLAVIYO_PRIVATE_API_KEY}`,
-              'revision': '2024-02-15',
-            },
-          }
-        )
-        const searchData = await searchRes.json()
-        profileId = searchData?.data?.[0]?.id
-      }
-    } else {
-      console.error('[KLAVIYO] Profile creation failed:', profileRes.status, profileResText.substring(0, 500));
-      return NextResponse.json({ success: true, warning: 'Klaviyo profile creation failed' })
-    }
-
-    if (!profileId) {
-      console.error('Could not determine profile ID')
-      return NextResponse.json({ error: 'Profile ID not found' }, { status: 500 })
-    }
-
-    // Check if already in Sanctuary Members list
-    const memberCheckRes = await fetch(
-      `https://a.klaviyo.com/api/lists/${KLAVIYO_SANCTUARY_LIST_ID}/relationships/profiles/`,
-      {
-        headers: {
-          'Authorization': `Klaviyo-API-Key ${KLAVIYO_PRIVATE_API_KEY}`,
-          'Content-Type': 'application/json',
-          'revision': '2024-02-15',
-        },
-      }
-    )
-    const memberCheckData = await memberCheckRes.json()
-    const alreadyMember = memberCheckData?.data?.some(p => p.id === profileId) || false
-
-    if (alreadyMember) {
-      return NextResponse.json({ success: true, alreadyMember: true })
-    }
-
-    // Step 2: Add profile to Sanctuary Members list
-    const listRes = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_SANCTUARY_LIST_ID}/relationships/profiles/`, {
+    const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
       method: 'POST',
       headers: {
-        'Authorization': `Klaviyo-API-Key ${KLAVIYO_PRIVATE_API_KEY}`,
+        'Authorization': `Klaviyo-API-Key ${apiKey}`,
         'Content-Type': 'application/json',
         'revision': '2024-02-15',
       },
-      body: JSON.stringify({
-        data: [{ type: 'profile', id: profileId }],
-      }),
-    })
+      body: JSON.stringify(profilePayload),
+    });
 
-    if (!listRes.ok && listRes.status !== 204) {
-      const errText = await listRes.text()
-      console.error('Failed to add to sanctuary list:', listRes.status, errText)
-      return NextResponse.json({ error: 'Failed to add to list' }, { status: 500 })
+    const profileText = await profileRes.text();
+    console.log('[KLAVIYO] Profile status:', profileRes.status);
+    console.log('[KLAVIYO] Profile response:', profileText);
+
+    let profileId;
+
+    if (profileRes.status === 201 || profileRes.status === 200) {
+      const profileData = JSON.parse(profileText);
+      profileId = profileData.data?.id;
+    } else if (profileRes.status === 409) {
+      const profileData = JSON.parse(profileText);
+      profileId = profileData.errors?.[0]?.meta?.duplicate_profile_id;
+      console.log('[KLAVIYO] Existing profile ID:', profileId);
+    } else {
+      console.error('[KLAVIYO] Profile creation failed:', profileText);
+      return NextResponse.json({ success: false, error: profileText });
     }
 
-    return NextResponse.json({ success: true, profileId })
-  } catch (err) {
-    console.error('Sanctuary route error:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    if (!profileId) {
+      console.error('[KLAVIYO] No profile ID obtained');
+      return NextResponse.json({ success: false, error: 'No profile ID' });
+    }
+
+    // Step 2: Add profile to Sanctuary list
+    const listRes = await fetch(
+      `https://a.klaviyo.com/api/lists/${listId}/relationships/profiles/`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Klaviyo-API-Key ${apiKey}`,
+          'Content-Type': 'application/json',
+          'revision': '2024-02-15',
+        },
+        body: JSON.stringify({
+          data: [{ type: 'profile', id: profileId }],
+        }),
+      }
+    );
+
+    const listText = await listRes.text();
+    console.log('[KLAVIYO] List add status:', listRes.status);
+    console.log('[KLAVIYO] List response:', listText);
+
+    return NextResponse.json({ success: true, profileId });
+  } catch (error) {
+    console.error('[KLAVIYO] Exception:', error.message);
+    return NextResponse.json({ success: false, error: error.message });
   }
 }
