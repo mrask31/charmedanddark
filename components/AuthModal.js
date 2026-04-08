@@ -218,7 +218,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                 </label>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <select value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)}
-                    style={{ ...inputStyle, flex: 1, color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)', colorScheme: 'dark' }}>
+                    style={{ flex: 1, padding: '0.75rem 1rem', backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)', borderRadius: '0.25rem', color: birthMonth ? '#e8e4dc' : 'rgba(232,228,220,0.4)', fontSize: '0.9rem', outline: 'none', fontFamily: 'Inter, sans-serif', appearance: 'none', WebkitAppearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c9a96e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', paddingRight: '2.5rem', cursor: 'pointer' }}>
                     <option value="">Month</option>
                     <option value="01">January</option><option value="02">February</option>
                     <option value="03">March</option><option value="04">April</option>
@@ -228,7 +228,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                     <option value="11">November</option><option value="12">December</option>
                   </select>
                   <select value={birthDay} onChange={(e) => setBirthDay(e.target.value)}
-                    style={{ ...inputStyle, flex: 1, color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)', colorScheme: 'dark' }}>
+                    style={{ flex: 1, padding: '0.75rem 1rem', backgroundColor: '#0e0e1a', border: '1px solid rgba(201,169,110,0.2)', borderRadius: '0.25rem', color: birthDay ? '#e8e4dc' : 'rgba(232,228,220,0.4)', fontSize: '0.9rem', outline: 'none', fontFamily: 'Inter, sans-serif', appearance: 'none', WebkitAppearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c9a96e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', paddingRight: '2.5rem', cursor: 'pointer' }}>
                     <option value="">Day</option>
                     {Array.from({ length: 31 }, (_, i) => {
                       const d = String(i + 1).padStart(2, '0');
