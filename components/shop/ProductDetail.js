@@ -265,36 +265,49 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [colorImage, setColorImage] = useState(null);
   // Tracks Supabase price_override matched from Shopify variant selection
   const [shopifyVariantPriceOverride, setShopifyVariantPriceOverride] = useState(null);
+  // Tracks Shopify variant's own price (used when no Supabase override exists)
+  const [shopifyVariantPrice, setShopifyVariantPrice] = useState(null);
+  // Tracks Shopify variant's compareAtPrice for strikethrough display
+  const [shopifyVariantCompareAtPrice, setShopifyVariantCompareAtPrice] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
 
   // When Shopify variant changes, look up matching Supabase product_variant for price_override
   function handleShopifyVariantChange(shopifyVariant) {
     setSelectedShopifyVariant(shopifyVariant);
-    console.log('Shopify variant selected:', shopifyVariant?.title, shopifyVariant?.selectedOptions);
 
-    if (shopifyVariant && product.productVariants?.length > 0) {
-      // Try to match by option values (e.g. size "M" or color "Black")
-      const match = product.productVariants.find((pv) =>
-        shopifyVariant.selectedOptions?.some(
-          (opt) => pv.variant_type === opt.name.toLowerCase() && pv.variant_value === opt.value
-        )
-      );
-      console.log('Matched Supabase variant:', match?.id, 'price_override:', match?.price_override);
-      setShopifyVariantPriceOverride(match?.price_override != null ? parseFloat(match.price_override) : null);
+    if (shopifyVariant) {
+      // Always capture Shopify's own price as fallback
+      setShopifyVariantPrice(shopifyVariant.price ?? null);
+      setShopifyVariantCompareAtPrice(shopifyVariant.compareAtPrice ?? null);
+
+      // Try to match Supabase product_variant for price_override
+      if (product.productVariants?.length > 0) {
+        const match = product.productVariants.find((pv) =>
+          shopifyVariant.selectedOptions?.some(
+            (opt) => pv.variant_type === opt.name.toLowerCase() && pv.variant_value === opt.value
+          )
+        );
+        setShopifyVariantPriceOverride(match?.price_override != null ? parseFloat(match.price_override) : null);
+      } else {
+        setShopifyVariantPriceOverride(null);
+      }
     } else {
+      setShopifyVariantPrice(null);
+      setShopifyVariantCompareAtPrice(null);
       setShopifyVariantPriceOverride(null);
     }
   }
 
-  // Effective price: Supabase product_variants.price_override → Supabase product.price
-  // Never reads from Shopify variant data
+  // Effective price priority: Supabase price_override → Shopify variant price → product base price
   const variantPriceOverride = selectedVariant?.price_override != null
     ? parseFloat(selectedVariant.price_override)
     : null;
-  const basePrice = variantPriceOverride ?? shopifyVariantPriceOverride ?? product.price;
+  const basePrice = variantPriceOverride ?? shopifyVariantPriceOverride ?? shopifyVariantPrice ?? product.price;
+  const compareAtPrice = shopifyVariantCompareAtPrice && shopifyVariantCompareAtPrice > basePrice
+    ? shopifyVariantCompareAtPrice
+    : null;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
-  console.log('Price debug:', { variantPriceOverride, shopifyVariantPriceOverride, productPrice: product.price, basePrice });
 
   // Variant image override: color selection fires first, full variant match refines it
   const variantImage = colorImage
@@ -384,9 +397,14 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               {/* Price block */}
               {basePrice && (
                 <div className="flex flex-col gap-1.5">
-                  <div className="flex items-baseline gap-4">
+                  <div className="flex items-baseline gap-4 flex-wrap">
                     {isMember ? (
                       <>
+                        {compareAtPrice && (
+                          <span className="font-light text-[14px] line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                            ${compareAtPrice.toFixed(2)}
+                          </span>
+                        )}
                         <span className="font-light text-xl line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
                           ${basePrice.toFixed(2)}
                         </span>
@@ -399,6 +417,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                       </>
                     ) : (
                       <>
+                        {compareAtPrice && (
+                          <span className="font-light text-[14px] line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                            ${compareAtPrice.toFixed(2)}
+                          </span>
+                        )}
                         <span className="font-light text-xl" style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif' }}>
                           ${basePrice.toFixed(2)}
                         </span>
