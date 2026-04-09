@@ -11,8 +11,9 @@ export async function POST(request) {
     console.log('[KLAVIYO] List ID:', listId);
     console.log('[KLAVIYO] Email:', email);
     console.log('[KLAVIYO] Birthday:', birthday);
+    console.log('[KLAVIYO] FirstName:', firstName);
 
-    // Step 1: Create/update profile (no subscriptions in attributes)
+    // Step 1: Create profile
     const profilePayload = {
       data: {
         type: 'profile',
@@ -23,7 +24,7 @@ export async function POST(request) {
             sanctuary_member: true,
             source: 'sanctuary-join',
             signup_date: new Date().toISOString(),
-            ...(birthday && { Birthday: birthday }),
+            ...(birthday ? { Birthday: birthday } : {}),
           },
         },
       },
@@ -43,53 +44,21 @@ export async function POST(request) {
 
     const profileText = await profileRes.text();
     console.log('[KLAVIYO] Profile status:', profileRes.status);
-    console.log('[KLAVIYO] Profile response:', profileText);
+    console.log('[KLAVIYO] Profile response:', profileText.substring(0, 300));
 
     let profileId;
 
     if (profileRes.status === 201 || profileRes.status === 200) {
       const profileData = JSON.parse(profileText);
       profileId = profileData.data?.id;
+      console.log('[KLAVIYO] New profile created:', profileId);
     } else if (profileRes.status === 409) {
       const profileData = JSON.parse(profileText);
       profileId = profileData.errors?.[0]?.meta?.duplicate_profile_id;
       console.log('[KLAVIYO] Existing profile ID:', profileId);
-
-      // Update existing profile with properties (birthday, sanctuary_member, etc.)
-      if (profileId) {
-        const updatePayload = {
-          data: {
-            type: 'profile',
-            id: profileId,
-            attributes: {
-              first_name: firstName || undefined,
-              properties: {
-                sanctuary_member: true,
-                source: 'sanctuary-join',
-                signup_date: new Date().toISOString(),
-                ...(birthday && { Birthday: birthday }),
-              },
-            },
-          },
-        };
-
-        const updateRes = await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Klaviyo-API-Key ${apiKey}`,
-            'Content-Type': 'application/json',
-            'revision': '2024-02-15',
-          },
-          body: JSON.stringify(updatePayload),
-        });
-
-        const updateText = await updateRes.text();
-        console.log('[KLAVIYO] Profile update status:', updateRes.status);
-        console.log('[KLAVIYO] Profile update response:', updateText);
-      }
     } else {
-      console.error('[KLAVIYO] Profile creation failed:', profileText);
-      return NextResponse.json({ success: false, error: profileText });
+      console.error('[KLAVIYO] Profile creation failed:', profileRes.status, profileText);
+      return NextResponse.json({ success: false, error: 'Profile creation failed' });
     }
 
     if (!profileId) {
@@ -97,7 +66,44 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'No profile ID' });
     }
 
-    // Step 2: Subscribe profile to list via bulk subscription endpoint
+    // Step 2: ALWAYS update profile with properties (handles both new and existing)
+    console.log('[KLAVIYO] Starting PATCH for profile:', profileId);
+    const updatePayload = {
+      data: {
+        type: 'profile',
+        id: profileId,
+        attributes: {
+          first_name: firstName || undefined,
+          properties: {
+            sanctuary_member: true,
+            source: 'sanctuary-join',
+            signup_date: new Date().toISOString(),
+            ...(birthday ? { Birthday: birthday } : {}),
+          },
+        },
+      },
+    };
+    console.log('[KLAVIYO] PATCH payload:', JSON.stringify(updatePayload));
+
+    try {
+      const updateRes = await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Klaviyo-API-Key ${apiKey}`,
+          'Content-Type': 'application/json',
+          'revision': '2024-02-15',
+        },
+        body: JSON.stringify(updatePayload),
+      });
+      const updateText = await updateRes.text();
+      console.log('[KLAVIYO] PATCH status:', updateRes.status);
+      console.log('[KLAVIYO] PATCH response:', updateText.substring(0, 300));
+    } catch (patchErr) {
+      console.error('[KLAVIYO] PATCH exception:', patchErr.message);
+    }
+
+    // Step 3: Subscribe to list
+    console.log('[KLAVIYO] Starting subscription for list:', listId);
     const subscribePayload = {
       data: {
         type: 'profile-subscription-bulk-create-job',
@@ -109,9 +115,7 @@ export async function POST(request) {
                 email,
                 subscriptions: {
                   email: {
-                    marketing: {
-                      consent: 'SUBSCRIBED',
-                    },
+                    marketing: { consent: 'SUBSCRIBED' },
                   },
                 },
               },
@@ -126,25 +130,27 @@ export async function POST(request) {
       },
     };
 
-    console.log('[KLAVIYO] Subscribe payload:', JSON.stringify(subscribePayload));
+    try {
+      const subRes = await fetch(
+        'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Klaviyo-API-Key ${apiKey}`,
+            'Content-Type': 'application/json',
+            'revision': '2024-02-15',
+          },
+          body: JSON.stringify(subscribePayload),
+        }
+      );
+      const subText = await subRes.text();
+      console.log('[KLAVIYO] Subscribe status:', subRes.status);
+      console.log('[KLAVIYO] Subscribe response:', subText.substring(0, 300));
+    } catch (subErr) {
+      console.error('[KLAVIYO] Subscribe exception:', subErr.message);
+    }
 
-    const subRes = await fetch(
-      'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Klaviyo-API-Key ${apiKey}`,
-          'Content-Type': 'application/json',
-          'revision': '2024-02-15',
-        },
-        body: JSON.stringify(subscribePayload),
-      }
-    );
-
-    const subText = await subRes.text();
-    console.log('[KLAVIYO] Subscribe status:', subRes.status);
-    console.log('[KLAVIYO] Subscribe response:', subText);
-
+    console.log('[KLAVIYO] All done for:', email);
     return NextResponse.json({ success: true, profileId });
   } catch (error) {
     console.error('[KLAVIYO] Exception:', error.message);
