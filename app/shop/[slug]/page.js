@@ -4,6 +4,10 @@ import { notFound } from 'next/navigation';
 import { getShopifyVariants } from '@/lib/shopify/variants';
 import ProductDetail from '@/components/shop/ProductDetail';
 
+// Revalidate every hour so new Shopify variants (colors, sizes) appear
+// without requiring a full rebuild.
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const products = await getProducts();
   return products.map((p) => ({ slug: p.slug }));
