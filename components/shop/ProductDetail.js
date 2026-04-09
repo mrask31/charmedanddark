@@ -273,6 +273,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     : null;
   const basePrice = variantPriceOverride ?? product.price;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
+  console.log('selectedVariant changed:', selectedVariant?.id, selectedVariant?.price_override);
 
   // Variant image override: color selection fires first, full variant match refines it
   const variantImage = colorImage
