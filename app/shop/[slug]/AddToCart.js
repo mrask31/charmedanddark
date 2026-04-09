@@ -64,7 +64,18 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
       addItem(
         {
           ...product,
-          price: product.price, // Always use Supabase price, not Shopify variant price
+          // Use Supabase variant price_override if available, otherwise base price
+          price: (() => {
+            if (product.productVariants?.length > 0 && selectedVariant) {
+              const match = product.productVariants.find((pv) =>
+                selectedVariant.selectedOptions?.some(
+                  (opt) => pv.variant_type === opt.name.toLowerCase() && pv.variant_value === opt.value
+                )
+              );
+              if (match?.price_override != null) return parseFloat(match.price_override);
+            }
+            return product.price;
+          })(),
           shopifyVariantId: selectedVariant.shopifyVariantId,
           imageUrl: selectedVariant.imageUrl || product.imageUrls?.[0] || null,
         },

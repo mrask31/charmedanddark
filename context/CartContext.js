@@ -54,6 +54,16 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
+  // Clear cart when user logs out
+  useEffect(() => {
+    function handleLogout() {
+      setItems([]);
+      setIsOpen(false);
+    }
+    window.addEventListener('sanctuary-logout', handleLogout);
+    return () => window.removeEventListener('sanctuary-logout', handleLogout);
+  }, []);
+
   const addItem = useCallback((product, quantity = 1) => {
     const size = product.selectedSize || null;
     const variant = product.selectedVariant || null;

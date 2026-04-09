@@ -44,6 +44,13 @@ export function AuthProvider({ children }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    // Clear cart and notify CartContext
+    try {
+      localStorage.removeItem('charmed-dark-cart');
+      window.dispatchEvent(new Event('sanctuary-logout'));
+    } catch (e) {
+      console.error('Failed to clear cart on logout:', e);
+    }
   };
 
   const resetPassword = async (email) => {
