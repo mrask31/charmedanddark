@@ -10,6 +10,7 @@ export async function POST(request) {
     console.log('[KLAVIYO] Starting with key prefix:', apiKey?.substring(0, 8));
     console.log('[KLAVIYO] List ID:', listId);
     console.log('[KLAVIYO] Email:', email);
+    console.log('[KLAVIYO] Birthday:', birthday);
 
     // Step 1: Create/update profile (no subscriptions in attributes)
     const profilePayload = {
@@ -53,6 +54,39 @@ export async function POST(request) {
       const profileData = JSON.parse(profileText);
       profileId = profileData.errors?.[0]?.meta?.duplicate_profile_id;
       console.log('[KLAVIYO] Existing profile ID:', profileId);
+
+      // Update existing profile with properties (birthday, sanctuary_member, etc.)
+      if (profileId) {
+        const updatePayload = {
+          data: {
+            type: 'profile',
+            id: profileId,
+            attributes: {
+              first_name: firstName || undefined,
+              properties: {
+                sanctuary_member: true,
+                source: 'sanctuary-join',
+                signup_date: new Date().toISOString(),
+                ...(birthday && { Birthday: birthday }),
+              },
+            },
+          },
+        };
+
+        const updateRes = await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Klaviyo-API-Key ${apiKey}`,
+            'Content-Type': 'application/json',
+            'revision': '2024-02-15',
+          },
+          body: JSON.stringify(updatePayload),
+        });
+
+        const updateText = await updateRes.text();
+        console.log('[KLAVIYO] Profile update status:', updateRes.status);
+        console.log('[KLAVIYO] Profile update response:', updateText);
+      }
     } else {
       console.error('[KLAVIYO] Profile creation failed:', profileText);
       return NextResponse.json({ success: false, error: profileText });
