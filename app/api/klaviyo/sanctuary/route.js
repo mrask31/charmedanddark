@@ -13,6 +13,14 @@ export async function POST(request) {
     console.log('[KLAVIYO] Birthday:', birthday);
     console.log('[KLAVIYO] FirstName:', firstName);
 
+    // Convert MM/DD to YYYY-MM-DD with placeholder year for Klaviyo date type
+    let klaviyoBirthday = null;
+    if (birthday && birthday.includes('/')) {
+      const [mm, dd] = birthday.split('/');
+      klaviyoBirthday = `1900-${mm}-${dd}`;
+    }
+    console.log('[KLAVIYO] Formatted birthday:', klaviyoBirthday);
+
     // Step 1: Create profile
     const profilePayload = {
       data: {
@@ -24,7 +32,7 @@ export async function POST(request) {
             sanctuary_member: true,
             source: 'sanctuary-join',
             signup_date: new Date().toISOString(),
-            ...(birthday ? { Birthday: birthday } : {}),
+            ...(klaviyoBirthday ? { Birthday: klaviyoBirthday } : {}),
           },
         },
       },
@@ -78,7 +86,7 @@ export async function POST(request) {
             sanctuary_member: true,
             source: 'sanctuary-join',
             signup_date: new Date().toISOString(),
-            ...(birthday ? { Birthday: birthday } : {}),
+            ...(klaviyoBirthday ? { Birthday: klaviyoBirthday } : {}),
           },
         },
       },
