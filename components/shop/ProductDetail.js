@@ -263,17 +263,38 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
   // Tracks the image URL from a color selection (fires before all options chosen)
   const [colorImage, setColorImage] = useState(null);
+  // Tracks Supabase price_override matched from Shopify variant selection
+  const [shopifyVariantPriceOverride, setShopifyVariantPriceOverride] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
+
+  // When Shopify variant changes, look up matching Supabase product_variant for price_override
+  function handleShopifyVariantChange(shopifyVariant) {
+    setSelectedShopifyVariant(shopifyVariant);
+    console.log('Shopify variant selected:', shopifyVariant?.title, shopifyVariant?.selectedOptions);
+
+    if (shopifyVariant && product.productVariants?.length > 0) {
+      // Try to match by option values (e.g. size "M" or color "Black")
+      const match = product.productVariants.find((pv) =>
+        shopifyVariant.selectedOptions?.some(
+          (opt) => pv.variant_type === opt.name.toLowerCase() && pv.variant_value === opt.value
+        )
+      );
+      console.log('Matched Supabase variant:', match?.id, 'price_override:', match?.price_override);
+      setShopifyVariantPriceOverride(match?.price_override != null ? parseFloat(match.price_override) : null);
+    } else {
+      setShopifyVariantPriceOverride(null);
+    }
+  }
 
   // Effective price: Supabase product_variants.price_override → Supabase product.price
   // Never reads from Shopify variant data
   const variantPriceOverride = selectedVariant?.price_override != null
     ? parseFloat(selectedVariant.price_override)
     : null;
-  const basePrice = variantPriceOverride ?? product.price;
+  const basePrice = variantPriceOverride ?? shopifyVariantPriceOverride ?? product.price;
   const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
-  console.log('selectedVariant changed:', selectedVariant?.id, selectedVariant?.price_override);
+  console.log('Price debug:', { variantPriceOverride, shopifyVariantPriceOverride, productPrice: product.price, basePrice });
 
   // Variant image override: color selection fires first, full variant match refines it
   const variantImage = colorImage
@@ -417,7 +438,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 <AddToCart
                   shopifyVariants={shopifyVariants}
                   product={product}
-                  onVariantChange={setSelectedShopifyVariant}
+                  onVariantChange={handleShopifyVariantChange}
                   onColorSelect={setColorImage}
                 />
               ) : (
