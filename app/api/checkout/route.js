@@ -106,12 +106,25 @@ export async function POST(request) {
       );
     }
 
-    const checkoutUrl = result.data?.cartCreate?.cart?.checkoutUrl;
+    let checkoutUrl = result.data?.cartCreate?.cart?.checkoutUrl;
 
     if (!checkoutUrl) {
       return NextResponse.json({ error: 'No checkout URL returned' }, { status: 500 });
     }
 
+    // Force checkout URL to use myshopify.com domain to avoid routing through Next.js
+    // Shopify may return the custom domain URL which would 404 on our app
+    try {
+      const url = new URL(checkoutUrl);
+      if (!url.hostname.endsWith('.myshopify.com')) {
+        url.hostname = `${domain}`;
+        checkoutUrl = url.toString();
+      }
+    } catch (e) {
+      console.error('Failed to rewrite checkout URL:', e);
+    }
+
+    console.log('Checkout URL:', checkoutUrl);
     return NextResponse.json({ checkoutUrl });
 
   } catch (err) {
