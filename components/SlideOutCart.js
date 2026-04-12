@@ -21,11 +21,7 @@ export default function SlideOutCart() {
       const data = await response.json();
 
       if (data.checkoutUrl) {
-        // Force Shopify checkout to use myshopify.com domain (handle www and non-www)
-        const safeUrl = data.checkoutUrl
-          .replace('https://www.charmedanddark.com', 'https://charmed-dark.myshopify.com')
-          .replace('https://charmedanddark.com', 'https://charmed-dark.myshopify.com');
-        window.location.href = safeUrl;
+        window.location.href = data.checkoutUrl;
       } else {
         console.error('Checkout failed:', data.error);
         alert('Checkout temporarily unavailable. Please try again.');

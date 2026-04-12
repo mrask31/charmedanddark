@@ -112,14 +112,13 @@ export async function POST(request) {
       return NextResponse.json({ error: 'No checkout URL returned' }, { status: 500 });
     }
 
-    // Force checkout URL to use myshopify.com domain to avoid routing through Next.js
-    // Shopify may return the custom domain URL which would 404 on our app
+    // Force checkout URL to use myshopify.com domain
+    // Shopify returns custom domain URLs that 404 on our Next.js app
+    const shopifyDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || domain;
     try {
-      const url = new URL(checkoutUrl);
-      if (!url.hostname.endsWith('.myshopify.com')) {
-        url.hostname = `${domain}`;
-        checkoutUrl = url.toString();
-      }
+      const parsed = new URL(checkoutUrl);
+      parsed.hostname = shopifyDomain;
+      checkoutUrl = parsed.toString();
     } catch (e) {
       console.error('Failed to rewrite checkout URL:', e);
     }
