@@ -106,24 +106,12 @@ export async function POST(request) {
       );
     }
 
-    let checkoutUrl = result.data?.cartCreate?.cart?.checkoutUrl;
+    const checkoutUrl = result.data?.cartCreate?.cart?.checkoutUrl;
 
     if (!checkoutUrl) {
       return NextResponse.json({ error: 'No checkout URL returned' }, { status: 500 });
     }
 
-    // Force checkout URL to use myshopify.com domain
-    // Shopify returns custom domain URLs that 404 on our Next.js app
-    const shopifyDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || domain;
-    try {
-      const parsed = new URL(checkoutUrl);
-      parsed.hostname = shopifyDomain;
-      checkoutUrl = parsed.toString();
-    } catch (e) {
-      console.error('Failed to rewrite checkout URL:', e);
-    }
-
-    console.log('Checkout URL:', checkoutUrl);
     return NextResponse.json({ checkoutUrl });
 
   } catch (err) {
