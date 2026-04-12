@@ -35,6 +35,10 @@ export const metadata = {
     images: [{ url: '/og-default.svg', width: 1200, height: 630, alt: 'Charmed & Dark' }],
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export const viewport = {

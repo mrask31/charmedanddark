@@ -52,6 +52,12 @@ export function StickyNav() {
             Journal
           </Link>
           <Link
+            href="/contact"
+            className="text-xs uppercase tracking-widest text-zinc-400 transition-colors duration-160 hover:text-white"
+          >
+            Contact
+          </Link>
+          <Link
             href="/about"
             className="text-xs uppercase tracking-widest text-zinc-400 transition-colors duration-160 hover:text-white"
           >
