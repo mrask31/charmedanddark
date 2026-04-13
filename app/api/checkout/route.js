@@ -25,7 +25,7 @@ async function shopifyStorefront(query, variables = {}) {
 
 export async function POST(request) {
   try {
-    const { items } = await request.json();
+    const { items, isMember } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'No items in cart' }, { status: 400 });
@@ -90,10 +90,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'No valid products found' }, { status: 400 });
     }
 
-    // Step 2: Create the cart with discount code
+    // Step 2: Create the cart — only apply HOUSE10 for active Sanctuary members
     const cartInput = {
       lines: lineItems,
-      discountCodes: ['HOUSE10'],
+      ...(isMember ? { discountCodes: ['HOUSE10'] } : {}),
     };
 
     const result = await shopifyStorefront(createCartMutation, { input: cartInput });

@@ -15,13 +15,12 @@ export default function SlideOutCart() {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ items, isMember }),
       });
 
       const data = await response.json();
 
       if (data.checkoutUrl) {
-        // Redirect to Shopify checkout — HOUSE10 already applied
         window.location.href = data.checkoutUrl;
       } else {
         console.error('Checkout failed:', data.error);
