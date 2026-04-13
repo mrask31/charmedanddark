@@ -66,9 +66,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
     e.preventDefault();
     setStatus({ type: 'loading' });
     try {
-      console.log('Attempting sign in with:', email);
       const { data, error } = await signIn(email, password);
-      console.log('Sign in result:', { data: !!data, error });
       if (error) {
         setStatus({ type: 'error', message: error.message });
         return;

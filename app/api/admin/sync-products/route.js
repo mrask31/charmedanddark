@@ -182,10 +182,7 @@ export async function POST(request) {
 
         // Price parsing with debug logging
         const rawMinPrice = sp.priceRange?.minVariantPrice?.amount;
-        const rawVariantPrice = sp.variants.edges[0]?.node?.price;
-        console.log(`[PRICE] ${sp.title} | raw minPrice: ${rawMinPrice} (${typeof rawMinPrice}) | raw variant price: ${rawVariantPrice} (${typeof rawVariantPrice}) | vendor: ${sp.vendor}`);
         const minPrice = parseDollars(rawMinPrice);
-        console.log(`[PRICE] ${sp.title} | parsed: ${minPrice}`);
 
         // Safety: warn if price looks like cents (> $500 for non-bedding/furniture)
         const highPriceCategories = ['Bedding', 'Furniture', 'Home Decor'];
@@ -297,9 +294,6 @@ export async function POST(request) {
           const variantRows = [];
           for (let i = 0; i < variants.length; i++) {
             const v = variants[i];
-            if (i === 0) {
-              console.log(`[VARIANT PRICE] ${sp.title} | variant[0] raw price: ${v.price} (${typeof v.price}) | parsed: ${parseDollars(v.price)}`);
-            }
             for (const opt of v.selectedOptions) {
               if (opt.name === 'Title' && opt.value === 'Default Title') continue;
               variantRows.push({
