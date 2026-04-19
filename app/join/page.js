@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { posthog } from '@/components/providers/posthog-provider'
 
 async function handleJoinSubmit(email, password, firstName, birthday, setStatus, signUp, resetPassword) {
   if (!email || !email.includes('@')) {
@@ -55,6 +56,7 @@ async function handleJoinSubmit(email, password, firstName, birthday, setStatus,
     })
 
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
+    posthog?.capture?.('sanctuary_joined')
   } catch (err) {
     console.error('Join form error:', err)
     setStatus({ type: 'error', message: err.message || 'Something went wrong. Please try again.' })

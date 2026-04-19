@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Lock, Minus, Plus } from 'lucide-react';
 import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
+import { posthog } from '@/components/providers/posthog-provider';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -257,6 +258,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const hasProductVariants = product.productVariants?.length > 0;
   const hasShopifyVariants = shopifyVariants?.variants?.length > 0;
 
+  // Track product view
+  useEffect(() => {
+    posthog?.capture?.('product_viewed', { product: product.name, collection: product.category });
+  }, [product.name, product.category]);
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   // Tracks the Shopify variant chosen inside <AddToCart> (for image display)
@@ -333,6 +339,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
       }, quantity);
 
       setCartState('success');
+      posthog?.capture?.('add_to_cart', { product: product.name, price: basePrice });
       setTimeout(() => setCartState('idle'), 2000);
     } catch (err) {
       console.error('Add to cart failed:', err);

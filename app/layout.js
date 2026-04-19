@@ -6,6 +6,7 @@ import MobileTabNav from "@/components/MobileTabNav";
 import SlideOutCart from "@/components/SlideOutCart";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { PHProvider } from "@/components/providers/posthog-provider";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -68,6 +69,7 @@ export default function RootLayout({ children }) {
           }}
         />
         <div className="min-h-screen bg-black text-white">
+          <PHProvider>
           <AuthProvider>
             <CartProvider>
               <StickyNav />
@@ -76,6 +78,7 @@ export default function RootLayout({ children }) {
               <MobileTabNav />
             </CartProvider>
           </AuthProvider>
+          </PHProvider>
         </div>
         <Script
           id="klaviyo-onsite"
