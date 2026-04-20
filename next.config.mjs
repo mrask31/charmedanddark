@@ -8,6 +8,25 @@ const nextConfig = {
       { protocol: 'https', hostname: 'cdn.shopify.com' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/shop/ols/products/:path*',
+        destination: '/shop/:path*',
+        permanent: true,
+      },
+      {
+        source: '/shop/ols/categories/:path*',
+        destination: '/shop',
+        permanent: true,
+      },
+      {
+        source: '/shop/ols/:path*',
+        destination: '/shop',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;
