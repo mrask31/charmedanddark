@@ -25,6 +25,12 @@ const nextConfig = {
         destination: '/shop',
         permanent: true,
       },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'charmedanddark.vercel.app' }],
+        destination: 'https://www.charmedanddark.com/:path*',
+        permanent: true,
+      },
     ]
   },
 };
