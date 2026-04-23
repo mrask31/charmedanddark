@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: ["/", "/api/google-feed"],
       disallow: ["/api/", "/sanctuary/grimoire"],
     },
-    sitemap: "https://charmedanddark.com/sitemap.xml",
+    sitemap: "https://www.charmedanddark.com/sitemap.xml",
   };
 }
