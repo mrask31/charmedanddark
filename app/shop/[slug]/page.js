@@ -97,15 +97,13 @@ export default async function ProductPage({ params }) {
     ? await getShopifyVariants(product.shopify_id)
     : null;
 
-  // Map Shopify variant images back to Supabase product_variants by matching option values
+  // Map Shopify variant images back to Supabase product_variants by matching SKU
   if (shopifyVariants?.variants && product.productVariants?.length > 0) {
     for (const pv of product.productVariants) {
       if (pv.image_url) continue; // already has an image
-      // Find matching Shopify variant by option value
+      if (!pv.sku) continue; // no SKU to match on
       const match = shopifyVariants.variants.find((sv) =>
-        sv.selectedOptions?.some(
-          (opt) => opt.name.toLowerCase() === pv.variant_type && opt.value === pv.variant_value
-        )
+        sv.sku && sv.sku === pv.sku
       );
       if (match?.imageUrl) {
         pv.image_url = match.imageUrl;

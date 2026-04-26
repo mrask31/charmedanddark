@@ -85,6 +85,7 @@ const ADMIN_PRODUCTS_QUERY = `
                 price
                 availableForSale
                 selectedOptions { name value }
+                image { url altText }
               }
             }
           }
@@ -303,6 +304,7 @@ export async function POST(request) {
                 price_override: parseDollars(v.price),
                 is_available: isMadeToOrder ? true : v.availableForSale,
                 sku: v.sku || null,
+                image_url: v.image?.url || null,
                 sort_order: i,
               });
             }
