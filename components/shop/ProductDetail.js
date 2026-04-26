@@ -352,16 +352,23 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   async function handleAddToCart() {
     if (cartState !== 'idle') return;
     if (isApparel && !selectedSize) return;
-    if (hasProductVariants && !selectedVariant) return;
+    if (hasProductVariants && !allVariantsSelected) return;
 
     setCartState('loading');
+
+    // Build a combined variant label from all selections (e.g. "Color: Black, Size: M")
+    const variantSelections = Object.entries(selectedByType)
+      .map(([type, v]) => `${type.charAt(0).toUpperCase() + type.slice(1)}: ${v.variant_value}`)
+      .join(', ');
 
     try {
       addItem({
         ...product,
         price: basePrice,
         selectedSize: isApparel ? selectedSize : null,
-        selectedVariant: selectedVariant,
+        selectedVariant: selectedVariant
+          ? { ...selectedVariant, _combinedLabel: variantSelections || null }
+          : null,
         shopifyVariantId: product.shopifyVariantId,
       }, quantity);
 

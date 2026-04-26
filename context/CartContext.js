@@ -80,9 +80,10 @@ export function CartProvider({ children }) {
 
     // Use variant price_override if present, then salePrice, then price
     const effectivePrice = variant?.price_override ?? product.salePrice ?? product.price;
-    const variantLabel = variant
-      ? `${variant.variant_type.charAt(0).toUpperCase() + variant.variant_type.slice(1)}: ${variant.variant_value}`
-      : null;
+    const variantLabel = variant?._combinedLabel
+      || (variant
+        ? `${variant.variant_type.charAt(0).toUpperCase() + variant.variant_type.slice(1)}: ${variant.variant_value}`
+        : null);
 
     setItems(prev => {
       const existing = prev.find(item => item.cartKey === cartKey);
