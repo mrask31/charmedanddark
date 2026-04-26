@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
@@ -361,6 +362,11 @@ export async function POST(request) {
     };
 
     console.log('Sync complete:', summary);
+
+    // Revalidate shop and product pages so fresh data appears immediately
+    revalidatePath('/shop');
+    revalidatePath('/shop/[slug]', 'page');
+
     return NextResponse.json(summary);
   } catch (err) {
     console.error('Sync failed:', err);

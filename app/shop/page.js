@@ -1,8 +1,8 @@
 import { getProducts } from "@/lib/products";
 import ShopPageClient from "./page-new";
 
-// ISR: Revalidate every hour to keep product data fresh
-export const revalidate = 3600;
+// Always fetch fresh data — no caching
+export const revalidate = 0;
 
 export const metadata = {
   title: "The Atelier",
