@@ -105,7 +105,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
 // ============================================================================
 // VARIANT SELECTOR
 // ============================================================================
-function VariantSelector({ variants, selectedVariant, onSelect }) {
+function VariantSelector({ variants, selectedByType, onSelectByType }) {
   // Group variants by type (e.g., { color: [...], size: [...] })
   const grouped = useMemo(() => {
     return variants.reduce((acc, v) => {
@@ -127,11 +127,11 @@ function VariantSelector({ variants, selectedVariant, onSelect }) {
           </label>
           <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${type}`}>
             {options.map((variant) => {
-              const isSelected = selectedVariant?.id === variant.id;
+              const isSelected = selectedByType[type]?.id === variant.id;
               return (
                 <button
                   key={variant.id}
-                  onClick={() => onSelect(isSelected ? null : variant)}
+                  onClick={() => onSelectByType(type, isSelected ? null : variant)}
                   aria-pressed={isSelected}
                   className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
                     isSelected
@@ -265,6 +265,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  // Map of selections by variant type: { color: variantObj, size: variantObj }
+  const [selectedByType, setSelectedByType] = useState({});
   // Tracks the Shopify variant chosen inside <AddToCart> (for image display)
   const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
   // Tracks the image URL from a color selection (fires before all options chosen)
@@ -277,6 +279,31 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [shopifyVariantCompareAtPrice, setShopifyVariantCompareAtPrice] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
+
+  // Handle variant selection by type — keeps color and size independent
+  function handleVariantSelectByType(type, variant) {
+    setSelectedByType((prev) => {
+      const next = { ...prev };
+      if (variant) {
+        next[type] = variant;
+      } else {
+        delete next[type];
+      }
+      return next;
+    });
+
+    // Update image when color is selected
+    if (type === 'color' && variant?.image_url) {
+      setColorImage(variant.image_url);
+    } else if (type === 'color' && !variant) {
+      setColorImage(null);
+    }
+
+    // Update selectedVariant to the most recently selected variant (for price_override)
+    if (variant) {
+      setSelectedVariant(variant);
+    }
+  }
 
   // When Shopify variant changes, look up matching Supabase product_variant for price_override
   function handleShopifyVariantChange(shopifyVariant) {
@@ -347,7 +374,12 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     }
   }
 
-  const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !selectedVariant);
+  // Check if all variant types have been selected
+  const variantTypes = hasProductVariants
+    ? [...new Set(product.productVariants.map((v) => v.variant_type))]
+    : [];
+  const allVariantsSelected = variantTypes.every((type) => selectedByType[type]);
+  const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !allVariantsSelected);
   const buttonDisabled = cartState === 'loading' || cartState === 'success' || needsSelection;
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
@@ -477,8 +509,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                   {hasProductVariants && (
                     <VariantSelector
                       variants={product.productVariants}
-                      selectedVariant={selectedVariant}
-                      onSelect={setSelectedVariant}
+                      selectedByType={selectedByType}
+                      onSelectByType={handleVariantSelectByType}
                     />
                   )}
 
