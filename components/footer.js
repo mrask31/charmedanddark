@@ -6,6 +6,8 @@ const navLinks = [
   { label: "Drops", href: "/drops" },
   { label: "Join", href: "/join" },
   { label: "Journal", href: "/journal" },
+  { label: "Contact", href: "/contact" },
+  { label: "Returns", href: "/returns" },
 ];
 
 export function Footer() {
