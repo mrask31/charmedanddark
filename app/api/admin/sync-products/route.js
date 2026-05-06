@@ -159,15 +159,11 @@ export async function POST(request) {
           continue;
         }
 
-        // Skip drafts entirely
-        if (sp.status === 'DRAFT') {
-          productsSkipped++;
-          continue;
-        }
-
+        // Determine availability from Shopify status
+        // DRAFT and ARCHIVED products get synced but marked unavailable
         const isPrintify = sp.vendor === 'Printify' || (sp.tags && sp.tags.includes('Printify'));
         const isMadeToOrder = isPrintify || sp.vendor === 'Charmed & Dark';
-        const isActive = sp.status === 'ACTIVE' || isMadeToOrder;
+        const isActive = (sp.status === 'ACTIVE' || isMadeToOrder) && sp.status !== 'ARCHIVED';
         let category = mapCategory(sp.productType);
         // Vendor-based fallback
         if (category === 'Home Decor' && VENDOR_CATEGORY_MAP[sp.vendor]) {
