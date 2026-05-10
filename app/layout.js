@@ -85,6 +85,28 @@ export default function RootLayout({ children }) {
           src={`https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=${process.env.NEXT_PUBLIC_KLAVIYO_SITE_ID}`}
           strategy="afterInteractive"
         />
+        {/* Google Ads base tag — production only, no purchase conversion (handled by Shopify Customer Events) */}
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Script
+              id="gtag-js"
+              src="https://www.googletagmanager.com/gtag/js?id=AW-18117162540"
+              strategy="afterInteractive"
+            />
+            <Script
+              id="gtag-config"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', 'AW-18117162540');
+                `,
+              }}
+            />
+          </>
+        )}
       </body>
     </html>
   );
