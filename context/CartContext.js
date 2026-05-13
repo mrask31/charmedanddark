@@ -33,26 +33,34 @@ async function applyMemberDiscount(cartId) {
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const discountAppliedRef = useRef(false);
 
   // Load cart from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem('charmed-dark-cart');
-      if (saved) setItems(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setItems(parsed);
+        }
+      }
     } catch (e) {
       console.error('Failed to load cart:', e);
     }
+    setIsLoaded(true);
   }, []);
 
-  // Save cart to localStorage on change
+  // Save cart to localStorage on change — only after initial load completes
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('charmed-dark-cart', JSON.stringify(items));
     } catch (e) {
       console.error('Failed to save cart:', e);
     }
-  }, [items]);
+  }, [items, isLoaded]);
 
   // Clear cart when user logs out
   useEffect(() => {
