@@ -1,16 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,63}$/;
+
 export async function POST(request) {
   try {
     const { email, firstName, userId, birthday } = await request.json();
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
+    if (!email || !EMAIL_REGEX.test(String(email).trim().toLowerCase())) {
+      return NextResponse.json({ error: 'Please enter a complete email address.' }, { status: 400 });
     }
 
     if (!userId) {
-      return NextResponse.json({ error: 'userId required for membership activation' }, { status: 400 });
+      return NextResponse.json({ error: 'Please enter a complete email address.' }, { status: 400 });
     }
 
     const normalizedEmail = email.toLowerCase().trim();

@@ -4,6 +4,25 @@ import { useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { posthog } from '@/components/providers/posthog-provider'
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,63}$/;
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+function isValidEmail(email) {
+  return EMAIL_REGEX.test(normalizeEmail(email));
+}
+
+function sanitizeErrorMessage(message) {
+  if (!message) return 'We could not complete your Sanctuary entry right now. Please try again.';
+  const technical = /klaviyo|supabase|\bapi\b|profile|subscription|internal error/i;
+  if (technical.test(message)) {
+    return 'We could not complete your Sanctuary entry right now. Please try again.';
+  }
+  return message;
+}
+
 async function parseApiResponse(response, fallbackMessage) {
   let payload = null
   try { payload = await response.json() } catch { payload = null }
@@ -14,8 +33,10 @@ async function parseApiResponse(response, fallbackMessage) {
 }
 
 async function handleJoinSubmit(email, password, firstName, birthday, setStatus, signUp, resetPassword) {
-  if (!email || !email.includes('@')) {
-    setStatus({ type: 'error', message: 'Please enter a valid email address.' })
+  const normalizedEmail = normalizeEmail(email);
+
+  if (!isValidEmail(normalizedEmail)) {
+    setStatus({ type: 'error', message: 'Please enter a complete email address.' })
     return
   }
   if (!password || password.length < 8) {
@@ -27,14 +48,14 @@ async function handleJoinSubmit(email, password, firstName, birthday, setStatus,
 
   try {
     // Supabase auth signUp
-    const { data: signUpData, error: authError } = await signUp(email, password, {
+    const { data: signUpData, error: authError } = await signUp(normalizedEmail, password, {
       is_sanctuary_member: true,
       first_name: firstName || undefined,
     });
 
     if (authError) {
       if (authError.message?.includes('already') || authError.status === 422) {
-        await resetPassword(email);
+        await resetPassword(normalizedEmail);
         setStatus({ type: 'success', message: 'An account exists — check your email to set your password.', alreadyMember: true })
         return
       }
@@ -48,9 +69,9 @@ async function handleJoinSubmit(email, password, firstName, birthday, setStatus,
       await fetch('/api/auth/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, userId, birthday: birthday || null }),
+        body: JSON.stringify({ email: normalizedEmail, firstName, userId, birthday: birthday || null }),
       }),
-      'Failed to activate membership'
+      'We could not complete your Sanctuary entry right now. Please try again.'
     )
 
     // Required: Subscribe to Klaviyo Sanctuary Members list
@@ -58,23 +79,23 @@ async function handleJoinSubmit(email, password, firstName, birthday, setStatus,
       await fetch('/api/klaviyo/sanctuary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, birthday: birthday || null }),
+        body: JSON.stringify({ email: normalizedEmail, firstName, birthday: birthday || null }),
       }),
-      'Failed to complete Sanctuary subscription'
+      'We could not complete your Sanctuary entry right now. Please try again.'
     )
 
     // Non-blocking: newsletter subscription
     fetch('/api/klaviyo/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName, source: 'sanctuary-join' }),
+      body: JSON.stringify({ email: normalizedEmail, firstName, source: 'sanctuary-join' }),
     }).catch((e) => console.warn('[JOIN] Newsletter subscribe failed:', e.message))
 
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
     posthog?.capture?.('sanctuary_joined')
   } catch (err) {
     console.error('Join form error:', err)
-    setStatus({ type: 'error', message: err.message || 'Something went wrong. Please try again.' })
+    setStatus({ type: 'error', message: sanitizeErrorMessage(err.message) })
   }
 }
 
@@ -145,9 +166,12 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
       <input
         id={inputId}
         type="email"
+        inputMode="email"
+        autoComplete="email"
         placeholder="you@example.com"
         required
         aria-required="true"
+        title="Please enter a complete email address."
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         disabled={status?.type === 'loading'}

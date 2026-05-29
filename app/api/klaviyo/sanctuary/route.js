@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,63}$/;
+
 export async function POST(request) {
   try {
     const { email, firstName, birthday } = await request.json();
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
+    if (!email || !EMAIL_REGEX.test(String(email).trim().toLowerCase())) {
+      return NextResponse.json({ error: 'Please enter a complete email address.' }, { status: 400 });
     }
 
     const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY;
@@ -13,7 +15,7 @@ export async function POST(request) {
 
     if (!apiKey) {
       console.error('[KLAVIYO] KLAVIYO_PRIVATE_API_KEY not configured');
-      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
+      return NextResponse.json({ error: 'The Sanctuary is not accepting entries right now. Please try again shortly.' }, { status: 500 });
     }
 
     // Format birthday as YYYY-MM-DD with placeholder year
@@ -61,12 +63,12 @@ export async function POST(request) {
       profileId = profileData.errors?.[0]?.meta?.duplicate_profile_id;
     } else {
       console.error('[KLAVIYO] Profile creation failed:', profileRes.status);
-      return NextResponse.json({ error: 'Klaviyo profile creation failed' }, { status: 502 });
+      return NextResponse.json({ error: 'We could not complete your Sanctuary entry. Please check your email and try again.' }, { status: 502 });
     }
 
     if (!profileId) {
       console.error('[KLAVIYO] No profile ID obtained');
-      return NextResponse.json({ error: 'Klaviyo profile ID not resolved' }, { status: 502 });
+      return NextResponse.json({ error: 'We could not complete your Sanctuary entry. Please check your email and try again.' }, { status: 502 });
     }
 
     // Step 2: Update profile properties (ensures data is set for existing profiles)
@@ -97,7 +99,7 @@ export async function POST(request) {
     if (!updateRes.ok) {
       const updateText = await updateRes.text().catch(() => '');
       console.error('[KLAVIYO] Profile update failed:', updateRes.status, updateText.substring(0, 300));
-      return NextResponse.json({ error: 'Klaviyo profile update failed' }, { status: 502 });
+      return NextResponse.json({ error: 'We could not complete your Sanctuary entry right now. Please try again.' }, { status: 502 });
     }
 
     // Step 3: Subscribe to Sanctuary list — required
@@ -136,12 +138,12 @@ export async function POST(request) {
 
     if (!subRes.ok && subRes.status !== 202) {
       console.error('[KLAVIYO] List subscription failed:', subRes.status);
-      return NextResponse.json({ error: 'Klaviyo list subscription failed' }, { status: 502 });
+      return NextResponse.json({ error: 'We could not complete your Sanctuary entry right now. Please try again.' }, { status: 502 });
     }
 
     return NextResponse.json({ success: true, profileId });
   } catch (error) {
     console.error('[KLAVIYO] Unexpected error:', error.message);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return NextResponse.json({ error: 'Something went quiet. Please try again.' }, { status: 500 });
   }
 }
