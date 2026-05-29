@@ -70,7 +70,7 @@ export async function POST(request) {
     }
 
     // Step 2: Update profile properties (ensures data is set for existing profiles)
-    await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
+    const updateRes = await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
       method: 'PATCH',
       headers: {
         'Authorization': `Klaviyo-API-Key ${apiKey}`,
@@ -93,6 +93,12 @@ export async function POST(request) {
         },
       }),
     });
+
+    if (!updateRes.ok) {
+      const updateText = await updateRes.text().catch(() => '');
+      console.error('[KLAVIYO] Profile update failed:', updateRes.status, updateText.substring(0, 300));
+      return NextResponse.json({ error: 'Klaviyo profile update failed' }, { status: 502 });
+    }
 
     // Step 3: Subscribe to Sanctuary list — required
     const subRes = await fetch(
