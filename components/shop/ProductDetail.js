@@ -279,9 +279,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [shopifyVariantCompareAtPrice, setShopifyVariantCompareAtPrice] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
+  const [selectionError, setSelectionError] = useState('');
 
   // Handle variant selection by type — keeps color and size independent
   function handleVariantSelectByType(type, variant) {
+    setSelectionError('');
     setSelectedByType((prev) => {
       const next = { ...prev };
       if (variant) {
@@ -351,10 +353,22 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   // Non-Shopify add-to-cart handler (apparel sizes + product_variants)
   async function handleAddToCart() {
     if (cartState !== 'idle') return;
-    if (isApparel && !selectedSize) return;
-    if (hasProductVariants && !allVariantsSelected) return;
+
+    // Validate selections and show error instead of silently blocking
+    if (isApparel && !selectedSize) {
+      setSelectionError('Please select a size.');
+      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing: ['size'] });
+      return;
+    }
+    if (hasProductVariants && !allVariantsSelected) {
+      const missing = variantTypes.filter((type) => !selectedByType[type]);
+      setSelectionError(`Please select ${missing.join(' and ')}.`);
+      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing });
+      return;
+    }
 
     setCartState('loading');
+    setSelectionError('');
 
     // Build a combined variant label from all selections (e.g. "Color: Black, Size: M")
     const variantSelections = Object.entries(selectedByType)
@@ -387,12 +401,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     : [];
   const allVariantsSelected = variantTypes.every((type) => selectedByType[type]);
   const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !allVariantsSelected);
-  const buttonDisabled = cartState === 'loading' || cartState === 'success' || needsSelection;
+  const buttonDisabled = cartState === 'loading' || cartState === 'success';
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added to Cart ✓'
     : cartState === 'error' ? 'Something went wrong'
-    : needsSelection ? 'Select an option'
     : 'Add to Cart';
 
   return (
@@ -531,7 +544,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                         {SIZES.map((size) => (
                           <button
                             key={size}
-                            onClick={() => setSelectedSize(size)}
+                            onClick={() => { setSelectedSize(size); setSelectionError(''); }}
                             aria-pressed={selectedSize === size}
                             className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
                               selectedSize === size
@@ -595,14 +608,17 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                         ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
                         : cartState === 'error'
                         ? 'border-red-500/50 text-red-400'
-                        : needsSelection
-                        ? 'border-[rgba(201,169,110,0.25)] text-[#6b6760] cursor-not-allowed'
                         : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
                     } disabled:opacity-50`}
                     style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
                   >
                     {buttonLabel}
                   </button>
+                  {selectionError && (
+                    <p role="alert" style={{ color: '#e24b4a', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
+                      {selectionError}
+                    </p>
+                  )}
                 </>
               )}
 
