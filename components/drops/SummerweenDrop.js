@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 const SUMMERWEEN_PRODUCTS = [
-  { name: 'Summerween Women\'s Flowy Scoop Muscle Tank', handle: 'summerween-womens-flowy-scoop-muscle-tank' },
+  { name: 'Summerween Women\'s Flowy Scoop Muscle Tank', handle: 'summerween-womens-flowy-scoop-muscle-tank', image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/2632178726306034152_2048.jpg?v=1778100866' },
   { name: 'Summerween Trucker Snapback Hat', handle: 'summerween-trucker-snapback-hat' },
   { name: 'Bones and Brew Summer Unisex Tee', handle: 'bones-and-brew-summer-unisex-tee-1' },
   { name: 'Hexes & Heat Unisex Summer Tee', handle: 'hexes-heat-unisex-summer-tee-1' },
@@ -48,6 +48,14 @@ export default function SummerweenDrop() {
               border: '1px solid rgba(201,169,110,0.15)',
             }}
           >
+            {product.image && (
+              <img
+                src={product.image}
+                alt={product.name}
+                className="h-16 w-16 object-cover shrink-0"
+                style={{ backgroundColor: '#08080f' }}
+              />
+            )}
             <span
               className="text-[11px] uppercase tracking-[0.15em] transition-colors group-hover:text-[#c9a96e]"
               style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif' }}

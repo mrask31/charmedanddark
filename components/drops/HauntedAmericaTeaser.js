@@ -32,7 +32,7 @@ export default function HauntedAmericaTeaser() {
         className="max-w-2xl text-base font-light"
         style={{ color: 'rgba(232,228,220,0.6)', fontFamily: 'Inter, sans-serif', lineHeight: 1.8 }}
       >
-        We're preparing something for Haunted America: ritual goods, dark little luxuries, and a live Mirror experience for those who find us in person.
+        We're preparing something for Haunted America: ritual goods, dark little luxuries, and event-ready pieces for those drawn to the darker side of the weekend.
       </p>
 
       <Link
