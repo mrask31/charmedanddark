@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 const SUMMERWEEN_PRODUCTS = [
-  { name: 'Summerween Women\'s Flowy Scoop Muscle Tank', handle: 'summerween-womens-flowy-scoop-muscle-tank', image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/2632178726306034152_2048.jpg?v=1778100866' },
+  { name: 'Summerween Women\'s Flowy Scoop Muscle Tank', handle: 'summerween-womens-flowy-scoop-muscle-tank-1', image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/20260508131823-1f14ae06-3bbf-61ee-9838-cafecbf14569.png?v=1778246475' },
   { name: 'Summerween Trucker Snapback Hat', handle: 'summerween-trucker-snapback-hat' },
   { name: 'Bones and Brew Summer Unisex Tee', handle: 'bones-and-brew-summer-unisex-tee-1' },
   { name: 'Hexes & Heat Unisex Summer Tee', handle: 'hexes-heat-unisex-summer-tee-1' },
