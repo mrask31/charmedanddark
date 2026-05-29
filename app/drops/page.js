@@ -1,7 +1,8 @@
 "use client";
 
 import DropsHero from '@/components/drops/DropsHero';
-import NextDrop from '@/components/drops/NextDrop';
+import SummerweenDrop from '@/components/drops/SummerweenDrop';
+import HauntedAmericaTeaser from '@/components/drops/HauntedAmericaTeaser';
 import MembershipBenefits from '@/components/drops/MembershipBenefits';
 import DropAlertBand from '@/components/drops/DropAlertBand';
 import DropsArchive from '@/components/drops/DropsArchive';
@@ -37,7 +38,8 @@ export default function DropsPage() {
       />
 
       <main id="main-content" className="mx-auto max-w-7xl space-y-16 px-4 py-12 sm:px-6 sm:py-16">
-        <NextDrop />
+        <SummerweenDrop />
+        <HauntedAmericaTeaser />
         <MembershipBenefits />
       </main>
 
