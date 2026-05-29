@@ -1,61 +1,54 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 
-export async function POST(request) {
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error('[JOIN] SERVICE_ROLE_KEY missing!');
-  }
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,63}$/;
 
+export async function POST(request) {
   try {
     const { email, firstName, userId, birthday } = await request.json();
-    console.log('[JOIN] Route called with:', { email, firstName, userId, birthday });
 
-    if (!email) {
-      return NextResponse.json({ error: 'Email required' }, { status: 400 });
+    if (!email || !EMAIL_REGEX.test(String(email).trim().toLowerCase())) {
+      return NextResponse.json({ error: 'Please enter a complete email address.' }, { status: 400 });
+    }
+
+    if (!userId) {
+      return NextResponse.json({ error: 'We could not complete your Sanctuary entry right now. Please try again.' }, { status: 400 });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Upsert into email_subscribers
-    try {
-      const { error } = await supabaseAdmin
-        .from('email_subscribers')
-        .upsert({
-          email: normalizedEmail,
-          first_name: firstName || null,
-          source: 'sanctuary_join',
-          subscribed: true,
-          birthday: birthday || null,
-        }, { onConflict: 'email' });
+    // email_subscribers — required write
+    const { error: subError } = await supabaseAdmin
+      .from('email_subscribers')
+      .upsert({
+        email: normalizedEmail,
+        first_name: firstName || null,
+        source: 'sanctuary_join',
+        subscribed: true,
+        birthday: birthday || null,
+      }, { onConflict: 'email' });
 
-      if (error) console.error('[JOIN] email_subscribers error:', error);
-      else console.log('[JOIN] email_subscribers saved for:', normalizedEmail);
-    } catch (e) {
-      console.error('[JOIN] email_subscribers exception:', e.message);
+    if (subError) {
+      console.error('[JOIN] email_subscribers write failed:', subError.message);
+      return NextResponse.json({ error: 'Failed to save subscriber record' }, { status: 500 });
     }
 
-    // Insert into memberships using user_id UUID
-    if (userId) {
-      try {
-        const { error } = await supabaseAdmin
-          .from('memberships')
-          .upsert({
-            user_id: userId,
-            status: 'active',
-          }, { onConflict: 'user_id' });
+    // memberships — required write
+    const { error: memError } = await supabaseAdmin
+      .from('memberships')
+      .upsert({
+        user_id: userId,
+        status: 'active',
+      }, { onConflict: 'user_id' });
 
-        if (error) console.error('[JOIN] memberships error:', error);
-        else console.log('[JOIN] memberships saved for userId:', userId);
-      } catch (e) {
-        console.error('[JOIN] memberships exception:', e.message);
-      }
-    } else {
-      console.warn('[JOIN] No userId provided for memberships insert');
+    if (memError) {
+      console.error('[JOIN] memberships write failed:', memError.message);
+      return NextResponse.json({ error: 'Failed to activate membership' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[JOIN] Route error:', err);
+    console.error('[JOIN] Unexpected error:', err.message);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }

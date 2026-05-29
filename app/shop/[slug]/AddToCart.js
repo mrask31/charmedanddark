@@ -18,6 +18,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
   const [selectedOptions, setSelectedOptions] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
+  const [selectionError, setSelectionError] = useState('');
   const isAddingRef = useRef(false); // sync guard against rapid double-taps
 
   const { options, variants } = shopifyVariants;
@@ -36,6 +37,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
   function handleOptionChange(optionName, value) {
     const next = { ...selectedOptions, [optionName]: value };
     setSelectedOptions(next);
+    setSelectionError('');
 
     // Notify parent of color-variant image URL (fires even before all options selected)
     if (onColorSelect && optionName === 'Color') {
@@ -58,9 +60,23 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
   }
 
   async function handleAddToCart() {
-    if (isAddingRef.current || cartState !== 'idle' || !selectedVariant) return;
+    if (isAddingRef.current || cartState === 'loading' || cartState === 'success') return;
+
+    if (!selectedVariant) {
+      const missing = options
+        .filter((opt) => !selectedOptions[opt.name])
+        .map((o) => o.name.toLowerCase());
+      const msg = missing.length > 0
+        ? `Please select ${missing.join(' and ')}.`
+        : 'Please choose an available option combination.';
+      setSelectionError(msg);
+      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing });
+      return;
+    }
+
     isAddingRef.current = true;
     setCartState('loading');
+    setSelectionError('');
     try {
       addItem(
         {
@@ -94,13 +110,11 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
   }
 
   const needsSelection = !allOptionsSelected;
-  const buttonDisabled = cartState !== 'idle' || needsSelection;
-  const missingOptions = options.filter((opt) => !selectedOptions[opt.name]);
+  const buttonDisabled = cartState === 'loading' || cartState === 'success';
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added to Cart ✓'
     : cartState === 'error' ? 'Something went wrong'
-    : needsSelection ? `Select ${missingOptions.map((o) => o.name.toLowerCase()).join(' and ')}`
     : 'Add to Cart';
 
   return (
@@ -189,14 +203,17 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
             ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
             : cartState === 'error'
             ? 'border-red-500/50 text-red-400'
-            : needsSelection
-            ? 'border-[rgba(201,169,110,0.25)] text-[#6b6760] cursor-not-allowed'
             : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
         } disabled:opacity-50`}
         style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
       >
         {buttonLabel}
       </button>
+      {selectionError && (
+        <p role="alert" style={{ color: '#e24b4a', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
+          {selectionError}
+        </p>
+      )}
     </div>
   );
 }
