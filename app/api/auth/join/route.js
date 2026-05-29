@@ -12,7 +12,7 @@ export async function POST(request) {
     }
 
     if (!userId) {
-      return NextResponse.json({ error: 'Please enter a complete email address.' }, { status: 400 });
+      return NextResponse.json({ error: 'We could not complete your Sanctuary entry right now. Please try again.' }, { status: 400 });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
