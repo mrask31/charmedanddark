@@ -68,7 +68,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
         .map((o) => o.name.toLowerCase());
       const msg = missing.length > 0
         ? `Please select ${missing.join(' and ')}.`
-        : 'Please select all options.';
+        : 'Please choose an available option combination.';
       setSelectionError(msg);
       posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing });
       return;

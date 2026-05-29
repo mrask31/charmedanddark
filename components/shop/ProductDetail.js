@@ -355,7 +355,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     if (cartState !== 'idle') return;
 
     // Validate selections and show error instead of silently blocking
-    if (isApparel && !selectedSize) {
+    if (isApparel && !hasProductVariants && !selectedSize) {
       setSelectionError('Please select a size.');
       posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing: ['size'] });
       return;
@@ -400,7 +400,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     ? [...new Set(product.productVariants.map((v) => v.variant_type))]
     : [];
   const allVariantsSelected = variantTypes.every((type) => selectedByType[type]);
-  const needsSelection = (isApparel && !selectedSize) || (hasProductVariants && !allVariantsSelected);
+  const needsSelection = (isApparel && !hasProductVariants && !selectedSize) || (hasProductVariants && !allVariantsSelected);
   const buttonDisabled = cartState === 'loading' || cartState === 'success';
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
