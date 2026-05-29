@@ -29,19 +29,37 @@ export default function HauntedAmericaTeaser() {
       </h2>
 
       <p
+        className="text-[13px] font-light"
+        style={{ color: 'rgba(232,228,220,0.45)', fontFamily: 'Inter, sans-serif', letterSpacing: '0.05em' }}
+      >
+        June 25–28, 2026 · Alton/Godfrey, Illinois
+      </p>
+
+      <p
         className="max-w-2xl text-base font-light"
         style={{ color: 'rgba(232,228,220,0.6)', fontFamily: 'Inter, sans-serif', lineHeight: 1.8 }}
       >
         We're preparing something for Haunted America: ritual goods, dark little luxuries, and event-ready pieces for those drawn to the darker side of the weekend.
       </p>
 
-      <Link
-        href="/join"
-        className="inline-block rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-[#c9a96e]/10"
-        style={{ border: '1px solid #c9a96e', color: '#c9a96e' }}
-      >
-        Join for Event Updates
-      </Link>
+      <div className="flex flex-wrap gap-4">
+        <Link
+          href="/join"
+          className="inline-block rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-[#c9a96e]/10"
+          style={{ border: '1px solid #c9a96e', color: '#c9a96e' }}
+        >
+          Join for Event Updates
+        </Link>
+        <a
+          href="https://www.ghostconference.net/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-white/5"
+          style={{ border: '1px solid rgba(232,228,220,0.2)', color: '#e8e4dc' }}
+        >
+          Conference Details
+        </a>
+      </div>
     </section>
   );
 }
