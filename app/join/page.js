@@ -4,6 +4,15 @@ import { useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { posthog } from '@/components/providers/posthog-provider'
 
+async function parseApiResponse(response, fallbackMessage) {
+  let payload = null
+  try { payload = await response.json() } catch { payload = null }
+  if (!response.ok || payload?.success === false || payload?.ok === false) {
+    throw new Error(payload?.error || payload?.message || fallbackMessage)
+  }
+  return payload
+}
+
 async function handleJoinSubmit(email, password, firstName, birthday, setStatus, signUp, resetPassword) {
   if (!email || !email.includes('@')) {
     setStatus({ type: 'error', message: 'Please enter a valid email address.' })
@@ -34,26 +43,32 @@ async function handleJoinSubmit(email, password, firstName, birthday, setStatus,
 
     const userId = signUpData?.user?.id;
 
-    // Subscribe to Klaviyo Sanctuary Members list
-    const klaviyoRes = await fetch('/api/klaviyo/sanctuary', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName, birthday: birthday || null, source: 'join-page' }),
-    })
+    // Required: Save to email_subscribers + memberships (server-side, bypasses RLS)
+    await parseApiResponse(
+      await fetch('/api/auth/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, firstName, userId, birthday: birthday || null }),
+      }),
+      'Failed to activate membership'
+    )
 
-    // Also subscribe to newsletter list
-    await fetch('/api/klaviyo/subscribe', {
+    // Required: Subscribe to Klaviyo Sanctuary Members list
+    await parseApiResponse(
+      await fetch('/api/klaviyo/sanctuary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, firstName, birthday: birthday || null }),
+      }),
+      'Failed to complete Sanctuary subscription'
+    )
+
+    // Non-blocking: newsletter subscription
+    fetch('/api/klaviyo/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, firstName, source: 'sanctuary-join' }),
-    })
-
-    // Save to email_subscribers + memberships tables (server-side, bypasses RLS)
-    await fetch('/api/auth/join', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName, userId, birthday: birthday || null }),
-    })
+    }).catch((e) => console.warn('[JOIN] Newsletter subscribe failed:', e.message))
 
     setStatus({ type: 'success', message: "You're in. Welcome to the Sanctuary." })
     posthog?.capture?.('sanctuary_joined')
@@ -210,7 +225,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
       </div>
 
       {status?.type === 'error' && (
-        <p style={{ color: '#e24b4a', fontSize: '13px', fontFamily: 'Inter, sans-serif' }}>
+        <p role="alert" style={{ color: '#e24b4a', fontSize: '13px', fontFamily: 'Inter, sans-serif' }}>
           {status.message}
         </p>
       )}
@@ -240,23 +255,23 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
 }
 
 function CtaForm() {
-  const [email, setEmail] = useState('')
   const [status, setStatus] = useState(null)
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
-    await handleJoinSubmit(email, setStatus)
+    const mainInput = document.getElementById('join-email')
+    if (mainInput) {
+      mainInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setTimeout(() => mainInput.focus(), 400)
+    }
+    setStatus({ type: 'info', message: 'Complete the secure form above to enter the Sanctuary.' })
   }
 
-  if (status?.type === 'success') {
+  if (status?.type === 'info') {
     return (
-      <div style={{ textAlign: 'center' }}>
-        <p style={{ color: '#c9a96e', fontSize: '1.5rem' }}>🖤</p>
-        <h2 style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
-          You're in. Welcome to the Sanctuary. 🖤
-        </h2>
-        <p style={{ color: 'rgba(232,228,220,0.7)', marginBottom: '0.5rem' }}>
-          Your 10% member discount is now active. Sign in to unlock it on every order.
+      <div role="status" style={{ textAlign: 'center', padding: '0.5rem 0' }}>
+        <p style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontSize: '0.85rem' }}>
+          {status.message}
         </p>
       </div>
     )
@@ -264,36 +279,12 @@ function CtaForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col items-center gap-4">
-      <label htmlFor="cta-email" className="sr-only">Email address</label>
-      <input
-        id="cta-email"
-        type="email"
-        placeholder="you@example.com"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={status?.type === 'loading'}
-        className="w-full px-5 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0e0e1a]"
-        style={{
-          backgroundColor: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(201,169,110,0.3)',
-          borderRadius: '0px',
-          color: '#e8e4dc',
-          fontFamily: 'Inter, sans-serif',
-        }}
-      />
-      {status?.type === 'error' && (
-        <p style={{ color: '#e24b4a', fontSize: '13px', fontFamily: 'Inter, sans-serif' }}>
-          {status.message}
-        </p>
-      )}
       <button
         type="submit"
-        disabled={status?.type === 'loading'}
         className="rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-[#c9a96e]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] disabled:opacity-50"
         style={{ border: '1px solid #c9a96e', color: '#c9a96e' }}
       >
-        {status?.type === 'loading' ? 'Entering...' : 'Enter the Sanctuary'}
+        Enter the Sanctuary
       </button>
     </form>
   )
