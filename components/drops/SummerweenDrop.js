@@ -7,7 +7,7 @@ const SUMMERWEEN_PRODUCTS = [
   { name: 'Summerween Trucker Snapback Hat', handle: 'summerween-trucker-snapback-hat' },
   { name: 'Bones and Brew Summer Unisex Tee', handle: 'bones-and-brew-summer-unisex-tee-1' },
   { name: 'Hexes & Heat Unisex Summer Tee', handle: 'hexes-heat-unisex-summer-tee-1' },
-  { name: 'Salty Spells & Sunset Sins Women\'s Boxy Tee', handle: 'salty-spells-sunset-sins-womens-boxy-tee' },
+  { name: 'Salty Spells & Sunset Sins Women\'s Boxy Tee', handle: 'salty-spells-sunset-sins-womens-boxy-tee-1' },
   { name: 'Camp Charmed and Dark Unisex Ringer Tee', handle: 'camp-charmed-and-dark-unisex-ringer-tee' },
 ];
 
