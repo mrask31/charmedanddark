@@ -3,6 +3,31 @@ import { NextResponse } from 'next/server';
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
+const ALLOWED_ATTRIBUTION_KEYS = new Set([
+  'cd_ft_gclid', 'cd_ft_gbraid', 'cd_ft_wbraid',
+  'cd_ft_utm_source', 'cd_ft_utm_medium', 'cd_ft_utm_campaign', 'cd_ft_utm_content', 'cd_ft_utm_term',
+  'cd_ft_campaignid', 'cd_ft_adgroupid', 'cd_ft_keyword', 'cd_ft_matchtype', 'cd_ft_device', 'cd_ft_creative', 'cd_ft_placement',
+  'cd_ft_landing_page', 'cd_ft_referrer', 'cd_ft_captured_at',
+  'cd_lt_gclid', 'cd_lt_gbraid', 'cd_lt_wbraid',
+  'cd_lt_utm_source', 'cd_lt_utm_medium', 'cd_lt_utm_campaign', 'cd_lt_utm_content', 'cd_lt_utm_term',
+  'cd_lt_campaignid', 'cd_lt_adgroupid', 'cd_lt_keyword', 'cd_lt_matchtype', 'cd_lt_device', 'cd_lt_creative', 'cd_lt_placement',
+  'cd_lt_landing_page', 'cd_lt_referrer', 'cd_lt_captured_at',
+]);
+
+function sanitizeAttributionAttributes(attribution) {
+  if (!Array.isArray(attribution)) return [];
+  const sanitized = [];
+  for (const attr of attribution) {
+    if (!attr || typeof attr.key !== 'string' || typeof attr.value !== 'string') continue;
+    const key = attr.key.trim();
+    if (!ALLOWED_ATTRIBUTION_KEYS.has(key)) continue;
+    const value = attr.value.trim().substring(0, 255);
+    if (!value) continue;
+    sanitized.push({ key, value });
+  }
+  return sanitized;
+}
+
 // Validate required environment variables
 if (!domain || !storefrontToken) {
   console.error('Missing required environment variables:', {
@@ -25,7 +50,7 @@ async function shopifyStorefront(query, variables = {}) {
 
 export async function POST(request) {
   try {
-    const { items, isMember } = await request.json();
+    const { items, isMember, attribution } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'No items in cart' }, { status: 400 });
@@ -91,9 +116,12 @@ export async function POST(request) {
     }
 
     // Step 2: Create the cart — only apply HOUSE10 for active Sanctuary members
+    // Include attribution as cart attributes so order-level tracking survives headless checkout
+    const sanitizedAttribution = sanitizeAttributionAttributes(attribution);
     const cartInput = {
       lines: lineItems,
       ...(isMember ? { discountCodes: ['HOUSE10'] } : {}),
+      ...(sanitizedAttribution.length > 0 ? { attributes: sanitizedAttribution } : {}),
     };
 
     const result = await shopifyStorefront(createCartMutation, { input: cartInput });
