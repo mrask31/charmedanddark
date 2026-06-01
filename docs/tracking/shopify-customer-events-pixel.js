@@ -22,6 +22,9 @@
  * 4. Check GA4 → Realtime → Conversions for the purchase event
  * 5. Check Shopify Admin → Settings → Customer events → pixel logs
  *
+ * INSTALL TIMING:
+ * Install only after this branch is merged and production smoke test passes.
+ *
  * ATTRIBUTION:
  * Cart attributes (cd_ft_gclid, cd_lt_utm_source, etc.) are passed from
  * the Next.js storefront into the Shopify cart during cartCreate.
@@ -82,11 +85,10 @@ analytics.subscribe('checkout_completed', (event) => {
 
   // 2. GA4 Purchase Event
   window.gtag('event', 'purchase', {
+    send_to: GA4_MEASUREMENT_ID,
     transaction_id: transactionId,
     value: value,
     currency: currency,
     items: items,
   });
-
-  console.log('[CD Pixel] Purchase tracked:', { transactionId, value, currency, items: items.length });
 });
