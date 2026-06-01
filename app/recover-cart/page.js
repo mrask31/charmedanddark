@@ -13,8 +13,16 @@ import { useEffect, useState } from 'react';
  * theme instead of the Charmed & Dark brand experience. This page keeps
  * recovery on-brand before sending users to secure Shopify checkout.
  *
- * Klaviyo URL pattern:
- * https://www.charmedanddark.com/recover-cart?checkout_url={{ event.extra.checkout_url|urlencode }}&utm_source=klaviyo&utm_medium=email&utm_campaign=abandoned_checkout
+ * Supports two URL patterns:
+ *
+ * 1. Query param (requires URL encoding in Klaviyo):
+ *    /recover-cart?checkout_url=<encoded Shopify checkout URL>
+ *
+ * 2. Hash fragment (preferred — no encoding needed, uses known-working Klaviyo variable):
+ *    /recover-cart?utm_source=klaviyo&utm_medium=email&utm_campaign=abandoned_checkout#checkout_url={{ event.extra.checkout_url }}
+ *
+ * Preferred Klaviyo button URL:
+ * https://www.charmedanddark.com/recover-cart?utm_source=klaviyo&utm_medium=email&utm_campaign=abandoned_checkout#checkout_url={{ event.extra.checkout_url }}
  */
 
 const TRUSTED_HOSTS = [
@@ -36,25 +44,57 @@ function isValidCheckoutUrl(url) {
   }
 }
 
+/**
+ * Extract checkout URL from the hash fragment.
+ * Expected format: #checkout_url=https://charmed-dark.myshopify.com/...
+ */
+function getCheckoutUrlFromHash() {
+  if (typeof window === 'undefined') return null;
+  const hash = window.location.hash;
+  if (!hash || !hash.startsWith('#checkout_url=')) return null;
+  const raw = hash.substring('#checkout_url='.length);
+  if (!raw) return null;
+  // Try decodeURIComponent, but fall back to raw value if decoding fails
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 function RecoverCartContent() {
   const searchParams = useSearchParams();
-  const rawUrl = searchParams.get('checkout_url');
+  const queryUrl = searchParams.get('checkout_url');
   const [validUrl, setValidUrl] = useState(null);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const decoded = rawUrl ? decodeURIComponent(rawUrl) : null;
-    const isValid = isValidCheckoutUrl(decoded);
-    setValidUrl(isValid ? decoded : null);
+    // Priority: query param first, then hash fragment
+    let candidate = null;
+
+    if (queryUrl) {
+      try {
+        candidate = decodeURIComponent(queryUrl);
+      } catch {
+        candidate = queryUrl;
+      }
+    }
+
+    if (!isValidCheckoutUrl(candidate)) {
+      candidate = getCheckoutUrlFromHash();
+    }
+
+    const isValid = isValidCheckoutUrl(candidate);
+    setValidUrl(isValid ? candidate : null);
     setChecked(true);
 
     // Track landing — non-PII properties only
     posthog?.capture?.('abandoned_cart_recovery_landed', {
-      has_checkout_url: !!rawUrl,
+      has_checkout_url: !!(queryUrl || getCheckoutUrlFromHash()),
       valid_checkout_url: isValid,
       source: 'klaviyo',
     });
-  }, [rawUrl, searchParams]);
+  }, [queryUrl, searchParams]);
 
   if (!checked) {
     return (
