@@ -8,11 +8,13 @@ import { useEffect, useState } from 'react';
 /**
  * Abandoned Checkout Recovery Page
  *
- * Receives Shopify checkout recovery URLs from Klaviyo abandoned cart emails.
- * Presents a branded Charmed & Dark page before sending customers to Shopify checkout.
+ * Klaviyo abandoned checkout emails can send customers to Shopify's hosted
+ * storefront (charmed-dark.myshopify.com), which shows the default Shopify
+ * theme instead of the Charmed & Dark brand experience. This page keeps
+ * recovery on-brand before sending users to secure Shopify checkout.
  *
  * Klaviyo URL pattern:
- * https://www.charmedanddark.com/recover-cart?checkout_url={{ checkout_url | urlencode }}&utm_source=klaviyo&utm_medium=email&utm_campaign=abandoned_checkout
+ * https://www.charmedanddark.com/recover-cart?checkout_url={{ event.extra.checkout_url|urlencode }}&utm_source=klaviyo&utm_medium=email&utm_campaign=abandoned_checkout
  */
 
 const TRUSTED_HOSTS = [
@@ -46,13 +48,11 @@ function RecoverCartContent() {
     setValidUrl(isValid ? decoded : null);
     setChecked(true);
 
-    // Track landing
+    // Track landing — non-PII properties only
     posthog?.capture?.('abandoned_cart_recovery_landed', {
       has_checkout_url: !!rawUrl,
-      url_valid: isValid,
-      utm_source: searchParams.get('utm_source') || undefined,
-      utm_medium: searchParams.get('utm_medium') || undefined,
-      utm_campaign: searchParams.get('utm_campaign') || undefined,
+      valid_checkout_url: isValid,
+      source: 'klaviyo',
     });
   }, [rawUrl, searchParams]);
 
@@ -89,7 +89,7 @@ function RecoverCartContent() {
               marginBottom: '16px',
             }}
           >
-            This link has expired.
+            You left something behind.
           </h1>
           <p
             className="font-light text-base"
@@ -100,7 +100,7 @@ function RecoverCartContent() {
               lineHeight: 1.7,
             }}
           >
-            The checkout link is no longer valid. Browse the shop to find what called to you.
+            This recovery link has gone quiet, but the shop is still open.
           </p>
           <a
             href="/shop"
@@ -147,7 +147,7 @@ function RecoverCartContent() {
             lineHeight: 1.7,
           }}
         >
-          Your cart is still waiting. Pick up where you left off — your items won&apos;t last forever.
+          Your selection is still waiting. Step back into the dark and finish whenever you&apos;re ready.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -155,10 +155,10 @@ function RecoverCartContent() {
             href={validUrl}
             onClick={() => {
               posthog?.capture?.('abandoned_cart_recovery_clicked', {
+                has_checkout_url: true,
+                valid_checkout_url: true,
+                source: 'klaviyo',
                 action: 'continue_checkout',
-                utm_source: searchParams.get('utm_source') || undefined,
-                utm_medium: searchParams.get('utm_medium') || undefined,
-                utm_campaign: searchParams.get('utm_campaign') || undefined,
               });
             }}
             className="rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-[#c9a96e]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#08080f]"
@@ -170,6 +170,9 @@ function RecoverCartContent() {
             href="/shop"
             onClick={() => {
               posthog?.capture?.('abandoned_cart_recovery_clicked', {
+                has_checkout_url: true,
+                valid_checkout_url: true,
+                source: 'klaviyo',
                 action: 'keep_browsing',
               });
             }}
