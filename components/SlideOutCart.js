@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { posthog } from '@/components/providers/posthog-provider';
+import { buildCartAttributes } from '@/lib/attribution';
 
 export default function SlideOutCart() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, sanctuarySubtotal, clearCart } = useCart();
@@ -14,10 +15,12 @@ export default function SlideOutCart() {
     setIsCheckingOut(true);
     posthog?.capture?.('checkout_started');
     try {
+      // Include attribution data for Shopify cart attributes
+      const attribution = buildCartAttributes();
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, isMember }),
+        body: JSON.stringify({ items, isMember, attribution }),
       });
 
       const data = await response.json();

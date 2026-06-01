@@ -7,6 +7,8 @@ import SlideOutCart from "@/components/SlideOutCart";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { PHProvider } from "@/components/providers/posthog-provider";
+import { Suspense } from 'react';
+import { AttributionCapture } from "@/components/providers/attribution-capture";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -70,6 +72,7 @@ export default function RootLayout({ children }) {
         />
         <div className="min-h-screen bg-black text-white">
           <PHProvider>
+          <Suspense fallback={null}><AttributionCapture /></Suspense>
           <AuthProvider>
             <CartProvider>
               <StickyNav />
@@ -102,6 +105,7 @@ export default function RootLayout({ children }) {
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
                   gtag('config', 'AW-18117162540');
+                  gtag('config', 'G-53EPW0NDPZ');
                 `,
               }}
             />

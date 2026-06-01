@@ -25,7 +25,7 @@ async function shopifyStorefront(query, variables = {}) {
 
 export async function POST(request) {
   try {
-    const { items, isMember } = await request.json();
+    const { items, isMember, attribution } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'No items in cart' }, { status: 400 });
@@ -91,9 +91,11 @@ export async function POST(request) {
     }
 
     // Step 2: Create the cart — only apply HOUSE10 for active Sanctuary members
+    // Include attribution as cart attributes so order-level tracking survives headless checkout
     const cartInput = {
       lines: lineItems,
       ...(isMember ? { discountCodes: ['HOUSE10'] } : {}),
+      ...(attribution && attribution.length > 0 ? { attributes: attribution } : {}),
     };
 
     const result = await shopifyStorefront(createCartMutation, { input: cartInput });
