@@ -18,13 +18,7 @@ function captureAuthEvent(eventName, properties = {}) {
   }
 }
 
-function getRecoveryHashError() {
-  if (typeof window === 'undefined') return null;
-
-  const hash = window.location.hash || '';
-  if (!hash) return null;
-
-  const params = new URLSearchParams(hash.replace(/^#/, ''));
+function parseRecoveryParams(params, source) {
   const errorCode = params.get('error_code');
   const errorDescription = params.get('error_description');
   const error = params.get('error');
@@ -32,10 +26,34 @@ function getRecoveryHashError() {
   if (!error && !errorCode && !errorDescription) return null;
 
   return {
+    source,
     error,
     error_code: errorCode,
     error_description: errorDescription,
   };
+}
+
+function getRecoveryUrlError() {
+  if (typeof window === 'undefined') return null;
+
+  // Supabase usually returns recovery errors in the URL hash, e.g.
+  // /reset-password#error=access_denied&error_code=otp_expired
+  const hash = window.location.hash || '';
+  if (hash) {
+    const hashError = parseRecoveryParams(new URLSearchParams(hash.replace(/^#/, '')), 'hash');
+    if (hashError) return hashError;
+  }
+
+  // Some mobile browsers, email clients, and manual tests can strip or rewrite
+  // hashes. Support query params too so the same expired-link UX can still be
+  // tested and handled safely.
+  const search = window.location.search || '';
+  if (search) {
+    const queryError = parseRecoveryParams(new URLSearchParams(search), 'query');
+    if (queryError) return queryError;
+  }
+
+  return null;
 }
 
 export default function ResetPasswordPage() {
@@ -49,17 +67,20 @@ export default function ResetPasswordPage() {
   const [recoveryError, setRecoveryError] = useState(null);
 
   useEffect(() => {
-    const hashError = getRecoveryHashError();
-    if (!hashError) return;
+    const urlError = getRecoveryUrlError();
+    if (!urlError) return;
 
-    setRecoveryError(hashError);
+    setRecoveryError(urlError);
     captureAuthEvent('password_reset_link_error', {
-      error_code: hashError.error_code || 'unknown',
-      error: hashError.error || 'unknown',
+      error_code: urlError.error_code || 'unknown',
+      error: urlError.error || 'unknown',
+      url_error_source: urlError.source,
     });
 
-    if (hashError.error_code === 'otp_expired') {
-      captureAuthEvent('password_reset_link_expired');
+    if (urlError.error_code === 'otp_expired') {
+      captureAuthEvent('password_reset_link_expired', {
+        url_error_source: urlError.source,
+      });
     }
   }, []);
 
