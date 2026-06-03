@@ -44,7 +44,6 @@ export function AuthProvider({ children }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    // Clear cart and notify CartContext
     try {
       localStorage.removeItem('charmed-dark-cart');
       window.dispatchEvent(new Event('sanctuary-logout'));
@@ -54,7 +53,8 @@ export function AuthProvider({ children }) {
   };
 
   const resetPassword = async (email) => {
-    return await supabase.auth.resetPasswordForEmail(email);
+    const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined;
+    return await supabase.auth.resetPasswordForEmail(email, redirectTo ? { redirectTo } : undefined);
   };
 
   return (
