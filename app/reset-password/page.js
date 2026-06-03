@@ -1,0 +1,126 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+
+export default function ResetPasswordPage() {
+  const router = useRouter();
+  const { supabase } = useAuth();
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [status, setStatus] = useState(null);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (password.length < 8) {
+      setStatus({ type: 'error', message: 'Password must be at least 8 characters.' });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setStatus({ type: 'error', message: 'Passwords do not match.' });
+      return;
+    }
+
+    setStatus({ type: 'loading', message: 'Updating your password...' });
+
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      setStatus({ type: 'error', message: error.message || 'We could not update your password. Please request a new reset link.' });
+      return;
+    }
+
+    setStatus({ type: 'success', message: 'Your password has been updated. Redirecting to the shop...' });
+    setTimeout(() => router.push('/shop'), 1600);
+  }
+
+  const inputStyle = {
+    width: '100%',
+    padding: '0.9rem 1rem',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(201,169,110,0.3)',
+    color: '#e8e4dc',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: '0.95rem',
+    outline: 'none',
+  };
+
+  return (
+    <main className="flex min-h-screen items-center justify-center px-6 py-24" style={{ backgroundColor: '#08080f' }}>
+      <section className="w-full max-w-md text-center">
+        <p className="mb-4 text-[11px] uppercase tracking-[0.3em]" style={{ color: '#c9a96e' }}>
+          CHARMED &amp; DARK
+        </p>
+        <h1
+          className="mb-4 font-serif text-4xl italic"
+          style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', color: '#e8e4dc' }}
+        >
+          Set a new password.
+        </h1>
+        <p className="mb-8 text-sm leading-6" style={{ color: 'rgba(232,228,220,0.58)', fontFamily: 'Inter, sans-serif' }}>
+          Choose a new password for your Sanctuary account. After this, you can sign in normally whenever you return.
+        </p>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
+          <label className="text-xs uppercase tracking-[0.18em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
+            New password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              minLength={8}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimum 8 characters"
+              style={{ ...inputStyle, paddingRight: '4rem' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((show) => !show)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] uppercase tracking-wider"
+              style={{ color: '#6b6760' }}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
+
+          <label className="text-xs uppercase tracking-[0.18em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
+            Confirm password
+          </label>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            minLength={8}
+            required
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Re-enter new password"
+            style={inputStyle}
+          />
+
+          {status?.message && (
+            <p
+              role={status.type === 'error' ? 'alert' : 'status'}
+              className="text-center text-sm"
+              style={{ color: status.type === 'error' ? '#e24b4a' : '#c9a96e', fontFamily: 'Inter, sans-serif' }}
+            >
+              {status.message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={status?.type === 'loading'}
+            className="mt-2 rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-[#c9a96e]/10 disabled:opacity-50"
+            style={{ border: '1px solid #c9a96e', color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
+          >
+            {status?.type === 'loading' ? 'Updating...' : 'Update Password'}
+          </button>
+        </form>
+      </section>
+    </main>
+  );
+}
