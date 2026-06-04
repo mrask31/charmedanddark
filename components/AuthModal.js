@@ -3,6 +3,20 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '@/context/AuthContext';
+import { posthog } from '@/components/providers/posthog-provider';
+
+function captureAuthEvent(eventName, properties = {}) {
+  try {
+    if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+      posthog.capture(eventName, {
+        source: 'auth_modal',
+        ...properties,
+      });
+    }
+  } catch (_) {
+    // Do not block auth flows on analytics failures.
+  }
+}
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   const { signIn, signUp, resetPassword } = useAuth();
@@ -31,6 +45,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       setBirthMonth('');
       setBirthDay('');
       setStatus(null);
+      captureAuthEvent('auth_modal_opened', { initial_mode: initialMode });
     }
   }, [isOpen, initialMode]);
 
@@ -65,18 +80,27 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
   async function handleSignIn(e) {
     e.preventDefault();
     setStatus({ type: 'loading' });
+    captureAuthEvent('sign_in_started');
     try {
       const { data, error } = await signIn(email, password);
       if (error) {
+        captureAuthEvent('sign_in_failed', {
+          error_message: error.message,
+          status: error.status,
+        });
         setStatus({ type: 'error', message: error.message });
         return;
       }
+      captureAuthEvent('sign_in_succeeded');
       setStatus(null);
       onClose();
       setToast('🖤 Welcome back to the Sanctuary');
       setTimeout(() => setToast(null), 3000);
     } catch (err) {
       console.error('Sign in exception:', err);
+      captureAuthEvent('sign_in_failed', {
+        error_message: err.message || 'Sign in failed. Please try again.',
+      });
       setStatus({ type: 'error', message: err.message || 'Sign in failed. Please try again.' });
     }
   }
@@ -88,16 +112,32 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       return;
     }
     setStatus({ type: 'loading' });
+    captureAuthEvent('sanctuary_join_started');
     const { data: signUpData, error } = await signUp(email, password, {
       is_sanctuary_member: true,
       first_name: firstName || undefined,
     });
     if (error) {
       if (error.message?.includes('already') || error.status === 422) {
-        await resetPassword(email);
+        captureAuthEvent('sanctuary_join_existing_account');
+        const { error: resetError } = await resetPassword(email);
+        if (resetError) {
+          captureAuthEvent('password_reset_request_failed', {
+            error_message: resetError.message,
+            status: resetError.status,
+            location: 'existing_account_join',
+          });
+          setStatus({ type: 'error', message: resetError.message || 'An account exists, but we could not send a reset link. Please try again.' });
+          return;
+        }
+        captureAuthEvent('password_reset_email_sent', { location: 'existing_account_join' });
         setStatus({ type: 'error', message: 'An account exists — check your email to set your password.' });
         return;
       }
+      captureAuthEvent('sanctuary_join_failed', {
+        error_message: error.message,
+        status: error.status,
+      });
       setStatus({ type: 'error', message: error.message });
     } else {
       const userId = signUpData?.user?.id;
@@ -112,6 +152,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, firstName, userId, birthday }),
       }).catch(() => {});
+      captureAuthEvent('sanctuary_join_succeeded');
       setStatus({ type: 'joined' });
     }
   }
@@ -121,7 +162,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
       setStatus({ type: 'error', message: 'Enter your email first.' });
       return;
     }
-    await resetPassword(email);
+    setStatus({ type: 'loading' });
+    captureAuthEvent('password_reset_requested', { location: 'forgot_password' });
+    const { error } = await resetPassword(email);
+    if (error) {
+      captureAuthEvent('password_reset_request_failed', {
+        error_message: error.message,
+        status: error.status,
+        location: 'forgot_password',
+      });
+      setStatus({ type: 'error', message: error.message || 'We could not send a reset link. Please try again.' });
+      return;
+    }
+    captureAuthEvent('password_reset_email_sent', { location: 'forgot_password' });
     setStatus({ type: 'info', message: 'Password reset link sent — check your email.' });
   }
 
@@ -266,7 +319,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }) {
                 Forgot password?
               </button>
             )}
-            <button onClick={() => { setMode(mode === 'signin' ? 'join' : 'signin'); setStatus(null); }}
+            <button onClick={() => { const nextMode = mode === 'signin' ? 'join' : 'signin'; setMode(nextMode); setStatus(null); captureAuthEvent('auth_modal_mode_changed', { next_mode: nextMode }); }}
               style={{ background: 'none', border: 'none', color: '#6b6760', cursor: 'pointer' }}>
               {mode === 'signin' ? 'New member? Join here' : 'Already a member? Sign in'}
             </button>
