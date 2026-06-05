@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { posthog } from '@/components/providers/posthog-provider';
+import { getAttributionProps } from '@/lib/attribution';
 
 /**
  * AddToCart — handles Shopify variant selection, quantity, and cart logic.
@@ -99,7 +100,18 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
         quantity
       );
       setCartState('success');
-      posthog?.capture?.('add_to_cart', { product: product.name, price: product.price });
+      posthog?.capture?.('add_to_cart', {
+        product_title: product.name,
+        product_handle: product.slug,
+        variant_title: selectedVariant.title || undefined,
+        variant_id: selectedVariant.shopifyVariantId || undefined,
+        sku: selectedVariant.sku || product.sku || undefined,
+        price: product.price,
+        currency: 'USD',
+        quantity,
+        url: typeof window !== 'undefined' ? window.location.href : undefined,
+        ...getAttributionProps(),
+      });
       setTimeout(() => setCartState('idle'), 2000);
     } catch (err) {
       console.error('Add to cart failed:', err);

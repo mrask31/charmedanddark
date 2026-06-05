@@ -1,19 +1,43 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { posthog } from '@/components/providers/posthog-provider';
-import { buildCartAttributes } from '@/lib/attribution';
+import { buildCartAttributes, getAttributionProps } from '@/lib/attribution';
 
 export default function SlideOutCart() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, sanctuarySubtotal, clearCart } = useCart();
   const { isMember } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const prevIsOpen = useRef(false);
+
+  // Fire cart_opened when cart transitions from closed → open
+  useEffect(() => {
+    if (isOpen && !prevIsOpen.current) {
+      const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+      posthog?.capture?.('cart_opened', {
+        item_count: itemCount,
+        cart_total: subtotal,
+        url: typeof window !== 'undefined' ? window.location.href : undefined,
+        ...getAttributionProps(),
+      });
+    }
+    prevIsOpen.current = isOpen;
+  }, [isOpen, items, subtotal]);
 
   async function handleCheckout() {
     setIsCheckingOut(true);
-    posthog?.capture?.('checkout_started');
+    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+    posthog?.capture?.('checkout_started', {
+      item_count: itemCount,
+      cart_total: subtotal,
+      product_titles: items.map((i) => i.name),
+      product_handles: items.map((i) => i.slug),
+      skus: items.map((i) => i.shopifyVariantId || i.slug),
+      url: typeof window !== 'undefined' ? window.location.href : undefined,
+      ...getAttributionProps(),
+    });
     try {
       // Include attribution data for Shopify cart attributes
       const attribution = buildCartAttributes();
