@@ -8,6 +8,7 @@ import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
 import { posthog } from '@/components/providers/posthog-provider';
+import { getAttributionProps } from '@/lib/attribution';;
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -260,8 +261,18 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
   // Track product view
   useEffect(() => {
-    posthog?.capture?.('product_viewed', { product: product.name, collection: product.category });
-  }, [product.name, product.category]);
+    posthog?.capture?.('product_viewed', {
+      product_title: product.name,
+      product_handle: product.slug,
+      product_type: product.category || undefined,
+      vendor: product.vendor || undefined,
+      price: product.price,
+      currency: 'USD',
+      url: typeof window !== 'undefined' ? window.location.href : undefined,
+      referrer: typeof window !== 'undefined' ? document.referrer || undefined : undefined,
+      ...getAttributionProps(),
+    });
+  }, [product.name, product.category, product.slug, product.vendor, product.price]);
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -387,7 +398,18 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
       }, quantity);
 
       setCartState('success');
-      posthog?.capture?.('add_to_cart', { product: product.name, price: basePrice });
+      posthog?.capture?.('add_to_cart', {
+        product_title: product.name,
+        product_handle: product.slug,
+        variant_title: variantSelections || selectedSize || undefined,
+        variant_id: selectedVariant?.id || undefined,
+        sku: product.sku || undefined,
+        price: basePrice,
+        currency: 'USD',
+        quantity,
+        url: typeof window !== 'undefined' ? window.location.href : undefined,
+        ...getAttributionProps(),
+      });
       setTimeout(() => setCartState('idle'), 2000);
     } catch (err) {
       console.error('Add to cart failed:', err);
