@@ -10,6 +10,7 @@ export default function SlideOutCart() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, sanctuarySubtotal, clearCart } = useCart();
   const { isMember } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [inventoryNotices, setInventoryNotices] = useState({});
   const prevIsOpen = useRef(false);
 
   // Fire cart_opened when cart transitions from closed → open
@@ -171,12 +172,35 @@ export default function SlideOutCart() {
                     </button>
                     <span className="text-white text-sm">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity + 1)}
+                      onClick={() => {
+                        const key = item.cartKey || item.slug;
+                        if (item.availableQty != null && item.quantity >= item.availableQty) {
+                          setInventoryNotices((prev) => ({ ...prev, [key]: `Only ${item.availableQty} available.` }));
+                          posthog?.capture?.('inventory_quantity_limited', {
+                            product_title: item.name, product_handle: item.slug,
+                            variant_title: item.variant || undefined,
+                            variant_id: item.shopifyVariantId || undefined,
+                            requested_quantity: item.quantity + 1,
+                            available_quantity: item.availableQty,
+                            cart_quantity_before: item.quantity, quantity_added: 0,
+                            location: 'cart', url: window.location.href,
+                          });
+                          setTimeout(() => setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; }), 3000);
+                          return;
+                        }
+                        setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; });
+                        updateQuantity(key, item.quantity + 1);
+                      }}
                       className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
                     >
                       +
                     </button>
                   </div>
+                  {inventoryNotices[item.cartKey || item.slug] && (
+                    <p className="text-[11px] mt-1" style={{ color: '#c9a96e' }}>
+                      {inventoryNotices[item.cartKey || item.slug]}
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={() => removeItem(item.cartKey || item.slug)}

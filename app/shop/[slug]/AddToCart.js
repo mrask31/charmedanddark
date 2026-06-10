@@ -5,6 +5,7 @@ import { Minus, Plus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
+import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';
 
 /**
  * AddToCart — handles Shopify variant selection, quantity, and cart logic.
@@ -15,11 +16,12 @@ import { getAttributionProps } from '@/lib/attribution';
  *   onVariantChange  optional callback(variant|null) — lets parent track selected variant for price display
  */
 export default function AddToCart({ shopifyVariants, product, onVariantChange, onColorSelect }) {
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
   const [selectedOptions, setSelectedOptions] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
   const [selectionError, setSelectionError] = useState('');
+  const [inventoryNotice, setInventoryNotice] = useState(null);
   const isAddingRef = useRef(false); // sync guard against rapid double-taps
 
   const { options, variants } = shopifyVariants;
@@ -78,6 +80,65 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
     isAddingRef.current = true;
     setCartState('loading');
     setSelectionError('');
+    setInventoryNotice(null);
+
+    // Inventory check using Shopify variant quantityAvailable
+    const available = getAvailableInventory({
+      productQty: product.qty,
+      variantQuantityAvailable: selectedVariant.quantityAvailable,
+    });
+    const cartKey = `${product.slug}__sv_${selectedVariant.shopifyVariantId}`;
+    const alreadyInCart = items.find((i) => i.cartKey === cartKey)?.quantity || 0;
+    const { canAdd, limited, reason } = calculateAddableQuantity({
+      requested: quantity,
+      alreadyInCart,
+      available,
+    });
+
+    if (limited) {
+      if (reason === 'sold_out') {
+        setInventoryNotice('This item is currently sold out.');
+        setCartState('idle');
+        isAddingRef.current = false;
+        posthog?.capture?.('inventory_quantity_limited', {
+          product_title: product.name, product_handle: product.slug,
+          variant_title: selectedVariant.title || undefined,
+          variant_id: selectedVariant.shopifyVariantId || undefined,
+          requested_quantity: quantity, available_quantity: available,
+          cart_quantity_before: alreadyInCart, quantity_added: 0,
+          location: 'product_page', url: window.location.href,
+        });
+        return;
+      }
+      if (reason === 'at_limit') {
+        setInventoryNotice(`Only ${available} available. You already have the maximum quantity in your cart.`);
+        setCartState('idle');
+        isAddingRef.current = false;
+        posthog?.capture?.('inventory_quantity_limited', {
+          product_title: product.name, product_handle: product.slug,
+          variant_title: selectedVariant.title || undefined,
+          variant_id: selectedVariant.shopifyVariantId || undefined,
+          requested_quantity: quantity, available_quantity: available,
+          cart_quantity_before: alreadyInCart, quantity_added: 0,
+          location: 'product_page', url: window.location.href,
+        });
+        return;
+      }
+      if (reason === 'partial') {
+        setInventoryNotice(`Only ${available} available. We added ${canAdd} to your cart.`);
+        posthog?.capture?.('inventory_quantity_limited', {
+          product_title: product.name, product_handle: product.slug,
+          variant_title: selectedVariant.title || undefined,
+          variant_id: selectedVariant.shopifyVariantId || undefined,
+          requested_quantity: quantity, available_quantity: available,
+          cart_quantity_before: alreadyInCart, quantity_added: canAdd,
+          location: 'product_page', url: window.location.href,
+        });
+      }
+    }
+
+    const addQty = limited ? canAdd : quantity;
+
     try {
       addItem(
         {
@@ -96,8 +157,9 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
           })(),
           shopifyVariantId: selectedVariant.shopifyVariantId,
           imageUrl: selectedVariant.imageUrl || product.imageUrls?.[0] || null,
+          availableQty: available,
         },
-        quantity
+        addQty
       );
       setCartState('success');
       posthog?.capture?.('add_to_cart', {
@@ -108,7 +170,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
         sku: selectedVariant.sku || product.sku || undefined,
         price: product.price,
         currency: 'USD',
-        quantity,
+        quantity: addQty,
         url: typeof window !== 'undefined' ? window.location.href : undefined,
         ...getAttributionProps(),
       });
@@ -224,6 +286,11 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
       {selectionError && (
         <p role="alert" style={{ color: '#e24b4a', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
           {selectionError}
+        </p>
+      )}
+      {inventoryNotice && (
+        <p role="status" style={{ color: '#c9a96e', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
+          {inventoryNotice}
         </p>
       )}
     </div>
