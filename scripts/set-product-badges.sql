@@ -1,0 +1,49 @@
+-- Product Badges — Schema & Data
+--
+-- Badges are stored in the existing metadata JSONB column as metadata.badge.
+-- No schema migration needed.
+--
+-- To set a badge:
+--   UPDATE products SET metadata = COALESCE(metadata, '{}'::jsonb) || '{"badge": "Best Seller"}'::jsonb
+--   WHERE slug = 'my-product-slug';
+--
+-- To remove a badge:
+--   UPDATE products SET metadata = metadata - 'badge'
+--   WHERE slug = 'my-product-slug';
+--
+-- Supported badge values (rendered as-is on product cards and detail pages):
+--   "Best Seller"
+--   "New Arrival"
+--   "Summerween Favorite"
+--   "Staff Pick"
+--   "Limited Edition"
+--   (or any custom string)
+--
+-- RECOMMENDATION FOR FUTURE:
+-- If badges become more complex (multiple badges per product, start/end dates,
+-- priority ordering), consider adding a dedicated `product_badges` table:
+--
+--   CREATE TABLE product_badges (
+--     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+--     badge_text TEXT NOT NULL,
+--     badge_type TEXT DEFAULT 'default', -- 'default', 'seasonal', 'staff'
+--     priority INT DEFAULT 0,
+--     starts_at TIMESTAMPTZ,
+--     ends_at TIMESTAMPTZ,
+--     created_at TIMESTAMPTZ DEFAULT now()
+--   );
+--
+-- For now, metadata.badge (single string) is sufficient.
+
+-- Example: Set badges for specific products
+-- Uncomment and adjust slugs as needed:
+
+-- UPDATE products SET metadata = COALESCE(metadata, '{}'::jsonb) || '{"badge": "Best Seller"}'::jsonb
+-- WHERE slug = 'celestial-kisslock-bag-in-linen-blended-fabric';
+
+-- UPDATE products SET metadata = COALESCE(metadata, '{}'::jsonb) || '{"badge": "Summerween Favorite"}'::jsonb
+-- WHERE slug = 'summerween-fourth-of-july-halloween-shirt';
+
+-- UPDATE products SET metadata = COALESCE(metadata, '{}'::jsonb) || '{"badge": "New Arrival"}'::jsonb
+-- WHERE slug = 'camp-charmed-and-dark-unisex-ringer-tee';
