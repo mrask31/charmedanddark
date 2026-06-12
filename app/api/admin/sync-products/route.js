@@ -160,10 +160,11 @@ export async function POST(request) {
         }
 
         // Determine availability from Shopify status
-        // DRAFT and ARCHIVED products get synced but marked unavailable
+        // DRAFT and ARCHIVED products are marked unavailable, regardless of vendor.
+        // The isMadeToOrder flag only affects inventory (qty=999), not visibility.
         const isPrintify = sp.vendor === 'Printify' || (sp.tags && sp.tags.includes('Printify'));
         const isMadeToOrder = isPrintify || sp.vendor === 'Charmed & Dark';
-        const isActive = (sp.status === 'ACTIVE' || isMadeToOrder) && sp.status !== 'ARCHIVED';
+        const isActive = sp.status === 'ACTIVE';
         let category = mapCategory(sp.productType);
         // Vendor-based fallback
         if (category === 'Home Decor' && VENDOR_CATEGORY_MAP[sp.vendor]) {
