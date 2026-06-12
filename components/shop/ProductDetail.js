@@ -8,7 +8,8 @@ import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
 import { posthog } from '@/components/providers/posthog-provider';
-import { getAttributionProps } from '@/lib/attribution';;
+import { getAttributionProps } from '@/lib/attribution';
+import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';;
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -253,7 +254,7 @@ function RelatedProducts({ products }) {
 // ============================================================================
 export default function ProductDetail({ product, relatedProducts, shopifyVariants }) {
   const { isMember, loading: authLoading } = useSanctuaryAccess();
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
 
   const isApparel = APPAREL_CATEGORIES.includes(product.category);
   const hasProductVariants = product.productVariants?.length > 0;
@@ -291,6 +292,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
   const [selectionError, setSelectionError] = useState('');
+  const [inventoryNotice, setInventoryNotice] = useState(null);
 
   // Handle variant selection by type — keeps color and size independent
   function handleVariantSelectByType(type, variant) {
@@ -380,11 +382,65 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
     setCartState('loading');
     setSelectionError('');
+    setInventoryNotice(null);
+
+    // Inventory check — determine available stock
+    const available = getAvailableInventory({ productQty: product.qty, variantQuantityAvailable: null });
+    const cartKey = selectedVariant
+      ? `${product.slug}__v_${selectedVariant.id}`
+      : selectedSize
+      ? `${product.slug}__${selectedSize}`
+      : product.slug;
+    const alreadyInCart = items.find((i) => i.cartKey === cartKey)?.quantity || 0;
+    const { canAdd, limited, reason } = calculateAddableQuantity({
+      requested: quantity,
+      alreadyInCart,
+      available,
+    });
+
+    if (limited) {
+      if (reason === 'sold_out') {
+        setInventoryNotice('This item is currently sold out.');
+        setCartState('idle');
+        posthog?.capture?.('inventory_quantity_limited', {
+          product_title: product.name, product_handle: product.slug,
+          variant_title: undefined, variant_id: selectedVariant?.id || undefined,
+          requested_quantity: quantity, available_quantity: available,
+          cart_quantity_before: alreadyInCart, quantity_added: 0,
+          location: 'product_page', url: window.location.href,
+        });
+        return;
+      }
+      if (reason === 'at_limit') {
+        setInventoryNotice(`Only ${available} available. You already have the maximum quantity in your cart.`);
+        setCartState('idle');
+        posthog?.capture?.('inventory_quantity_limited', {
+          product_title: product.name, product_handle: product.slug,
+          variant_title: undefined, variant_id: selectedVariant?.id || undefined,
+          requested_quantity: quantity, available_quantity: available,
+          cart_quantity_before: alreadyInCart, quantity_added: 0,
+          location: 'product_page', url: window.location.href,
+        });
+        return;
+      }
+      if (reason === 'partial') {
+        setInventoryNotice(`Only ${available} available. We added ${canAdd} to your cart.`);
+        posthog?.capture?.('inventory_quantity_limited', {
+          product_title: product.name, product_handle: product.slug,
+          variant_title: undefined, variant_id: selectedVariant?.id || undefined,
+          requested_quantity: quantity, available_quantity: available,
+          cart_quantity_before: alreadyInCart, quantity_added: canAdd,
+          location: 'product_page', url: window.location.href,
+        });
+      }
+    }
 
     // Build a combined variant label from all selections (e.g. "Color: Black, Size: M")
     const variantSelections = Object.entries(selectedByType)
       .map(([type, v]) => `${type.charAt(0).toUpperCase() + type.slice(1)}: ${v.variant_value}`)
       .join(', ');
+
+    const addQty = limited ? canAdd : quantity;
 
     try {
       addItem({
@@ -395,7 +451,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
           ? { ...selectedVariant, _combinedLabel: variantSelections || null }
           : null,
         shopifyVariantId: product.shopifyVariantId,
-      }, quantity);
+        availableQty: available,
+      }, addQty);
 
       setCartState('success');
       posthog?.capture?.('add_to_cart', {
@@ -406,7 +463,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         sku: product.sku || undefined,
         price: basePrice,
         currency: 'USD',
-        quantity,
+        quantity: addQty,
         url: typeof window !== 'undefined' ? window.location.href : undefined,
         ...getAttributionProps(),
       });
@@ -639,6 +696,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                   {selectionError && (
                     <p role="alert" style={{ color: '#e24b4a', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
                       {selectionError}
+                    </p>
+                  )}
+                  {inventoryNotice && (
+                    <p role="status" style={{ color: '#c9a96e', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
+                      {inventoryNotice}
                     </p>
                   )}
                 </>

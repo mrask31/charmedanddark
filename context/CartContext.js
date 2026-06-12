@@ -113,6 +113,7 @@ export function CartProvider({ children }) {
         imageUrl: variant?.image_url || product.imageUrl || product.imageUrls?.[0] || null,
         quantity,
         shopifyVariantId: product.shopifyVariantId || null,
+        availableQty: product.availableQty ?? null, // inventory cap (null = unlimited)
       }];
     });
     setIsOpen(true); // Auto-open cart when item added
