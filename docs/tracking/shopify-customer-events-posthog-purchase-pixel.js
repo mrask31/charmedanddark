@@ -17,21 +17,39 @@
  * Google Ads and GA4 purchase events are handled by the separate
  * "Google Ads + GA4 Purchase Tracking" pixel — do not duplicate them here.
  *
+ * SHOPIFY CUSTOMER EVENTS checkout_completed PAYLOAD SHAPE:
+ * event.data.checkout contains:
+ *   .token                    — checkout token string
+ *   .order.id                 — numeric order ID (e.g. 6464889782306)
+ *   .order.name               — may be empty in sandbox; try event.name
+ *   .order.customer.id        — numeric customer ID if logged in
+ *   .email                    — customer email on the checkout
+ *   .phone                    — customer phone if provided
+ *   .totalPrice.amount        — string like "35.40"
+ *   .totalPrice.currencyCode  — "USD"
+ *   .subtotalPrice.amount     — string
+ *   .lineItems[]              — array of line items:
+ *     .title                  — product title
+ *     .quantity               — number
+ *     .variant.id             — variant GID (gid://shopify/ProductVariant/...)
+ *     .variant.sku            — SKU string
+ *     .variant.title          — variant option string (e.g. "S / Black")
+ *     .variant.price.amount   — string
+ *     .variant.product.id     — product GID
+ *     .variant.product.title  — product title
+ *     .variant.product.vendor — vendor name
+ *     .variant.product.type   — product type
+ *     .variant.product.url    — full URL like /products/handle
+ *   .customAttributes[]       — cart attributes [{key, value}]
+ *   .discountApplications[]   — applied discounts
+ *
  * DEBUGGING:
  * Open Shopify Admin → Settings → Customer events → select this pixel →
  * click "Logs" to view console output from this script.
- *
- * VALIDATION STEPS:
- * 1. Install this pixel in Shopify Admin → Settings → Customer events
- * 2. Place a test order (Shopify Bogus Gateway or real small order)
- * 3. After checkout completes, check:
- *    - Shopify pixel logs for "[CD PostHog] ..." messages
- *    - PostHog → Activity → Live Events → filter by event "purchase"
- * 4. Confirm purchase event appears with correct properties
  */
 
 // ============================================================================
-// CONFIGURATION — Replace with your real PostHog project API key
+// CONFIGURATION
 // ============================================================================
 const POSTHOG_API_KEY = 'phc_sEjELnQn7iD9tFx6z6CLLbLyV6CcJriEUheEHupjpRqs';
 const POSTHOG_CAPTURE_URL = 'https://us.i.posthog.com/capture/';
@@ -50,17 +68,38 @@ function compact(value) {
   return value;
 }
 
+/**
+ * Extract product handle from variant.product.url or variant.product.handle.
+ * Shopify Customer Events often provides the URL like "/products/my-handle"
+ * but not a standalone handle field.
+ */
+function extractHandle(item) {
+  // Try direct handle field
+  if (item.variant?.product?.handle) return item.variant.product.handle;
+  // Try extracting from URL: "/products/some-handle" or full URL
+  const url = item.variant?.product?.url || '';
+  const match = url.match(/\/products\/([^?#/]+)/);
+  if (match) return match[1];
+  // Fallback: slugify the title
+  if (item.title) {
+    return item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  return undefined;
+}
+
 function buildItems(lineItems = []) {
   return lineItems.map((item, index) => ({
     index,
     product_title: compact(item.title),
-    product_handle: compact(item.variant?.product?.handle),
+    product_handle: compact(extractHandle(item)),
     variant_title: compact(item.variant?.title),
     sku: compact(item.variant?.sku),
     variant_id: compact(item.variant?.id),
     product_id: compact(item.variant?.product?.id),
     quantity: item.quantity || 1,
     price: moneyAmount(item.variant?.price),
+    vendor: compact(item.variant?.product?.vendor),
+    product_type: compact(item.variant?.product?.type),
   }));
 }
 
@@ -80,6 +119,7 @@ function getCheckoutAttributeMap(checkout) {
 
 analytics.subscribe('checkout_completed', async (event) => {
   console.log('[CD PostHog] checkout_completed event received');
+  console.log('[CD PostHog] Event keys:', Object.keys(event.data || {}).join(', '));
 
   const checkout = event.data?.checkout;
   if (!checkout) {
@@ -87,11 +127,44 @@ analytics.subscribe('checkout_completed', async (event) => {
     return;
   }
 
+  // Log available checkout fields for debugging
+  console.log('[CD PostHog] Checkout keys:', Object.keys(checkout).join(', '));
+  console.log('[CD PostHog] Order keys:', checkout.order ? Object.keys(checkout.order).join(', ') : 'no order');
+  if (checkout.lineItems?.[0]) {
+    console.log('[CD PostHog] First lineItem keys:', Object.keys(checkout.lineItems[0]).join(', '));
+    if (checkout.lineItems[0].variant) {
+      console.log('[CD PostHog] First variant keys:', Object.keys(checkout.lineItems[0].variant).join(', '));
+      if (checkout.lineItems[0].variant.product) {
+        console.log('[CD PostHog] First variant.product keys:', Object.keys(checkout.lineItems[0].variant.product).join(', '));
+      }
+    }
+  }
+
   const attributes = getCheckoutAttributeMap(checkout);
   const items = buildItems(checkout.lineItems || []);
-  const orderId = checkout.order?.id || checkout.token || event.id || '';
-  const orderName = checkout.order?.name || '';
+
+  // Order ID: try multiple paths
+  const orderId = checkout.order?.id
+    || checkout.orderId
+    || event.data?.orderId
+    || checkout.token
+    || event.id
+    || '';
+
+  // Order name: try multiple paths (e.g. "#1042")
+  const orderName = checkout.order?.name
+    || checkout.orderName
+    || event.data?.orderName
+    || (checkout.order?.id ? `#${checkout.order.id}` : '')
+    || '';
+
   const checkoutToken = checkout.token || event.id || '';
+
+  // Customer email: checkout-level email field
+  const customerEmail = checkout.email
+    || checkout.order?.email
+    || checkout.order?.customer?.email
+    || undefined;
 
   // Use customer ID if available, otherwise fall back to checkout token
   const distinctId = checkout.order?.customer?.id
@@ -111,15 +184,26 @@ analytics.subscribe('checkout_completed', async (event) => {
     order_id: compact(orderId),
     order_name: compact(orderName),
     checkout_token: compact(checkoutToken),
+    customer_email: compact(customerEmail),
     value: moneyAmount(checkout.totalPrice),
+    subtotal: moneyAmount(checkout.subtotalPrice),
     currency: checkout.totalPrice?.currencyCode || checkout.currencyCode || 'USD',
 
-    // Line items summary
+    // Line items summary arrays
     item_count: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
     product_titles: items.map((item) => item.product_title).filter(Boolean),
     product_handles: items.map((item) => item.product_handle).filter(Boolean),
+    product_ids: items.map((item) => item.product_id).filter(Boolean),
+    variant_ids: items.map((item) => item.variant_id).filter(Boolean),
     skus: items.map((item) => item.sku).filter(Boolean),
+
+    // Full line items detail
     line_items: items,
+
+    // Discount info
+    discount_codes: (checkout.discountApplications || [])
+      .map((d) => d.title || d.code)
+      .filter(Boolean),
 
     // Attribution from cart attributes (passed from Next.js storefront during cartCreate)
     cd_ft_gclid: compact(attributes.cd_ft_gclid),
@@ -130,6 +214,12 @@ analytics.subscribe('checkout_completed', async (event) => {
     cd_lt_utm_source: compact(attributes.cd_lt_utm_source),
     cd_lt_utm_medium: compact(attributes.cd_lt_utm_medium),
     cd_lt_utm_campaign: compact(attributes.cd_lt_utm_campaign),
+
+    // Debug: log if attribution attributes were present at all
+    has_cart_attributes: Object.keys(attributes).length > 0,
+    cart_attribute_keys: Object.keys(attributes).length > 0
+      ? Object.keys(attributes).join(',')
+      : undefined,
   };
 
   // Remove undefined values
@@ -148,11 +238,17 @@ analytics.subscribe('checkout_completed', async (event) => {
     event: payload.event,
     distinct_id: properties.distinct_id,
     order_id: properties.order_id,
+    order_name: properties.order_name,
+    customer_email: properties.customer_email ? '***' : 'missing',
     value: properties.value,
     currency: properties.currency,
     item_count: properties.item_count,
+    product_handles: properties.product_handles,
+    product_ids: properties.product_ids,
+    variant_ids: properties.variant_ids,
     has_ft_attribution: !!properties.cd_ft_utm_source,
     has_lt_attribution: !!properties.cd_lt_utm_source,
+    has_cart_attributes: properties.has_cart_attributes,
   }));
 
   try {
