@@ -8,6 +8,7 @@ import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
 import MobileStickyATC from '@/components/shop/MobileStickyATC';
+import TrustModule from '@/components/shop/TrustModule';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
 import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';;
@@ -664,6 +665,9 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                   style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
                 />
               )}
+
+              {/* Trust signals */}
+              <TrustModule productName={product.name} />
 
               {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
               {hasShopifyVariants ? (
