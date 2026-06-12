@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Lock, Minus, Plus } from 'lucide-react';
 import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
+import MobileStickyATC from '@/components/shop/MobileStickyATC';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
 import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';;
@@ -255,6 +256,7 @@ function RelatedProducts({ products }) {
 export default function ProductDetail({ product, relatedProducts, shopifyVariants }) {
   const { isMember, loading: authLoading } = useSanctuaryAccess();
   const { addItem, items } = useCart();
+  const galleryRef = useRef(null);
 
   const isApparel = APPAREL_CATEGORIES.includes(product.category);
   const hasProductVariants = product.productVariants?.length > 0;
@@ -504,7 +506,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         {/* Two-column layout */}
         <div className="flex flex-col items-start gap-10 md:flex-row lg:gap-16">
           {/* Left: gallery (60%) */}
-          <div className="w-full overflow-hidden md:w-[60%]">
+          <div className="w-full overflow-hidden md:w-[60%]" ref={galleryRef}>
             <ProductGallery
               images={product.imageUrls}
               productName={product.name}
@@ -596,12 +598,14 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
               {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
               {hasShopifyVariants ? (
-                <AddToCart
-                  shopifyVariants={shopifyVariants}
-                  product={product}
-                  onVariantChange={handleShopifyVariantChange}
-                  onColorSelect={setColorImage}
-                />
+                <div data-atc-section>
+                  <AddToCart
+                    shopifyVariants={shopifyVariants}
+                    product={product}
+                    onVariantChange={handleShopifyVariantChange}
+                    onColorSelect={setColorImage}
+                  />
+                </div>
               ) : (
                 <>
                   {/* Product variants selector (color, size from product_variants table) */}
@@ -739,6 +743,21 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         {/* Related products */}
         <RelatedProducts products={relatedProducts} />
       </div>
+
+      {/* Mobile sticky Add to Cart bar */}
+      <MobileStickyATC
+        productName={product.name}
+        price={basePrice}
+        isMember={isMember}
+        onAddToCart={hasShopifyVariants
+          ? () => { document.querySelector('[data-atc-section]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          : handleAddToCart
+        }
+        cartState={hasShopifyVariants ? 'idle' : cartState}
+        needsSelection={hasShopifyVariants || needsSelection}
+        galleryRef={galleryRef}
+        isSoldOut={product.qty <= 0}
+      />
     </div>
   );
 }
