@@ -1,6 +1,7 @@
 import { Hero } from "@/components/hero";
 import { CategoryPortals } from "@/components/category-portals";
 import { HomepageProductSection } from "@/components/homepage-product-section";
+import { SocialProof } from "@/components/social-proof";
 import { EditorialBreak } from "@/components/editorial-break";
 import TheMirror from "@/components/the-mirror";
 import { MembershipPitch } from "@/components/membership-pitch";
@@ -65,6 +66,7 @@ export default async function Home() {
         badge="Best Seller"
       />
       <CategoryPortals />
+      <SocialProof />
       <EditorialBreak />
       <TheMirror />
       <MembershipPitch />
