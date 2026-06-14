@@ -1,6 +1,6 @@
 import { Hero } from "@/components/hero";
 import { CategoryPortals } from "@/components/category-portals";
-import { FeaturedProducts } from "@/components/featured-products";
+import { HomepageProductSection } from "@/components/homepage-product-section";
 import { EditorialBreak } from "@/components/editorial-break";
 import TheMirror from "@/components/the-mirror";
 import { MembershipPitch } from "@/components/membership-pitch";
@@ -8,33 +8,63 @@ import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
 
-const FEATURED_HANDLES = [
-  'graveyard-ballerina-crop-tee',
-  'till-death-unisex-tee',
-  'the-charmed-dark-signature-hoodie',
-  'the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential',
+// Summerween Favorites — products showing seasonal buying intent
+const SUMMERWEEN_HANDLES = [
+  'summerween-trucker-snapback-hat',
+  'summerween-fourth-of-july-halloween-shirt',
+  'hexes-heat-unisex-summer-tee-1',
+  'summerween-womens-flowy-scoop-muscle-tank-1',
 ];
 
-export default async function Home() {
-  let featuredProducts = [];
+// Best Sellers — highest conversion products from PostHog data
+const BESTSELLER_HANDLES = [
+  'summerween-trucker-snapback-hat',
+  'celestial-kisslock-bag-in-linen-blended-fabric',
+  'hexes-heat-unisex-summer-tee-1',
+  'victorian-tray',
+  'gothic-striped-bat-wing-halloween-teacup',
+];
 
+async function fetchProductsByHandles(handles) {
   try {
     const { data } = await supabase
       .from('products')
       .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images')
-      .in('handle', FEATURED_HANDLES)
+      .in('handle', handles)
       .eq('hidden', false);
 
-    featuredProducts = data || [];
+    // Sort to match the handles order
+    const sorted = handles
+      .map((h) => (data || []).find((p) => p.handle === h || p.slug === h))
+      .filter(Boolean);
+
+    return sorted;
   } catch (err) {
-    console.error('Failed to fetch featured products:', err);
+    console.error('Failed to fetch products:', err);
+    return [];
   }
+}
+
+export default async function Home() {
+  const [summerweenProducts, bestsellerProducts] = await Promise.all([
+    fetchProductsByHandles(SUMMERWEEN_HANDLES),
+    fetchProductsByHandles(BESTSELLER_HANDLES),
+  ]);
 
   return (
     <main className="min-h-screen bg-black">
       <Hero />
+      <HomepageProductSection
+        title="Summerween Favorites"
+        products={summerweenProducts}
+        badge="Summerween Favorite"
+      />
+      <HomepageProductSection
+        title="Best Sellers"
+        products={bestsellerProducts}
+        badge="Best Seller"
+      />
       <CategoryPortals />
-      <FeaturedProducts products={featuredProducts} />
       <EditorialBreak />
       <TheMirror />
       <MembershipPitch />
