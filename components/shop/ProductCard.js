@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 function ImageCarousel({ images, productName, isSoldOut, slug }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const hasMultiple = images.length > 1;
+  const touchStartX = useRef(null);
 
   function handlePrev(e) {
     e.preventDefault();
@@ -19,8 +20,25 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
     setActiveIndex((i) => (i === images.length - 1 ? 0 : i + 1));
   }
 
+  function handleTouchStart(e) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e) {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    touchStartX.current = null;
+    if (Math.abs(diff) < 40) return;
+    if (diff > 0) setActiveIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+    else setActiveIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  }
+
   return (
-    <div className="relative aspect-[3/4] w-full overflow-hidden bg-zinc-900">
+    <div
+      className="relative aspect-[3/4] w-full overflow-hidden bg-zinc-900"
+      onTouchStart={hasMultiple ? handleTouchStart : undefined}
+      onTouchEnd={hasMultiple ? handleTouchEnd : undefined}
+    >
       <Link href={`/shop/${slug}`} className="block h-full w-full">
         <img
           src={images[activeIndex]}
@@ -28,16 +46,17 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
           className={`h-full w-full object-cover transition duration-300 group-hover:scale-105 ${
             isSoldOut ? "grayscale" : ""
           }`}
+          draggable={false}
         />
       </Link>
 
       {hasMultiple && (
         <>
-          {/* Left arrow */}
+          {/* Left arrow — visible on mobile (opacity-60) and hover on desktop */}
           <button
             onClick={handlePrev}
             aria-label="Previous image"
-            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[#c9a96e]">
               <path d="M7.5 2.5L4 6L7.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -48,7 +67,7 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
           <button
             onClick={handleNext}
             aria-label="Next image"
-            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[#c9a96e]">
               <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

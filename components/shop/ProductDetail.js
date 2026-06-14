@@ -21,14 +21,38 @@ const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 function ProductGallery({ images, productName, overrideImage, shopifyVariants }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fading, setFading] = useState(false);
+  const fadeTimeoutRef = useRef(null);
 
   function handleThumbnailClick(index) {
-    if (index === activeIndex) return;
+    if (index === activeIndex && !overrideImage) return;
+    // Cancel any pending fade transition to handle rapid clicks
+    if (fadeTimeoutRef.current) {
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
+    }
     setFading(true);
-    setTimeout(() => {
+    fadeTimeoutRef.current = setTimeout(() => {
       setActiveIndex(index);
       setFading(false);
-    }, 180);
+      fadeTimeoutRef.current = null;
+    }, 150);
+  }
+
+  // Swipe support for mobile
+  const touchStartX = useRef(null);
+  function handleTouchStart(e) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+  function handleTouchEnd(e) {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    touchStartX.current = null;
+    if (Math.abs(diff) < 40) return; // too small to be a swipe
+    if (diff > 0 && activeIndex < (images?.length || 1) - 1) {
+      handleThumbnailClick(activeIndex + 1);
+    } else if (diff < 0 && activeIndex > 0) {
+      handleThumbnailClick(activeIndex - 1);
+    }
   }
 
   // Build a lookup: imageUrl → color name from Shopify variant selectedOptions
@@ -46,25 +70,70 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
 
   // If a variant-specific image is provided, show it as the main image
   const displayImage = overrideImage || images?.[activeIndex];
+  const hasMultipleImages = images?.length > 1;
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Main image */}
-      <div className="relative w-full overflow-hidden" style={{ aspectRatio: '4/5', backgroundColor: '#08080f' }}>
+      {/* Main image with swipe + arrows */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ aspectRatio: '4/5', backgroundColor: '#08080f' }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {displayImage ? (
           <Image
             src={displayImage}
             alt={productName}
             fill
             priority
-            className={`object-cover transition-opacity duration-200 ${fading ? 'opacity-0' : 'opacity-100'}`}
+            className={`object-cover transition-opacity duration-150 ${fading ? 'opacity-0' : 'opacity-100'}`}
             sizes="(max-width: 768px) 100vw, 60vw"
+            draggable={false}
           />
         ) : (
           <div className="flex h-full items-center justify-center">
             <span className="text-5xl font-semibold tracking-[0.2em]" style={{ color: 'rgba(201,169,110,0.15)' }}>
               C&amp;D
             </span>
+          </div>
+        )}
+
+        {/* Prev/Next arrows — visible on mobile too */}
+        {hasMultipleImages && !overrideImage && (
+          <>
+            <button
+              onClick={() => handleThumbnailClick(activeIndex === 0 ? images.length - 1 : activeIndex - 1)}
+              aria-label="Previous image"
+              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
+            >
+              <svg width="14" height="14" viewBox="0 0 12 12" fill="none" className="text-[#c9a96e]">
+                <path d="M7.5 2.5L4 6L7.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <button
+              onClick={() => handleThumbnailClick(activeIndex === images.length - 1 ? 0 : activeIndex + 1)}
+              aria-label="Next image"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
+            >
+              <svg width="14" height="14" viewBox="0 0 12 12" fill="none" className="text-[#c9a96e]">
+                <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </>
+        )}
+
+        {/* Dot indicators for mobile */}
+        {hasMultipleImages && !overrideImage && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
+            {images.slice(0, 6).map((_, i) => (
+              <span
+                key={i}
+                className={`block h-1.5 w-1.5 rounded-full transition-colors ${
+                  i === activeIndex ? 'bg-[#c9a96e]' : 'bg-white/30'
+                }`}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -754,7 +823,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
           : handleAddToCart
         }
         cartState={hasShopifyVariants ? 'idle' : cartState}
-        needsSelection={hasShopifyVariants || needsSelection}
+        needsSelection={hasShopifyVariants ? !selectedShopifyVariant : needsSelection}
         galleryRef={galleryRef}
         isSoldOut={product.qty <= 0}
       />
