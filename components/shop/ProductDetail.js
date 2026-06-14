@@ -9,6 +9,7 @@ import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
 import MobileStickyATC from '@/components/shop/MobileStickyATC';
 import TrustModule from '@/components/shop/TrustModule';
+import ProductBadge from '@/components/shop/ProductBadge';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
 import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';;
@@ -595,6 +596,9 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <p className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
                 {product.category}
               </p>
+
+              {/* Badge */}
+              {product.badge && <ProductBadge badge={product.badge} variant="detail" />}
 
               {/* Title */}
               <h1

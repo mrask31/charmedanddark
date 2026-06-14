@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef } from "react";
+import ProductBadge from '@/components/shop/ProductBadge';
 
 function ImageCarousel({ images, productName, isSoldOut, slug }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -132,6 +133,9 @@ export default function ProductCard({ product, isMember }) {
 
   return (
     <div className="group relative">
+      {/* Product badge overlay */}
+      <ProductBadge badge={product.badge} />
+
       {/* Image area with carousel — arrows don't trigger navigation */}
       {images.length > 0 ? (
         <ImageCarousel
