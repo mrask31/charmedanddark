@@ -677,7 +677,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <TrustModule productName={product.name} />
               <ProductDeliveryEstimate vendor={product.vendor} />
               <SmallBusinessTrust />
-              <ProductReturnsSummary />
 
               {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
               {hasShopifyVariants ? (
@@ -797,6 +796,9 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <p className="text-xs text-[#e8e4dc]/50 mt-1 text-center">
                 Free shipping on orders $100+ · Ships to continental US only
               </p>
+
+              {/* Returns — supports purchase decision without delaying ATC */}
+              <ProductReturnsSummary />
 
               {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
