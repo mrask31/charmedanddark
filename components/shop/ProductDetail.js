@@ -664,14 +664,33 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
 
-              {/* Description — rendered as HTML */}
-              {product.description && (
-                <div
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                  className="text-[15px] font-light leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-4 [&_li]:mb-1 [&_br]:block [&_a]:underline [&_a]:underline-offset-2"
-                  style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
-                />
-              )}
+              {/* Description — short preview for apparel/Printify, full for others */}
+              {product.description && (() => {
+                const plainText = product.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+                const isLong = plainText.length > 200;
+                const shouldCollapse = isLong && (isApparel || product.vendor === 'Printify');
+
+                if (shouldCollapse) {
+                  // Show short preview only — full description moves below ATC
+                  const preview = plainText.slice(0, 180).replace(/\s\S*$/, '') + '…';
+                  return (
+                    <p
+                      className="text-[15px] font-light leading-relaxed"
+                      style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      {preview}
+                    </p>
+                  );
+                }
+
+                return (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    className="text-[15px] font-light leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-4 [&_li]:mb-1 [&_br]:block [&_a]:underline [&_a]:underline-offset-2"
+                    style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+                  />
+                );
+              })()}
 
               {/* Trust signals */}
               <TrustModule productName={product.name} />
@@ -799,6 +818,26 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
               {/* Returns — supports purchase decision without delaying ATC */}
               <ProductReturnsSummary />
+
+              {/* Full description for apparel/Printify — moved below ATC for faster buying */}
+              {product.description && (isApparel || product.vendor === 'Printify') && product.description.replace(/<[^>]*>/g, '').length > 200 && (
+                <>
+                  <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.12)' }} />
+                  <details className="group">
+                    <summary
+                      className="cursor-pointer text-[11px] uppercase tracking-[0.15em] font-light py-2 transition-colors hover:text-[#c9a96e]"
+                      style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      Full Details
+                    </summary>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: product.description }}
+                      className="mt-3 text-[14px] font-light leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-4 [&_li]:mb-1 [&_br]:block [&_a]:underline [&_a]:underline-offset-2"
+                      style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+                    />
+                  </details>
+                </>
+              )}
 
               {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
