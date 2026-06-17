@@ -9,6 +9,9 @@ import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
 import MobileStickyATC from '@/components/shop/MobileStickyATC';
 import TrustModule from '@/components/shop/TrustModule';
+import ProductDeliveryEstimate from '@/components/shop/ProductDeliveryEstimate';
+import SmallBusinessTrust from '@/components/shop/SmallBusinessTrust';
+import ProductReturnsSummary from '@/components/shop/ProductReturnsSummary';
 import ProductBadge from '@/components/shop/ProductBadge';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
@@ -672,6 +675,9 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
               {/* Trust signals */}
               <TrustModule productName={product.name} />
+              <ProductDeliveryEstimate vendor={product.vendor} />
+              <SmallBusinessTrust />
+              <ProductReturnsSummary />
 
               {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
               {hasShopifyVariants ? (
