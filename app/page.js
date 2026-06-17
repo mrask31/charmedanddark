@@ -1,4 +1,5 @@
 import { Hero } from "@/components/hero";
+import { BrandPositioning } from "@/components/brand-positioning";
 import { CategoryPortals } from "@/components/category-portals";
 import { HomepageProductSection } from "@/components/homepage-product-section";
 import { SocialProof } from "@/components/social-proof";
@@ -55,6 +56,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-black">
       <Hero />
+      <BrandPositioning />
       <HomepageProductSection
         title="Summerween Favorites"
         products={summerweenProducts}
