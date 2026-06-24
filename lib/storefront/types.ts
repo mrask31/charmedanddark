@@ -61,6 +61,10 @@ export interface Cart {
   id: string;
   checkoutUrl: string;
   lines: CartLine[];
+  discountCodes?: Array<{
+    code: string;
+    applicable: boolean;
+  }>;
   cost: {
     totalAmount: {
       amount: string;
