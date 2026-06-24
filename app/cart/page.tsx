@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getCart } from '@/lib/storefront';
+import { applyDiscountCodeToCart, getCart } from '@/lib/storefront';
 import type { Cart } from '@/lib/storefront/types';
 
 function formatPrice(amount: string, currency: string = 'USD'): string {
@@ -21,13 +21,22 @@ export default function CartPage() {
   useEffect(() => {
     async function loadCart() {
       const cartId = localStorage.getItem('shopify_cart_id');
+      const discountCode = localStorage.getItem('shopify_discount_code');
       
       if (!cartId) {
         setLoading(false);
         return;
       }
 
-      const cartData = await getCart(cartId);
+      let cartData = await getCart(cartId);
+
+      if (cartData && discountCode) {
+        const discountedCart = await applyDiscountCodeToCart(cartId, discountCode);
+        if (discountedCart) {
+          cartData = discountedCart;
+        }
+      }
+
       setCart(cartData);
       setLoading(false);
     }
@@ -62,6 +71,11 @@ export default function CartPage() {
       </main>
     );
   }
+
+  const appliedDiscount = cart.discountCodes?.find((discount) => discount.applicable);
+  const pendingDiscount = !appliedDiscount && typeof window !== 'undefined'
+    ? localStorage.getItem('shopify_discount_code')
+    : null;
 
   return (
     <main className="cart-page">
@@ -118,6 +132,16 @@ export default function CartPage() {
                 )}
               </span>
             </div>
+            {appliedDiscount && (
+              <p className="cart-summary-note">
+                Discount applied: {appliedDiscount.code}
+              </p>
+            )}
+            {pendingDiscount && (
+              <p className="cart-summary-note">
+                Discount code saved: {pendingDiscount}. It will be validated at checkout.
+              </p>
+            )}
             <p className="cart-summary-note">
               Shipping and taxes calculated at checkout
             </p>
