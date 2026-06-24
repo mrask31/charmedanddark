@@ -232,6 +232,10 @@ export async function createCart(): Promise<Cart | null> {
         cart {
           id
           checkoutUrl
+          discountCodes {
+            code
+            applicable
+          }
           lines(first: 100) {
             edges {
               node {
@@ -282,6 +286,10 @@ export async function addToCart(cartId: string, variantId: string, quantity: num
         cart {
           id
           checkoutUrl
+          discountCodes {
+            code
+            applicable
+          }
           lines(first: 100) {
             edges {
               node {
@@ -327,6 +335,74 @@ export async function addToCart(cartId: string, variantId: string, quantity: num
 }
 
 /**
+ * Apply a discount code to an existing cart
+ */
+export async function applyDiscountCodeToCart(cartId: string, discountCode: string): Promise<Cart | null> {
+  const query = `
+    mutation applyDiscountCode($cartId: ID!, $discountCodes: [String!]) {
+      cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+        cart {
+          id
+          checkoutUrl
+          discountCodes {
+            code
+            applicable
+          }
+          lines(first: 100) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    product {
+                      title
+                      handle
+                    }
+                    image {
+                      url
+                    }
+                    priceV2 {
+                      amount
+                      currencyCode
+                    }
+                  }
+                }
+              }
+            }
+          }
+          cost {
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    cartDiscountCodesUpdate: { cart: Cart | null; userErrors: Array<{ field: string[]; message: string }> }
+  }>(query, {
+    cartId,
+    discountCodes: [discountCode],
+  });
+
+  if (data?.cartDiscountCodesUpdate.userErrors?.length) {
+    console.warn('Shopify discount code errors:', data.cartDiscountCodesUpdate.userErrors);
+  }
+
+  return data?.cartDiscountCodesUpdate.cart || null;
+}
+
+/**
  * Get cart by ID
  */
 export async function getCart(cartId: string): Promise<Cart | null> {
@@ -335,6 +411,10 @@ export async function getCart(cartId: string): Promise<Cart | null> {
       cart(id: $cartId) {
         id
         checkoutUrl
+        discountCodes {
+          code
+          applicable
+        }
         lines(first: 100) {
           edges {
             node {
