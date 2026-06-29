@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
@@ -13,7 +14,7 @@ export async function JournalPreview() {
   try {
     const { data } = await supabase
       .from("blog_posts")
-      .select("slug, title, excerpt, category, created_at")
+      .select("slug, title, excerpt, category, cover_image_url, created_at")
       .eq("status", "published")
       .order("created_at", { ascending: false })
       .limit(3);
@@ -83,26 +84,46 @@ function JournalCard({ post }) {
   return (
     <Link
       href={`/journal/${post.slug}`}
-      className="group block border border-white/5 p-6 transition-all duration-200 hover:border-[#B89C6D]/40"
+      className="group block overflow-hidden border border-white/5 transition-all duration-200 hover:border-[#B89C6D]/40"
     >
-      {post.category && (
-        <span className="text-[10px] uppercase tracking-[0.25em] text-[#B89C6D]">
-          {post.category}
-        </span>
+      {/* Cover image or compact fallback */}
+      {post.cover_image_url ? (
+        <div className="relative aspect-[16/9] w-full overflow-hidden">
+          <Image
+            src={post.cover_image_url}
+            alt={post.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        </div>
+      ) : (
+        <div className="flex aspect-[16/9] w-full items-center justify-center bg-[#0e0e1a]">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#B89C6D]">
+            C&amp;D
+          </span>
+        </div>
       )}
-      <h3 className="mt-3 font-serif text-lg text-white leading-snug line-clamp-2 transition-colors group-hover:text-[#B89C6D]">
-        {post.title}
-      </h3>
-      {post.excerpt && (
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 line-clamp-2">
-          {post.excerpt}
-        </p>
-      )}
-      {formattedDate && (
-        <p className="mt-4 text-[10px] uppercase tracking-widest text-zinc-500">
-          {formattedDate}
-        </p>
-      )}
+      <div className="p-6">
+        {post.category && (
+          <span className="text-[10px] uppercase tracking-[0.25em] text-[#B89C6D]">
+            {post.category}
+          </span>
+        )}
+        <h3 className="mt-3 font-serif text-lg text-white leading-snug line-clamp-2 transition-colors group-hover:text-[#B89C6D]">
+          {post.title}
+        </h3>
+        {post.excerpt && (
+          <p className="mt-3 text-sm leading-relaxed text-zinc-400 line-clamp-2">
+            {post.excerpt}
+          </p>
+        )}
+        {formattedDate && (
+          <p className="mt-4 text-[10px] uppercase tracking-widest text-zinc-500">
+            {formattedDate}
+          </p>
+        )}
+      </div>
     </Link>
   );
 }
