@@ -81,19 +81,37 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const keywords = [post.primary_keyword, ...(post.secondary_keywords || [])];
+  const keywords = [post.primary_keyword, ...(post.secondary_keywords || [])].filter(Boolean);
+  const description = post.meta_description || post.excerpt || "";
+  const canonicalUrl = `https://charmedanddark.com/journal/${post.slug}`;
+  const ogImages = post.featured_image_url
+    ? [{ url: post.featured_image_url, width: 1200, height: 630, alt: post.title }]
+    : [];
 
   return {
-    title: post.title,
-    description: post.meta_description,
-    keywords: keywords,
+    title: `${post.title} | Charmed & Dark Journal`,
+    description,
+    keywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: post.title,
-      description: post.meta_description,
-      images: [{ url: post.featured_image_url }],
+      description,
+      url: canonicalUrl,
+      siteName: "Charmed & Dark",
+      images: ogImages,
       type: "article",
       publishedTime: post.publish_date,
-      authors: [post.author],
+      modifiedTime: post.updated_at || post.publish_date,
+      authors: [post.author || "Charmed & Dark"],
+      section: post.category,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      ...(post.featured_image_url && { images: [post.featured_image_url] }),
     },
   };
 }
@@ -184,21 +202,47 @@ export default async function JournalEntry({ params }) {
         </div>
       </article>
 
-      {/* JSON-LD Schema for SEO */}
+      {/* JSON-LD BlogPosting structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Article",
+            "@type": "BlogPosting",
             headline: post.title,
+            description: post.meta_description || post.excerpt,
+            ...(post.featured_image_url && { image: post.featured_image_url }),
             datePublished: post.publish_date,
+            dateModified: post.updated_at || post.publish_date,
             author: {
-              "@type": "Person",
-              name: post.author,
+              "@type": "Organization",
+              name: post.author || "Charmed & Dark",
+              url: "https://charmedanddark.com",
             },
-            image: post.featured_image_url,
-            description: post.meta_description,
+            publisher: {
+              "@type": "Organization",
+              name: "Charmed & Dark",
+              url: "https://charmedanddark.com",
+              ...(post.featured_image_url && {
+                logo: {
+                  "@type": "ImageObject",
+                  url: "https://charmedanddark.com/images/logo.png",
+                },
+              }),
+            },
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `https://charmedanddark.com/journal/${post.slug}`,
+            },
+            ...(post.category && { articleSection: post.category }),
+            ...(post.primary_keyword && {
+              keywords: [
+                post.primary_keyword,
+                ...(post.secondary_keywords || []),
+              ]
+                .filter(Boolean)
+                .join(", "),
+            }),
           }),
         }}
       />
