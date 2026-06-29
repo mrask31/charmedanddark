@@ -11,6 +11,17 @@ const KISS_LOCK_BAG_HANDLES = [
   'desert-moon-cowgirl-kiss-lock-bag',
 ];
 
+function isSoldOutProduct(product) {
+  return product.qty != null && product.qty <= 0;
+}
+
+function sortInStockFirst(products) {
+  const inStock = products.filter((product) => !isSoldOutProduct(product));
+  const soldOut = products.filter(isSoldOutProduct);
+
+  return [...inStock, ...soldOut];
+}
+
 async function fetchBagProducts() {
   try {
     const { data, error } = await supabase
@@ -24,9 +35,11 @@ async function fetchBagProducts() {
       return [];
     }
 
-    return KISS_LOCK_BAG_HANDLES
+    const orderedProducts = KISS_LOCK_BAG_HANDLES
       .map((h) => (data || []).find((p) => p.handle === h || p.slug === h))
       .filter(Boolean);
+
+    return sortInStockFirst(orderedProducts);
   } catch (err) {
     console.error('Failed to fetch kiss lock bags:', err);
     return [];
@@ -61,7 +74,7 @@ export default async function KissLockBagsPage() {
       }}
     >
       {/* ── Hero Section ── */}
-      <section className="relative px-8 pt-24 pb-16 text-center lg:px-16 overflow-hidden">
+      <section className="relative overflow-hidden px-8 pt-20 pb-10 text-center lg:px-16">
         {/* Subtle warm radial glow behind heading */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -99,7 +112,7 @@ export default async function KissLockBagsPage() {
       </section>
 
       {/* ── Trust/Value Strip ── */}
-      <section className="px-8 pb-10 lg:px-16">
+      <section className="px-8 pb-8 lg:px-16">
         <div
           className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 py-4 text-center"
           style={{
@@ -120,7 +133,7 @@ export default async function KissLockBagsPage() {
       </section>
 
       {/* ── Editorial Buying Block ── */}
-      <section className="px-8 pb-14 lg:px-16">
+      <section className="px-8 pb-10 lg:px-16">
         <div className="mx-auto max-w-3xl text-center">
           <p
             className="text-[11px] uppercase tracking-[0.25em] mb-4"
@@ -146,7 +159,7 @@ export default async function KissLockBagsPage() {
             const slug = product.handle || product.slug;
             const imageUrl = getImage(product);
             const isIntentPick = index < 2;
-            const isSoldOut = product.qty != null && product.qty <= 0;
+            const isSoldOut = isSoldOutProduct(product);
             const sanctuaryPrice = (price * 0.9).toFixed(2);
 
             return (
