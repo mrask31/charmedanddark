@@ -10,21 +10,23 @@ import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
 
-// Summerween Favorites — products showing seasonal buying intent
-const SUMMERWEEN_HANDLES = [
-  'summerween-trucker-snapback-hat',
-  'summerween-fourth-of-july-halloween-shirt',
-  'hexes-heat-unisex-summer-tee-1',
-  'summerween-womens-flowy-scoop-muscle-tank-1',
+// Kiss Lock Bags — convention validated and strongest online bag intent
+const KISS_LOCK_BAG_HANDLES = [
+  'ghost-cat-pumpkin-kiss-lock-bag',
+  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
+  'celestial-kisslock-bag-in-linen-blended-fabric',
+  'moon-moth-vintage-kiss-lock-bag-in-linen-blended-material',
+  'desert-moon-cowgirl-kiss-lock-bag',
 ];
 
-// Best Sellers — highest conversion products from PostHog data
-const BESTSELLER_HANDLES = [
+// Summerween — still relevant, now merchandised below bags
+const SUMMERWEEN_HANDLES = [
+  'camp-charmed-and-dark-unisex-ringer-tee',
+  'salty-spells-sunset-sins-womens-boxy-tee-1',
   'summerween-trucker-snapback-hat',
-  'celestial-kisslock-bag-in-linen-blended-fabric',
   'hexes-heat-unisex-summer-tee-1',
-  'victorian-tray',
-  'gothic-striped-bat-wing-halloween-teacup',
+  'summerween-fourth-of-july-halloween-shirt',
+  'summerween-womens-flowy-scoop-muscle-tank-1',
 ];
 
 async function fetchProductsByHandles(handles) {
@@ -48,9 +50,9 @@ async function fetchProductsByHandles(handles) {
 }
 
 export default async function Home() {
-  const [summerweenProducts, bestsellerProducts] = await Promise.all([
+  const [bagProducts, summerweenProducts] = await Promise.all([
+    fetchProductsByHandles(KISS_LOCK_BAG_HANDLES),
     fetchProductsByHandles(SUMMERWEEN_HANDLES),
-    fetchProductsByHandles(BESTSELLER_HANDLES),
   ]);
 
   return (
@@ -58,14 +60,21 @@ export default async function Home() {
       <Hero />
       <BrandPositioning />
       <HomepageProductSection
+        title="Kiss Lock Bags"
+        products={bagProducts}
+        badge="Bag Favorite"
+        viewAllHref="/collections/kiss-lock-bags"
+        ctaLabel="Shop Bags"
+        intro="One bag. Full look. These are the pieces shoppers kept choosing one at a time."
+        footerNote="Start with the bag. Let everything else orbit around it."
+      />
+      <HomepageProductSection
         title="Summerween Favorites"
         products={summerweenProducts}
         badge="Summerween Favorite"
-      />
-      <HomepageProductSection
-        title="Best Sellers"
-        products={bestsellerProducts}
-        badge="Best Seller"
+        viewAllHref="/drops"
+        ctaLabel="Explore Summerween"
+        intro="Seasonal pieces stay in the mix, now merchandised below the bags."
       />
       <CategoryPortals />
       <SocialProof />
