@@ -13,8 +13,8 @@ How available inventory is determined across the Charmed & Dark storefront.
 
 ```
 1. If Shopify variant has quantityAvailable AND it's < 900 → use that
-2. Else if Supabase product.qty is < 900 → use that
-3. Else → treat as unlimited (return null, don't cap)
+2. Else if Supabase product.qty is set AND < 900 → use that
+3. Else (qty >= 900 OR qty is null with no Shopify data) → return null (no client-side cap)
 ```
 
 The threshold of **900** marks the boundary between real on-hand stock and print-on-demand/made-to-order products (which use `qty = 999` in Supabase).
@@ -29,6 +29,23 @@ const stockQty = isMadeToOrder ? 999 : (sp.totalInventory ?? ...);
 ```
 
 Any product with vendor "Printify" or "Charmed & Dark" is marked as made-to-order and synced with `qty = 999`. The `UNLIMITED_THRESHOLD = 900` in `lib/inventory.js` catches these products and treats them as unlimited — no inventory cap is applied.
+
+### Null/Undefined qty Behavior
+
+| Scenario | Current State | Behavior |
+|----------|--------------|----------|
+| `qty = null` in database | **0 products** currently have null qty | No client-side cap; Shopify enforces at checkout |
+| `qty = null` AND no Shopify variant data | Hypothetical (manual DB entry) | No client-side cap; quantity selector hard-caps at 10; Shopify Storefront API rejects invalid quantities at cart creation |
+
+**Why this is safe:**
+- The sync pipeline always writes `qty` for every synced product (999 for POD, actual stock for physical)
+- Currently 0 products have null qty (verified via database audit)
+- Even if null-qty products existed, the quantity selector limits to 10, and Shopify rejects invalid cart lines at checkout
+- The checkout guard only blocks items where `availableQty != null && quantity > availableQty` — null-qty items pass through to Shopify's own validation
+
+**If this changes in the future:**
+- If physical products are ever created manually without the sync pipeline, they should have `qty` set explicitly
+- Consider adding a `NOT NULL DEFAULT 0` constraint to the `qty` column to enforce this at the database level
 
 ## Data Sources
 
@@ -74,6 +91,9 @@ Any product with vendor "Printify" or "Charmed & Dark" is marked as made-to-orde
 
 ## Edge Cases
 
-- **null availableQty**: Treated as unlimited. No capping, no blocking.
-- **Stale cart data**: If a user leaves items in cart overnight and stock depletes, the checkout guard catches it. Shopify also rejects at cart creation if truly oversold.
+- **qty >= 900 (POD)**: Treated as unlimited. No capping, no blocking. Convention from sync pipeline.
+- **qty = null/undefined**: No client-side cap applied. Quantity selector hard-caps at 10. Shopify enforces at checkout. Currently 0 products have null qty — all products go through sync pipeline which always writes qty.
+- **null availableQty in cart**: Items stored with null availableQty are excluded from checkout guard checks — they pass through to Shopify validation.
+- **Stale cart data**: If a user leaves items in cart overnight and stock depletes, the checkout guard catches it if `availableQty` was stored at add-time. Shopify also rejects at cart creation if truly oversold.
 - **Variant price changes**: CartContext uses the price at time of add. Final price is recalculated by Shopify at checkout.
+- **Manual DB products**: If a product is ever created directly in Supabase without the sync pipeline, ensure `qty` is set. Without qty, no client-side inventory cap will be applied.
