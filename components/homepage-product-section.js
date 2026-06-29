@@ -5,20 +5,35 @@ import Image from "next/image";
  * Reusable homepage product section.
  * Displays a labeled grid of products with consistent styling.
  */
-export function HomepageProductSection({ title, products = [], badge }) {
+export function HomepageProductSection({
+  title,
+  products = [],
+  badge,
+  viewAllHref = "/shop",
+  ctaLabel = "View All",
+  intro,
+  footerNote,
+}) {
   if (products.length === 0) return null;
 
   return (
     <section className="bg-black px-8 py-20 lg:px-16">
-      <div className="mb-10 flex items-center justify-between">
-        <span className="text-xs uppercase tracking-widest text-[#B89C6D]">
-          {title}
-        </span>
+      <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl">
+          <span className="text-xs uppercase tracking-widest text-[#B89C6D]">
+            {title}
+          </span>
+          {intro && (
+            <p className="mt-3 text-sm font-light leading-relaxed text-zinc-400 md:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
+              {intro}
+            </p>
+          )}
+        </div>
         <Link
-          href="/shop"
+          href={viewAllHref}
           className="text-xs uppercase tracking-widest text-zinc-400 transition-colors duration-160 hover:text-white"
         >
-          View All
+          {ctaLabel}
         </Link>
       </div>
 
@@ -74,6 +89,12 @@ export function HomepageProductSection({ title, products = [], badge }) {
           );
         })}
       </div>
+
+      {footerNote && (
+        <p className="mt-8 text-center text-xs uppercase tracking-[0.2em] text-zinc-500" style={{ fontFamily: 'Inter, sans-serif' }}>
+          {footerNote}
+        </p>
+      )}
     </section>
   );
 }

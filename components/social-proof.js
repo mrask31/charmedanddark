@@ -8,14 +8,14 @@ import Link from "next/link";
 const PROOF_ITEMS = [
   {
     label: 'Featured at Haunted America 2026',
-    detail: 'Official vendor — Springfield, IL',
+    detail: 'Official vendor — Grafton, IL',
     icon: '🦇',
   },
   {
-    label: 'Sanctuary Members Save 10%',
-    detail: 'Free to join. Discount applies at checkout.',
-    icon: '🖤',
-    href: '/join',
+    label: 'Kiss Lock Bag Favorites',
+    detail: 'Small gothic statement bags, chosen one at a time.',
+    icon: '👜',
+    href: '/collections/kiss-lock-bags',
   },
   {
     label: 'Seasonal Collections',
@@ -25,7 +25,7 @@ const PROOF_ITEMS = [
   },
   {
     label: 'Secure Shopify Checkout',
-    detail: "All orders processed through Shopify\u2019s trusted platform.",
+    detail: "All orders processed through Shopify’s trusted platform.",
     icon: '✓',
   },
 ];

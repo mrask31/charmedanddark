@@ -27,6 +27,12 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
   const { options, variants } = shopifyVariants;
 
   const allOptionsSelected = options.every((opt) => selectedOptions[opt.name]);
+  const missingOptions = options.filter((opt) => !selectedOptions[opt.name]);
+  const missingOptionNames = missingOptions.map((opt) => opt.name.toLowerCase());
+  const selectedOptionSummary = options
+    .filter((opt) => selectedOptions[opt.name])
+    .map((opt) => `${opt.name}: ${selectedOptions[opt.name]}`)
+    .join(' · ');
 
   // Only attempt a match once every option has a value — prevents variants with
   // empty selectedOptions (e.g. "Default Title") from matching prematurely via
@@ -66,14 +72,20 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
     if (isAddingRef.current || cartState === 'loading' || cartState === 'success') return;
 
     if (!selectedVariant) {
-      const missing = options
-        .filter((opt) => !selectedOptions[opt.name])
-        .map((o) => o.name.toLowerCase());
+      const missing = missingOptions.map((o) => o.name.toLowerCase());
       const msg = missing.length > 0
-        ? `Please select ${missing.join(' and ')}.`
+        ? `Please select ${missing.join(' and ')} before adding to cart.`
         : 'Please choose an available option combination.';
       setSelectionError(msg);
-      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing });
+      posthog?.capture?.('add_to_cart_missing_variant', {
+        product: product.name,
+        product_title: product.name,
+        product_handle: product.slug,
+        product_type: product.category || undefined,
+        missing,
+        url: typeof window !== 'undefined' ? window.location.href : undefined,
+        ...getAttributionProps(),
+      });
       return;
     }
 
@@ -165,6 +177,7 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
       posthog?.capture?.('add_to_cart', {
         product_title: product.name,
         product_handle: product.slug,
+        product_type: product.category || undefined,
         variant_title: selectedVariant.title || undefined,
         variant_id: selectedVariant.shopifyVariantId || undefined,
         sku: selectedVariant.sku || product.sku || undefined,
@@ -189,41 +202,58 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added to Cart ✓'
     : cartState === 'error' ? 'Something went wrong'
+    : needsSelection && missingOptions.length === 1 ? `Select ${missingOptions[0].name}`
+    : needsSelection && missingOptions.length > 1 ? `Select ${missingOptionNames.join(' + ')}`
     : 'Add to Cart';
 
   return (
     <div className="flex flex-col gap-6">
       {/* Option selectors (Size, Color, etc.) */}
-      {options.map((option) => (
-        <div key={option.name} className="flex flex-col gap-3">
-          <label
-            className="text-[11px] uppercase tracking-[0.2em]"
-            style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-          >
-            {option.name}
-          </label>
-          <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
-            {option.values.map((value) => {
-              const isSelected = selectedOptions[option.name] === value;
-              return (
-                <button
-                  key={value}
-                  onClick={() => handleOptionChange(option.name, value)}
-                  aria-pressed={isSelected}
-                  className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                    isSelected
-                      ? 'border border-[#c9a96e] text-[#c9a96e]'
-                      : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                  }`}
-                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
-                >
-                  {value}
-                </button>
-              );
-            })}
+      {options.map((option) => {
+        const isMissing = !selectedOptions[option.name];
+
+        return (
+          <div key={option.name} className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <label
+                className="text-[11px] uppercase tracking-[0.2em]"
+                style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+              >
+                {option.name}
+              </label>
+              {isMissing && (
+                <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                  Required
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
+              {option.values.map((value) => {
+                const isSelected = selectedOptions[option.name] === value;
+                return (
+                  <button
+                    key={value}
+                    onClick={() => handleOptionChange(option.name, value)}
+                    aria-pressed={isSelected}
+                    className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
+                      isSelected
+                        ? 'border border-[#c9a96e] text-[#c9a96e]'
+                        : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
+                    }`}
+                    style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
+                  >
+                    {value}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
+
+      <p className="text-[12px] font-light leading-relaxed" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+        {selectedOptionSummary || `Choose ${missingOptionNames.join(' and ')} before adding this item to your cart.`}
+      </p>
 
       {/* Quantity */}
       <div className="flex flex-col gap-3">
@@ -277,6 +307,8 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
             ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
             : cartState === 'error'
             ? 'border-red-500/50 text-red-400'
+            : needsSelection
+            ? 'border-[rgba(201,169,110,0.45)] bg-[rgba(201,169,110,0.06)] text-[#c9a96e] hover:bg-[rgba(201,169,110,0.12)]'
             : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
         } disabled:opacity-50`}
         style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
