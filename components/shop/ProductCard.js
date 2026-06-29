@@ -51,6 +51,33 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
         />
       </Link>
 
+      {/* OUT OF STOCK overlay badge */}
+      {isSoldOut && (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+          <div
+            className="px-4 py-2 text-center"
+            style={{
+              backgroundColor: 'rgba(8, 8, 15, 0.8)',
+              border: '1px solid rgba(201, 169, 110, 0.4)',
+              backdropFilter: 'blur(4px)',
+            }}
+          >
+            <span
+              className="block text-[10px] uppercase tracking-[0.25em] font-medium"
+              style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
+            >
+              Out of Stock
+            </span>
+            <span
+              className="block mt-1 text-[9px] uppercase tracking-[0.15em]"
+              style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}
+            >
+              Notify me when it returns
+            </span>
+          </div>
+        </div>
+      )}
+
       {hasMultiple && (
         <>
           {/* Left arrow — visible on mobile (opacity-60) and hover on desktop */}
@@ -150,6 +177,32 @@ export default function ProductCard({ product, isMember }) {
             <div className="flex h-full w-full items-center justify-center text-zinc-700">
               <span className="text-4xl font-serif">C&D</span>
             </div>
+            {/* OUT OF STOCK overlay for no-image cards */}
+            {isSoldOut && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+                <div
+                  className="px-4 py-2 text-center"
+                  style={{
+                    backgroundColor: 'rgba(8, 8, 15, 0.8)',
+                    border: '1px solid rgba(201, 169, 110, 0.4)',
+                    backdropFilter: 'blur(4px)',
+                  }}
+                >
+                  <span
+                    className="block text-[10px] uppercase tracking-[0.25em] font-medium"
+                    style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
+                  >
+                    Out of Stock
+                  </span>
+                  <span
+                    className="block mt-1 text-[9px] uppercase tracking-[0.15em]"
+                    style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}
+                  >
+                    Notify me when it returns
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </Link>
       )}

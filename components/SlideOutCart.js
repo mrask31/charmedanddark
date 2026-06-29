@@ -11,7 +11,14 @@ export default function SlideOutCart() {
   const { isMember } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [inventoryNotices, setInventoryNotices] = useState({});
+  const [checkoutBlocked, setCheckoutBlocked] = useState(false);
   const prevIsOpen = useRef(false);
+
+  // Clear checkout-blocked state when cart items change (user adjusted quantities)
+  useEffect(() => {
+    if (checkoutBlocked) setCheckoutBlocked(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
 
   // Fire cart_opened when cart transitions from closed → open
   useEffect(() => {
@@ -28,6 +35,31 @@ export default function SlideOutCart() {
   }, [isOpen, items, subtotal]);
 
   async function handleCheckout() {
+    // ── Checkout Guard: validate cart quantities against available inventory ──
+    const overStockItems = items.filter(
+      (item) => item.availableQty != null && item.quantity > item.availableQty
+    );
+    if (overStockItems.length > 0) {
+      const notices = {};
+      for (const item of overStockItems) {
+        const key = item.cartKey || item.slug;
+        notices[key] = `Only ${item.availableQty} available.`;
+      }
+      setInventoryNotices(notices);
+      setCheckoutBlocked(true);
+      posthog?.capture?.('checkout_blocked_inventory', {
+        blocked_items: overStockItems.map((i) => ({
+          product_title: i.name,
+          product_handle: i.slug,
+          cart_quantity: i.quantity,
+          available_quantity: i.availableQty,
+        })),
+        url: typeof window !== 'undefined' ? window.location.href : undefined,
+      });
+      return;
+    }
+    setCheckoutBlocked(false);
+
     setIsCheckingOut(true);
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     posthog?.capture?.('checkout_started', {
@@ -227,6 +259,21 @@ export default function SlideOutCart() {
               </div>
             )}
             <p className="text-zinc-600 text-xs">Final price calculated by Shopify at checkout.</p>
+
+            {/* Checkout guard warning */}
+            {checkoutBlocked && (
+              <div
+                className="rounded px-3 py-2 text-[11px] leading-relaxed"
+                style={{ backgroundColor: 'rgba(201, 169, 110, 0.08)', border: '1px solid rgba(201, 169, 110, 0.3)', color: '#c9a96e' }}
+              >
+                <p className="font-medium uppercase tracking-wider mb-1">
+                  Some quantities exceed available stock.
+                </p>
+                <p style={{ color: 'rgba(232, 228, 220, 0.6)' }}>
+                  Please adjust before checkout.
+                </p>
+              </div>
+            )}
 
             <button
               onClick={handleCheckout}
