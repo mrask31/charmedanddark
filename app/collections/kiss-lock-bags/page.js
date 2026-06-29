@@ -13,11 +13,16 @@ const KISS_LOCK_BAG_HANDLES = [
 
 async function fetchBagProducts() {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('products')
-      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images, short_description, description')
+      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images, description')
       .in('handle', KISS_LOCK_BAG_HANDLES)
       .eq('hidden', false);
+
+    if (error) {
+      console.error('Failed to fetch kiss lock bags:', error);
+      return [];
+    }
 
     return KISS_LOCK_BAG_HANDLES
       .map((h) => (data || []).find((p) => p.handle === h || p.slug === h))
