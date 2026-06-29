@@ -33,7 +33,7 @@ async function fetchProductsByHandles(handles) {
   try {
     const { data } = await supabase
       .from('products')
-      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images')
+      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images, qty')
       .in('handle', handles)
       .eq('hidden', false);
 
