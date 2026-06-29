@@ -12,10 +12,10 @@ const PROOF_ITEMS = [
     icon: '🦇',
   },
   {
-    label: 'Sanctuary Members Save 10%',
-    detail: 'Free to join. Discount applies at checkout.',
-    icon: '🖤',
-    href: '/join',
+    label: 'Kiss Lock Bag Favorites',
+    detail: 'Small gothic statement bags, chosen one at a time.',
+    icon: '👜',
+    href: '/collections/kiss-lock-bags',
   },
   {
     label: 'Seasonal Collections',
