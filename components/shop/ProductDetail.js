@@ -282,7 +282,9 @@ function RelatedProducts({ products }) {
         You Might Also Like
       </p>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-        {products.map((p) => (
+        {products.map((p) => {
+          const isSoldOut = p.qty != null && p.qty <= 0;
+          return (
           <Link
             key={p.slug}
             href={`/shop/${p.slug}`}
@@ -294,12 +296,31 @@ function RelatedProducts({ products }) {
                   src={p.imageUrls[0]}
                   alt={p.name}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className={`object-cover transition-transform duration-500 group-hover:scale-105 ${isSoldOut ? 'grayscale opacity-60' : ''}`}
                   sizes="(max-width: 768px) 50vw, 25vw"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
                   <span style={{ color: 'rgba(201,169,110,0.2)' }}>C&amp;D</span>
+                </div>
+              )}
+              {isSoldOut && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center">
+                  <div
+                    className="px-3 py-1.5 text-center"
+                    style={{
+                      backgroundColor: 'rgba(8, 8, 15, 0.8)',
+                      border: '1px solid rgba(201, 169, 110, 0.4)',
+                      backdropFilter: 'blur(4px)',
+                    }}
+                  >
+                    <span
+                      className="block text-[9px] uppercase tracking-[0.25em] font-medium"
+                      style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      Out of Stock
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
@@ -313,12 +334,19 @@ function RelatedProducts({ products }) {
               >
                 {p.name}
               </h3>
-              <p className="mt-0.5 text-[14px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                ${p.price?.toFixed(2)}
-              </p>
+              {isSoldOut ? (
+                <p className="mt-0.5 text-[10px] uppercase tracking-[0.15em]" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                  Notify me when available
+                </p>
+              ) : (
+                <p className="mt-0.5 text-[14px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                  ${p.price?.toFixed(2)}
+                </p>
+              )}
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

@@ -265,9 +265,13 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
                 ? `${product.slug}__sv_${selectedVariant.shopifyVariantId}`
                 : product.slug;
               const alreadyInCart = items.find((i) => i.cartKey === cartKey)?.quantity || 0;
-              const maxSelectable = available != null ? Math.max(1, available - alreadyInCart) : 10;
-              if (quantity >= maxSelectable) {
-                setInventoryNotice(`Only ${available} available.${alreadyInCart > 0 ? ` You already have ${alreadyInCart} in your cart.` : ''}`);
+              const maxSelectable = available != null ? Math.max(0, available - alreadyInCart) : 10;
+              if (maxSelectable <= 0 || quantity >= maxSelectable) {
+                if (available === 0) {
+                  setInventoryNotice('This item is currently sold out.');
+                } else {
+                  setInventoryNotice(`Only ${available} available.${alreadyInCart > 0 ? ` You already have ${alreadyInCart} in your cart.` : ''}`);
+                }
                 return;
               }
               setQuantity((q) => Math.min(maxSelectable, q + 1));

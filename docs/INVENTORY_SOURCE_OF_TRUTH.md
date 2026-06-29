@@ -19,6 +19,17 @@ How available inventory is determined across the Charmed & Dark storefront.
 
 The threshold of **900** marks the boundary between real on-hand stock and print-on-demand/made-to-order products (which use `qty = 999` in Supabase).
 
+### Origin of the 999 Convention
+
+In `app/api/admin/sync-products/route.js`, the Shopify product sync pipeline sets:
+
+```js
+const isMadeToOrder = isPrintify || sp.vendor === 'Charmed & Dark';
+const stockQty = isMadeToOrder ? 999 : (sp.totalInventory ?? ...);
+```
+
+Any product with vendor "Printify" or "Charmed & Dark" is marked as made-to-order and synced with `qty = 999`. The `UNLIMITED_THRESHOLD = 900` in `lib/inventory.js` catches these products and treats them as unlimited — no inventory cap is applied.
+
 ## Data Sources
 
 | Source | Field | Used When |
