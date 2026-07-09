@@ -17,6 +17,40 @@ const CATEGORY_MAP = {
   WALL_ART: ["Wall Art"],
 };
 
+// Accessory sub-group order for the Accessories section
+const ACCESSORIES_GROUP_ORDER = [
+  'Kiss Lock Bags',
+  'Socks & Tights',
+  'Earrings',
+  'Jewelry',
+  'Other',
+];
+
+/**
+ * Classify an Accessories-category product into a display sub-group.
+ */
+function getAccessoryGroup(product) {
+  const name = (product.name || '').toLowerCase();
+  const tags = (product.tags || []).map((t) => t.toLowerCase());
+
+  if (tags.includes('bag') || name.includes('kiss lock') || name.includes('kisslock')) return 'Kiss Lock Bags';
+  if (tags.includes('socks') || tags.includes('tights') || name.includes('sock') || name.includes('tight')) return 'Socks & Tights';
+  if (tags.includes('earring') || name.includes('earring') || name.includes('studs') || name.includes('stud')) return 'Earrings';
+  if (tags.includes('jewelry') || tags.includes('necklace') || tags.includes('bracelet') || tags.includes('ring') || name.includes('necklace') || name.includes('bracelet') || name.includes('lariat')) return 'Jewelry';
+  return 'Other';
+}
+
+/**
+ * Sort accessories by sub-group order so bags appear first, then earrings, jewelry, other.
+ */
+function sortAccessoriesByGroup(products) {
+  return [...products].sort((a, b) => {
+    const groupA = ACCESSORIES_GROUP_ORDER.indexOf(getAccessoryGroup(a));
+    const groupB = ACCESSORIES_GROUP_ORDER.indexOf(getAccessoryGroup(b));
+    return groupA - groupB;
+  });
+}
+
 // Section configuration - matches exact Supabase category values
 const SECTIONS = {
   HOME: {
@@ -158,6 +192,44 @@ export default function ShopPageClient({ products }) {
 
           // Skip empty sections
           if (!section || sectionProducts.length === 0) return null;
+
+          // Accessories section: render grouped by subcategory
+          if (sectionKey === 'ACCESSORIES') {
+            const grouped = sortAccessoriesByGroup(sectionProducts);
+            let currentGroup = null;
+
+            return (
+              <section key={sectionKey} className="mb-20">
+                <SectionHeader
+                  title={section.title}
+                  subtitle={section.subtitle}
+                />
+                {ACCESSORIES_GROUP_ORDER.map((groupName) => {
+                  const groupProducts = grouped.filter((p) => getAccessoryGroup(p) === groupName);
+                  if (groupProducts.length === 0) return null;
+                  return (
+                    <div key={groupName} className="mb-12 last:mb-0">
+                      <p
+                        className="mb-5 text-[10px] uppercase tracking-[0.25em]"
+                        style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
+                      >
+                        {groupName}
+                      </p>
+                      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+                        {groupProducts.map((product) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            isMember={isMember}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </section>
+            );
+          }
 
           return (
             <section key={sectionKey} className="mb-20">
