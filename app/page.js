@@ -10,23 +10,46 @@ import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
 
-// Kiss Lock Bags — convention validated and strongest online bag intent
-const KISS_LOCK_BAG_HANDLES = [
-  'ghost-cat-pumpkin-kiss-lock-bag',
-  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
+// ─── Best Sellers: Kiss Lock Bags (conference-validated #1 seller) ───
+const BEST_SELLER_HANDLES = [
   'celestial-kisslock-bag-in-linen-blended-fabric',
-  'moon-moth-vintage-kiss-lock-bag-in-linen-blended-material',
+  'cherry-kiss-lock-bag-in-linen-blend-fabric',
+  'ghost-in-strawberry-field-in-linen-blend',
+  'ghost-cat-pumpkin-kiss-lock-bag',
   'desert-moon-cowgirl-kiss-lock-bag',
+  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
 ];
 
-// Summerween — still relevant, now merchandised below bags
+// ─── Light the Darkness: Candles (conference-validated #2 seller) ───
+const CANDLE_HANDLES = [
+  'bird-branch-candle-holder',
+  'set-of-3-starry-night-celestial-taper-candles',
+  '2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071',
+  'bat-candle-holder',
+];
+
+// ─── Dark Home: Decor pieces ───
+const DARK_HOME_HANDLES = [
+  'victorian-tray',
+  'gothic-striped-bat-wing-halloween-teacup',
+  'gothic-halloween-black-spider-teacup',
+  'black-gothic-coffin-shaped-gothic-trinket-tray',
+];
+
+// ─── Summerween: Seasonal (lower priority after conference data) ───
 const SUMMERWEEN_HANDLES = [
+  'summerween-trucker-snapback-hat',
+  'summerween-fourth-of-july-halloween-shirt',
+  'hexes-heat-unisex-summer-tee-1',
+  'summerween-womens-flowy-scoop-muscle-tank-1',
+];
+
+// ─── Apparel: Moved lowest (almost no shirt sales at conference) ───
+const APPAREL_HANDLES = [
   'camp-charmed-and-dark-unisex-ringer-tee',
   'salty-spells-sunset-sins-womens-boxy-tee-1',
-  'summerween-trucker-snapback-hat',
+  'charmed-by-night-womens-ringer-tee',
   'hexes-heat-unisex-summer-tee-1',
-  'summerween-fourth-of-july-halloween-shirt',
-  'summerween-womens-flowy-scoop-muscle-tank-1',
 ];
 
 async function fetchProductsByHandles(handles) {
@@ -50,38 +73,110 @@ async function fetchProductsByHandles(handles) {
 }
 
 export default async function Home() {
-  const [bagProducts, summerweenProducts] = await Promise.all([
-    fetchProductsByHandles(KISS_LOCK_BAG_HANDLES),
+  const [bestSellers, candles, darkHome, summerween, apparel] = await Promise.all([
+    fetchProductsByHandles(BEST_SELLER_HANDLES),
+    fetchProductsByHandles(CANDLE_HANDLES),
+    fetchProductsByHandles(DARK_HOME_HANDLES),
     fetchProductsByHandles(SUMMERWEEN_HANDLES),
+    fetchProductsByHandles(APPAREL_HANDLES),
   ]);
 
   return (
     <main className="min-h-screen bg-black">
+      {/* 1. Hero */}
       <Hero />
-      <BrandPositioning />
+
+      {/* 2. Best Sellers — Kiss Lock Bags first (conference #1) */}
       <HomepageProductSection
-        title="Kiss Lock Bags"
-        products={bagProducts}
-        badge="Bag Favorite"
+        title="Best Sellers"
+        products={bestSellers}
+        badge="Best Seller"
         viewAllHref="/collections/kiss-lock-bags"
-        ctaLabel="Shop Bags"
-        intro="One bag. Full look. These are the pieces shoppers kept choosing one at a time."
-        footerNote="Start with the bag. Let everything else orbit around it."
+        ctaLabel="Shop All Bags"
+        intro="The pieces customers reached for first at Haunted America 2026. One bag at a time."
       />
+
+      {/* 3. The Kiss Lock Collection — featured merchandising block */}
+      <section className="bg-black px-8 py-20 lg:px-16">
+        <div className="mx-auto max-w-4xl text-center">
+          <span className="text-[11px] uppercase tracking-[0.3em] text-[#B89C6D]" style={{ fontFamily: 'Inter, sans-serif' }}>
+            The Kiss Lock Collection
+          </span>
+          <h2
+            className="mt-5 font-serif text-3xl italic text-white md:text-5xl"
+            style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', lineHeight: 1.3 }}
+          >
+            One bag. The whole mood changes.
+          </h2>
+          <p
+            className="mx-auto mt-6 max-w-2xl text-sm font-light leading-relaxed md:text-base"
+            style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}
+          >
+            Vintage-inspired gothic bags with kiss lock clasps, linen blends, and motifs that make people stop and ask.
+            Chosen one at a time. Carried every day.
+          </p>
+          <a
+            href="/collections/kiss-lock-bags"
+            className="mt-8 inline-block border border-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-[#B89C6D] transition-colors duration-160 hover:bg-[#B89C6D] hover:text-black"
+          >
+            Explore the Collection
+          </a>
+        </div>
+      </section>
+
+      {/* 4. Light the Darkness — Candles (conference #2 seller) */}
       <HomepageProductSection
-        title="Summerween Favorites"
-        products={summerweenProducts}
-        badge="Summerween Favorite"
+        title="Light the Darkness"
+        products={candles}
+        badge="Ritual Favorite"
+        viewAllHref="/shop"
+        ctaLabel="Shop Candles & Ritual"
+        intro="The second thing customers stopped for: candles, holders, and objects that make a room feel like a ceremony."
+      />
+
+      {/* 5. Dark Home — Decor */}
+      <HomepageProductSection
+        title="Dark Home"
+        products={darkHome}
+        badge="Home Favorite"
+        viewAllHref="/shop"
+        ctaLabel="Shop Home"
+        intro="Trays, teacups, and objects designed to make ordinary routines feel intentional."
+      />
+
+      {/* 6. Summerween */}
+      <HomepageProductSection
+        title="Summerween"
+        products={summerween}
+        badge="Seasonal"
         viewAllHref="/drops"
         ctaLabel="Explore Summerween"
-        intro="Seasonal pieces stay in the mix, now merchandised below the bags."
+        intro="The sun is out. The ghosts are still here."
       />
-      <CategoryPortals />
+
+      {/* 7. Apparel — moved lower based on conference sales data */}
+      <HomepageProductSection
+        title="Apparel"
+        products={apparel}
+        viewAllHref="/shop"
+        ctaLabel="Shop Apparel"
+        intro="Wearable darkness for those who dress the mood year-round."
+      />
+
+      {/* 8. Social Proof */}
       <SocialProof />
+
+      {/* 9. Editorial/Mirror */}
       <EditorialBreak />
       <TheMirror />
+
+      {/* 10. Membership */}
       <MembershipPitch />
+
+      {/* 11. Journal */}
       <JournalPreview />
+
+      {/* 12. Footer */}
       <Footer />
     </main>
   );

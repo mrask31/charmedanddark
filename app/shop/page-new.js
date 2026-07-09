@@ -10,9 +10,9 @@ import { useSanctuaryAccess } from "@/hooks/useSanctuaryAccess";
 // Category mapping for filter bar - matches exact Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
-  HOME: ["Home Decor"],
-  RITUAL: ["Ritual"],
   ACCESSORIES: ["Accessories"],
+  RITUAL: ["Ritual"],
+  HOME: ["Home Decor"],
   APPAREL: ["Apparel"],
   WALL_ART: ["Wall Art"],
 };
@@ -53,20 +53,20 @@ function sortAccessoriesByGroup(products) {
 
 // Section configuration - matches exact Supabase category values
 const SECTIONS = {
-  HOME: {
-    title: "The Sanctuary",
-    subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
-    categories: ["Home Decor"],
-  },
-  RITUAL: {
-    title: "The Ritual",
-    subtitle: "Tools for transformation, ceremony, and quiet devotion",
-    categories: ["Ritual"],
-  },
   ACCESSORIES: {
     title: "Adornments",
-    subtitle: "Jewelry and accessories for those who move between worlds",
+    subtitle: "Kiss lock bags, jewelry, and accessories for those who move between worlds",
     categories: ["Accessories"],
+  },
+  RITUAL: {
+    title: "Light the Darkness",
+    subtitle: "Candles, holders, and ritual tools for ceremony and quiet devotion",
+    categories: ["Ritual"],
+  },
+  HOME: {
+    title: "Dark Home",
+    subtitle: "Curated pieces to transform your space into a haven of gothic elegance",
+    categories: ["Home Decor"],
   },
   APPAREL: {
     title: "The Wardrobe",
@@ -164,9 +164,9 @@ export default function ShopPageClient({ products }) {
     
     // Map filter to corresponding section
     const filterToSection = {
-      HOME: ["HOME"],
-      RITUAL: ["RITUAL"],
       ACCESSORIES: ["ACCESSORIES"],
+      RITUAL: ["RITUAL"],
+      HOME: ["HOME"],
       APPAREL: ["APPAREL"],
       WALL_ART: ["WALL_ART"],
     };
