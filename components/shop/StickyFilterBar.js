@@ -8,10 +8,10 @@ export default function StickyFilterBar({
 }) {
   const filters = [
     { id: "ALL", label: "ALL" },
+    { id: "ACCESSORIES", label: "ACCESSORIES" },
+    { id: "RITUAL", label: "CANDLES & RITUAL" },
     { id: "HOME", label: "HOME" },
     { id: "APPAREL", label: "APPAREL" },
-    { id: "ACCESSORIES", label: "ACCESSORIES" },
-    { id: "RITUAL", label: "RITUAL" },
     { id: "WALL_ART", label: "WALL ART" },
   ];
 

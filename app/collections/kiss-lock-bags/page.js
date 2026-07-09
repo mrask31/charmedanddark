@@ -4,11 +4,15 @@ import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
 
 const KISS_LOCK_BAG_HANDLES = [
+  'celestial-kisslock-bag-in-linen-blended-fabric',
+  'cherry-kiss-lock-bag-in-linen-blend-fabric',
+  'ghost-in-strawberry-field-in-linen-blend',
+  'desert-moon-cowgirl-kiss-lock-bag',
   'ghost-cat-pumpkin-kiss-lock-bag',
   'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
-  'celestial-kisslock-bag-in-linen-blended-fabric',
   'moon-moth-vintage-kiss-lock-bag-in-linen-blended-material',
-  'desert-moon-cowgirl-kiss-lock-bag',
+  'marigold-memory-sugar-skull-kiss-lock-bag',
+  'celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material',
 ];
 
 function isSoldOutProduct(product) {

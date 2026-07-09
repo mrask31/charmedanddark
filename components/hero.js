@@ -16,13 +16,13 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
         <p className="mb-4 text-[11px] uppercase tracking-[0.3em] text-[#B89C6D]" style={{ fontFamily: 'Inter, sans-serif' }}>
-          Convention favorite · online featured collection
+          Dark Living — Haunted America 2026 Vendor
         </p>
         <h1 className="max-w-4xl font-serif text-3xl italic leading-tight text-white md:text-5xl lg:text-6xl">
-          One Kiss Lock Bag. The whole look changes.
+          Live Beautifully in the Shadows.
         </h1>
         <p className="mt-6 max-w-2xl text-sm font-light leading-relaxed text-zinc-300 md:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
-          Vintage-inspired gothic bags, dark home pieces, and seasonal apparel for those who live beautifully in the shadows.
+          Vintage Kiss Lock Bags, haunting home d&eacute;cor, candles, and everyday treasures for those who never stopped loving Halloween.
         </p>
 
         {/* CTAs */}
@@ -31,13 +31,13 @@ export function Hero() {
             href="/collections/kiss-lock-bags"
             className="bg-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-black transition-opacity duration-160 hover:opacity-90"
           >
-            Shop the Bags
+            Shop Best Sellers
           </Link>
           <Link
-            href="/shop"
+            href="/drops"
             className="border border-white px-8 py-4 text-xs uppercase tracking-widest text-white transition-colors duration-160 hover:bg-white hover:text-black"
           >
-            View All Pieces
+            Explore Summerween
           </Link>
         </div>
       </div>
