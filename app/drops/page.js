@@ -1,6 +1,7 @@
 "use client";
 
 import DropsHero from '@/components/drops/DropsHero';
+import SmuttyGoodGirlDrop from '@/components/drops/SmuttyGoodGirlDrop';
 import SummerweenDrop from '@/components/drops/SummerweenDrop';
 import HauntedAmericaTeaser from '@/components/drops/HauntedAmericaTeaser';
 import MembershipBenefits from '@/components/drops/MembershipBenefits';
@@ -38,6 +39,7 @@ export default function DropsPage() {
       />
 
       <main id="main-content" className="mx-auto max-w-7xl space-y-16 px-4 py-12 sm:px-6 sm:py-16">
+        <SmuttyGoodGirlDrop />
         <SummerweenDrop />
         <HauntedAmericaTeaser />
         <MembershipBenefits />
