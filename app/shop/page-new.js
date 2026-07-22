@@ -7,9 +7,17 @@ import SectionHeader from "@/components/shop/SectionHeader";
 import ProductCard from "@/components/shop/ProductCard";
 import { useSanctuaryAccess } from "@/hooks/useSanctuaryAccess";
 
+const SGG_HANDLES = new Set([
+  'smutty-good-girl-society-tote',
+  'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz',
+  's-g-g-enchanted-reads-water-bottle-20oz',
+  's-g-g-secret-society-water-bottle-20oz',
+]);
+
 // Category mapping for filter bar - matches exact Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
+  SGG: null,
   ACCESSORIES: ["Accessories"],
   RITUAL: ["Ritual"],
   HOME: ["Home Decor"],
@@ -25,6 +33,11 @@ const ACCESSORIES_GROUP_ORDER = [
   'Jewelry',
   'Other',
 ];
+
+function isSmuttyGoodGirlProduct(product) {
+  const handle = product.handle || product.slug || '';
+  return SGG_HANDLES.has(handle);
+}
 
 /**
  * Classify an Accessories-category product into a display sub-group.
@@ -53,6 +66,11 @@ function sortAccessoriesByGroup(products) {
 
 // Section configuration - matches exact Supabase category values
 const SECTIONS = {
+  SGG: {
+    title: "Smutty Good Girl",
+    subtitle: "Bookish drinkware, totes, and everyday essentials for readers with questionable bookmarks",
+    categories: [],
+  },
   ACCESSORIES: {
     title: "Adornments",
     subtitle: "Kiss lock bags, jewelry, and accessories for those who move between worlds",
@@ -125,13 +143,15 @@ export default function ShopPageClient({ products }) {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [])
+  }, []);
 
   // Filter products based on active filter
   const filteredProducts = useMemo(() => {
     let filtered = products.filter((p) => !p.hidden);
 
-    if (activeFilter !== "ALL") {
+    if (activeFilter === "SGG") {
+      filtered = filtered.filter(isSmuttyGoodGirlProduct);
+    } else if (activeFilter !== "ALL") {
       const categories = CATEGORY_MAP[activeFilter];
       if (categories && categories.length > 0) {
         // Case-sensitive exact match
@@ -147,9 +167,13 @@ export default function ShopPageClient({ products }) {
     const grouped = {};
 
     Object.entries(SECTIONS).forEach(([key, config]) => {
-      // Safe filtering with empty array fallback
+      if (key === 'SGG') {
+        grouped[key] = filteredProducts.filter(isSmuttyGoodGirlProduct);
+        return;
+      }
+
       grouped[key] = filteredProducts.filter((p) =>
-        config.categories && config.categories.includes(p.category)
+        !isSmuttyGoodGirlProduct(p) && config.categories && config.categories.includes(p.category)
       ) || [];
     });
 
@@ -164,6 +188,7 @@ export default function ShopPageClient({ products }) {
     
     // Map filter to corresponding section
     const filterToSection = {
+      SGG: ["SGG"],
       ACCESSORIES: ["ACCESSORIES"],
       RITUAL: ["RITUAL"],
       HOME: ["HOME"],
@@ -196,7 +221,6 @@ export default function ShopPageClient({ products }) {
           // Accessories section: render grouped by subcategory
           if (sectionKey === 'ACCESSORIES') {
             const grouped = sortAccessoriesByGroup(sectionProducts);
-            let currentGroup = null;
 
             return (
               <section key={sectionKey} className="mb-20">

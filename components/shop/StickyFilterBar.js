@@ -8,6 +8,7 @@ export default function StickyFilterBar({
 }) {
   const filters = [
     { id: "ALL", label: "ALL" },
+    { id: "SGG", label: "SMUTTY GOOD GIRL" },
     { id: "ACCESSORIES", label: "ACCESSORIES" },
     { id: "RITUAL", label: "CANDLES & RITUAL" },
     { id: "HOME", label: "HOME" },

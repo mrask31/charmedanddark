@@ -36,6 +36,14 @@ const DARK_HOME_HANDLES = [
   'black-gothic-coffin-shaped-gothic-trinket-tray',
 ];
 
+// ─── Smutty Good Girl: New bookish capsule collection ───
+const SGG_HANDLES = [
+  'smutty-good-girl-society-tote',
+  'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz',
+  's-g-g-enchanted-reads-water-bottle-20oz',
+  's-g-g-secret-society-water-bottle-20oz',
+];
+
 // ─── Summerween: Seasonal (lower priority after conference data) ───
 const SUMMERWEEN_HANDLES = [
   'summerween-trucker-snapback-hat',
@@ -73,10 +81,11 @@ async function fetchProductsByHandles(handles) {
 }
 
 export default async function Home() {
-  const [bestSellers, candles, darkHome, summerween, apparel] = await Promise.all([
+  const [bestSellers, candles, darkHome, smuttyGoodGirl, summerween, apparel] = await Promise.all([
     fetchProductsByHandles(BEST_SELLER_HANDLES),
     fetchProductsByHandles(CANDLE_HANDLES),
     fetchProductsByHandles(DARK_HOME_HANDLES),
+    fetchProductsByHandles(SGG_HANDLES),
     fetchProductsByHandles(SUMMERWEEN_HANDLES),
     fetchProductsByHandles(APPAREL_HANDLES),
   ]);
@@ -144,7 +153,17 @@ export default async function Home() {
         intro="Trays, teacups, and objects designed to make ordinary routines feel intentional."
       />
 
-      {/* 6. Summerween */}
+      {/* 6. Smutty Good Girl — new bookish collection */}
+      <HomepageProductSection
+        title="New Collection: Smutty Good Girl"
+        products={smuttyGoodGirl}
+        badge="Just Dropped"
+        viewAllHref="/collections/smutty-good-girl"
+        ctaLabel="Shop the Collection"
+        intro="For the good girls who read bad books: dark-romance drinkware, totes, and everyday essentials with a wicked little bookish edge."
+      />
+
+      {/* 7. Summerween */}
       <HomepageProductSection
         title="Summerween"
         products={summerween}
@@ -154,7 +173,7 @@ export default async function Home() {
         intro="The sun is out. The ghosts are still here."
       />
 
-      {/* 7. Apparel — moved lower based on conference sales data */}
+      {/* 8. Apparel — moved lower based on conference sales data */}
       <HomepageProductSection
         title="Apparel"
         products={apparel}
@@ -163,20 +182,20 @@ export default async function Home() {
         intro="Wearable darkness for those who dress the mood year-round."
       />
 
-      {/* 8. Social Proof */}
+      {/* 9. Social Proof */}
       <SocialProof />
 
-      {/* 9. Editorial/Mirror */}
+      {/* 10. Editorial/Mirror */}
       <EditorialBreak />
       <TheMirror />
 
-      {/* 10. Membership */}
+      {/* 11. Membership */}
       <MembershipPitch />
 
-      {/* 11. Journal */}
+      {/* 12. Journal */}
       <JournalPreview />
 
-      {/* 12. Footer */}
+      {/* 13. Footer */}
       <Footer />
     </main>
   );
