@@ -16,7 +16,7 @@ const PRODUCTS = [
   {
     name: 'S.G.G. Enchanted Reads Water Bottle',
     handle: 's-g-g-enchanted-reads-water-bottle-20oz',
-    image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/SGG_Water_Bottle_label_2.png?v=1784758569',
+    image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/SGG_Water_Bottle_label_3.png?v=1784765351',
   },
   {
     name: 'S.G.G. Secret Society Water Bottle',
