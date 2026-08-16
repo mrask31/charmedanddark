@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { SaleNavItem } from "@/components/promotions/SaleNavItem";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -37,6 +38,7 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            <SaleNavItem />
           </nav>
 
           <button
