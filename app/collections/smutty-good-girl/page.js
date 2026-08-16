@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
+import { enrichProductsWithPromotions } from "@/lib/promotions";
 
 const SGG_HANDLES = [
   'smutty-good-girl-society-tote',
@@ -14,7 +15,7 @@ async function fetchProducts() {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images, description, qty')
+      .select('id, name, title, handle, slug, price, image_url, image_urls, images, description, qty, category, collection, tags')
       .in('handle', SGG_HANDLES)
       .eq('hidden', false);
 
@@ -23,8 +24,9 @@ async function fetchProducts() {
       return [];
     }
 
+    const enriched = await enrichProductsWithPromotions(data || []);
     return SGG_HANDLES
-      .map((handle) => (data || []).find((product) => product.handle === handle || product.slug === handle))
+      .map((handle) => enriched.find((product) => product.handle === handle || product.slug === handle))
       .filter(Boolean);
   } catch (error) {
     console.error('Failed to fetch Smutty Good Girl products:', error);
@@ -100,7 +102,14 @@ export default async function SmuttyGoodGirlCollectionPage() {
           {products.map((product) => {
             const slug = product.handle || product.slug;
             const imageUrl = getImage(product);
-            const price = Number(product.sale_price || product.price);
+            const retailPrice = Number(product.price || 0);
+            const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
+            const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
+            const price = isOnSale ? promotionPrice : retailPrice;
+            const salePercentage = isOnSale
+              ? Math.round(Number(product.salePercentage) || ((retailPrice - price) / retailPrice) * 100)
+              : null;
+            const sanctuaryPrice = (price * 0.9).toFixed(2);
             const isSoldOut = product.qty != null && product.qty <= 0;
 
             return (
@@ -124,15 +133,40 @@ export default async function SmuttyGoodGirlCollectionPage() {
                       Just Dropped
                     </span>
                   )}
+                  {isOnSale && !isSoldOut && (
+                    <span
+                      className="absolute right-3 top-3 z-20 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em]"
+                      style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      {salePercentage}% OFF
+                    </span>
+                  )}
                 </div>
 
                 <div className="px-1">
                   <h2 className="font-serif text-xl leading-tight text-[#f7f1f3] transition-colors group-hover:text-[#d7a0b5] sm:text-2xl">
                     {product.name || product.title}
                   </h2>
-                  <p className="mt-2 text-sm font-light text-[#b8aeb2]" style={{ fontFamily: 'Inter, sans-serif' }}>
-                    {isSoldOut ? 'Notify me when available' : formatPrice(price)}
-                  </p>
+                  {isSoldOut ? (
+                    <p className="mt-2 text-sm font-light text-[#b8aeb2]" style={{ fontFamily: 'Inter, sans-serif' }}>
+                      Notify me when available
+                    </p>
+                  ) : (
+                    <div className="mt-2 space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        {isOnSale && (
+                          <span className="text-xs line-through text-[#776a70]">{formatPrice(retailPrice)}</span>
+                        )}
+                        <span className="text-sm font-light text-[#f7f1f3]">{formatPrice(price)}</span>
+                        {isOnSale && (
+                          <span className="text-[9px] uppercase tracking-[0.14em] text-[#d7a0b5]">{salePercentage}% off</span>
+                        )}
+                      </div>
+                      <div className="text-[10px] uppercase tracking-[0.14em] text-[#d7a0b5]">
+                        Sanctuary ${sanctuaryPrice}{isOnSale ? ' · additional 10%' : ''}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </Link>
             );
