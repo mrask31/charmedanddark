@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { posthog } from '@/components/providers/posthog-provider';
+import { useProductPromotion } from '@/components/shop/ProductPromotionContext';
 
 /**
  * Mobile Sticky Add To Cart Bar
@@ -14,8 +15,8 @@ export default function MobileStickyATC({
   productName,
   price,
   retailPrice = null,
-  isOnSale = false,
-  salePercentage = null,
+  isOnSale,
+  salePercentage,
   isMember,
   onAddToCart,
   cartState,
@@ -25,6 +26,17 @@ export default function MobileStickyATC({
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const hasTrackedView = useRef(false);
+  const promotion = useProductPromotion();
+
+  const effectiveIsOnSale = isOnSale ?? promotion.isOnSale;
+  const effectiveSalePercentage = salePercentage ?? promotion.salePercentage;
+  const normalizedSalePercentage = Number(effectiveSalePercentage || 0);
+  const derivedRetailPrice =
+    retailPrice != null
+      ? Number(retailPrice)
+      : effectiveIsOnSale && normalizedSalePercentage > 0 && normalizedSalePercentage < 100 && price != null
+        ? Number(price) / (1 - normalizedSalePercentage / 100)
+        : null;
 
   useEffect(() => {
     if (!galleryRef?.current) return;
@@ -62,8 +74,8 @@ export default function MobileStickyATC({
     posthog?.capture?.('sticky_add_to_cart_clicked', {
       product_title: productName,
       price,
-      retail_price: retailPrice,
-      sale_percentage: salePercentage,
+      retail_price: derivedRetailPrice,
+      sale_percentage: effectiveSalePercentage,
       needs_selection: needsSelection,
     });
 
@@ -95,12 +107,12 @@ export default function MobileStickyATC({
             {productName}
           </p>
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            {isOnSale && retailPrice > price && (
+            {effectiveIsOnSale && derivedRetailPrice > price && (
               <span
                 className="text-[11px] line-through"
                 style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
               >
-                ${retailPrice.toFixed(2)}
+                ${derivedRetailPrice.toFixed(2)}
               </span>
             )}
             <span
@@ -109,9 +121,9 @@ export default function MobileStickyATC({
             >
               ${displayPrice}
             </span>
-            {isOnSale && salePercentage && !isMember && (
+            {effectiveIsOnSale && effectiveSalePercentage && !isMember && (
               <span className="text-[9px] uppercase tracking-[0.12em]" style={{ color: '#c9a96e' }}>
-                {salePercentage}% off
+                {effectiveSalePercentage}% off
               </span>
             )}
             {isMember && (
