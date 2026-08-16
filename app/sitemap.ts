@@ -1,18 +1,37 @@
 import { MetadataRoute } from "next";
 import { getProducts } from "@/lib/products";
+import { getActivePromotions, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://www.charmedanddark.com";
   const products = await getProducts();
 
   const productUrls = products
-    .filter((p) => !p.hidden)
-    .map((product) => ({
+    .filter((p: any) => !p.hidden)
+    .map((product: any) => ({
       url: `${baseUrl}/shop/${product.slug}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));
+
+  // Conditionally include /sale only when active promotions exist
+  let saleUrls: MetadataRoute.Sitemap = [];
+  if (PROMOTION_ENGINE_ENABLED) {
+    try {
+      const promos = await getActivePromotions();
+      if (promos.length > 0) {
+        saleUrls = [{
+          url: `${baseUrl}/sale`,
+          lastModified: new Date(),
+          changeFrequency: "daily" as const,
+          priority: 0.9,
+        }];
+      }
+    } catch {
+      // Silently skip — don't break sitemap generation
+    }
+  }
 
   return [
     {
@@ -33,6 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    ...saleUrls,
     {
       url: `${baseUrl}/drops`,
       lastModified: new Date(),
