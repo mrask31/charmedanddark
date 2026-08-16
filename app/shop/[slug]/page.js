@@ -4,6 +4,7 @@ import { enrichProductsWithPromotions } from '@/lib/promotions';
 import { notFound } from 'next/navigation';
 import { getShopifyVariants } from '@/lib/shopify/variants';
 import ProductDetail from '@/components/shop/ProductDetail';
+import { ProductPromotionProvider } from '@/components/shop/ProductPromotionContext';
 
 // Revalidate every 60 seconds for faster variant/image updates
 export const revalidate = 60;
@@ -114,11 +115,13 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      <ProductDetail
-        product={product}
-        relatedProducts={relatedProducts}
-        shopifyVariants={shopifyVariants}
-      />
+      <ProductPromotionProvider product={product}>
+        <ProductDetail
+          product={product}
+          relatedProducts={relatedProducts}
+          shopifyVariants={shopifyVariants}
+        />
+      </ProductPromotionProvider>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
