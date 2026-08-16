@@ -4,24 +4,16 @@
  * POST /api/admin/promotions/[id]/products
  *   Body: { add: [productId, ...], remove: [productId, ...], exclude: [productId, ...] }
  *
- * Auth: Bearer PROMOTIONS_ADMIN_SECRET
+ * Auth: HttpOnly admin session or Bearer PROMOTIONS_ADMIN_SECRET
  */
 
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { invalidatePromotionCache } from '@/lib/promotions';
-
-function isAuthorized(request) {
-  const authHeader = request.headers.get('authorization');
-  const promoSecret = process.env.PROMOTIONS_ADMIN_SECRET;
-  const syncSecret = process.env.SYNC_SECRET_KEY || 'charmed-dark-sync-2026';
-  if (promoSecret && authHeader === `Bearer ${promoSecret}`) return true;
-  if (authHeader === `Bearer ${syncSecret}`) return true;
-  return false;
-}
+import { isPromotionAdminRequest } from '@/lib/admin/promotion-auth';
 
 export async function POST(request, { params }) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -30,7 +22,10 @@ export async function POST(request, { params }) {
   try {
     const { add = [], remove = [], exclude = [] } = await request.json();
 
-    // Verify promotion exists
+    if (![add, remove, exclude].every(Array.isArray)) {
+      return NextResponse.json({ error: 'add, remove, and exclude must be arrays' }, { status: 400 });
+    }
+
     const { data: promo } = await supabaseAdmin
       .from('promotions')
       .select('id')
@@ -41,48 +36,46 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Promotion not found' }, { status: 404 });
     }
 
-    // Remove products
     if (remove.length > 0) {
-      await supabaseAdmin
+      const { error } = await supabaseAdmin
         .from('promotion_products')
         .delete()
         .eq('promotion_id', id)
         .in('product_id', remove);
+      if (error) throw error;
     }
 
-    // Add products (upsert to avoid duplicates)
     if (add.length > 0) {
       const rows = add.map((productId) => ({
         promotion_id: id,
         product_id: productId,
         excluded: false,
       }));
-
-      await supabaseAdmin
+      const { error } = await supabaseAdmin
         .from('promotion_products')
         .upsert(rows, { onConflict: 'promotion_id,product_id' });
+      if (error) throw error;
     }
 
-    // Exclude products (upsert with excluded=true)
     if (exclude.length > 0) {
       const rows = exclude.map((productId) => ({
         promotion_id: id,
         product_id: productId,
         excluded: true,
       }));
-
-      await supabaseAdmin
+      const { error } = await supabaseAdmin
         .from('promotion_products')
         .upsert(rows, { onConflict: 'promotion_id,product_id' });
+      if (error) throw error;
     }
 
     invalidatePromotionCache();
 
-    // Return current state
-    const { data: current } = await supabaseAdmin
+    const { data: current, error: currentError } = await supabaseAdmin
       .from('promotion_products')
       .select('product_id, excluded, override_percentage, override_fixed')
       .eq('promotion_id', id);
+    if (currentError) throw currentError;
 
     return NextResponse.json({
       message: 'Product targeting updated',
