@@ -51,7 +51,6 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
         />
       </Link>
 
-      {/* OUT OF STOCK overlay badge */}
       {isSoldOut && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
           <div
@@ -62,16 +61,10 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
               backdropFilter: 'blur(4px)',
             }}
           >
-            <span
-              className="block text-[10px] uppercase tracking-[0.25em] font-medium"
-              style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
-            >
+            <span className="block text-[10px] uppercase tracking-[0.25em] font-medium" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
               Out of Stock
             </span>
-            <span
-              className="block mt-1 text-[9px] uppercase tracking-[0.15em]"
-              style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}
-            >
+            <span className="block mt-1 text-[9px] uppercase tracking-[0.15em]" style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}>
               Notify me when it returns
             </span>
           </div>
@@ -80,7 +73,6 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
 
       {hasMultiple && (
         <>
-          {/* Left arrow — visible on mobile (opacity-60) and hover on desktop */}
           <button
             onClick={handlePrev}
             aria-label="Previous image"
@@ -90,8 +82,6 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
               <path d="M7.5 2.5L4 6L7.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-
-          {/* Right arrow */}
           <button
             onClick={handleNext}
             aria-label="Next image"
@@ -101,16 +91,9 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
               <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-
-          {/* Dot indicators */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
             {images.map((_, i) => (
-              <span
-                key={i}
-                className={`block h-1.5 w-1.5 rounded-full transition-colors ${
-                  i === activeIndex ? "bg-[#c9a96e]" : "bg-white/30"
-                }`}
-              />
+              <span key={i} className={`block h-1.5 w-1.5 rounded-full transition-colors ${i === activeIndex ? "bg-[#c9a96e]" : "bg-white/30"}`} />
             ))}
           </div>
         </>
@@ -125,8 +108,14 @@ export default function ProductCard({ product, isMember }) {
   const [showNotifyForm, setShowNotifyForm] = useState(false);
 
   const isSoldOut = product.qty <= 0;
-  const publicPrice = product.salePrice || product.price;
-  const sanctuaryPrice = publicPrice * 0.9;
+  const originalPrice = Number(product.price || 0);
+  const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
+  const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < originalPrice;
+  const publicPrice = isOnSale ? promotionPrice : originalPrice;
+  const sanctuaryPrice = +(publicPrice * 0.9).toFixed(2);
+  const salePercentage = isOnSale
+    ? Math.round(Number(product.salePercentage) || ((originalPrice - publicPrice) / originalPrice) * 100)
+    : null;
   const images = product.imageUrls?.length ? product.imageUrls : [];
 
   const handleNotifySubmit = async (e) => {
@@ -137,10 +126,7 @@ export default function ProductCard({ product, isMember }) {
       const response = await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: notifyEmail,
-          product_id: product.id,
-        }),
+        body: JSON.stringify({ email: notifyEmail, product_id: product.id }),
       });
 
       if (response.ok) {
@@ -153,53 +139,36 @@ export default function ProductCard({ product, isMember }) {
       } else {
         setNotifyStatus("error");
       }
-    } catch (error) {
+    } catch {
       setNotifyStatus("error");
     }
   };
 
   return (
     <div className="group relative">
-      {/* Product badge overlay */}
       <ProductBadge badge={product.badge} />
+      {isOnSale && !isSoldOut && (
+        <span
+          className="absolute right-3 top-3 z-20 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em]"
+          style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
+        >
+          {salePercentage}% OFF
+        </span>
+      )}
 
-      {/* Image area with carousel — arrows don't trigger navigation */}
       {images.length > 0 ? (
-        <ImageCarousel
-          images={images}
-          productName={product.name}
-          isSoldOut={isSoldOut}
-          slug={product.slug}
-        />
+        <ImageCarousel images={images} productName={product.name} isSoldOut={isSoldOut} slug={product.slug} />
       ) : (
         <Link href={`/shop/${product.slug}`} className="block">
           <div className="relative aspect-[3/4] w-full overflow-hidden bg-zinc-900">
             <div className="flex h-full w-full items-center justify-center text-zinc-700">
-              <span className="text-4xl font-serif">C&D</span>
+              <span className="text-4xl font-serif">C&amp;D</span>
             </div>
-            {/* OUT OF STOCK overlay for no-image cards */}
             {isSoldOut && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
-                <div
-                  className="px-4 py-2 text-center"
-                  style={{
-                    backgroundColor: 'rgba(8, 8, 15, 0.8)',
-                    border: '1px solid rgba(201, 169, 110, 0.4)',
-                    backdropFilter: 'blur(4px)',
-                  }}
-                >
-                  <span
-                    className="block text-[10px] uppercase tracking-[0.25em] font-medium"
-                    style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
-                  >
-                    Out of Stock
-                  </span>
-                  <span
-                    className="block mt-1 text-[9px] uppercase tracking-[0.15em]"
-                    style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}
-                  >
-                    Notify me when it returns
-                  </span>
+                <div className="px-4 py-2 text-center" style={{ backgroundColor: 'rgba(8, 8, 15, 0.8)', border: '1px solid rgba(201, 169, 110, 0.4)', backdropFilter: 'blur(4px)' }}>
+                  <span className="block text-[10px] uppercase tracking-[0.25em] font-medium" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>Out of Stock</span>
+                  <span className="block mt-1 text-[9px] uppercase tracking-[0.15em]" style={{ color: 'rgba(232, 228, 220, 0.6)', fontFamily: 'Inter, sans-serif' }}>Notify me when it returns</span>
                 </div>
               </div>
             )}
@@ -207,56 +176,44 @@ export default function ProductCard({ product, isMember }) {
         </Link>
       )}
 
-      {/* Product info — always links to detail page */}
       <Link href={`/shop/${product.slug}`} className="block">
         <div className="mt-4 space-y-2">
-          <h3 className="font-serif text-lg text-[#F5F0E8]">
-            {product.name}
-          </h3>
+          <h3 className="font-serif text-lg text-[#F5F0E8]">{product.name}</h3>
 
           {!isSoldOut && (
-            <div className="space-y-1">
-              <div className={`text-sm ${isMember ? 'line-through text-zinc-500' : 'text-white'}`}>
-                ${publicPrice.toFixed(2)}
-              </div>
-
-              {isMember ? (
-                <div className="text-sm text-[#c9a96e] font-medium">
-                  ${sanctuaryPrice.toFixed(2)} Sanctuary Price
+            <div className="space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
+              {isOnSale ? (
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <span className="text-xs text-zinc-600 line-through">${originalPrice.toFixed(2)}</span>
+                  <span className="text-sm font-medium text-white">${publicPrice.toFixed(2)}</span>
+                  <span className="text-[9px] uppercase tracking-[0.16em] text-[#c9a96e]">{salePercentage}% off</span>
                 </div>
               ) : (
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-1.5">
-                    <svg className="h-3 w-3 text-[#c9a96e]" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-sm text-[#c9a96e]">
-                      ${sanctuaryPrice.toFixed(2)} Sanctuary Price
-                    </span>
-                  </div>
-                  <div className="text-xs text-zinc-500">
-                    Join to unlock
-                  </div>
-                </div>
+                <div className="text-sm text-white">${publicPrice.toFixed(2)}</div>
               )}
 
+              <div className="flex items-center gap-1.5">
+                {!isMember && (
+                  <svg className="h-3 w-3 text-[#c9a96e]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+                <span className="text-sm font-medium text-[#c9a96e]">
+                  ${sanctuaryPrice.toFixed(2)} Sanctuary
+                </span>
+                {isOnSale && (
+                  <span className="text-[9px] uppercase tracking-[0.12em] text-[#8f7a55]">+10% member</span>
+                )}
+              </div>
+              {!isMember && <div className="text-xs text-zinc-500">Join to unlock</div>}
+
               {product.variantSummary?.length > 0 && (
-                <p
-                  className="mt-1 text-[11px] uppercase tracking-[0.15em]"
-                  style={{ color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-                >
-                  {product.variantSummary.map((v) =>
-                    `${v.count} ${v.count === 1 ? v.type : v.type + 's'} available`
-                  ).join(' · ')}
+                <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>
+                  {product.variantSummary.map((v) => `${v.count} ${v.count === 1 ? v.type : v.type + 's'} available`).join(' · ')}
                 </p>
               )}
               {!product.variantSummary?.length && product.hasShopifyOptions && (
-                <p
-                  className="mt-1 text-[11px] uppercase tracking-[0.15em]"
-                  style={{ color: '#6B6B6B', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-                >
-                  Options available
-                </p>
+                <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>Options available</p>
               )}
             </div>
           )}
@@ -266,12 +223,7 @@ export default function ProductCard({ product, isMember }) {
       {isSoldOut && (
         <div className="mt-3">
           {!showNotifyForm ? (
-            <button
-              onClick={() => setShowNotifyForm(true)}
-              className="text-xs text-zinc-400 underline hover:text-white"
-            >
-              Notify Me
-            </button>
+            <button onClick={() => setShowNotifyForm(true)} className="text-xs text-zinc-400 underline hover:text-white">Notify Me</button>
           ) : (
             <form onSubmit={handleNotifySubmit} className="space-y-2">
               <input
@@ -283,30 +235,13 @@ export default function ProductCard({ product, isMember }) {
                 className="w-full border-0 border-b border-zinc-700 bg-transparent px-0 py-1 text-xs text-white placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-0"
               />
               <div className="flex gap-2">
-                <button
-                  type="submit"
-                  disabled={notifyStatus === "loading"}
-                  className="text-xs text-zinc-400 underline hover:text-white disabled:opacity-50"
-                >
+                <button type="submit" disabled={notifyStatus === "loading"} className="text-xs text-zinc-400 underline hover:text-white disabled:opacity-50">
                   {notifyStatus === "loading" ? "Sending..." : "Submit"}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowNotifyForm(false);
-                    setNotifyStatus(null);
-                  }}
-                  className="text-xs text-zinc-600 hover:text-zinc-400"
-                >
-                  Cancel
-                </button>
+                <button type="button" onClick={() => { setShowNotifyForm(false); setNotifyStatus(null); }} className="text-xs text-zinc-600 hover:text-zinc-400">Cancel</button>
               </div>
-              {notifyStatus === "success" && (
-                <p className="text-xs text-green-500">Subscribed!</p>
-              )}
-              {notifyStatus === "error" && (
-                <p className="text-xs text-red-500">Error. Try again.</p>
-              )}
+              {notifyStatus === "success" && <p className="text-xs text-green-500">Subscribed!</p>}
+              {notifyStatus === "error" && <p className="text-xs text-red-500">Error. Try again.</p>}
             </form>
           )}
         </div>
