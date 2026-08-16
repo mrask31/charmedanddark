@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
@@ -28,7 +29,6 @@ function sanitizeAttributionAttributes(attribution) {
   return sanitized;
 }
 
-// Validate required environment variables
 if (!domain || !storefrontToken) {
   console.error('Missing required environment variables:', {
     SHOPIFY_STORE_DOMAIN: !!domain,
@@ -48,15 +48,45 @@ async function shopifyStorefront(query, variables = {}) {
   return res.json();
 }
 
+async function hasActiveSanctuaryMembership(request) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) return false;
+
+  const token = authHeader.slice('Bearer '.length).trim();
+  if (!token) return false;
+
+  try {
+    const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(token);
+    const user = userData?.user;
+    if (userError || !user) return false;
+
+    const { data: membership, error: membershipError } = await supabaseAdmin
+      .from('memberships')
+      .select('status, expires_at')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (membershipError || !membership) return false;
+    if (membership.expires_at && new Date(membership.expires_at) <= new Date()) return false;
+
+    return true;
+  } catch (err) {
+    console.error('Membership verification failed:', err.message);
+    return false;
+  }
+}
+
 export async function POST(request) {
   try {
-    const { items, isMember, attribution } = await request.json();
+    const { items, attribution } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'No items in cart' }, { status: 400 });
     }
 
-    // Step 1: Create a cart with line items
+    const isMember = await hasActiveSanctuaryMembership(request);
+
     const createCartMutation = `
       mutation cartCreate($input: CartInput!) {
         cartCreate(input: $input) {
@@ -72,27 +102,20 @@ export async function POST(request) {
       }
     `;
 
-    // Build line items — needs Shopify variant IDs
-    // If we don't have variant IDs, we need to look them up by handle
     const lineItems = [];
 
     for (const item of items) {
+      const quantity = Number.isInteger(item.quantity) ? item.quantity : Number(item.quantity);
+      if (!Number.isFinite(quantity) || quantity <= 0 || quantity > 100) continue;
+
       if (item.shopifyVariantId) {
-        lineItems.push({
-          merchandiseId: item.shopifyVariantId,
-          quantity: item.quantity,
-        });
-      } else {
-        // Look up variant ID by product handle
+        lineItems.push({ merchandiseId: item.shopifyVariantId, quantity });
+      } else if (typeof item.slug === 'string' && item.slug) {
         const lookupQuery = `
           query getProduct($handle: String!) {
             productByHandle(handle: $handle) {
               variants(first: 1) {
-                edges {
-                  node {
-                    id
-                  }
-                }
+                edges { node { id } }
               }
             }
           }
@@ -101,10 +124,7 @@ export async function POST(request) {
         const variantId = lookupResult.data?.productByHandle?.variants?.edges?.[0]?.node?.id;
 
         if (variantId) {
-          lineItems.push({
-            merchandiseId: variantId,
-            quantity: item.quantity,
-          });
+          lineItems.push({ merchandiseId: variantId, quantity });
         } else {
           console.error(`Could not find variant for product: ${item.slug}`);
         }
@@ -115,8 +135,6 @@ export async function POST(request) {
       return NextResponse.json({ error: 'No valid products found' }, { status: 400 });
     }
 
-    // Step 2: Create the cart — only apply HOUSE10 for active Sanctuary members
-    // Include attribution as cart attributes so order-level tracking survives headless checkout
     const sanitizedAttribution = sanitizeAttributionAttributes(attribution);
     const cartInput = {
       lines: lineItems,
@@ -135,13 +153,11 @@ export async function POST(request) {
     }
 
     const checkoutUrl = result.data?.cartCreate?.cart?.checkoutUrl;
-
     if (!checkoutUrl) {
       return NextResponse.json({ error: 'No checkout URL returned' }, { status: 500 });
     }
 
-    return NextResponse.json({ checkoutUrl });
-
+    return NextResponse.json({ checkoutUrl, memberDiscountApplied: isMember });
   } catch (err) {
     console.error('Checkout error:', err);
     return NextResponse.json({ error: 'Checkout failed', message: err.message }, { status: 500 });
