@@ -1,5 +1,6 @@
 import { getProducts, getProductBySlug } from '@/lib/products';
 import { supabase } from '@/lib/supabase/client';
+import { enrichProductsWithPromotions } from '@/lib/promotions';
 import { notFound } from 'next/navigation';
 import { getShopifyVariants } from '@/lib/shopify/variants';
 import ProductDetail from '@/components/shop/ProductDetail';
@@ -35,7 +36,6 @@ export async function generateMetadata({ params }) {
 
 async function getRelatedProducts(product) {
   try {
-    // First try same category
     const { data: sameCat } = await supabase
       .from('products')
       .select('*')
@@ -47,7 +47,6 @@ async function getRelatedProducts(product) {
 
     const results = (sameCat || []).map(transformRow);
 
-    // If fewer than 4, fill from other categories
     if (results.length < 4) {
       const excludeSlugs = [product.slug, ...results.map((r) => r.slug)];
       const { data: others } = await supabase
@@ -61,7 +60,7 @@ async function getRelatedProducts(product) {
       results.push(...(others || []).map(transformRow));
     }
 
-    return results.slice(0, 4);
+    return enrichProductsWithPromotions(results.slice(0, 4));
   } catch (err) {
     console.error('Failed to fetch related products:', err);
     return [];
@@ -75,8 +74,13 @@ function transformRow(row) {
     name: row.name || row.title,
     slug: row.slug || row.handle,
     category: row.category,
+    collection: row.collection,
+    tags: row.tags || [],
     description: row.description || row.lore,
     price: row.price,
+    originalPrice: row.price,
+    salePrice: null,
+    qty: row.qty || row.stock_quantity || 0,
     imageUrls: row.image_urls || (row.image_url ? [row.image_url] : []),
     shopifyVariantId: row.shopify_variant_id,
     shopify_id: row.shopify_id,
@@ -91,16 +95,14 @@ export default async function ProductPage({ params }) {
 
   const relatedProducts = await getRelatedProducts(product);
 
-  // Fetch Shopify variants using the product GID (shopify_id)
   const shopifyVariants = product.shopify_id
     ? await getShopifyVariants(product.shopify_id)
     : null;
 
-  // Map Shopify variant images back to Supabase product_variants by matching SKU
   if (shopifyVariants?.variants && product.productVariants?.length > 0) {
     for (const pv of product.productVariants) {
-      if (pv.image_url) continue; // already has an image
-      if (!pv.sku) continue; // no SKU to match on
+      if (pv.image_url) continue;
+      if (!pv.sku) continue;
       const match = shopifyVariants.variants.find((sv) =>
         sv.sku && sv.sku === pv.sku
       );
@@ -117,7 +119,6 @@ export default async function ProductPage({ params }) {
         relatedProducts={relatedProducts}
         shopifyVariants={shopifyVariants}
       />
-      {/* Product JSON-LD structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -151,9 +152,8 @@ function buildProductJsonLd(product) {
     },
   };
 
-  // Add priceValidUntil when on sale (helps Google show sale price in search)
   if (isOnSale && product.saleEndsAt) {
-    offer.priceValidUntil = product.saleEndsAt.split('T')[0]; // YYYY-MM-DD
+    offer.priceValidUntil = product.saleEndsAt.split('T')[0];
   }
 
   const jsonLd = {
