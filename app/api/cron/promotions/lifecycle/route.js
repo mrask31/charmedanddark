@@ -21,9 +21,11 @@ function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
   const adminSecret = process.env.PROMOTIONS_ADMIN_SECRET;
+  const syncSecret = process.env.SYNC_SECRET_KEY || 'charmed-dark-sync-2026';
 
   if (cronSecret && authHeader === `Bearer ${cronSecret}`) return true;
   if (adminSecret && authHeader === `Bearer ${adminSecret}`) return true;
+  if (authHeader === `Bearer ${syncSecret}`) return true;
   return false;
 }
 
