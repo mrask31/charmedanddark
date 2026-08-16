@@ -13,6 +13,30 @@ Set `NEXT_PUBLIC_PROMOTIONS_ENABLED=false` in Vercel Environment Variables → R
 
 ---
 
+## Migration History Resolution (Completed)
+
+**Root cause:** Early development phases (Feb–Apr 2026) applied schema changes directly via Supabase Dashboard/MCP without creating local migration files. This resulted in 19 remote-only migrations that diverged from the 4 local files.
+
+**Resolution (June 30, 2026):**
+1. Marked all 19 remote-only migrations as `reverted` (they were ad-hoc changes already captured in the schema)
+2. Marked the 3 pre-existing local migrations as `applied` in remote history
+3. Pushed the new promotions migration (`20260630000000`) via `supabase db push`
+4. Verified all 4 local migrations match remote with `supabase migration list`
+
+**Current state:** Local and remote are fully synchronized. All future migrations deploy via:
+```bash
+supabase db push
+```
+
+**Rollback for migration:**
+```bash
+supabase migration repair --status reverted 20260630000000
+supabase migration repair --status reverted 20260630000001
+```
+Then manually `DROP TABLE` if needed (tables have no production data until first promotion is created).
+
+---
+
 ## Full Rollback (revert branch)
 
 If a code-level issue is discovered:

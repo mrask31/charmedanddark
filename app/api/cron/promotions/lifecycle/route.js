@@ -54,18 +54,30 @@ export async function GET(request) {
     }
 
     // Transition: active → expired (end_date has passed)
-    const { data: toExpire, error: expireErr } = await supabaseAdmin
+    // Handles both 'active' and 'live' statuses
+    const { data: toExpireActive, error: expireActiveErr } = await supabaseAdmin
       .from('promotions')
       .update({ status: 'expired', enabled: false })
       .eq('status', 'active')
       .lte('end_date', now)
       .select('id, name');
 
-    if (expireErr) {
-      console.error('[Promo Lifecycle] Expire error:', expireErr);
-    } else {
-      expired = toExpire?.length || 0;
+    const { data: toExpireLive, error: expireLiveErr } = await supabaseAdmin
+      .from('promotions')
+      .update({ status: 'expired', enabled: false })
+      .eq('status', 'live')
+      .lte('end_date', now)
+      .select('id, name');
+
+    if (expireActiveErr) {
+      console.error('[Promo Lifecycle] Expire active error:', expireActiveErr);
     }
+    if (expireLiveErr) {
+      console.error('[Promo Lifecycle] Expire live error:', expireLiveErr);
+    }
+
+    expired = (toExpireActive?.length || 0) + (toExpireLive?.length || 0);
+    const allExpired = [...(toExpireActive || []), ...(toExpireLive || [])];
 
     // If any transitions occurred, bust cache and revalidate
     if (activated > 0 || expired > 0) {
@@ -82,7 +94,7 @@ export async function GET(request) {
       activated,
       expired,
       activatedPromotions: toActivate?.map((p) => p.name) || [],
-      expiredPromotions: toExpire?.map((p) => p.name) || [],
+      expiredPromotions: allExpired.map((p) => p.name),
     });
   } catch (err) {
     console.error('[Promo Lifecycle] Error:', err);

@@ -576,3 +576,95 @@ When `PROMOTION_ENGINE_ENABLED=false` OR no active promotions exist:
 - Checkout sends variant IDs only (same as today)
 
 **This is not a behavioral promise. It is an architectural guarantee enforced by the feature flag and null-propagation design.**
+
+
+---
+
+## 15. Conflict Resolution (Production Review Item 2)
+
+### Precedence Algorithm
+
+When a product matches multiple active promotions, the engine resolves conflicts deterministically:
+
+```
+1. Higher priority number wins (promotions.priority DESC)
+2. If priorities match: largest discount wins (percentage DESC)
+3. If discounts match: newest promotion wins (start_date DESC)
+```
+
+### Database Fields
+
+```sql
+priority     INTEGER NOT NULL DEFAULT 0   -- Higher = wins conflict
+is_exclusive BOOLEAN NOT NULL DEFAULT true -- V1: always true (no stacking)
+```
+
+### Exclusive vs Non-Exclusive (V2 Architecture)
+
+| Mode | V1 Behavior | V2 Behavior |
+|------|-------------|-------------|
+| `is_exclusive = true` | Only this promotion applies (winner-takes-all) | Same |
+| `is_exclusive = false` | Same as exclusive (V1 doesn't stack) | Can stack with lower-priority promos |
+
+V2 stacking example:
+- Priority 10: "Black Friday 30% off" (exclusive) → wins, no stacking
+- Priority 5: "Free shipping on bags" (non-exclusive) → could stack below a higher-priority promo
+- Priority 0: "Loyalty 5% off" (non-exclusive) → could stack
+
+V1 simplification: **highest-priority match always wins, period.** The `is_exclusive` column exists for forward compatibility but is not evaluated in V1.
+
+### Example Scenario
+
+```
+Summerween Sale      priority=10  percentage=40%  → matches bags tagged "summerween"
+Halloween General    priority=5   percentage=25%  → matches category "Accessories"  
+VIP Weekend          priority=3   percentage=15%  → matches all products
+```
+
+A Kiss Lock Bag with tag "summerween":
+- Matches all 3 promotions
+- Summerween (priority=10) wins → 40% off displayed
+
+A candle without "summerween" tag:
+- Matches Halloween (priority=5) and VIP Weekend (priority=3)
+- Halloween wins → 25% off displayed
+
+---
+
+## 16. Expanded Lifecycle (Production Review Item 3)
+
+### States
+
+```
+draft → scheduled → active/live → expired → archived
+```
+
+| Status | Meaning | Visibility | Transitions To |
+|--------|---------|-----------|----------------|
+| `draft` | Being configured, not ready | Admin only | scheduled, archived |
+| `scheduled` | Ready, waiting for start_date | Admin only | active (auto), archived |
+| `active`/`live` | Running, visible to customers | Public | expired (auto), archived |
+| `expired` | End_date passed, auto-disabled | Admin only | archived |
+| `archived` | Soft-deleted, never shown | Admin only | (terminal) |
+
+### Automatic Transitions (Cron)
+
+The cron job at `/api/cron/promotions/lifecycle` runs every 5 minutes:
+
+```
+scheduled + enabled + start_date <= NOW() + end_date > NOW()  → active
+active + end_date <= NOW()                                    → expired + enabled=false
+live + end_date <= NOW()                                      → expired + enabled=false
+```
+
+No manual intervention required. Promotions start and stop on schedule.
+
+### Merchant Workflow
+
+1. Create promotion (status: `draft`)
+2. Configure targeting, copy, dates
+3. Preview (uses preview mode, sees live rendering without publishing)
+4. Publish → status becomes `scheduled` (if start_date is future) or `active` (if start_date is now/past)
+5. Cron activates when start_date arrives
+6. Cron expires when end_date passes
+7. Archive when done reviewing results
