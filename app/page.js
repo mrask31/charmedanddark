@@ -11,6 +11,7 @@ import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
 import { getActivePromotions, computePromotionPrice, getHomepagePromotion, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
 import { PromotionHero } from "@/components/promotions/PromotionHero";
+import { PreviewWrapper } from "@/components/promotions/PreviewWrapper";
 
 // ─── Best Sellers: Kiss Lock Bags (conference-validated #1 seller) ───
 const BEST_SELLER_HANDLES = [
@@ -82,7 +83,7 @@ async function fetchProductsByHandles(handles) {
   }
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }) {
   const [bestSellers, candles, darkHome, smuttyGoodGirl, summerween, apparel] = await Promise.all([
     fetchProductsByHandles(BEST_SELLER_HANDLES),
     fetchProductsByHandles(CANDLE_HANDLES),
@@ -244,6 +245,12 @@ export default async function Home() {
 
       {/* 13. Footer */}
       <Footer />
+
+      {/* Campaign Preview (only renders when ?preview_promotion=SLUG&preview_secret=SECRET is present) */}
+      <PreviewWrapper
+        searchParams={searchParams}
+        products={[...enrichedProducts.bestSellers, ...enrichedProducts.candles, ...enrichedProducts.darkHome]}
+      />
     </main>
   );
 }
