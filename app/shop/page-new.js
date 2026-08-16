@@ -17,6 +17,7 @@ const SGG_HANDLES = new Set([
 // Category mapping for filter bar - matches exact Supabase category column values
 const CATEGORY_MAP = {
   ALL: null,
+  ON_SALE: "__sale__",  // Special: filters products with salePrice set
   SGG: null,
   ACCESSORIES: ["Accessories"],
   RITUAL: ["Ritual"],
@@ -123,6 +124,9 @@ export default function ShopPageClient({ products }) {
   const [sortOption, setSortOption] = useState("Featured");
   const { isMember } = useSanctuaryAccess();
 
+  // Check if any products are on sale (promotion engine enriched them)
+  const hasOnSale = useMemo(() => products.some((p) => p.salePrice && p.salePrice < p.price), [products]);
+
   const SCROLL_KEY = 'charmed-shop-scroll';
 
   useEffect(() => {
@@ -149,7 +153,10 @@ export default function ShopPageClient({ products }) {
   const filteredProducts = useMemo(() => {
     let filtered = products.filter((p) => !p.hidden);
 
-    if (activeFilter === "SGG") {
+    if (activeFilter === "ON_SALE") {
+      // Special filter: only products with an active sale price
+      filtered = filtered.filter((p) => p.salePrice && p.salePrice < p.price);
+    } else if (activeFilter === "SGG") {
       filtered = filtered.filter(isSmuttyGoodGirlProduct);
     } else if (activeFilter !== "ALL") {
       const categories = CATEGORY_MAP[activeFilter];
@@ -182,7 +189,7 @@ export default function ShopPageClient({ products }) {
 
   // Determine which sections to show based on active filter
   const visibleSections = useMemo(() => {
-    if (activeFilter === "ALL") {
+    if (activeFilter === "ALL" || activeFilter === "ON_SALE") {
       return Object.keys(SECTIONS);
     }
     
@@ -208,6 +215,7 @@ export default function ShopPageClient({ products }) {
         onFilterChange={setActiveFilter}
         sortOption={sortOption}
         onSortChange={setSortOption}
+        hasOnSale={hasOnSale}
       />
 
       <div className="mx-auto max-w-7xl px-6 py-16">

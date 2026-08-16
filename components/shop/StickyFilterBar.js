@@ -4,10 +4,12 @@ export default function StickyFilterBar({
   activeFilter,
   onFilterChange,
   sortOption,
-  onSortChange
+  onSortChange,
+  hasOnSale = false,
 }) {
   const filters = [
     { id: "ALL", label: "ALL" },
+    ...(hasOnSale ? [{ id: "ON_SALE", label: "ON SALE" }] : []),
     { id: "SGG", label: "SMUTTY GOOD GIRL" },
     { id: "ACCESSORIES", label: "ACCESSORIES" },
     { id: "RITUAL", label: "CANDLES & RITUAL" },

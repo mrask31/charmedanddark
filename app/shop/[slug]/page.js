@@ -111,10 +111,65 @@ export default async function ProductPage({ params }) {
   }
 
   return (
-    <ProductDetail
-      product={product}
-      relatedProducts={relatedProducts}
-      shopifyVariants={shopifyVariants}
-    />
+    <>
+      <ProductDetail
+        product={product}
+        relatedProducts={relatedProducts}
+        shopifyVariants={shopifyVariants}
+      />
+      {/* Product JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildProductJsonLd(product)),
+        }}
+      />
+    </>
   );
+}
+
+/**
+ * Build schema.org Product + Offer JSON-LD for SEO.
+ * Includes sale price and priceValidUntil when a promotion is active.
+ */
+function buildProductJsonLd(product) {
+  const url = `https://www.charmedanddark.com/shop/${product.slug}`;
+  const effectivePrice = product.salePrice || product.price;
+  const isOnSale = product.salePrice && product.salePrice < product.price;
+
+  const offer = {
+    "@type": "Offer",
+    price: effectivePrice.toFixed(2),
+    priceCurrency: "USD",
+    availability: product.qty > 0
+      ? "https://schema.org/InStock"
+      : "https://schema.org/OutOfStock",
+    url,
+    seller: {
+      "@type": "Organization",
+      name: "Charmed & Dark",
+    },
+  };
+
+  // Add priceValidUntil when on sale (helps Google show sale price in search)
+  if (isOnSale && product.saleEndsAt) {
+    offer.priceValidUntil = product.saleEndsAt.split('T')[0]; // YYYY-MM-DD
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    url,
+    description: product.description?.replace(/<[^>]*>/g, '').slice(0, 300) || undefined,
+    ...(product.imageUrls?.[0] && { image: product.imageUrls[0] }),
+    ...(product.sku && { sku: product.sku }),
+    brand: {
+      "@type": "Brand",
+      name: "Charmed & Dark",
+    },
+    offers: offer,
+  };
+
+  return jsonLd;
 }

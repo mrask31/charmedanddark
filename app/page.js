@@ -9,6 +9,9 @@ import { MembershipPitch } from "@/components/membership-pitch";
 import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
+import { getActivePromotions, computePromotionPrice, getHomepagePromotion, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
+import { PromotionHero } from "@/components/promotions/PromotionHero";
+import { PreviewWrapper } from "@/components/promotions/PreviewWrapper";
 
 // ─── Best Sellers: Kiss Lock Bags (conference-validated #1 seller) ───
 const BEST_SELLER_HANDLES = [
@@ -64,7 +67,7 @@ async function fetchProductsByHandles(handles) {
   try {
     const { data } = await supabase
       .from('products')
-      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images, qty')
+      .select('id, name, title, handle, slug, price, sale_price, image_url, image_urls, images, qty, category, collection, tags')
       .in('handle', handles)
       .eq('hidden', false);
 
@@ -80,7 +83,7 @@ async function fetchProductsByHandles(handles) {
   }
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }) {
   const [bestSellers, candles, darkHome, smuttyGoodGirl, summerween, apparel] = await Promise.all([
     fetchProductsByHandles(BEST_SELLER_HANDLES),
     fetchProductsByHandles(CANDLE_HANDLES),
@@ -90,15 +93,60 @@ export default async function Home() {
     fetchProductsByHandles(APPAREL_HANDLES),
   ]);
 
+  // Enrich homepage products with promotion pricing (when engine is enabled)
+  let enrichedProducts = { bestSellers, candles, darkHome, summerween, apparel };
+  let homepagePromotion = null;
+
+  if (PROMOTION_ENGINE_ENABLED) {
+    try {
+      const activePromos = await getActivePromotions();
+      homepagePromotion = activePromos.find((p) => p.homepageEnabled) || null;
+
+      if (activePromos.length > 0) {
+        // Inject sale_price into raw product rows for homepage sections
+        const enrichGroup = (products) => products.map((p) => {
+          if (!p) return p;
+          for (const promo of activePromos) {
+            const isMatch = promo.appliesTo === 'all' ||
+              (promo.appliesTo === 'specific' && promo.productIds?.includes(p.id)) ||
+              (promo.appliesTo === 'collection' && (promo.collections?.includes(p.category) || promo.collections?.includes(p.collection))) ||
+              (promo.appliesTo === 'tag' && (p.tags || []).some((t) => promo.tags?.includes(t.toLowerCase())));
+
+            if (isMatch && !promo.excludedProductIds?.includes(p.id)) {
+              const pricing = computePromotionPrice(p.price, promo, p.id);
+              if (pricing) {
+                return { ...p, sale_price: pricing.displayPrice, _saleBadge: pricing.badgeText };
+              }
+            }
+          }
+          return p;
+        });
+
+        enrichedProducts = {
+          bestSellers: enrichGroup(bestSellers),
+          candles: enrichGroup(candles),
+          darkHome: enrichGroup(darkHome),
+          summerween: enrichGroup(summerween),
+          apparel: enrichGroup(apparel),
+        };
+      }
+    } catch (err) {
+      console.error('[Homepage] Promotion enrichment failed:', err);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-black">
       {/* 1. Hero */}
       <Hero />
 
+      {/* Promotion Hero (only renders when an active promotion has homepage_enabled) */}
+      {homepagePromotion && <PromotionHero promotion={homepagePromotion} />}
+
       {/* 2. Best Sellers — Kiss Lock Bags first (conference #1) */}
       <HomepageProductSection
         title="Best Sellers"
-        products={bestSellers}
+        products={enrichedProducts.bestSellers}
         badge="Best Seller"
         viewAllHref="/collections/kiss-lock-bags"
         ctaLabel="Shop All Bags"
@@ -136,7 +184,7 @@ export default async function Home() {
       {/* 4. Light the Darkness — Candles (conference #2 seller) */}
       <HomepageProductSection
         title="Light the Darkness"
-        products={candles}
+        products={enrichedProducts.candles}
         badge="Ritual Favorite"
         viewAllHref="/shop"
         ctaLabel="Shop Candles & Ritual"
@@ -146,7 +194,7 @@ export default async function Home() {
       {/* 5. Dark Home — Decor */}
       <HomepageProductSection
         title="Dark Home"
-        products={darkHome}
+        products={enrichedProducts.darkHome}
         badge="Home Favorite"
         viewAllHref="/shop"
         ctaLabel="Shop Home"
@@ -166,7 +214,7 @@ export default async function Home() {
       {/* 7. Summerween */}
       <HomepageProductSection
         title="Summerween"
-        products={summerween}
+        products={enrichedProducts.summerween}
         badge="Seasonal"
         viewAllHref="/drops"
         ctaLabel="Explore Summerween"
@@ -176,7 +224,7 @@ export default async function Home() {
       {/* 8. Apparel — moved lower based on conference sales data */}
       <HomepageProductSection
         title="Apparel"
-        products={apparel}
+        products={enrichedProducts.apparel}
         viewAllHref="/shop"
         ctaLabel="Shop Apparel"
         intro="Wearable darkness for those who dress the mood year-round."
@@ -197,6 +245,12 @@ export default async function Home() {
 
       {/* 13. Footer */}
       <Footer />
+
+      {/* Campaign Preview (only renders when ?preview_promotion=SLUG&preview_secret=SECRET is present) */}
+      <PreviewWrapper
+        searchParams={searchParams}
+        products={[...enrichedProducts.bestSellers, ...enrichedProducts.candles, ...enrichedProducts.darkHome]}
+      />
     </main>
   );
 }
