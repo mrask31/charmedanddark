@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
+import { enrichProductsWithPromotions } from "@/lib/promotions";
 
 const KISS_LOCK_BAG_HANDLES = [
   'celestial-kisslock-bag-in-linen-blended-fabric',
@@ -22,7 +23,6 @@ function isSoldOutProduct(product) {
 function sortInStockFirst(products) {
   const inStock = products.filter((product) => !isSoldOutProduct(product));
   const soldOut = products.filter(isSoldOutProduct);
-
   return [...inStock, ...soldOut];
 }
 
@@ -30,7 +30,7 @@ async function fetchBagProducts() {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('name, title, handle, slug, price, sale_price, image_url, image_urls, images, description, qty')
+      .select('id, name, title, handle, slug, price, image_url, image_urls, images, description, qty, category, collection, tags')
       .in('handle', KISS_LOCK_BAG_HANDLES)
       .eq('hidden', false);
 
@@ -39,8 +39,9 @@ async function fetchBagProducts() {
       return [];
     }
 
+    const enriched = await enrichProductsWithPromotions(data || []);
     const orderedProducts = KISS_LOCK_BAG_HANDLES
-      .map((h) => (data || []).find((p) => p.handle === h || p.slug === h))
+      .map((h) => enriched.find((p) => p.handle === h || p.slug === h))
       .filter(Boolean);
 
     return sortInStockFirst(orderedProducts);
@@ -77,9 +78,7 @@ export default async function KissLockBagsPage() {
         background: 'linear-gradient(180deg, #0a0a12 0%, #0f0d14 30%, #110e16 60%, #0a0a12 100%)',
       }}
     >
-      {/* ── Hero Section ── */}
       <section className="relative overflow-hidden px-8 pt-20 pb-10 text-center lg:px-16">
-        {/* Subtle warm radial glow behind heading */}
         <div
           className="absolute inset-0 pointer-events-none"
           aria-hidden="true"
@@ -115,7 +114,6 @@ export default async function KissLockBagsPage() {
         </div>
       </section>
 
-      {/* ── Trust/Value Strip ── */}
       <section className="px-8 pb-8 lg:px-16">
         <div
           className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 py-4 text-center"
@@ -136,7 +134,6 @@ export default async function KissLockBagsPage() {
         </div>
       </section>
 
-      {/* ── Editorial Buying Block ── */}
       <section className="px-8 pb-10 lg:px-16">
         <div className="mx-auto max-w-3xl text-center">
           <p
@@ -155,11 +152,16 @@ export default async function KissLockBagsPage() {
         </div>
       </section>
 
-      {/* ── Product Grid ── */}
       <section className="px-8 pb-24 lg:px-16">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product, index) => {
-            const price = product.sale_price || product.price;
+            const retailPrice = Number(product.price || 0);
+            const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
+            const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
+            const price = isOnSale ? promotionPrice : retailPrice;
+            const salePercentage = isOnSale
+              ? Math.round(Number(product.salePercentage) || ((retailPrice - price) / retailPrice) * 100)
+              : null;
             const slug = product.handle || product.slug;
             const imageUrl = getImage(product);
             const isIntentPick = index < 2;
@@ -185,7 +187,15 @@ export default async function KissLockBagsPage() {
                     </div>
                   )}
 
-                  {/* Badge: sold-out takes priority over intent badge */}
+                  {isOnSale && !isSoldOut && (
+                    <span
+                      className="absolute right-3 top-3 z-20 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em]"
+                      style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      {salePercentage}% OFF
+                    </span>
+                  )}
+
                   {isSoldOut ? (
                     <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                       <div
@@ -226,7 +236,6 @@ export default async function KissLockBagsPage() {
                   )}
                 </div>
 
-                {/* Product Info */}
                 <div className="flex flex-col gap-2 px-1">
                   <h2
                     className="font-serif text-xl leading-tight transition-colors duration-160 group-hover:text-[#c9a96e] sm:text-2xl"
@@ -242,19 +251,25 @@ export default async function KissLockBagsPage() {
                       Notify me when available
                     </p>
                   ) : (
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="text-sm font-light"
-                        style={{ color: '#c4bfb4', fontFamily: 'Inter, sans-serif' }}
-                      >
-                        {formatPrice(price)}
-                      </span>
-                      <span
-                        className="text-[10px] uppercase tracking-[0.15em]"
-                        style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}
-                      >
-                        Sanctuary ${sanctuaryPrice}
-                      </span>
+                    <div className="space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        {isOnSale && (
+                          <span className="text-xs line-through" style={{ color: '#6b6760' }}>
+                            {formatPrice(retailPrice)}
+                          </span>
+                        )}
+                        <span className="text-sm font-light" style={{ color: isOnSale ? '#f5f0e8' : '#c4bfb4' }}>
+                          {formatPrice(price)}
+                        </span>
+                        {isOnSale && (
+                          <span className="text-[9px] uppercase tracking-[0.14em]" style={{ color: '#c9a96e' }}>
+                            {salePercentage}% off
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#c9a96e' }}>
+                        Sanctuary ${sanctuaryPrice}{isOnSale ? ' · additional 10%' : ''}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -273,7 +288,6 @@ export default async function KissLockBagsPage() {
         )}
       </section>
 
-      {/* ── Bottom CTA ── */}
       <section
         className="px-8 py-14 text-center lg:px-16"
         style={{ borderTop: '1px solid rgba(201,169,110,0.1)', borderBottom: '1px solid rgba(201,169,110,0.1)' }}

@@ -9,7 +9,7 @@ import { MembershipPitch } from "@/components/membership-pitch";
 import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
 import { supabase } from "@/lib/supabase/client";
-import { getActivePromotions, computePromotionPrice, getHomepagePromotion, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
+import { getActivePromotions, enrichProductsWithPromotions, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
 import { PromotionHero } from "@/components/promotions/PromotionHero";
 import { PreviewWrapper } from "@/components/promotions/PreviewWrapper";
 
@@ -63,77 +63,63 @@ const APPAREL_HANDLES = [
   'hexes-heat-unisex-summer-tee-1',
 ];
 
-async function fetchProductsByHandles(handles) {
+const HOMEPAGE_HANDLES = [...new Set([
+  ...BEST_SELLER_HANDLES,
+  ...CANDLE_HANDLES,
+  ...DARK_HOME_HANDLES,
+  ...SGG_HANDLES,
+  ...SUMMERWEEN_HANDLES,
+  ...APPAREL_HANDLES,
+])];
+
+async function fetchHomepageProducts() {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('products')
-      .select('id, name, title, handle, slug, price, sale_price, image_url, image_urls, images, qty, category, collection, tags')
-      .in('handle', handles)
+      .select('id, name, title, handle, slug, price, image_url, image_urls, images, qty, category, collection, tags')
+      .in('handle', HOMEPAGE_HANDLES)
       .eq('hidden', false);
 
-    // Sort to match the handles order
-    const sorted = handles
-      .map((h) => (data || []).find((p) => p.handle === h || p.slug === h))
-      .filter(Boolean);
-
-    return sorted;
+    if (error) throw error;
+    return data || [];
   } catch (err) {
-    console.error('Failed to fetch products:', err);
+    console.error('Failed to fetch homepage products:', err);
     return [];
   }
 }
 
-export default async function Home({ searchParams }) {
-  const [bestSellers, candles, darkHome, smuttyGoodGirl, summerween, apparel] = await Promise.all([
-    fetchProductsByHandles(BEST_SELLER_HANDLES),
-    fetchProductsByHandles(CANDLE_HANDLES),
-    fetchProductsByHandles(DARK_HOME_HANDLES),
-    fetchProductsByHandles(SGG_HANDLES),
-    fetchProductsByHandles(SUMMERWEEN_HANDLES),
-    fetchProductsByHandles(APPAREL_HANDLES),
-  ]);
+function pickProductsByHandles(products, handles) {
+  return handles
+    .map((handle) => products.find((product) => product.handle === handle || product.slug === handle))
+    .filter(Boolean);
+}
 
-  // Enrich homepage products with promotion pricing (when engine is enabled)
-  let enrichedProducts = { bestSellers, candles, darkHome, summerween, apparel };
+export default async function Home({ searchParams }) {
+  const homepageProducts = await fetchHomepageProducts();
+  let promotionAwareProducts = homepageProducts;
   let homepagePromotion = null;
 
   if (PROMOTION_ENGINE_ENABLED) {
     try {
-      const activePromos = await getActivePromotions();
-      homepagePromotion = activePromos.find((p) => p.homepageEnabled) || null;
-
-      if (activePromos.length > 0) {
-        // Inject sale_price into raw product rows for homepage sections
-        const enrichGroup = (products) => products.map((p) => {
-          if (!p) return p;
-          for (const promo of activePromos) {
-            const isMatch = promo.appliesTo === 'all' ||
-              (promo.appliesTo === 'specific' && promo.productIds?.includes(p.id)) ||
-              (promo.appliesTo === 'collection' && (promo.collections?.includes(p.category) || promo.collections?.includes(p.collection))) ||
-              (promo.appliesTo === 'tag' && (p.tags || []).some((t) => promo.tags?.includes(t.toLowerCase())));
-
-            if (isMatch && !promo.excludedProductIds?.includes(p.id)) {
-              const pricing = computePromotionPrice(p.price, promo, p.id);
-              if (pricing) {
-                return { ...p, sale_price: pricing.displayPrice, _saleBadge: pricing.badgeText };
-              }
-            }
-          }
-          return p;
-        });
-
-        enrichedProducts = {
-          bestSellers: enrichGroup(bestSellers),
-          candles: enrichGroup(candles),
-          darkHome: enrichGroup(darkHome),
-          summerween: enrichGroup(summerween),
-          apparel: enrichGroup(apparel),
-        };
-      }
+      const [activePromos, enriched] = await Promise.all([
+        getActivePromotions(),
+        enrichProductsWithPromotions(homepageProducts),
+      ]);
+      homepagePromotion = activePromos.find((promotion) => promotion.homepageEnabled) || null;
+      promotionAwareProducts = enriched;
     } catch (err) {
       console.error('[Homepage] Promotion enrichment failed:', err);
     }
   }
+
+  const enrichedProducts = {
+    bestSellers: pickProductsByHandles(promotionAwareProducts, BEST_SELLER_HANDLES),
+    candles: pickProductsByHandles(promotionAwareProducts, CANDLE_HANDLES),
+    darkHome: pickProductsByHandles(promotionAwareProducts, DARK_HOME_HANDLES),
+    smuttyGoodGirl: pickProductsByHandles(promotionAwareProducts, SGG_HANDLES),
+    summerween: pickProductsByHandles(promotionAwareProducts, SUMMERWEEN_HANDLES),
+    apparel: pickProductsByHandles(promotionAwareProducts, APPAREL_HANDLES),
+  };
 
   return (
     <main className="min-h-screen bg-black">
@@ -204,7 +190,7 @@ export default async function Home({ searchParams }) {
       {/* 6. Smutty Good Girl — new bookish collection */}
       <HomepageProductSection
         title="New Collection: Smutty Good Girl"
-        products={smuttyGoodGirl}
+        products={enrichedProducts.smuttyGoodGirl}
         badge="Just Dropped"
         viewAllHref="/collections/smutty-good-girl"
         ctaLabel="Shop the Collection"

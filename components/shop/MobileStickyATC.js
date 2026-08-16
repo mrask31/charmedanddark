@@ -13,6 +13,9 @@ import { posthog } from '@/components/providers/posthog-provider';
 export default function MobileStickyATC({
   productName,
   price,
+  retailPrice = null,
+  isOnSale = false,
+  salePercentage = null,
   isMember,
   onAddToCart,
   cartState,
@@ -23,13 +26,11 @@ export default function MobileStickyATC({
   const [isVisible, setIsVisible] = useState(false);
   const hasTrackedView = useRef(false);
 
-  // Use IntersectionObserver to show bar when gallery scrolls out of view
   useEffect(() => {
     if (!galleryRef?.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Show sticky bar when gallery is NOT intersecting (scrolled past)
         setIsVisible(!entry.isIntersecting);
       },
       { threshold: 0, rootMargin: '-60px 0px 0px 0px' }
@@ -39,7 +40,6 @@ export default function MobileStickyATC({
     return () => observer.disconnect();
   }, [galleryRef]);
 
-  // Track when the sticky bar becomes visible (once per page view)
   useEffect(() => {
     if (isVisible && !hasTrackedView.current) {
       hasTrackedView.current = true;
@@ -61,12 +61,13 @@ export default function MobileStickyATC({
   function handleClick() {
     posthog?.capture?.('sticky_add_to_cart_clicked', {
       product_title: productName,
-      price: price,
+      price,
+      retail_price: retailPrice,
+      sale_percentage: salePercentage,
       needs_selection: needsSelection,
     });
 
     if (needsSelection) {
-      // Scroll to the variant/size selector area
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -86,7 +87,6 @@ export default function MobileStickyATC({
       }}
     >
       <div className="flex items-center gap-3 px-4 py-3">
-        {/* Product name + price */}
         <div className="flex-1 min-w-0">
           <p
             className="truncate text-sm"
@@ -94,20 +94,34 @@ export default function MobileStickyATC({
           >
             {productName}
           </p>
-          <p
-            className="text-sm"
-            style={{ color: isMember ? '#c9a96e' : '#e8e4dc', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-          >
-            ${displayPrice}
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            {isOnSale && retailPrice > price && (
+              <span
+                className="text-[11px] line-through"
+                style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
+              >
+                ${retailPrice.toFixed(2)}
+              </span>
+            )}
+            <span
+              className="text-sm"
+              style={{ color: isMember ? '#c9a96e' : '#e8e4dc', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+            >
+              ${displayPrice}
+            </span>
+            {isOnSale && salePercentage && !isMember && (
+              <span className="text-[9px] uppercase tracking-[0.12em]" style={{ color: '#c9a96e' }}>
+                {salePercentage}% off
+              </span>
+            )}
             {isMember && (
-              <span className="ml-1 text-[10px] uppercase tracking-wider" style={{ color: '#c9a96e', opacity: 0.7 }}>
+              <span className="text-[10px] uppercase tracking-wider" style={{ color: '#c9a96e', opacity: 0.7 }}>
                 Sanctuary
               </span>
             )}
-          </p>
+          </div>
         </div>
 
-        {/* Add to Cart button */}
         <button
           onClick={handleClick}
           disabled={isDisabled}

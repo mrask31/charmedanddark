@@ -15,10 +15,41 @@ import ProductReturnsSummary from '@/components/shop/ProductReturnsSummary';
 import ProductBadge from '@/components/shop/ProductBadge';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
-import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';;
+import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
+function getPromotionPricing(product, retailPriceOverride = null) {
+  const productRetailPrice = Number(product?.price || 0);
+  const retailPrice = retailPriceOverride != null
+    ? Number(retailPriceOverride)
+    : productRetailPrice;
+  const promotionPrice = product?.salePrice != null ? Number(product.salePrice) : null;
+  const hasPromotion =
+    productRetailPrice > 0 &&
+    promotionPrice != null &&
+    promotionPrice > 0 &&
+    promotionPrice < productRetailPrice;
+
+  const promotionRatio = hasPromotion ? promotionPrice / productRetailPrice : 1;
+  const publicPrice = hasPromotion
+    ? +(retailPrice * promotionRatio).toFixed(2)
+    : retailPrice;
+  const sanctuaryPrice = publicPrice > 0 ? +(publicPrice * 0.9).toFixed(2) : null;
+  const salePercentage = hasPromotion
+    ? Math.round(Number(product.salePercentage) || ((productRetailPrice - promotionPrice) / productRetailPrice) * 100)
+    : null;
+
+  return {
+    retailPrice,
+    publicPrice,
+    sanctuaryPrice,
+    salePercentage,
+    isOnSale: hasPromotion,
+    promotionRatio,
+  };
+}
 
 // ============================================================================
 // PRODUCT GALLERY
@@ -30,7 +61,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
 
   function handleThumbnailClick(index) {
     if (index === activeIndex && !overrideImage) return;
-    // Cancel any pending fade transition to handle rapid clicks
     if (fadeTimeoutRef.current) {
       clearTimeout(fadeTimeoutRef.current);
       fadeTimeoutRef.current = null;
@@ -43,7 +73,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     }, 150);
   }
 
-  // Swipe support for mobile
   const touchStartX = useRef(null);
   function handleTouchStart(e) {
     touchStartX.current = e.touches[0].clientX;
@@ -52,7 +81,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     if (touchStartX.current === null) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     touchStartX.current = null;
-    if (Math.abs(diff) < 40) return; // too small to be a swipe
+    if (Math.abs(diff) < 40) return;
     if (diff > 0 && activeIndex < (images?.length || 1) - 1) {
       handleThumbnailClick(activeIndex + 1);
     } else if (diff < 0 && activeIndex > 0) {
@@ -60,7 +89,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     }
   }
 
-  // Build a lookup: imageUrl → color name from Shopify variant selectedOptions
   const imageColorMap = useMemo(() => {
     if (!shopifyVariants?.variants) return {};
     const map = {};
@@ -73,13 +101,11 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     return map;
   }, [shopifyVariants]);
 
-  // If a variant-specific image is provided, show it as the main image
   const displayImage = overrideImage || images?.[activeIndex];
   const hasMultipleImages = images?.length > 1;
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Main image with swipe + arrows */}
       <div
         className="relative w-full overflow-hidden"
         style={{ aspectRatio: '4/5', backgroundColor: '#08080f' }}
@@ -104,7 +130,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
           </div>
         )}
 
-        {/* Prev/Next arrows — visible on mobile too */}
         {hasMultipleImages && !overrideImage && (
           <>
             <button
@@ -128,7 +153,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
           </>
         )}
 
-        {/* Dot indicators for mobile */}
         {hasMultipleImages && !overrideImage && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
             {images.slice(0, 6).map((_, i) => (
@@ -143,7 +167,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
         )}
       </div>
 
-      {/* Thumbnail strip — always show when multiple images; include color labels */}
       {images?.length > 1 && (
         <div className="flex gap-2 overflow-hidden">
           {images.slice(0, 6).map((img, i) => {
@@ -183,7 +206,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
 // VARIANT SELECTOR
 // ============================================================================
 function VariantSelector({ variants, selectedByType, onSelectByType }) {
-  // Group variants by type (e.g., { color: [...], size: [...] })
   const grouped = useMemo(() => {
     return variants.reduce((acc, v) => {
       if (!acc[v.variant_type]) acc[v.variant_type] = [];
@@ -234,7 +256,6 @@ function VariantSelector({ variants, selectedByType, onSelectByType }) {
 function ProductDetailsList({ description }) {
   if (!description) return null;
 
-  // Strip HTML tags, then split into bullet points
   const plainText = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   const lines = plainText.split(/\.\s+/).filter(Boolean).map((l) => l.replace(/\.$/, ''));
 
@@ -284,6 +305,7 @@ function RelatedProducts({ products }) {
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
         {products.map((p) => {
           const isSoldOut = p.qty != null && p.qty <= 0;
+          const pricing = getPromotionPricing(p);
           return (
           <Link
             key={p.slug}
@@ -303,6 +325,14 @@ function RelatedProducts({ products }) {
                 <div className="flex h-full items-center justify-center">
                   <span style={{ color: 'rgba(201,169,110,0.2)' }}>C&amp;D</span>
                 </div>
+              )}
+              {pricing.isOnSale && !isSoldOut && (
+                <span
+                  className="absolute right-2 top-2 z-20 px-2 py-1 text-[8px] font-medium uppercase tracking-[0.15em]"
+                  style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
+                >
+                  {pricing.salePercentage}% OFF
+                </span>
               )}
               {isSoldOut && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -339,9 +369,21 @@ function RelatedProducts({ products }) {
                   Notify me when available
                 </p>
               ) : (
-                <p className="mt-0.5 text-[14px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                  ${p.price?.toFixed(2)}
-                </p>
+                <div className="mt-1 flex flex-col gap-1" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    {pricing.isOnSale && (
+                      <span className="text-[11px] line-through" style={{ color: '#514d49' }}>
+                        ${pricing.retailPrice.toFixed(2)}
+                      </span>
+                    )}
+                    <span className="text-[14px] font-light" style={{ color: pricing.isOnSale ? '#e8e4dc' : '#6b6760' }}>
+                      ${pricing.publicPrice.toFixed(2)}
+                    </span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-[0.12em]" style={{ color: '#c9a96e' }}>
+                    ${pricing.sanctuaryPrice?.toFixed(2)} Sanctuary{pricing.isOnSale ? ' · +10%' : ''}
+                  </span>
+                </div>
               )}
             </div>
           </Link>
@@ -363,42 +405,72 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const isApparel = APPAREL_CATEGORIES.includes(product.category);
   const hasProductVariants = product.productVariants?.length > 0;
   const hasShopifyVariants = shopifyVariants?.variants?.length > 0;
+  const baseProductPricing = getPromotionPricing(product);
 
-  // Track product view
+  const saleAwareShopifyVariants = useMemo(() => {
+    if (!shopifyVariants?.variants || !baseProductPricing.isOnSale) return shopifyVariants;
+
+    return {
+      ...shopifyVariants,
+      variants: shopifyVariants.variants.map((variant) => {
+        const retailVariantPrice = Number(variant.price || product.price || 0);
+        return {
+          ...variant,
+          _retailPrice: retailVariantPrice,
+          price: +(retailVariantPrice * baseProductPricing.promotionRatio).toFixed(2),
+          compareAtPrice: Number(variant.compareAtPrice) > retailVariantPrice
+            ? Number(variant.compareAtPrice)
+            : retailVariantPrice,
+        };
+      }),
+    };
+  }, [shopifyVariants, baseProductPricing.isOnSale, baseProductPricing.promotionRatio, product.price]);
+
+  const saleAwareCartProduct = useMemo(() => {
+    if (!baseProductPricing.isOnSale) return product;
+
+    return {
+      ...product,
+      price: baseProductPricing.publicPrice,
+      originalPrice: product.price,
+      productVariants: product.productVariants?.map((variant) => ({
+        ...variant,
+        price_override: variant.price_override != null
+          ? +(Number(variant.price_override) * baseProductPricing.promotionRatio).toFixed(2)
+          : variant.price_override,
+      })),
+    };
+  }, [product, baseProductPricing.isOnSale, baseProductPricing.publicPrice, baseProductPricing.promotionRatio]);
+
   useEffect(() => {
     posthog?.capture?.('product_viewed', {
       product_title: product.name,
       product_handle: product.slug,
       product_type: product.category || undefined,
       vendor: product.vendor || undefined,
-      price: product.price,
+      price: baseProductPricing.publicPrice,
+      retail_price: baseProductPricing.retailPrice,
+      promotion_percentage: baseProductPricing.salePercentage || undefined,
       currency: 'USD',
       url: typeof window !== 'undefined' ? window.location.href : undefined,
       referrer: typeof window !== 'undefined' ? document.referrer || undefined : undefined,
       ...getAttributionProps(),
     });
-  }, [product.name, product.category, product.slug, product.vendor, product.price]);
+  }, [product.name, product.category, product.slug, product.vendor, baseProductPricing.publicPrice, baseProductPricing.retailPrice, baseProductPricing.salePercentage]);
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  // Map of selections by variant type: { color: variantObj, size: variantObj }
   const [selectedByType, setSelectedByType] = useState({});
-  // Tracks the Shopify variant chosen inside <AddToCart> (for image display)
   const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
-  // Tracks the image URL from a color selection (fires before all options chosen)
   const [colorImage, setColorImage] = useState(null);
-  // Tracks Supabase price_override matched from Shopify variant selection
   const [shopifyVariantPriceOverride, setShopifyVariantPriceOverride] = useState(null);
-  // Tracks Shopify variant's own price (used when no Supabase override exists)
   const [shopifyVariantPrice, setShopifyVariantPrice] = useState(null);
-  // Tracks Shopify variant's compareAtPrice for strikethrough display
   const [shopifyVariantCompareAtPrice, setShopifyVariantCompareAtPrice] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
+  const [cartState, setCartState] = useState('idle');
   const [selectionError, setSelectionError] = useState('');
   const [inventoryNotice, setInventoryNotice] = useState(null);
 
-  // Handle variant selection by type — keeps color and size independent
   function handleVariantSelectByType(type, variant) {
     setSelectionError('');
     setSelectedByType((prev) => {
@@ -411,29 +483,25 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
       return next;
     });
 
-    // Update image when color is selected
     if (type === 'color' && variant?.image_url) {
       setColorImage(variant.image_url);
     } else if (type === 'color' && !variant) {
       setColorImage(null);
     }
 
-    // Update selectedVariant to the most recently selected variant (for price_override)
     if (variant) {
       setSelectedVariant(variant);
     }
   }
 
-  // When Shopify variant changes, look up matching Supabase product_variant for price_override
   function handleShopifyVariantChange(shopifyVariant) {
     setSelectedShopifyVariant(shopifyVariant);
 
     if (shopifyVariant) {
-      // Always capture Shopify's own price as fallback
-      setShopifyVariantPrice(shopifyVariant.price ?? null);
+      const retailVariantPrice = shopifyVariant._retailPrice ?? shopifyVariant.price ?? null;
+      setShopifyVariantPrice(retailVariantPrice);
       setShopifyVariantCompareAtPrice(shopifyVariant.compareAtPrice ?? null);
 
-      // Try to match Supabase product_variant for price_override
       if (product.productVariants?.length > 0) {
         const match = product.productVariants.find((pv) =>
           shopifyVariant.selectedOptions?.some(
@@ -451,27 +519,28 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     }
   }
 
-  // Effective price priority: Supabase price_override → Shopify variant price → product base price
   const variantPriceOverride = selectedVariant?.price_override != null
     ? parseFloat(selectedVariant.price_override)
     : null;
-  const basePrice = variantPriceOverride ?? shopifyVariantPriceOverride ?? shopifyVariantPrice ?? product.price;
-  const compareAtPrice = shopifyVariantCompareAtPrice && shopifyVariantCompareAtPrice > basePrice
+  const retailBasePrice = variantPriceOverride ?? shopifyVariantPriceOverride ?? shopifyVariantPrice ?? Number(product.price || 0);
+  const activePricing = getPromotionPricing(product, retailBasePrice);
+  const basePrice = activePricing.publicPrice;
+  const nativeCompareAtPrice = shopifyVariantCompareAtPrice && shopifyVariantCompareAtPrice > retailBasePrice
     ? shopifyVariantCompareAtPrice
     : null;
-  const sanctuaryPrice = basePrice ? +(basePrice * 0.90).toFixed(2) : null;
+  const compareAtPrice = activePricing.isOnSale
+    ? Math.max(activePricing.retailPrice, nativeCompareAtPrice || 0)
+    : nativeCompareAtPrice;
+  const sanctuaryPrice = activePricing.sanctuaryPrice;
 
-  // Variant image override: color selection fires first, full variant match refines it
   const variantImage = colorImage
     || selectedShopifyVariant?.imageUrl
     || selectedVariant?.image_url
     || null;
 
-  // Non-Shopify add-to-cart handler (apparel sizes + product_variants)
   async function handleAddToCart() {
     if (cartState !== 'idle') return;
 
-    // Validate selections and show error instead of silently blocking
     if (isApparel && !hasProductVariants && !selectedSize) {
       setSelectionError('Please select a size.');
       posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing: ['size'] });
@@ -488,7 +557,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     setSelectionError('');
     setInventoryNotice(null);
 
-    // Inventory check — determine available stock
     const available = getAvailableInventory({ productQty: product.qty, variantQuantityAvailable: null });
     const cartKey = selectedVariant
       ? `${product.slug}__v_${selectedVariant.id}`
@@ -539,7 +607,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
       }
     }
 
-    // Build a combined variant label from all selections (e.g. "Color: Black, Size: M")
     const variantSelections = Object.entries(selectedByType)
       .map(([type, v]) => `${type.charAt(0).toUpperCase() + type.slice(1)}: ${v.variant_value}`)
       .join(', ');
@@ -549,7 +616,9 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     try {
       addItem({
         ...product,
+        originalPrice: activePricing.isOnSale ? activePricing.retailPrice : product.originalPrice,
         price: basePrice,
+        salePrice: activePricing.isOnSale ? basePrice : product.salePrice,
         selectedSize: isApparel ? selectedSize : null,
         selectedVariant: selectedVariant
           ? { ...selectedVariant, _combinedLabel: variantSelections || null }
@@ -566,6 +635,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         variant_id: selectedVariant?.id || undefined,
         sku: product.sku || undefined,
         price: basePrice,
+        retail_price: activePricing.retailPrice,
+        promotion_percentage: activePricing.salePercentage || undefined,
         currency: 'USD',
         quantity: addQty,
         url: typeof window !== 'undefined' ? window.location.href : undefined,
@@ -578,7 +649,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     }
   }
 
-  // Check if all variant types have been selected
   const variantTypes = hasProductVariants
     ? [...new Set(product.productVariants.map((v) => v.variant_type))]
     : [];
@@ -594,7 +664,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   return (
     <div style={{ backgroundColor: '#08080f', overflowX: 'hidden' }}>
       <div className="mx-auto max-w-[1280px] px-6 py-12 md:py-16">
-        {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-8">
           <ol className="flex items-center gap-2 text-[11px] font-light tracking-[0.1em]" style={{ fontFamily: 'Inter, sans-serif' }}>
             <li><Link href="/" className="transition-opacity hover:opacity-80" style={{ color: '#6b6760' }}>Home</Link></li>
@@ -605,9 +674,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
           </ol>
         </nav>
 
-        {/* Two-column layout */}
         <div className="flex flex-col items-start gap-10 md:flex-row lg:gap-16">
-          {/* Left: gallery (60%) */}
           <div className="w-full overflow-hidden md:w-[60%]" ref={galleryRef}>
             <ProductGallery
               images={product.imageUrls}
@@ -620,18 +687,14 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
             </div>
           </div>
 
-          {/* Right: details panel (40%) — sticky */}
           <div className="w-full self-start md:sticky md:top-8 md:w-[40%]">
             <div className="flex flex-col gap-6">
-              {/* Eyebrow */}
               <p className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
                 {product.category}
               </p>
 
-              {/* Badge */}
               {product.badge && <ProductBadge badge={product.badge} variant="detail" />}
 
-              {/* Title */}
               <h1
                 className="font-serif text-[40px] leading-tight text-balance"
                 style={{ color: '#e8e4dc', fontWeight: 400, fontFamily: 'Cormorant Garamond, Georgia, serif' }}
@@ -639,32 +702,39 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 {product.name}
               </h1>
 
-              {/* Price block */}
-              {basePrice && (
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-baseline gap-4 flex-wrap">
+              {basePrice > 0 && (
+                <div className="flex flex-col gap-2">
+                  {activePricing.isOnSale && (
+                    <span
+                      className="w-fit px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em]"
+                      style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
+                    >
+                      {activePricing.salePercentage}% OFF
+                    </span>
+                  )}
+                  <div className="flex items-baseline gap-3 flex-wrap">
                     {isMember ? (
                       <>
-                        {compareAtPrice && (
+                        {(activePricing.isOnSale || compareAtPrice) && (
                           <span className="font-light text-[14px] line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                            ${compareAtPrice.toFixed(2)}
+                            ${(activePricing.isOnSale ? activePricing.retailPrice : compareAtPrice).toFixed(2)}
                           </span>
                         )}
-                        <span className="font-light text-xl line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
+                        <span className="font-light text-xl line-through" style={{ color: activePricing.isOnSale ? '#e8e4dc' : '#6b6760', fontFamily: 'Inter, sans-serif' }}>
                           ${basePrice.toFixed(2)}
                         </span>
                         <span className="font-light text-[18px]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
                           ${sanctuaryPrice?.toFixed(2)}
                         </span>
                         <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#c9a96e', opacity: 0.7, fontFamily: 'Inter, sans-serif' }}>
-                          Your Price
+                          Sanctuary Price
                         </span>
                       </>
                     ) : (
                       <>
-                        {compareAtPrice && (
+                        {(activePricing.isOnSale || compareAtPrice) && (
                           <span className="font-light text-[14px] line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                            ${compareAtPrice.toFixed(2)}
+                            ${(activePricing.isOnSale ? activePricing.retailPrice : compareAtPrice).toFixed(2)}
                           </span>
                         )}
                         <span className="font-light text-xl" style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif' }}>
@@ -679,6 +749,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                       </>
                     )}
                   </div>
+                  {activePricing.isOnSale && (
+                    <p className="text-[10px] uppercase tracking-[0.13em]" style={{ color: '#8f7a55', fontFamily: 'Inter, sans-serif' }}>
+                      Sanctuary members take an additional 10% off the sale price
+                    </p>
+                  )}
                   {!isMember && !authLoading && (
                     <p className="text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
                       <Link href="/join" className="underline underline-offset-2 transition-opacity hover:opacity-80" style={{ color: '#6b6760' }}>
@@ -689,17 +764,14 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 </div>
               )}
 
-              {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
 
-              {/* Description — short preview for apparel/Printify, full for others */}
               {product.description && (() => {
                 const plainText = product.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
                 const isLong = plainText.length > 200;
                 const shouldCollapse = isLong && (isApparel || product.vendor === 'Printify');
 
                 if (shouldCollapse) {
-                  // Show short preview only — full description moves below ATC
                   const preview = plainText.slice(0, 180).replace(/\s\S*$/, '') + '…';
                   return (
                     <p
@@ -720,24 +792,21 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 );
               })()}
 
-              {/* Trust signals */}
               <TrustModule productName={product.name} />
               <ProductDeliveryEstimate vendor={product.vendor} />
               <SmallBusinessTrust />
 
-              {/* Shopify variant selector + qty + add to cart (apparel, POD, etc.) */}
               {hasShopifyVariants ? (
                 <div data-atc-section>
                   <AddToCart
-                    shopifyVariants={shopifyVariants}
-                    product={product}
+                    shopifyVariants={saleAwareShopifyVariants}
+                    product={saleAwareCartProduct}
                     onVariantChange={handleShopifyVariantChange}
                     onColorSelect={setColorImage}
                   />
                 </div>
               ) : (
                 <>
-                  {/* Product variants selector (color, size from product_variants table) */}
                   {hasProductVariants && (
                     <VariantSelector
                       variants={product.productVariants}
@@ -746,7 +815,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                     />
                   )}
 
-                  {/* Size selector — only for apparel without product_variants */}
                   {isApparel && !hasProductVariants && (
                     <div className="flex flex-col gap-3">
                       <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
@@ -777,7 +845,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                     </div>
                   )}
 
-                  {/* Quantity selector */}
                   <div className="flex flex-col gap-3">
                     <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
                       Qty
@@ -809,7 +876,6 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                     </div>
                   </div>
 
-                  {/* Add to cart */}
                   <button
                     onClick={handleAddToCart}
                     disabled={buttonDisabled}
@@ -839,15 +905,12 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 </>
               )}
 
-              {/* Shipping note */}
               <p className="text-xs text-[#e8e4dc]/50 mt-1 text-center">
                 Free shipping on orders $100+ · Ships to continental US only
               </p>
 
-              {/* Returns — supports purchase decision without delaying ATC */}
               <ProductReturnsSummary />
 
-              {/* Full description for apparel/Printify — moved below ATC for faster buying */}
               {product.description && (isApparel || product.vendor === 'Printify') && product.description.replace(/<[^>]*>/g, '').length > 200 && (
                 <>
                   <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.12)' }} />
@@ -867,10 +930,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 </>
               )}
 
-              {/* Divider */}
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
 
-              {/* Product meta */}
               <dl className="flex flex-col gap-1.5">
                 {product.sku && (
                   <div className="flex gap-3">
@@ -885,18 +946,15 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               </dl>
             </div>
 
-            {/* Details on mobile */}
             <div className="mt-8 md:hidden">
               <ProductDetailsList description={product.description} />
             </div>
           </div>
         </div>
 
-        {/* Related products */}
         <RelatedProducts products={relatedProducts} />
       </div>
 
-      {/* Mobile sticky Add to Cart bar */}
       <MobileStickyATC
         productName={product.name}
         price={basePrice}
