@@ -1,11 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-
-function isAuthorized(request) {
-  const authHeader = request.headers.get('authorization');
-  return authHeader === `Bearer ${process.env.SYNC_SECRET_KEY}`;
-}
+import { isSyncAdminRequest } from '@/lib/admin/sync-auth';
 
 // Sanitize Shopify handles — remove emoji and non-ASCII characters
 function sanitizeHandle(handle) {
@@ -135,7 +131,7 @@ async function fetchAllProducts() {
 }
 
 export async function POST(request) {
-  if (!isAuthorized(request)) {
+  if (!isSyncAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -152,7 +148,6 @@ export async function POST(request) {
 
     for (const sp of shopifyProducts) {
       try {
-
         // Skip stickers
         if (sp.productType === 'Paper products') {
           productsSkipped++;
@@ -166,11 +161,9 @@ export async function POST(request) {
         const isMadeToOrder = isPrintify || sp.vendor === 'Charmed & Dark';
         const isActive = sp.status === 'ACTIVE';
         let category = mapCategory(sp.productType);
-        // Vendor-based fallback
         if (category === 'Home Decor' && VENDOR_CATEGORY_MAP[sp.vendor]) {
           category = VENDOR_CATEGORY_MAP[sp.vendor];
         }
-        // Tag-based fallback
         category = refineCategoryByTags(category, sp.tags);
         const imageObjects = sp.images.edges.map(({ node }, i) => ({
           url: node.url,
@@ -179,23 +172,19 @@ export async function POST(request) {
         }));
         const imageUrls = imageObjects.map((img) => img.url);
 
-        // Price parsing with debug logging
         const rawMinPrice = sp.priceRange?.minVariantPrice?.amount;
         const minPrice = parseDollars(rawMinPrice);
 
-        // Safety: warn if price looks like cents (> $500 for non-bedding/furniture)
         const highPriceCategories = ['Bedding', 'Furniture', 'Home Decor'];
         if (minPrice > 500 && !highPriceCategories.includes(category)) {
           console.warn(`[PRICE WARNING] Suspicious price for ${sp.title}: $${minPrice} — may be in cents`);
         }
 
-        // Stock: made-to-order products (Printify, Charmed & Dark) use deny inventory policy
         const variants = sp.variants.edges.map(({ node }) => node);
         const stockQty = isMadeToOrder
           ? 999
           : (sp.totalInventory ?? variants.reduce((sum, v) => sum + (v.inventoryQuantity || 0), 0));
 
-        // Select → Update or Insert (avoids upsert conflict issues)
         const cleanHandle = sanitizeHandle(sp.handle);
         const productData = {
           shopify_id: sp.id,
@@ -218,7 +207,6 @@ export async function POST(request) {
           vendor: sp.vendor || null,
         };
 
-        // Check if product already exists by shopify_handle
         const { data: existing } = await supabaseAdmin
           .from('products')
           .select('id, description')
@@ -228,7 +216,6 @@ export async function POST(request) {
         let productId;
 
         if (existing) {
-          // Check if existing description is clean — if so, preserve it
           const existingDesc = existing.description || '';
           const isClean = existingDesc.length > 80
             && !existingDesc.includes('```')
@@ -245,7 +232,6 @@ export async function POST(request) {
             description: isClean ? existingDesc : productData.description,
           };
 
-          // Update existing product
           const { error: updateErr } = await supabaseAdmin
             .from('products')
             .update(updateData)
@@ -257,7 +243,6 @@ export async function POST(request) {
           }
           productId = existing.id;
         } else {
-          // Insert new product
           const { data: inserted, error: insertErr } = await supabaseAdmin
             .from('products')
             .insert(productData)
@@ -278,14 +263,11 @@ export async function POST(request) {
 
         productsSynced++;
 
-        // Delete existing variants for this product
         await supabaseAdmin
           .from('product_variants')
           .delete()
           .eq('product_id', productId);
 
-        // Re-insert variants
-        // Skip single "Default Title" variant (not a real option)
         const hasRealOptions = variants.length > 1 ||
           (variants.length === 1 && variants[0].title !== 'Default Title');
 
@@ -308,7 +290,6 @@ export async function POST(request) {
             }
           }
 
-          // Deduplicate by variant_type + variant_value
           const seen = new Set();
           const uniqueRows = variantRows.filter((row) => {
             const key = `${row.variant_type}:${row.variant_value}`;
@@ -336,7 +317,6 @@ export async function POST(request) {
 
     const durationMs = Date.now() - startTime;
 
-    // Log to sync_log table (best-effort)
     try {
       await supabaseAdmin.from('sync_log').insert({
         products_synced: productsSynced,
@@ -360,7 +340,6 @@ export async function POST(request) {
 
     console.log('Sync complete:', summary);
 
-    // Revalidate shop and product pages so fresh data appears immediately
     revalidatePath('/shop');
     revalidatePath('/shop/[slug]', 'page');
 
