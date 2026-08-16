@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import PromotionProductTargeting from "@/components/admin/PromotionProductTargeting";
 
 function statusColor(status) {
   switch (status) {
@@ -29,7 +30,6 @@ export default function EditPromotionPage() {
   const [tags, setTags] = useState([]);
   const [newCollection, setNewCollection] = useState("");
   const [newTag, setNewTag] = useState("");
-  const [productSearch, setProductSearch] = useState("");
 
   useEffect(() => {
     fetchPromotion();
@@ -94,34 +94,25 @@ export default function EditPromotionPage() {
 
   async function handleAddProduct(productId) {
     if (!productId) return;
-    try {
-      const res = await fetch(`/api/admin/promotions/${id}/products`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ add: [productId] }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to add product");
-      setProductSearch("");
-      await fetchPromotion();
-    } catch (err) {
-      setError(err.message);
-    }
+    const res = await fetch(`/api/admin/promotions/${id}/products`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ add: [productId] }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to add product");
+    await fetchPromotion();
   }
 
   async function handleRemoveProduct(productId) {
-    try {
-      const res = await fetch(`/api/admin/promotions/${id}/products`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ remove: [productId] }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to remove product");
-      await fetchPromotion();
-    } catch (err) {
-      setError(err.message);
-    }
+    const res = await fetch(`/api/admin/promotions/${id}/products`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ remove: [productId] }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to remove product");
+    await fetchPromotion();
   }
 
   async function handleAddCollection() {
@@ -289,7 +280,7 @@ export default function EditPromotionPage() {
               ))}
             </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <input style={inputStyle} value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="e.g. summerween, bags, candle" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddTag(); } }} />
+              <input style={inputStyle} value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="e.g. autumn, bags, candle" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddTag(); } }} />
               <button onClick={handleAddTag} style={{ padding: "0 1rem", fontSize: "0.75rem", color: "#c9a96e", backgroundColor: "transparent", border: "1px solid rgba(201,169,110,0.3)", cursor: "pointer", whiteSpace: "nowrap" }}>Add</button>
             </div>
           </div>
@@ -298,17 +289,11 @@ export default function EditPromotionPage() {
         {promo.applies_to === "specific" && (
           <div style={sectionStyle}>
             <p style={labelStyle}>Product Targeting</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" }}>
-              {products.length === 0 && <span style={{ fontSize: "0.75rem", color: "#6b6760", fontStyle: "italic" }}>No products targeted. Add products below.</span>}
-              {products.map((p) => (
-                <span key={p.product_id} style={chipStyle}>{p.product_id.slice(0, 8)}...<button onClick={() => handleRemoveProduct(p.product_id)} aria-label={`Remove product ${p.product_id}`} style={{ background: "none", border: "none", color: "#e55", cursor: "pointer", fontSize: "0.8rem", lineHeight: 1 }}>×</button></span>
-              ))}
-            </div>
-            <p style={{ fontSize: "0.7rem", color: "#6b6760", marginBottom: "0.5rem" }}>Paste a product UUID from the product catalog.</p>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <input style={inputStyle} value={productSearch} onChange={(e) => setProductSearch(e.target.value)} placeholder="Product UUID..." onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddProduct(productSearch.trim()); } }} />
-              <button onClick={() => handleAddProduct(productSearch.trim())} style={{ padding: "0 1rem", fontSize: "0.75rem", color: "#c9a96e", backgroundColor: "transparent", border: "1px solid rgba(201,169,110,0.3)", cursor: "pointer", whiteSpace: "nowrap" }}>Add</button>
-            </div>
+            <PromotionProductTargeting
+              targetedProducts={products}
+              onAdd={handleAddProduct}
+              onRemove={handleRemoveProduct}
+            />
           </div>
         )}
 
@@ -327,7 +312,7 @@ export default function EditPromotionPage() {
               <label style={{ ...labelStyle, fontSize: "0.6rem" }}>Hero Title</label>
               <input style={inputStyle} defaultValue={promo.hero_title || ""} onBlur={(e) => { if (e.target.value !== (promo.hero_title || "")) handleSave("hero_title", e.target.value); }} />
             </div>
-            <div>
+            <div style={{ gridColumn: "1 / -1" }}>
               <label style={{ ...labelStyle, fontSize: "0.6rem" }}>Hero Subtitle</label>
               <input style={inputStyle} defaultValue={promo.hero_subtitle || ""} onBlur={(e) => { if (e.target.value !== (promo.hero_subtitle || "")) handleSave("hero_subtitle", e.target.value); }} />
             </div>
