@@ -39,10 +39,20 @@ export function HomepageProductSection({
 
       <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:gap-8">
         {products.map((product) => {
-          const price = product.sale_price || product.price;
-          const sanctuaryPrice = (price * 0.9).toFixed(2);
+          const retailPrice = Number(product.price || 0);
+          const promotionPrice = product.salePrice != null
+            ? Number(product.salePrice)
+            : product.sale_price != null
+              ? Number(product.sale_price)
+              : null;
+          const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
+          const publicPrice = isOnSale ? promotionPrice : retailPrice;
+          const salePercentage = isOnSale
+            ? Math.round(Number(product.salePercentage) || ((retailPrice - publicPrice) / retailPrice) * 100)
+            : null;
+          const sanctuaryPrice = (publicPrice * 0.9).toFixed(2);
           const slug = product.handle || product.slug;
-          const imageUrl = product.image_url || product.image_urls?.[0];
+          const imageUrl = product.image_url || product.imageUrls?.[0] || product.image_urls?.[0];
           const isSoldOut = product.qty != null && product.qty <= 0;
 
           return (
@@ -61,7 +71,17 @@ export function HomepageProductSection({
                     <span className="text-4xl font-serif">C&D</span>
                   </div>
                 )}
-                {/* Badge overlay */}
+
+                {isOnSale && !isSoldOut ? (
+                  <span
+                    className="absolute right-3 top-3 z-20 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em]"
+                    style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
+                  >
+                    {salePercentage}% OFF
+                  </span>
+                ) : null}
+
+                {/* Merchandising badge */}
                 {badge && !isSoldOut && (
                   <span
                     className="absolute top-3 left-3 z-10 text-[9px] uppercase tracking-[0.2em] font-medium px-2.5 py-1"
@@ -76,7 +96,7 @@ export function HomepageProductSection({
                     {badge}
                   </span>
                 )}
-                {/* OUT OF STOCK overlay */}
+
                 {isSoldOut && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
                     <div
@@ -97,16 +117,25 @@ export function HomepageProductSection({
                   </div>
                 )}
               </div>
+
               <div className="mt-3">
                 <h3 className="text-sm text-white font-light leading-tight">{product.name || product.title}</h3>
                 {isSoldOut ? (
                   <p className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-zinc-500">Notify me when available</p>
                 ) : (
-                  <div className="mt-1.5 flex items-center gap-3">
-                    <span className="text-sm text-zinc-400">${price.toFixed(2)}</span>
-                    <span className="text-[10px] uppercase tracking-wider text-[#B89C6D]">
-                      Sanctuary ${sanctuaryPrice}
-                    </span>
+                  <div className="mt-1.5 space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
+                    {isOnSale ? (
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <span className="text-xs text-zinc-600 line-through">${retailPrice.toFixed(2)}</span>
+                        <span className="text-sm text-white">${publicPrice.toFixed(2)}</span>
+                        <span className="text-[9px] uppercase tracking-[0.14em] text-[#B89C6D]">{salePercentage}% off</span>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-zinc-400">${publicPrice.toFixed(2)}</span>
+                    )}
+                    <div className="text-[10px] uppercase tracking-wider text-[#B89C6D]">
+                      Sanctuary ${sanctuaryPrice}{isOnSale ? ' · additional 10%' : ''}
+                    </div>
                   </div>
                 )}
               </div>
