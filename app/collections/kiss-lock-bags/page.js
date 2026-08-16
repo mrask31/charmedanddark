@@ -10,7 +10,7 @@ const KISS_LOCK_BAG_HANDLES = [
   'ghost-in-strawberry-field-in-linen-blend',
   'desert-moon-cowgirl-kiss-lock-bag',
   'ghost-cat-pumpkin-kiss-lock-bag',
-  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend-material',
+  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
   'moon-moth-vintage-kiss-lock-bag-in-linen-blended-material',
   'marigold-memory-sugar-skull-kiss-lock-bag',
   'celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material',
