@@ -4,22 +4,12 @@
  * GET  /api/admin/promotions       → List all promotions (any status)
  * POST /api/admin/promotions       → Create new promotion
  *
- * Auth: Bearer PROMOTIONS_ADMIN_SECRET
+ * Auth: HttpOnly admin session or Bearer PROMOTIONS_ADMIN_SECRET
  */
 
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
-import { invalidatePromotionCache } from '@/lib/promotions';
-
-function isAuthorized(request) {
-  const authHeader = request.headers.get('authorization');
-  const promoSecret = process.env.PROMOTIONS_ADMIN_SECRET;
-  const syncSecret = process.env.SYNC_SECRET_KEY || 'charmed-dark-sync-2026';
-  if (promoSecret && authHeader === `Bearer ${promoSecret}`) return true;
-  if (authHeader === `Bearer ${syncSecret}`) return true;
-  return false;
-}
+import { isPromotionAdminRequest } from '@/lib/admin/promotion-auth';
 
 function generateSlug(name) {
   return name
@@ -30,7 +20,7 @@ function generateSlug(name) {
 }
 
 export async function GET(request) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -50,15 +40,14 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     const body = await request.json();
-
-    // Validate required fields
     const { name, start_date, end_date, promotion_type } = body;
+
     if (!name || !start_date || !end_date || !promotion_type) {
       return NextResponse.json(
         { error: 'name, start_date, end_date, and promotion_type are required' },
@@ -66,15 +55,15 @@ export async function POST(request) {
       );
     }
 
-    // Validate dates
-    if (new Date(end_date) <= new Date(start_date)) {
-      return NextResponse.json(
-        { error: 'end_date must be after start_date' },
-        { status: 400 }
-      );
+    const startDate = new Date(start_date);
+    const endDate = new Date(end_date);
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      return NextResponse.json({ error: 'start_date and end_date must be valid dates' }, { status: 400 });
+    }
+    if (endDate <= startDate) {
+      return NextResponse.json({ error: 'end_date must be after start_date' }, { status: 400 });
     }
 
-    // Validate promotion_type and corresponding field
     if (promotion_type === 'percentage') {
       if (!body.percentage || body.percentage <= 0 || body.percentage > 100) {
         return NextResponse.json(
@@ -96,11 +85,16 @@ export async function POST(request) {
       );
     }
 
-    // Generate slug if not provided
-    const slug = body.slug || generateSlug(name);
-
-    // Sanitize text fields
     const sanitize = (val) => (typeof val === 'string' ? val.trim().substring(0, 500) : val);
+    const slug = sanitize(body.slug || generateSlug(name))
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-|-$/g, '')
+      .substring(0, 80);
+
+    if (!slug) {
+      return NextResponse.json({ error: 'A valid slug is required' }, { status: 400 });
+    }
 
     const insertData = {
       name: sanitize(name),
@@ -113,6 +107,7 @@ export async function POST(request) {
       percentage: body.percentage || null,
       fixed_amount: body.fixed_amount || null,
       applies_to: body.applies_to || 'specific',
+      priority: Number.isFinite(Number(body.priority)) ? Number(body.priority) : 0,
       exclude_sanctuary: body.exclude_sanctuary || false,
       hero_title: sanitize(body.hero_title) || null,
       hero_subtitle: sanitize(body.hero_subtitle) || null,
