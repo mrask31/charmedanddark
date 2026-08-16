@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import PromotionAdminGate from '@/components/admin/PromotionAdminGate';
+import AdminSessionGate from '@/components/admin/AdminSessionGate';
 import {
   PROMOTION_ADMIN_COOKIE,
   isPromotionAdminConfigured,
@@ -13,11 +13,13 @@ export default async function PromotionsAdminLayout({ children }) {
   const token = cookieStore.get(PROMOTION_ADMIN_COOKIE)?.value;
 
   return (
-    <PromotionAdminGate
+    <AdminSessionGate
       initialAuthenticated={isPromotionAdminSessionToken(token)}
       configured={isPromotionAdminConfigured()}
+      title="Promotions Admin"
+      description="Enter the admin key to manage promotions."
     >
       {children}
-    </PromotionAdminGate>
+    </AdminSessionGate>
   );
 }
