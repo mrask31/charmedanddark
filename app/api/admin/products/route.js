@@ -36,10 +36,10 @@ export async function GET(request) {
       ? normalized.filter((product) => {
           const haystack = `${product.name} ${product.slug || ''} ${product.category || ''}`.toLowerCase();
           return haystack.includes(query);
-        })
+        }).slice(0, 50)
       : normalized;
 
-    return NextResponse.json({ products: products.slice(0, 50) });
+    return NextResponse.json({ products });
   } catch (err) {
     console.error('[Admin Products] Picker error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
