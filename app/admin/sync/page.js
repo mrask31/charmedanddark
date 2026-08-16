@@ -1,12 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
-function SyncPanel() {
-  const searchParams = useSearchParams();
-  const key = searchParams.get("key");
+export default function AdminSyncPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -17,7 +13,12 @@ function SyncPanel() {
   const [forceResult, setForceResult] = useState(null);
   const [forceError, setForceError] = useState(null);
 
-  if (key !== "charmed-dark-admin") return null;
+  async function runAdminAction(url, errorMessage) {
+    const res = await fetch(url, { method: "POST" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || errorMessage);
+    return data;
+  }
 
   async function handleSync() {
     setLoading(true);
@@ -25,17 +26,7 @@ function SyncPanel() {
     setError(null);
 
     try {
-      const res = await fetch("/api/admin/sync-products", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer charmed-dark-sync-2026",
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Sync failed");
-      setResult(data);
+      setResult(await runAdminAction("/api/admin/sync-products", "Sync failed"));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -49,17 +40,7 @@ function SyncPanel() {
     setDescError(null);
 
     try {
-      const res = await fetch("/api/admin/generate-descriptions", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer charmed-dark-sync-2026",
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Generation failed");
-      setDescResult(data);
+      setDescResult(await runAdminAction("/api/admin/generate-descriptions", "Generation failed"));
     } catch (err) {
       setDescError(err.message);
     } finally {
@@ -73,17 +54,7 @@ function SyncPanel() {
     setForceError(null);
 
     try {
-      const res = await fetch("/api/admin/generate-descriptions?force=true", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer charmed-dark-sync-2026",
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Force generation failed");
-      setForceResult(data);
+      setForceResult(await runAdminAction("/api/admin/generate-descriptions?force=true", "Force generation failed"));
     } catch (err) {
       setForceError(err.message);
     } finally {
@@ -124,7 +95,7 @@ function SyncPanel() {
           marginBottom: "2.5rem",
         }}
       >
-        Product Sync
+        Commerce Admin
       </p>
 
       <button
@@ -158,9 +129,9 @@ function SyncPanel() {
           {result.errors?.length > 0 && (
             <div style={{ marginTop: "1rem", color: "#e55" }}>
               <p>Errors ({result.errors.length}):</p>
-              {result.errors.map((e, i) => (
-                <p key={i} style={{ fontSize: "0.75rem" }}>
-                  {e.product}: {e.error}
+              {result.errors.map((entry, index) => (
+                <p key={index} style={{ fontSize: "0.75rem" }}>
+                  {entry.product}: {entry.error}
                 </p>
               ))}
             </div>
@@ -169,15 +140,13 @@ function SyncPanel() {
       )}
 
       {error && (
-        <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
+        <p role="alert" style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
           {error}
         </p>
       )}
 
-      {/* Divider */}
-      <div style={{ width: '200px', height: '1px', backgroundColor: 'rgba(201,169,110,0.2)', margin: '2.5rem 0' }} />
+      <div style={{ width: "200px", height: "1px", backgroundColor: "rgba(201,169,110,0.2)", margin: "2.5rem 0" }} />
 
-      {/* AI Description Generator */}
       <button
         onClick={handleDescriptions}
         disabled={descLoading || loading}
@@ -196,7 +165,7 @@ function SyncPanel() {
           transition: "all 0.2s",
         }}
       >
-        {descLoading ? "Generating descriptions... This may take 2-3 minutes." : "Generate Descriptions with AI"}
+        {descLoading ? "Generating descriptions... This may take a few minutes." : "Generate Descriptions with AI"}
       </button>
 
       {descResult && (
@@ -208,9 +177,9 @@ function SyncPanel() {
           {descResult.errors?.length > 0 && (
             <div style={{ marginTop: "1rem", color: "#e55" }}>
               <p>Errors ({descResult.errors.length}):</p>
-              {descResult.errors.map((e, i) => (
-                <p key={i} style={{ fontSize: "0.75rem" }}>
-                  {e.product || 'Unknown'}: {e.error}
+              {descResult.errors.map((entry, index) => (
+                <p key={index} style={{ fontSize: "0.75rem" }}>
+                  {entry.product || "Unknown"}: {entry.error}
                 </p>
               ))}
             </div>
@@ -219,15 +188,13 @@ function SyncPanel() {
       )}
 
       {descError && (
-        <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
+        <p role="alert" style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
           {descError}
         </p>
       )}
 
-      {/* Divider */}
-      <div style={{ width: '200px', height: '1px', backgroundColor: 'rgba(232,228,220,0.1)', margin: '2.5rem 0' }} />
+      <div style={{ width: "200px", height: "1px", backgroundColor: "rgba(232,228,220,0.1)", margin: "2.5rem 0" }} />
 
-      {/* Force Regenerate ALL */}
       <button
         onClick={handleForceRegenerate}
         disabled={forceLoading || descLoading || loading}
@@ -246,10 +213,10 @@ function SyncPanel() {
           transition: "all 0.2s",
         }}
       >
-        {forceLoading ? "Regenerating all descriptions... This will take 4-5 minutes." : "Force Regenerate ALL Descriptions"}
+        {forceLoading ? "Regenerating all descriptions..." : "Force Regenerate ALL Descriptions"}
       </button>
       <p style={{ marginTop: "0.5rem", fontSize: "0.65rem", color: "rgba(232,228,220,0.3)" }}>
-        Warning: Overwrites all descriptions. Run only once.
+        Warning: overwrites all descriptions. Use only when intentionally replacing the catalog copy.
       </p>
 
       {forceResult && (
@@ -261,9 +228,9 @@ function SyncPanel() {
           {forceResult.errors?.length > 0 && (
             <div style={{ marginTop: "1rem", color: "#e55" }}>
               <p>Errors ({forceResult.errors.length}):</p>
-              {forceResult.errors.map((e, i) => (
-                <p key={i} style={{ fontSize: "0.75rem" }}>
-                  {e.product || 'Unknown'}: {e.error}
+              {forceResult.errors.map((entry, index) => (
+                <p key={index} style={{ fontSize: "0.75rem" }}>
+                  {entry.product || "Unknown"}: {entry.error}
                 </p>
               ))}
             </div>
@@ -272,18 +239,10 @@ function SyncPanel() {
       )}
 
       {forceError && (
-        <p style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
+        <p role="alert" style={{ marginTop: "1.5rem", color: "#e55", fontSize: "0.85rem" }}>
           {forceError}
         </p>
       )}
     </div>
-  );
-}
-
-export default function AdminSyncPage() {
-  return (
-    <Suspense fallback={null}>
-      <SyncPanel />
-    </Suspense>
   );
 }
