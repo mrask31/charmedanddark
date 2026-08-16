@@ -1,12 +1,16 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { generateSlug } from '@/lib/blog/slug';
 import { NextResponse } from 'next/server';
+import { isSyncAdminRequest } from '@/lib/admin/sync-auth';
 
 export async function POST(request) {
+  if (!isSyncAdminRequest(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { topic, primary_keyword, featured_product_ids } = await request.json();
 
-    // Validate required fields
     if (!topic || !primary_keyword) {
       return NextResponse.json(
         { error: 'topic and primary_keyword are required' },
@@ -14,7 +18,6 @@ export async function POST(request) {
       );
     }
 
-    // Query products for context if featured_product_ids provided
     let productContext = '';
     if (featured_product_ids && featured_product_ids.length > 0) {
       const { data: products, error: productsError } = await supabaseAdmin
@@ -25,12 +28,11 @@ export async function POST(request) {
       if (productsError) {
         console.error('Error fetching products:', productsError);
       } else if (products && products.length > 0) {
-        productContext = '\n\nFeatured products:\n' + 
-          products.map(p => `- ${p.name}: ${p.lore}`).join('\n');
+        productContext = '\n\nFeatured products:\n' +
+          products.map((product) => `- ${product.name}: ${product.lore}`).join('\n');
       }
     }
 
-    // Construct Claude prompt
     const prompt = `You are a content writer for Charmed & Dark, a gothic lifestyle brand. Write a blog post about ${topic}.
 
 Primary keyword: ${primary_keyword}${productContext}
@@ -45,7 +47,6 @@ Style: Sophisticated, atmospheric, gothic aesthetic. Use evocative language that
 
 Return ONLY valid JSON, no additional text.`;
 
-    // Call Claude API
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -75,15 +76,12 @@ Return ONLY valid JSON, no additional text.`;
     }
 
     const claudeData = await claudeResponse.json();
-    
-    // Extract the text content from Claude's response
     const contentText = claudeData.content[0].text;
-    
-    // Parse JSON response from Claude
+
     let generatedContent;
     try {
       generatedContent = JSON.parse(contentText);
-    } catch (parseError) {
+    } catch {
       console.error('Failed to parse Claude response:', contentText);
       return NextResponse.json(
         { error: 'Invalid response format from AI' },
@@ -93,7 +91,6 @@ Return ONLY valid JSON, no additional text.`;
 
     const { title, meta_description, excerpt, body_markdown } = generatedContent;
 
-    // Validate generated content
     if (!title || !meta_description || !excerpt || !body_markdown) {
       return NextResponse.json(
         { error: 'Incomplete content generated' },
@@ -101,10 +98,8 @@ Return ONLY valid JSON, no additional text.`;
       );
     }
 
-    // Generate URL-safe slug from title
     const slug = generateSlug(title);
 
-    // Insert into blog_posts
     const { data: post, error: insertError } = await supabaseAdmin
       .from('blog_posts')
       .insert({
@@ -130,7 +125,6 @@ Return ONLY valid JSON, no additional text.`;
       );
     }
 
-    // Return 201 with created post
     return NextResponse.json(post, { status: 201 });
   } catch (err) {
     console.error('Generate blog draft error:', err);

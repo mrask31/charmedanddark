@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-export default function PromotionAdminGate({ children, initialAuthenticated, configured }) {
+export default function AdminSessionGate({
+  children,
+  initialAuthenticated,
+  configured,
+  title = "Admin",
+  description = "Enter the admin key to continue.",
+}) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [secret, setSecret] = useState("");
   const [error, setError] = useState(null);
@@ -43,7 +49,7 @@ export default function PromotionAdminGate({ children, initialAuthenticated, con
     return (
       <div style={{ minHeight: "100vh", backgroundColor: "#08080F", color: "#e8e4dc", fontFamily: "Inter, sans-serif", padding: "2rem", display: "grid", placeItems: "center" }}>
         <div style={{ width: "100%", maxWidth: "520px", border: "1px solid rgba(239,68,68,0.25)", backgroundColor: "rgba(14,14,26,0.8)", padding: "2rem" }}>
-          <h1 style={{ fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: "1.6rem", fontWeight: 400, margin: 0 }}>Promotions Admin</h1>
+          <h1 style={{ fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: "1.6rem", fontWeight: 400, margin: 0 }}>{title}</h1>
           <p style={{ color: "#ef4444", fontSize: "0.8rem", marginTop: "1rem" }}>Admin access is not configured.</p>
           <p style={{ color: "#a89a80", fontSize: "0.75rem", lineHeight: 1.6 }}>
             Set the server-only <code style={{ color: "#c9a96e" }}>PROMOTIONS_ADMIN_SECRET</code> environment variable, then redeploy.
@@ -58,13 +64,13 @@ export default function PromotionAdminGate({ children, initialAuthenticated, con
       <div style={{ minHeight: "100vh", backgroundColor: "#08080F", color: "#e8e4dc", fontFamily: "Inter, sans-serif", padding: "2rem", display: "grid", placeItems: "center" }}>
         <form onSubmit={handleLogin} style={{ width: "100%", maxWidth: "420px", border: "1px solid rgba(201,169,110,0.2)", backgroundColor: "rgba(14,14,26,0.8)", padding: "2rem" }}>
           <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a96e", margin: 0 }}>Charmed & Dark</p>
-          <h1 style={{ fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: "1.7rem", fontWeight: 400, margin: "0.35rem 0 0.5rem" }}>Promotions Admin</h1>
+          <h1 style={{ fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: "1.7rem", fontWeight: 400, margin: "0.35rem 0 0.5rem" }}>{title}</h1>
           <p style={{ color: "#6b6760", fontSize: "0.75rem", lineHeight: 1.5, marginBottom: "1.5rem" }}>
-            Enter the promotion admin key. Access is stored in a secure, HttpOnly session cookie and the key is never placed in the URL or browser bundle.
+            {description} Access is stored in a secure, HttpOnly session cookie and the key is never placed in the URL or browser bundle.
           </p>
-          <label htmlFor="promotion-admin-secret" style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#a89a80", marginBottom: "0.4rem" }}>Admin key</label>
+          <label htmlFor="admin-session-secret" style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#a89a80", marginBottom: "0.4rem" }}>Admin key</label>
           <input
-            id="promotion-admin-secret"
+            id="admin-session-secret"
             type="password"
             autoComplete="current-password"
             value={secret}

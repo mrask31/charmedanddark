@@ -8,7 +8,7 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-export default async function PromotionsAdminLayout({ children }) {
+export default async function SyncAdminLayout({ children }) {
   const cookieStore = await cookies();
   const token = cookieStore.get(PROMOTION_ADMIN_COOKIE)?.value;
 
@@ -16,8 +16,8 @@ export default async function PromotionsAdminLayout({ children }) {
     <AdminSessionGate
       initialAuthenticated={isPromotionAdminSessionToken(token)}
       configured={isPromotionAdminConfigured()}
-      title="Promotions Admin"
-      description="Enter the admin key to manage promotions."
+      title="Commerce Admin"
+      description="Enter the admin key to run product sync and catalog maintenance."
     >
       {children}
     </AdminSessionGate>
