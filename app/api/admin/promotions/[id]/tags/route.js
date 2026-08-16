@@ -4,24 +4,16 @@
  * POST /api/admin/promotions/[id]/tags
  *   Body: { add: ["summerween", ...], remove: ["halloween", ...] }
  *
- * Auth: Bearer PROMOTIONS_ADMIN_SECRET
+ * Auth: HttpOnly admin session or Bearer PROMOTIONS_ADMIN_SECRET
  */
 
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { invalidatePromotionCache } from '@/lib/promotions';
-
-function isAuthorized(request) {
-  const authHeader = request.headers.get('authorization');
-  const promoSecret = process.env.PROMOTIONS_ADMIN_SECRET;
-  const syncSecret = process.env.SYNC_SECRET_KEY || 'charmed-dark-sync-2026';
-  if (promoSecret && authHeader === `Bearer ${promoSecret}`) return true;
-  if (authHeader === `Bearer ${syncSecret}`) return true;
-  return false;
-}
+import { isPromotionAdminRequest } from '@/lib/admin/promotion-auth';
 
 export async function POST(request, { params }) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -29,6 +21,10 @@ export async function POST(request, { params }) {
 
   try {
     const { add = [], remove = [] } = await request.json();
+
+    if (!Array.isArray(add) || !Array.isArray(remove)) {
+      return NextResponse.json({ error: 'add and remove must be arrays' }, { status: 400 });
+    }
 
     const { data: promo } = await supabaseAdmin
       .from('promotions')
@@ -41,34 +37,48 @@ export async function POST(request, { params }) {
     }
 
     if (remove.length > 0) {
-      await supabaseAdmin
-        .from('promotion_tags')
-        .delete()
-        .eq('promotion_id', id)
-        .in('tag', remove);
+      const normalizedRemove = remove
+        .filter((tag) => typeof tag === 'string')
+        .map((tag) => tag.trim().toLowerCase())
+        .filter(Boolean);
+
+      if (normalizedRemove.length > 0) {
+        const { error } = await supabaseAdmin
+          .from('promotion_tags')
+          .delete()
+          .eq('promotion_id', id)
+          .in('tag', normalizedRemove);
+        if (error) throw error;
+      }
     }
 
     if (add.length > 0) {
-      const rows = add.map((tag) => ({
-        promotion_id: id,
-        tag: tag.trim().toLowerCase(),
-      }));
+      const rows = add
+        .filter((tag) => typeof tag === 'string' && tag.trim())
+        .map((tag) => ({
+          promotion_id: id,
+          tag: tag.trim().toLowerCase().substring(0, 100),
+        }));
 
-      await supabaseAdmin
-        .from('promotion_tags')
-        .upsert(rows, { onConflict: 'promotion_id,tag' });
+      if (rows.length > 0) {
+        const { error } = await supabaseAdmin
+          .from('promotion_tags')
+          .upsert(rows, { onConflict: 'promotion_id,tag' });
+        if (error) throw error;
+      }
     }
 
     invalidatePromotionCache();
 
-    const { data: current } = await supabaseAdmin
+    const { data: current, error: currentError } = await supabaseAdmin
       .from('promotion_tags')
       .select('tag')
       .eq('promotion_id', id);
+    if (currentError) throw currentError;
 
     return NextResponse.json({
       message: 'Tag targeting updated',
-      tags: (current || []).map((r) => r.tag),
+      tags: (current || []).map((row) => row.tag),
     });
   } catch (err) {
     console.error('[Admin Promotions] Tags error:', err);
