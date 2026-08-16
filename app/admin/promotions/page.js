@@ -1,10 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense } from "react";
-
-const API_SECRET = "charmed-dark-sync-2026";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 function statusColor(status) {
   switch (status) {
@@ -22,28 +19,23 @@ function formatDate(d) {
   return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function PromotionsPanel() {
-  const searchParams = useSearchParams();
+export default function AdminPromotionsPage() {
   const router = useRouter();
-  const key = searchParams.get("key");
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (key === "charmed-dark-admin") fetchPromotions();
-  }, [key]);
-
-  if (key !== "charmed-dark-admin") return null;
+    fetchPromotions();
+  }, []);
 
   async function fetchPromotions() {
     setLoading(true);
+    setError(null);
     try {
-      const res = await fetch("/api/admin/promotions", {
-        headers: { Authorization: `Bearer ${API_SECRET}` },
-      });
-      if (!res.ok) throw new Error("Failed to load promotions");
+      const res = await fetch("/api/admin/promotions", { cache: "no-store" });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load promotions");
       setPromotions(data.promotions || []);
     } catch (err) {
       setError(err.message);
@@ -55,12 +47,10 @@ function PromotionsPanel() {
   async function handleArchive(id, name) {
     if (!confirm(`Archive "${name}"? This will disable the promotion.`)) return;
     try {
-      const res = await fetch(`/api/admin/promotions/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${API_SECRET}` },
-      });
-      if (!res.ok) throw new Error("Archive failed");
-      fetchPromotions();
+      const res = await fetch(`/api/admin/promotions/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Archive failed");
+      await fetchPromotions();
     } catch (err) {
       alert(err.message);
     }
@@ -68,7 +58,6 @@ function PromotionsPanel() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#08080F", color: "#e8e4dc", fontFamily: "Inter, sans-serif", padding: "2rem" }}>
-      {/* Header */}
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
           <div>
@@ -80,7 +69,7 @@ function PromotionsPanel() {
             </p>
           </div>
           <button
-            onClick={() => router.push(`/admin/promotions/new?key=${key}`)}
+            onClick={() => router.push("/admin/promotions/new")}
             style={{
               padding: "0.6rem 1.5rem", fontSize: "0.75rem", fontWeight: 400, letterSpacing: "0.1em",
               textTransform: "uppercase", color: "#000", backgroundColor: "#c9a96e", border: "none",
@@ -91,19 +80,17 @@ function PromotionsPanel() {
           </button>
         </div>
 
-        {/* Loading / Error */}
         {loading && <p style={{ color: "#6b6760", fontSize: "0.85rem" }}>Loading promotions...</p>}
-        {error && <p style={{ color: "#e55", fontSize: "0.85rem" }}>{error}</p>}
+        {error && <p role="alert" style={{ color: "#e55", fontSize: "0.85rem" }}>{error}</p>}
 
-        {/* Promotions Table */}
-        {!loading && promotions.length === 0 && (
+        {!loading && !error && promotions.length === 0 && (
           <div style={{ textAlign: "center", padding: "4rem 0", color: "#6b6760" }}>
             <p style={{ fontSize: "0.9rem", fontStyle: "italic" }}>No promotions yet.</p>
             <p style={{ fontSize: "0.75rem", marginTop: "0.5rem" }}>Create your first campaign to get started.</p>
           </div>
         )}
 
-        {!loading && promotions.length > 0 && (
+        {!loading && !error && promotions.length > 0 && (
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem" }}>
               <thead>
@@ -134,13 +121,11 @@ function PromotionsPanel() {
                     <td style={{ padding: "0.75rem 0.5rem", fontSize: "0.75rem", color: "#a89a80" }}>
                       {formatDate(p.start_date)} — {formatDate(p.end_date)}
                     </td>
-                    <td style={{ padding: "0.75rem 0.5rem", textAlign: "center" }}>
-                      {p.priority || 0}
-                    </td>
+                    <td style={{ padding: "0.75rem 0.5rem", textAlign: "center" }}>{p.priority || 0}</td>
                     <td style={{ padding: "0.75rem 0.5rem" }}>
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <button
-                          onClick={() => router.push(`/admin/promotions/${p.id}?key=${key}`)}
+                          onClick={() => router.push(`/admin/promotions/${p.id}`)}
                           style={{ fontSize: "0.7rem", color: "#c9a96e", background: "none", border: "1px solid rgba(201,169,110,0.3)", padding: "0.3rem 0.6rem", cursor: "pointer" }}
                         >
                           Edit
@@ -163,13 +148,5 @@ function PromotionsPanel() {
         )}
       </div>
     </div>
-  );
-}
-
-export default function AdminPromotionsPage() {
-  return (
-    <Suspense fallback={null}>
-      <PromotionsPanel />
-    </Suspense>
   );
 }

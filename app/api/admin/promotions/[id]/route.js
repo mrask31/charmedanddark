@@ -5,32 +5,23 @@
  * PUT    /api/admin/promotions/[id]  → Update promotion fields
  * DELETE /api/admin/promotions/[id]  → Archive (soft-delete) promotion
  *
- * Auth: Bearer PROMOTIONS_ADMIN_SECRET
+ * Auth: HttpOnly admin session or Bearer PROMOTIONS_ADMIN_SECRET
  */
 
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { invalidatePromotionCache } from '@/lib/promotions';
-
-function isAuthorized(request) {
-  const authHeader = request.headers.get('authorization');
-  const promoSecret = process.env.PROMOTIONS_ADMIN_SECRET;
-  const syncSecret = process.env.SYNC_SECRET_KEY || 'charmed-dark-sync-2026';
-  if (promoSecret && authHeader === `Bearer ${promoSecret}`) return true;
-  if (authHeader === `Bearer ${syncSecret}`) return true;
-  return false;
-}
+import { isPromotionAdminRequest } from '@/lib/admin/promotion-auth';
 
 export async function GET(request, { params }) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { id } = await params;
 
   try {
-    // Fetch promotion
     const { data: promotion, error } = await supabaseAdmin
       .from('promotions')
       .select('*')
@@ -41,7 +32,6 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Promotion not found' }, { status: 404 });
     }
 
-    // Fetch targeting data
     const [productsRes, collectionsRes, tagsRes] = await Promise.all([
       supabaseAdmin.from('promotion_products').select('*').eq('promotion_id', id),
       supabaseAdmin.from('promotion_collections').select('*').eq('promotion_id', id),
@@ -61,7 +51,7 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -70,32 +60,30 @@ export async function PUT(request, { params }) {
   try {
     const body = await request.json();
 
-    // Validate dates if provided
-    if (body.start_date && body.end_date) {
-      if (new Date(body.end_date) <= new Date(body.start_date)) {
-        return NextResponse.json({ error: 'end_date must be after start_date' }, { status: 400 });
-      }
+    if (body.start_date && Number.isNaN(new Date(body.start_date).getTime())) {
+      return NextResponse.json({ error: 'start_date must be a valid date' }, { status: 400 });
+    }
+    if (body.end_date && Number.isNaN(new Date(body.end_date).getTime())) {
+      return NextResponse.json({ error: 'end_date must be a valid date' }, { status: 400 });
+    }
+    if (body.start_date && body.end_date && new Date(body.end_date) <= new Date(body.start_date)) {
+      return NextResponse.json({ error: 'end_date must be after start_date' }, { status: 400 });
     }
 
-    // Validate percentage if updating
     if (body.percentage !== undefined && (body.percentage <= 0 || body.percentage > 100)) {
       return NextResponse.json({ error: 'percentage must be between 0.01 and 100' }, { status: 400 });
     }
 
-    // Sanitize text fields
     const sanitize = (val) => (typeof val === 'string' ? val.trim().substring(0, 500) : val);
-
-    // Build update object (only include provided fields)
     const updateData = {};
     const allowedFields = [
       'name', 'slug', 'status', 'enabled', 'start_date', 'end_date',
-      'promotion_type', 'percentage', 'fixed_amount', 'applies_to',
+      'promotion_type', 'percentage', 'fixed_amount', 'applies_to', 'priority',
       'exclude_sanctuary', 'hero_title', 'hero_subtitle', 'hero_cta_text',
       'hero_cta_url', 'accent_color', 'badge_text', 'countdown_enabled',
       'homepage_enabled', 'landing_page_enabled', 'nav_enabled',
       'seo_title', 'seo_description', 'og_image_url', 'shopify_discount_id',
     ];
-
     const textFields = [
       'name', 'slug', 'hero_title', 'hero_subtitle', 'hero_cta_text',
       'badge_text', 'seo_title', 'seo_description',
@@ -105,6 +93,14 @@ export async function PUT(request, { params }) {
       if (body[field] !== undefined) {
         updateData[field] = textFields.includes(field) ? sanitize(body[field]) : body[field];
       }
+    }
+
+    if (updateData.priority !== undefined) {
+      const priority = Number(updateData.priority);
+      if (!Number.isFinite(priority)) {
+        return NextResponse.json({ error: 'priority must be numeric' }, { status: 400 });
+      }
+      updateData.priority = priority;
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -123,7 +119,6 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: 'Promotion not found' }, { status: 404 });
     }
 
-    // Invalidate cache and revalidate pages
     invalidatePromotionCache();
     revalidatePath('/');
     revalidatePath('/sale');
@@ -137,14 +132,13 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-  if (!isAuthorized(request)) {
+  if (!isPromotionAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { id } = await params;
 
   try {
-    // Soft-delete: set status to 'archived', disable
     const { data, error } = await supabaseAdmin
       .from('promotions')
       .update({ status: 'archived', enabled: false })
@@ -160,6 +154,7 @@ export async function DELETE(request, { params }) {
     invalidatePromotionCache();
     revalidatePath('/');
     revalidatePath('/sale');
+    revalidatePath('/shop');
 
     return NextResponse.json({ message: 'Promotion archived', promotion: data });
   } catch (err) {

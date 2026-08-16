@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense } from "react";
+import { useRouter } from "next/navigation";
 
-const API_SECRET = "charmed-dark-sync-2026";
-
-function CreateForm() {
-  const searchParams = useSearchParams();
+export default function NewPromotionPage() {
   const router = useRouter();
-  const key = searchParams.get("key");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
@@ -37,13 +32,14 @@ function CreateForm() {
     seo_description: "",
   });
 
-  if (key !== "charmed-dark-admin") return null;
-
   function handleChange(field, value) {
-    setForm((f) => ({ ...f, [field]: value }));
-    if (field === "name" && !form.slug) {
-      setForm((f) => ({ ...f, [field]: value, slug: value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") }));
-    }
+    setForm((current) => {
+      const next = { ...current, [field]: value };
+      if (field === "name" && !current.slug) {
+        next.slug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      }
+      return next;
+    });
   }
 
   async function handleSubmit(e) {
@@ -56,21 +52,21 @@ function CreateForm() {
         ...form,
         percentage: form.promotion_type === "percentage" ? parseFloat(form.percentage) : null,
         fixed_amount: form.promotion_type === "fixed_amount" ? parseFloat(form.fixed_amount) : null,
-        priority: parseInt(form.priority) || 0,
+        priority: parseInt(form.priority, 10) || 0,
         start_date: new Date(form.start_date).toISOString(),
         end_date: new Date(form.end_date).toISOString(),
       };
 
       const res = await fetch("/api/admin/promotions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${API_SECRET}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Create failed");
 
-      router.push(`/admin/promotions/${data.id}?key=${key}`);
+      router.push(`/admin/promotions/${data.id}`);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -84,12 +80,12 @@ function CreateForm() {
   };
   const labelStyle = { fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a96e", display: "block", marginBottom: "0.4rem" };
   const sectionStyle = { marginBottom: "2rem" };
-  const gridStyle = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" };
+  const gridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#08080F", color: "#e8e4dc", fontFamily: "Inter, sans-serif", padding: "2rem" }}>
       <div style={{ maxWidth: "700px", margin: "0 auto" }}>
-        <button onClick={() => router.push(`/admin/promotions?key=${key}`)} style={{ fontSize: "0.7rem", color: "#6b6760", background: "none", border: "none", cursor: "pointer", marginBottom: "1rem" }}>
+        <button onClick={() => router.push("/admin/promotions")} style={{ fontSize: "0.7rem", color: "#6b6760", background: "none", border: "none", cursor: "pointer", marginBottom: "1rem" }}>
           ← Back to Promotions
         </button>
 
@@ -101,7 +97,6 @@ function CreateForm() {
         </p>
 
         <form onSubmit={handleSubmit}>
-          {/* Identity */}
           <div style={sectionStyle}>
             <p style={{ ...labelStyle, marginBottom: "1rem", fontSize: "0.7rem" }}>Identity</p>
             <div style={gridStyle}>
@@ -116,7 +111,6 @@ function CreateForm() {
             </div>
           </div>
 
-          {/* Discount */}
           <div style={sectionStyle}>
             <p style={{ ...labelStyle, marginBottom: "1rem", fontSize: "0.7rem" }}>Discount</p>
             <div style={gridStyle}>
@@ -154,7 +148,6 @@ function CreateForm() {
             </div>
           </div>
 
-          {/* Schedule */}
           <div style={sectionStyle}>
             <p style={{ ...labelStyle, marginBottom: "1rem", fontSize: "0.7rem" }}>Schedule</p>
             <div style={gridStyle}>
@@ -169,7 +162,6 @@ function CreateForm() {
             </div>
           </div>
 
-          {/* Presentation */}
           <div style={sectionStyle}>
             <p style={{ ...labelStyle, marginBottom: "1rem", fontSize: "0.7rem" }}>Presentation</p>
             <div style={gridStyle}>
@@ -202,7 +194,6 @@ function CreateForm() {
             </div>
           </div>
 
-          {/* Features */}
           <div style={sectionStyle}>
             <p style={{ ...labelStyle, marginBottom: "1rem", fontSize: "0.7rem" }}>Features</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem" }}>
@@ -220,7 +211,6 @@ function CreateForm() {
             </div>
           </div>
 
-          {/* SEO */}
           <div style={sectionStyle}>
             <p style={{ ...labelStyle, marginBottom: "1rem", fontSize: "0.7rem" }}>SEO (Optional)</p>
             <div>
@@ -233,8 +223,7 @@ function CreateForm() {
             </div>
           </div>
 
-          {/* Submit */}
-          {error && <p style={{ color: "#e55", fontSize: "0.8rem", marginBottom: "1rem" }}>{error}</p>}
+          {error && <p role="alert" style={{ color: "#e55", fontSize: "0.8rem", marginBottom: "1rem" }}>{error}</p>}
           <button
             type="submit"
             disabled={saving}
@@ -249,13 +238,5 @@ function CreateForm() {
         </form>
       </div>
     </div>
-  );
-}
-
-export default function NewPromotionPage() {
-  return (
-    <Suspense fallback={null}>
-      <CreateForm />
-    </Suspense>
   );
 }
