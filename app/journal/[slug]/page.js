@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/client";
+import { enrichProductsWithPromotions } from "@/lib/promotions";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import ProductCallout from "@/components/ProductCallout";
 import EmailSignupCTA from "@/components/EmailSignupCTA";
@@ -28,8 +29,8 @@ async function getPostBySlug(slug) {
 }
 
 /**
- * Query featured products by IDs
- * Requirements: 6.1
+ * Query featured products by IDs and apply the same Promotion Engine used by
+ * the rest of the storefront so journal callouts cannot drift from shop pricing.
  */
 async function getFeaturedProducts(productIds) {
   if (!productIds || productIds.length === 0) {
@@ -38,7 +39,7 @@ async function getFeaturedProducts(productIds) {
 
   const { data, error } = await supabase
     .from("products")
-    .select("id, slug, name, lore, image_url, price, sale_price")
+    .select("id, slug, handle, name, title, lore, description, image_url, image_urls, price, category, collection, tags")
     .in("id", productIds)
     .eq("hidden", false);
 
@@ -46,7 +47,7 @@ async function getFeaturedProducts(productIds) {
     return [];
   }
 
-  return data;
+  return enrichProductsWithPromotions(data);
 }
 
 /**
@@ -123,23 +124,18 @@ export async function generateMetadata({ params }) {
 export default async function JournalEntry({ params }) {
   const { slug } = await params;
 
-  // Query post by slug
   const post = await getPostBySlug(slug);
 
-  // Return 404 if post doesn't exist
   if (!post) {
     return notFound();
   }
 
-  // Query featured products
   const featuredProducts = await getFeaturedProducts(
     post.featured_product_ids || []
   );
 
-  // Extract product slugs for markdown parser
-  const productSlugs = featuredProducts.map((p) => p.slug);
+  const productSlugs = featuredProducts.map((p) => p.slug || p.handle);
 
-  // Format publish date
   const publishDate = new Date(post.publish_date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -148,9 +144,7 @@ export default async function JournalEntry({ params }) {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Hero Section */}
       <article className="max-w-4xl mx-auto px-4 py-16">
-        {/* Featured Image */}
         {post.featured_image_url && (
           <div className="relative w-full aspect-[16/9] mb-8 overflow-hidden">
             <Image
@@ -164,7 +158,6 @@ export default async function JournalEntry({ params }) {
           </div>
         )}
 
-        {/* Title */}
         <h1
           className="font-serif text-5xl md:text-6xl mb-6 uppercase tracking-widest"
           style={{ fontFamily: "Georgia, serif" }}
@@ -172,14 +165,12 @@ export default async function JournalEntry({ params }) {
           {post.title}
         </h1>
 
-        {/* Author and Publish Date */}
         <div className="flex items-center gap-4 text-zinc-400 text-sm uppercase tracking-wider mb-12 pb-8 border-b border-white/10">
           <span>By {post.author}</span>
           <span>•</span>
           <time dateTime={post.publish_date}>{publishDate}</time>
         </div>
 
-        {/* Article Body with Markdown Rendering */}
         <div className="prose prose-invert max-w-none">
           <MarkdownRenderer
             content={post.body_markdown}
@@ -187,7 +178,6 @@ export default async function JournalEntry({ params }) {
           />
         </div>
 
-        {/* Featured Product Callouts */}
         {featuredProducts.length > 0 && (
           <div className="mt-12">
             {featuredProducts.map((product) => (
@@ -196,13 +186,11 @@ export default async function JournalEntry({ params }) {
           </div>
         )}
 
-        {/* Email Signup CTA */}
         <div className="mt-16">
           <EmailSignupCTA />
         </div>
       </article>
 
-      {/* JSON-LD BlogPosting structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
