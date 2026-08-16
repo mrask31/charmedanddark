@@ -8,19 +8,17 @@ import { buildCartAttributes, getAttributionProps } from '@/lib/attribution';
 
 export default function SlideOutCart() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, sanctuarySubtotal, clearCart } = useCart();
-  const { isMember } = useAuth();
+  const { isMember, supabase } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [inventoryNotices, setInventoryNotices] = useState({});
   const [checkoutBlocked, setCheckoutBlocked] = useState(false);
   const prevIsOpen = useRef(false);
 
-  // Clear checkout-blocked state when cart items change (user adjusted quantities)
   useEffect(() => {
     if (checkoutBlocked) setCheckoutBlocked(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  // Fire cart_opened when cart transitions from closed → open
   useEffect(() => {
     if (isOpen && !prevIsOpen.current) {
       const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -35,7 +33,6 @@ export default function SlideOutCart() {
   }, [isOpen, items, subtotal]);
 
   async function handleCheckout() {
-    // ── Checkout Guard: validate cart quantities against available inventory ──
     const overStockItems = items.filter(
       (item) => item.availableQty != null && item.quantity > item.availableQty
     );
@@ -71,13 +68,19 @@ export default function SlideOutCart() {
       url: typeof window !== 'undefined' ? window.location.href : undefined,
       ...getAttributionProps(),
     });
+
     try {
-      // Include attribution data for Shopify cart attributes
       const attribution = buildCartAttributes();
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = { 'Content-Type': 'application/json' };
+      if (session?.access_token) {
+        headers.Authorization = `Bearer ${session.access_token}`;
+      }
+
       const response = await fetch('/api/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, isMember, attribution }),
+        headers,
+        body: JSON.stringify({ items, attribution }),
       });
 
       const data = await response.json();
@@ -99,15 +102,15 @@ export default function SlideOutCart() {
   const FREE_SHIPPING_THRESHOLD = 100;
   const MID_TIER_THRESHOLD = 50;
 
-  function getShippingBanner(subtotal) {
-    if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+  function getShippingBanner(value) {
+    if (value >= FREE_SHIPPING_THRESHOLD) {
       return { message: "🖤 You've unlocked free shipping!", type: 'success' };
     }
-    if (subtotal >= MID_TIER_THRESHOLD) {
-      const remaining = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2);
+    if (value >= MID_TIER_THRESHOLD) {
+      const remaining = (FREE_SHIPPING_THRESHOLD - value).toFixed(2);
       return { message: `You're $${remaining} away from FREE shipping!`, type: 'progress' };
     }
-    const remaining = (MID_TIER_THRESHOLD - subtotal).toFixed(2);
+    const remaining = (MID_TIER_THRESHOLD - value).toFixed(2);
     return { message: `You're $${remaining} away from discounted shipping ($4.99)!`, type: 'progress' };
   }
 
@@ -117,27 +120,14 @@ export default function SlideOutCart() {
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/60 z-40"
-        onClick={() => setIsOpen(false)}
-      />
+      <div className="fixed inset-0 bg-black/60 z-40" onClick={() => setIsOpen(false)} />
 
-      {/* Cart Panel */}
       <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#08080f] border-l border-zinc-800 z-50 flex flex-col">
-        
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-800">
           <h2 className="text-white uppercase tracking-widest text-sm font-light">Your Selection</h2>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="text-zinc-400 hover:text-white transition-colors duration-160"
-          >
-            Close
-          </button>
+          <button onClick={() => setIsOpen(false)} className="text-zinc-400 hover:text-white transition-colors duration-160">Close</button>
         </div>
 
-        {/* Shipping Progress Banner */}
         {items.length > 0 && (
           <div className={`mx-4 mt-3 mb-1 rounded-md px-3 py-2 text-center text-sm transition-all duration-300 ${
             shippingBanner.type === 'success'
@@ -146,111 +136,91 @@ export default function SlideOutCart() {
           }`}>
             {shippingBanner.type === 'progress' && (
               <div className="w-full bg-white/10 rounded-full h-1 mb-2">
-                <div
-                  className="bg-[#c9a96e] h-1 rounded-full transition-all duration-500"
-                  style={{ width: `${Math.min((subtotal / 100) * 100, 100)}%` }}
-                />
+                <div className="bg-[#c9a96e] h-1 rounded-full transition-all duration-500" style={{ width: `${Math.min(subtotal, 100)}%` }} />
               </div>
             )}
             <span>{shippingBanner.message}</span>
           </div>
         )}
 
-        {/* Member discount badge */}
         {items.length > 0 && isMember && (
           <div className="mx-4 mt-1 mb-2 text-center text-xs text-[#c9a96e]">
-            🖤 Sanctuary member discount applied
+            🖤 Sanctuary saves an additional 10% on eligible sale prices
           </div>
         )}
 
-        {/* Items */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {items.length === 0 ? (
             <p className="text-zinc-500 text-sm">The cart is empty.</p>
           ) : (
-            items.map(item => (
-              <div key={item.cartKey || item.slug} className="flex gap-4 border-b border-zinc-900 pb-6">
-                {item.imageUrl && (
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    className="w-20 h-20 object-cover"
-                    style={{ borderRadius: '0px' }}
-                  />
-                )}
-                <div className="flex-1">
-                  <h3 className="text-white text-sm">
-                    {item.name}
-                    {item.variant && <span className="text-zinc-500 ml-2">({item.variant})</span>}
-                    {!item.variant && item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
-                  </h3>
-                  <p className="text-zinc-400 text-sm mt-1">
-                    {isMember ? (
-                      <>
-                        <span className="line-through text-zinc-600">${item.price.toFixed(2)}</span>
-                        {' '}
-                        <span className="text-[#c9a96e]">${(item.price * 0.9).toFixed(2)}</span>
-                      </>
-                    ) : (
-                      `$${item.price.toFixed(2)}`
-                    )}
-                  </p>
-                  <div className="flex items-center gap-3 mt-2">
-                    <button
-                      onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity - 1)}
-                      className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
-                    >
-                      -
-                    </button>
-                    <span className="text-white text-sm">{item.quantity}</span>
-                    <button
-                      onClick={() => {
-                        const key = item.cartKey || item.slug;
-                        if (item.availableQty != null && item.quantity >= item.availableQty) {
-                          setInventoryNotices((prev) => ({ ...prev, [key]: `Only ${item.availableQty} available.` }));
-                          posthog?.capture?.('inventory_quantity_limited', {
-                            product_title: item.name, product_handle: item.slug,
-                            variant_title: item.variant || undefined,
-                            variant_id: item.shopifyVariantId || undefined,
-                            requested_quantity: item.quantity + 1,
-                            available_quantity: item.availableQty,
-                            cart_quantity_before: item.quantity, quantity_added: 0,
-                            location: 'cart', url: window.location.href,
-                          });
-                          setTimeout(() => setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; }), 3000);
-                          return;
-                        }
-                        setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; });
-                        updateQuantity(key, item.quantity + 1);
-                      }}
-                      className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
-                    >
-                      +
-                    </button>
-                  </div>
-                  {inventoryNotices[item.cartKey || item.slug] && (
-                    <p className="text-[11px] mt-1" style={{ color: '#c9a96e' }}>
-                      {inventoryNotices[item.cartKey || item.slug]}
-                    </p>
+            items.map(item => {
+              const hasPromotion = item.originalPrice != null && Number(item.originalPrice) > Number(item.price);
+              return (
+                <div key={item.cartKey || item.slug} className="flex gap-4 border-b border-zinc-900 pb-6">
+                  {item.imageUrl && (
+                    <img src={item.imageUrl} alt={item.name} className="w-20 h-20 object-cover" style={{ borderRadius: '0px' }} />
                   )}
+                  <div className="flex-1">
+                    <h3 className="text-white text-sm">
+                      {item.name}
+                      {item.variant && <span className="text-zinc-500 ml-2">({item.variant})</span>}
+                      {!item.variant && item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
+                    </h3>
+                    <div className="text-sm mt-1 space-y-0.5">
+                      <div className="flex flex-wrap items-baseline gap-2">
+                        {hasPromotion && <span className="line-through text-zinc-600">${Number(item.originalPrice).toFixed(2)}</span>}
+                        <span className="text-zinc-300">${Number(item.price).toFixed(2)}</span>
+                      </div>
+                      {isMember && (
+                        <div className="text-[#c9a96e]">${(Number(item.price) * 0.9).toFixed(2)} Sanctuary</div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 mt-2">
+                      <button onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity - 1)} className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800">-</button>
+                      <span className="text-white text-sm">{item.quantity}</span>
+                      <button
+                        onClick={() => {
+                          const key = item.cartKey || item.slug;
+                          if (item.availableQty != null && item.quantity >= item.availableQty) {
+                            setInventoryNotices((prev) => ({ ...prev, [key]: `Only ${item.availableQty} available.` }));
+                            posthog?.capture?.('inventory_quantity_limited', {
+                              product_title: item.name,
+                              product_handle: item.slug,
+                              variant_title: item.variant || undefined,
+                              variant_id: item.shopifyVariantId || undefined,
+                              requested_quantity: item.quantity + 1,
+                              available_quantity: item.availableQty,
+                              cart_quantity_before: item.quantity,
+                              quantity_added: 0,
+                              location: 'cart',
+                              url: window.location.href,
+                            });
+                            setTimeout(() => setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; }), 3000);
+                            return;
+                          }
+                          setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; });
+                          updateQuantity(key, item.quantity + 1);
+                        }}
+                        className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
+                      >+
+                      </button>
+                    </div>
+                    {inventoryNotices[item.cartKey || item.slug] && (
+                      <p className="text-[11px] mt-1" style={{ color: '#c9a96e' }}>{inventoryNotices[item.cartKey || item.slug]}</p>
+                    )}
+                  </div>
+                  <button onClick={() => removeItem(item.cartKey || item.slug)} className="text-zinc-600 hover:text-red-400 text-xs uppercase tracking-wider">Remove</button>
                 </div>
-                <button
-                  onClick={() => removeItem(item.cartKey || item.slug)}
-                  className="text-zinc-600 hover:text-red-400 text-xs uppercase tracking-wider"
-                >
-                  Remove
-                </button>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
-        {/* Footer with pricing and checkout */}
         {items.length > 0 && (
           <div className="border-t border-zinc-800 p-6 space-y-4 bg-[#08080f]">
             <div className="flex justify-between text-sm">
-              <span className="text-zinc-400 uppercase tracking-wider">Public Price</span>
-              <span className={`text-zinc-400 ${isMember ? 'line-through' : ''}`}>${subtotal.toFixed(2)}</span>
+              <span className="text-zinc-400 uppercase tracking-wider">Sale/Public Price</span>
+              <span className={isMember ? 'text-zinc-500 line-through' : 'text-zinc-300'}>${subtotal.toFixed(2)}</span>
             </div>
             {isMember && (
               <div className="flex justify-between text-sm">
@@ -258,20 +228,14 @@ export default function SlideOutCart() {
                 <span className="text-[#B89C6D] font-medium">${sanctuarySubtotal.toFixed(2)}</span>
               </div>
             )}
-            <p className="text-zinc-600 text-xs">Final price calculated by Shopify at checkout.</p>
+            <p className="text-zinc-600 text-xs">
+              Autumn Haunting is applied automatically in Shopify. Verified Sanctuary members receive HOUSE10 on top of eligible sale prices.
+            </p>
 
-            {/* Checkout guard warning */}
             {checkoutBlocked && (
-              <div
-                className="rounded px-3 py-2 text-[11px] leading-relaxed"
-                style={{ backgroundColor: 'rgba(201, 169, 110, 0.08)', border: '1px solid rgba(201, 169, 110, 0.3)', color: '#c9a96e' }}
-              >
-                <p className="font-medium uppercase tracking-wider mb-1">
-                  Some quantities exceed available stock.
-                </p>
-                <p style={{ color: 'rgba(232, 228, 220, 0.6)' }}>
-                  Please adjust before checkout.
-                </p>
+              <div className="rounded px-3 py-2 text-[11px] leading-relaxed" style={{ backgroundColor: 'rgba(201, 169, 110, 0.08)', border: '1px solid rgba(201, 169, 110, 0.3)', color: '#c9a96e' }}>
+                <p className="font-medium uppercase tracking-wider mb-1">Some quantities exceed available stock.</p>
+                <p style={{ color: 'rgba(232, 228, 220, 0.6)' }}>Please adjust before checkout.</p>
               </div>
             )}
 
@@ -284,12 +248,7 @@ export default function SlideOutCart() {
               {isCheckingOut ? 'Opening Checkout...' : 'Proceed to Checkout'}
             </button>
 
-            <button
-              onClick={clearCart}
-              className="w-full text-zinc-600 hover:text-zinc-400 text-xs uppercase tracking-wider py-2 transition-colors duration-160"
-            >
-              Clear Selection
-            </button>
+            <button onClick={clearCart} className="w-full text-zinc-600 hover:text-zinc-400 text-xs uppercase tracking-wider py-2 transition-colors duration-160">Clear Selection</button>
           </div>
         )}
       </div>
