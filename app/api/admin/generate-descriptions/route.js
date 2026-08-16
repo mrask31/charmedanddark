@@ -1,21 +1,19 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { isSyncAdminRequest } from '@/lib/admin/sync-auth';
 
 const NEEDS_REGENERATION = [
-  // Printify boilerplate
   'Place your custom',
   'Add your own design',
   '.: Materials',
   '.: Comes in',
   '.: Please note',
   'Printify',
-  // Gildan/generic apparel boilerplate
   'Gildan Softstyle',
   'ring-spun cotton',
   'Comfort Colors introduces',
   'garment-dyed t-shirt',
   'fully customizable',
-  // Faire vendor boilerplate (generic, non-brand copy)
   'kitch piece',
   'kitsh accessory',
   'Embrace whimsical charm',
@@ -23,7 +21,6 @@ const NEEDS_REGENERATION = [
   'Show off your love for',
   'Take your Halloween',
   'redefines casual comfort',
-  // Generic marketing language
   'Pop them in and you',
   "you won't want to take them off",
   'does all the layering',
@@ -33,21 +30,14 @@ function needsDescription(desc) {
   if (!desc || desc.trim().length === 0) return true;
   const plain = desc.replace(/<[^>]*>/g, '').trim();
   if (plain.length < 80) return true;
-  // Check both raw HTML and stripped text for trigger phrases
   return NEEDS_REGENERATION.some((phrase) => desc.includes(phrase) || plain.includes(phrase));
-}
-
-function isAuthorized(request) {
-  return request.headers.get('authorization') === `Bearer ${process.env.SYNC_SECRET_KEY}`;
 }
 
 function sanitizeDescription(text) {
   if (!text) return text;
-  // Remove markdown code fences
   text = text.replace(/^```json\s*/i, '');
   text = text.replace(/^```\s*/i, '');
   text = text.replace(/```\s*$/i, '');
-  // If it looks like a JSON object, try to extract the description field
   if (text.trim().startsWith('{')) {
     try {
       const parsed = JSON.parse(text);
@@ -57,10 +47,8 @@ function sanitizeDescription(text) {
       text = text.replace(/"\s*\}$/, '');
     }
   }
-  // Remove leading field labels
   text = text.replace(/^"?lore"?\s*:\s*"?/i, '');
   text = text.replace(/^"?description"?\s*:\s*"?/i, '');
-  // Remove trailing quote+brace
   text = text.replace(/"?\s*\}?\s*`*$/, '');
   return text.trim();
 }
@@ -114,7 +102,6 @@ async function updateShopifyDescription(handle, descriptionHtml) {
   if (!domain || !token || !handle) return { error: 'Missing domain, token, or handle' };
 
   try {
-    // First find the product by handle
     const searchRes = await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
       method: 'POST',
       headers: {
@@ -134,7 +121,6 @@ async function updateShopifyDescription(handle, descriptionHtml) {
       return { error: `No Shopify product found for handle: ${handle}` };
     }
 
-    // Verify GID format
     if (!shopifyGid.startsWith('gid://shopify/Product/')) {
       console.error(`[SHOPIFY DESC] Unexpected GID format: ${shopifyGid}`);
       return { error: `Unexpected GID format: ${shopifyGid}` };
@@ -142,7 +128,6 @@ async function updateShopifyDescription(handle, descriptionHtml) {
 
     console.log(`[SHOPIFY DESC] Updating ${handle} (${shopifyGid})`);
 
-    // Update the product description
     const updateRes = await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
       method: 'POST',
       headers: {
@@ -170,7 +155,7 @@ async function updateShopifyDescription(handle, descriptionHtml) {
 
     if (userErrors?.length > 0) {
       console.error(`[SHOPIFY DESC] Update errors for ${handle}:`, userErrors);
-      return { error: userErrors.map((e) => e.message).join(', ') };
+      return { error: userErrors.map((error) => error.message).join(', ') };
     }
 
     if (updateData.errors) {
@@ -190,7 +175,7 @@ function sleep(ms) {
 }
 
 export async function POST(request) {
-  if (!isAuthorized(request)) {
+  if (!isSyncAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -203,7 +188,6 @@ export async function POST(request) {
   const errors = [];
 
   try {
-    // Fetch all products
     const { data: products, error: fetchErr } = await supabaseAdmin
       .from('products')
       .select('id, name, category, price, description, handle, shopify_handle')
@@ -212,12 +196,11 @@ export async function POST(request) {
 
     if (fetchErr) throw new Error(`Supabase fetch: ${fetchErr.message}`);
 
-    const toProcess = forceAll ? products : products.filter((p) => needsDescription(p.description));
+    const toProcess = forceAll ? products : products.filter((product) => needsDescription(product.description));
     skipped = products.length - toProcess.length;
 
     console.log(`[DESCRIPTIONS] ${products.length} total, ${toProcess.length} to generate${forceAll ? ' (FORCE ALL)' : ''}, ${skipped} skipped`);
 
-    // Process in batches of 5
     const BATCH_SIZE = 5;
     for (let i = 0; i < toProcess.length; i += BATCH_SIZE) {
       const batch = toProcess.slice(i, i + BATCH_SIZE);
@@ -227,7 +210,6 @@ export async function POST(request) {
           const description = await generateDescription(product);
           if (!description) throw new Error('Empty response from Anthropic');
 
-          // Update Supabase
           const { error: updateErr } = await supabaseAdmin
             .from('products')
             .update({ description })
@@ -235,7 +217,6 @@ export async function POST(request) {
 
           if (updateErr) throw new Error(`Supabase update: ${updateErr.message}`);
 
-          // Update Shopify (best-effort)
           const handle = product.shopify_handle || product.handle;
           if (handle) {
             try {
@@ -252,17 +233,16 @@ export async function POST(request) {
         })
       );
 
-      for (const r of results) {
-        if (r.status === 'fulfilled') {
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
           generated++;
-          console.log(`  ✓ ${r.value}`);
+          console.log(`  ✓ ${result.value}`);
         } else {
-          errors.push({ error: r.reason?.message || 'Unknown error' });
-          console.error(`  ✗ ${r.reason?.message}`);
+          errors.push({ error: result.reason?.message || 'Unknown error' });
+          console.error(`  ✗ ${result.reason?.message}`);
         }
       }
 
-      // Rate limit delay between batches
       if (i + BATCH_SIZE < toProcess.length) {
         await sleep(1000);
       }
