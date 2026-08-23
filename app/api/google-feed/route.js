@@ -4,7 +4,20 @@
  *
  * Required apparel attributes for Google free listings:
  * g:age_group, g:gender, g:color, g:size, g:item_group_id
+ *
+ * Pricing contract:
+ * - g:price is always the regular Shopify variant price
+ * - g:sale_price is emitted only for an active public Promotion Engine promotion
+ * - Sanctuary/member pricing is intentionally excluded from the public Google feed
+ * - g:custom_label_0 carries the active promotion slug for campaign targeting
  */
+
+import { supabaseAdmin } from '@/lib/supabase/admin';
+import {
+  computePromotionPrice,
+  getActivePromotions,
+  getPromotionForProduct,
+} from '@/lib/promotions/engine';
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
@@ -72,6 +85,34 @@ async function fetchAllProducts() {
   return all;
 }
 
+/**
+ * Promotion targeting is keyed to the Supabase product UUID, while the Merchant
+ * feed is sourced from Shopify. Resolve Shopify handles back to their canonical
+ * Supabase product rows once per feed request so both systems use the exact same
+ * Promotion Engine targeting semantics.
+ */
+async function fetchPromotionProductMap(products) {
+  const handles = [...new Set(products.map((product) => product.handle).filter(Boolean))];
+  if (!handles.length) return new Map();
+
+  const { data, error } = await supabaseAdmin
+    .from('products')
+    .select('id, shopify_handle, handle, category, collection, tags')
+    .in('shopify_handle', handles);
+
+  if (error) {
+    console.error('[GoogleFeed] Failed to resolve promotion product identities:', error.message);
+    return new Map();
+  }
+
+  const byHandle = new Map();
+  for (const product of data || []) {
+    const handle = product.shopify_handle || product.handle;
+    if (handle) byHandle.set(handle, product);
+  }
+  return byHandle;
+}
+
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
@@ -85,7 +126,7 @@ function stripHtml(html) {
 
 function escapeXml(str) {
   if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 }
 
@@ -195,6 +236,10 @@ const POD_VENDORS = ['Printify', 'Charmed & Dark'];
 export async function GET() {
   try {
     const products = await fetchAllProducts();
+    const [promotionProductsByHandle, activePromotions] = await Promise.all([
+      fetchPromotionProductMap(products),
+      getActivePromotions(),
+    ]);
     const channelDesc = 'Charmed & Dark — Premium gothic lifestyle brand.';
 
     let items = '';
@@ -210,6 +255,10 @@ export async function GET() {
       const googleCategory = getGoogleCategory(product.productType);
       const isPod = POD_VENDORS.includes(product.vendor);
       const needsApparelAttrs = isApparelOrAccessory(product.productType, googleCategory);
+      const promotionProduct = promotionProductsByHandle.get(product.handle) || null;
+      const promotion = promotionProduct && activePromotions.length
+        ? await getPromotionForProduct(promotionProduct, activePromotions)
+        : null;
 
       for (const { node: variant } of product.variants.edges) {
         // Build title
@@ -218,9 +267,22 @@ export async function GET() {
           : `${product.title} - ${variant.title}`;
 
         const itemId = variant.sku || variant.id.split('/').pop();
-        const price = `${parseFloat(variant.price.amount).toFixed(2)} ${variant.price.currencyCode}`;
+        const basePrice = parseFloat(variant.price.amount);
+        const price = `${basePrice.toFixed(2)} ${variant.price.currencyCode}`;
         const available = isPod ? true : variant.availableForSale;
         const variantImage = variant.image?.url || primaryImage;
+        const promotionPricing = promotion
+          ? computePromotionPrice(basePrice, promotion, promotionProduct.id)
+          : null;
+        const hasPublicSalePrice = promotionPricing
+          && promotionPricing.displayPrice > 0
+          && promotionPricing.displayPrice < basePrice;
+        const salePriceField = hasPublicSalePrice
+          ? `\n      <g:sale_price>${promotionPricing.displayPrice.toFixed(2)} ${variant.price.currencyCode}</g:sale_price>`
+          : '';
+        const promotionLabelField = hasPublicSalePrice && promotionPricing.promotionSlug
+          ? `\n      <g:custom_label_0>${escapeXml(promotionPricing.promotionSlug)}</g:custom_label_0>`
+          : '';
 
         // Validate image URL
         if (!variantImage || !variantImage.startsWith('https://')) continue;
@@ -261,7 +323,7 @@ export async function GET() {
       <g:description>${desc}</g:description>
       <g:link>${escapeXml(link)}</g:link>
       <g:image_link>${escapeXml(variantImage)}</g:image_link>${additionalImageFields}
-      <g:price>${price}</g:price>
+      <g:price>${price}</g:price>${salePriceField}${promotionLabelField}
       <g:availability>${available ? 'in stock' : 'out of stock'}</g:availability>
       <g:condition>new</g:condition>
       <g:brand>Charmed &amp; Dark</g:brand>
