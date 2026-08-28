@@ -43,10 +43,36 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
       ) ?? null
     : null;
 
+  // Shopify availability is authoritative. An option value stays enabled when
+  // at least one in-stock variant can satisfy that value plus any other choices
+  // the shopper has already made. This keeps multi-option products working while
+  // making sold-out single-option variants visibly unavailable before add-to-cart.
+  function isOptionValueAvailable(optionName, value) {
+    const candidateSelections = { ...selectedOptions, [optionName]: value };
+
+    return variants.some((variant) => {
+      const matchesSelections = variant.selectedOptions.every((opt) =>
+        !candidateSelections[opt.name] || candidateSelections[opt.name] === opt.value
+      );
+      const hasInventory =
+        variant.available !== false &&
+        (variant.quantityAvailable == null || Number(variant.quantityAvailable) > 0);
+
+      return matchesSelections && hasInventory;
+    });
+  }
+
+  const selectedVariantSoldOut = Boolean(
+    selectedVariant &&
+      (selectedVariant.available === false ||
+        (selectedVariant.quantityAvailable != null && Number(selectedVariant.quantityAvailable) <= 0))
+  );
+
   function handleOptionChange(optionName, value) {
     const next = { ...selectedOptions, [optionName]: value };
     setSelectedOptions(next);
     setSelectionError('');
+    setInventoryNotice(null);
 
     // Notify parent of color-variant image URL (fires even before all options selected)
     if (onColorSelect && optionName === 'Color') {
@@ -197,11 +223,12 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
   }
 
   const needsSelection = !allOptionsSelected;
-  const buttonDisabled = cartState === 'loading' || cartState === 'success';
+  const buttonDisabled = cartState === 'loading' || cartState === 'success' || selectedVariantSoldOut;
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added to Cart ✓'
     : cartState === 'error' ? 'Something went wrong'
+    : selectedVariantSoldOut ? 'Sold Out'
     : needsSelection && missingOptions.length === 1 ? `Select ${missingOptions[0].name}`
     : needsSelection && missingOptions.length > 1 ? `Select ${missingOptionNames.join(' + ')}`
     : 'Add to Cart';
@@ -230,19 +257,35 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
             <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
               {option.values.map((value) => {
                 const isSelected = selectedOptions[option.name] === value;
+                const isAvailable = isOptionValueAvailable(option.name, value);
+
                 return (
                   <button
                     key={value}
-                    onClick={() => handleOptionChange(option.name, value)}
+                    type="button"
+                    onClick={() => isAvailable && handleOptionChange(option.name, value)}
+                    disabled={!isAvailable}
                     aria-pressed={isSelected}
+                    aria-label={isAvailable ? value : `${value} — Sold out`}
                     className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                      isSelected
+                      !isAvailable
+                        ? 'cursor-not-allowed border border-white/10 text-[#4f4b46] opacity-55'
+                        : isSelected
                         ? 'border border-[#c9a96e] text-[#c9a96e]'
                         : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
                     }`}
-                    style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
+                    style={{
+                      backgroundColor: '#0e0e1a',
+                      fontFamily: 'Inter, sans-serif',
+                      cursor: isAvailable ? 'pointer' : 'not-allowed',
+                    }}
                   >
-                    {value}
+                    <span>{value}</span>
+                    {!isAvailable && (
+                      <span className="ml-2 text-[9px] uppercase tracking-[0.12em] text-[#6b6760]">
+                        Sold Out
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -326,6 +369,8 @@ export default function AddToCart({ shopifyVariants, product, onVariantChange, o
             ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
             : cartState === 'error'
             ? 'border-red-500/50 text-red-400'
+            : selectedVariantSoldOut
+            ? 'cursor-not-allowed border-white/10 bg-white/[0.02] text-[#6b6760]'
             : needsSelection
             ? 'border-[rgba(201,169,110,0.45)] bg-[rgba(201,169,110,0.06)] text-[#c9a96e] hover:bg-[rgba(201,169,110,0.12)]'
             : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
