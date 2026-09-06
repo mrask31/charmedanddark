@@ -16,7 +16,7 @@ export async function generateMetadata({ params }) {
   const description = product.metaDescription || product.description?.replace(/<[^>]*>/g, '').slice(0, 160) || 'Discover this artifact at Charmed & Dark.';
   const url = `${SITE_URL}/shop/${product.slug}`;
   return {
-    title,
+    title: product.metaTitle ? { absolute: product.metaTitle } : product.name,
     description,
     alternates: { canonical: url },
     openGraph: {

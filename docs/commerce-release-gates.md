@@ -1,6 +1,6 @@
 # Commerce migration: customer, UI/UX and SEO release gates
 
-The commerce migration must preserve a usable production storefront throughout. A passing build is necessary, but is not a release approval: the customer journeys, catalog parity and SEO checks below must also pass on the deployment that will be promoted. Keep the current production deployment serving traffic while the candidate is built and verified. Use additive data changes and retain the last working deployment and product identity mappings for rollback.
+The commerce migration must preserve a usable production storefront throughout. A passing build is necessary, but is not a release approval: the customer journeys, catalog parity and SEO checks below must also pass on the release candidate. Keep the current production deployment serving traffic while the candidate is built and verified. Use additive data changes and retain the last working deployment and product identity mappings for rollback.
 
 ## Baseline observed on September 6, 2026
 
@@ -111,9 +111,11 @@ Run the same essential journey on desktop and on genuine narrow viewports (at le
 - Check Mirror recommendations against allowed current Shopify products; inspect Journal product callouts and legacy slug tokens. Verify user history and UUID references survive, and existing RLS protections remain.
 - Confirm the existing recovery-checkout redirect, attribution and signed order-webhook paths still work. The deployment must not create duplicate analytics or duplicate order records during retries.
 
-## Gate 5: production promotion and immediate verification
+## Gate 5: production release and immediate verification
 
-Promote only the exact candidate that passed the preceding gates. Verify the deployed SHA and production alias, then repeat the HTTP/SEO check plus a small desktop/mobile customer journey against production. Inspect runtime errors and commerce endpoint responses. Treat wrong variants, incorrect totals, blocked checkout, lost products, blank pages, new 5xx errors, production noindex and broken established URLs as release blockers.
+Release only the source tree that passed the preceding gates. This candidate deliberately sets preview-wide noindex headers and robots exclusions using `VERCEL_ENV`; do not promote a preview artifact to production. Merge the verified tree into `main` and let Vercel create a fresh production build while the previous deployment keeps serving. Verify the deployed SHA and production alias, then repeat the HTTP/SEO check plus a small desktop/mobile customer journey against production. Inspect runtime errors and commerce endpoint responses. Treat wrong variants, incorrect totals, blocked checkout, lost products, blank pages, new 5xx errors, production noindex and broken established URLs as release blockers.
+
+Shopify is enabled by default after the release. `SHOPIFY_CATALOG_ENABLED=false` retains the legacy adapter as an explicit temporary override; it is not a replacement for validating an actual deployment rollback. The last known good production is `dpl_4QS3eMsBxg87Xof32tKDcvLMbHLq`, commit `9221b11c13684e13d6d51894c12c41265cf93781`, tree `34abc806db8325c5552e927bf15d84f783823db1`. If direct deployment rollback is unavailable, a new fast-forward commit restoring that tree on `main` triggers a production rebuild without rewriting Git history. No rollback changes Shopify stock or order records. The additive Shopify collection/category changes remain readable by the old site.
 
 If a material production regression appears, return the alias to the recorded working deployment or disable the verified source flag promptly, then confirm customers can browse and check out. Do not restore stale stock snapshots over actual sales. Retain additive identity mappings; any Shopify content change that the old website cannot read requires explicit reconciliation before using that rollback path.
 

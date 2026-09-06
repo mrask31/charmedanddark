@@ -346,12 +346,12 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
     if (selectedShopifyVariant) section?.querySelector('[data-product-add-button]')?.click();
     else {
       section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      section?.querySelector('button:not([disabled])')?.focus({ preventScroll: true });
+      section?.focus({ preventScroll: true });
     }
   }
 
   return (
-    <div style={{ backgroundColor: '#08080f', overflowX: 'hidden' }}>
+    <div className="pb-[calc(10rem+env(safe-area-inset-bottom,0px))] md:pb-0" style={{ backgroundColor: '#08080f', overflowX: 'hidden' }}>
       <div className="mx-auto max-w-[1280px] px-6 py-12 md:py-16">
         <nav aria-label="Breadcrumb" className="mb-8">
           <ol className="flex items-center gap-2 text-[11px] font-light tracking-[0.1em]" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -432,7 +432,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <TrustModule productName={product.name} />
               <SmallBusinessTrust />
 
-              <div data-atc-section>
+              <div data-atc-section data-cart-return-focus tabIndex={-1} role="region" aria-label="Product purchase options">
                 {hasShopifyVariants ? <AddToCart shopifyVariants={shopifyVariants} product={product} initialVariant={initialVariant} onVariantChange={setSelectedShopifyVariant} onColorSelect={setColorImage} /> : <p role="status" className="text-sm text-zinc-300">We could not load the purchase options. Please refresh this page to try again.</p>}
               </div>
               <p className="text-xs text-zinc-300 text-center">Shipping options and delivery estimates are shown at checkout.</p>

@@ -45,7 +45,14 @@ export default function SlideOutCart() {
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', handleKeyDown);
-      if (previousFocus?.isConnected) previousFocus.focus();
+      // Mobile navigation remounts after the drawer closes; an add button may still be disabled.
+      requestAnimationFrame(() => {
+        if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+        const canReceiveFocus = element => element?.isConnected && element !== document.body && !element.disabled && element.getClientRects().length > 0;
+        const cartTrigger = Array.from(document.querySelectorAll('nav button, button[aria-label="Open cart"]')).find(button => canReceiveFocus(button) && (button.getAttribute('aria-label') === 'Open cart' || button.textContent.trim().startsWith('Cart')));
+        const target = canReceiveFocus(previousFocus) ? previousFocus : document.querySelector('[data-cart-return-focus]') || cartTrigger;
+        target?.focus({ preventScroll: true });
+      });
     };
   }, [isOpen, setIsOpen]);
 
@@ -76,12 +83,12 @@ export default function SlideOutCart() {
               <button disabled={pending} onClick={refreshCart} className="mt-2 min-h-11 underline underline-offset-4 text-[#c9a96e] disabled:opacity-50">Retry cart update</button>
             </div>
           )}
-          {!items.length ? (
+          {!items.length ? (pending || !isLoaded ? null : (
             <div className="space-y-4">
               <p className="text-zinc-300 text-sm">Your cart is empty.</p>
               <Link href="/shop" onClick={() => setIsOpen(false)} className="inline-flex min-h-11 items-center text-[#c9a96e] underline underline-offset-4">Explore the shop</Link>
             </div>
-          ) : items.map((item, index) => {
+          )) : items.map((item, index) => {
             const itemIssues = issues.filter(issue => issue.merchandiseId === item.shopifyVariantId || issue.cartKey === item.cartKey || issue.index === index);
             return (
               <div key={item.cartKey} className="flex gap-4 border-b border-zinc-800 pb-5">

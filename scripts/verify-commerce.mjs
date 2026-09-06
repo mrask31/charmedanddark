@@ -40,7 +40,10 @@ async function fetchPath(path) {
   const started = performance.now();
   try {
     const headers = { 'User-Agent': 'CharmedDarkReleaseCheck/1.0', Accept: 'text/html,application/xml,application/json' };
-    if (process.env.COMMERCE_VERIFY_BYPASS) headers['x-vercel-protection-bypass'] = process.env.COMMERCE_VERIFY_BYPASS;
+    if (base.hostname.endsWith('.vercel.app')) {
+      if (process.env.COMMERCE_VERIFY_BYPASS) headers['x-vercel-protection-bypass'] = process.env.COMMERCE_VERIFY_BYPASS;
+      if (process.env.COMMERCE_PREVIEW_COOKIE) headers.Cookie = process.env.COMMERCE_PREVIEW_COOKIE;
+    }
     const response = await fetch(new URL(path, base.origin), { headers, signal: AbortSignal.timeout(45000) });
     return { path, status: response.status, finalUrl: response.url, contentType: response.headers.get('content-type') || '', robotsHeader: response.headers.get('x-robots-tag') || '', elapsedMs: Math.round(performance.now() - started), body: await response.text() };
   } catch (error) { return { path, status: 0, error: error.message, body: '' }; }
@@ -69,7 +72,7 @@ function extractPage(response) {
   if (base.origin === canonicalOrigin) check(!/\bnoindex\b/i.test(page.robotsHeader), page.path, 'Production response has no noindex header');
   if (values.preview || base.hostname.endsWith('.vercel.app')) check(/\bnoindex\b/i.test(page.robotsHeader), page.path, 'Preview response is protected from indexing by X-Robots-Tag');
   if (values['strict-seo']) {
-    check(page.canonicals.length === 1 && page.canonicals[0] === canonicalOrigin + pathOf(page.finalUrl), page.path, 'One canonical using the final production path');
+    check(page.canonicals.length === 1 && new URL(page.canonicals[0]).href === new URL(pathOf(page.finalUrl), canonicalOrigin).href, page.path, 'One canonical using the final production path');
     check(!/Charmed\s*&\s*Dark\s*\|\s*Charmed\s*&\s*Dark/i.test(page.title), page.path, 'Brand suffix is not duplicated');
   }
   if (page.path.startsWith('/shop/')) {
@@ -98,7 +101,8 @@ report.sitemap = unique([...sitemapResponse.body.matchAll(/<loc>([\s\S]*?)<\/loc
 check(report.sitemap.length > 0, '/sitemap.xml', 'Sitemap is nonempty');
 check(report.sitemap.every((url) => { try { return new URL(url).origin === canonicalOrigin; } catch { return false; } }), '/sitemap.xml', 'Sitemap URLs use production origin');
 check(robotsResponse.status === 200, '/robots.txt', 'Robots file available');
-check(!/^Disallow:\s*\/\s*$/im.test(robotsResponse.body), '/robots.txt', 'Robots does not block the entire storefront');
+const blocksAllRobots = /^Disallow:\s*\/\s*$/im.test(robotsResponse.body);
+check(values.preview ? blocksAllRobots : !blocksAllRobots, '/robots.txt', values.preview ? 'Preview robots blocks indexing' : 'Robots does not block the entire storefront');
 check(feedResponse.status === 200 && /<rss\b/.test(feedResponse.body), '/api/google-feed', 'Merchant feed returns RSS XML');
 report.feed = [...feedResponse.body.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => Object.fromEntries(
   ['id', 'link', 'price', 'sale_price', 'availability', 'image_link'].map((field) => [field, xmlText(m[1], 'g:' + field)]),

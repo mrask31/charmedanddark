@@ -4,6 +4,7 @@ import PostGrid from '@/components/journal/PostGrid';
 
 export const metadata = {
   title: 'Journal',
+  alternates: { canonical: 'https://www.charmedanddark.com/journal' },
   description: 'Quiet reflections, ritual notes, and gothic musings.',
 };
 

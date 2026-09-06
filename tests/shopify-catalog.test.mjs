@@ -212,7 +212,7 @@ test('upstream timeout is bounded and distinguishable', async (t) => {
   await assert.rejects(shopifyFetch({ query: 'query { shop { name } }', timeoutMs: 5 }), (error) => error.code === 'TIMEOUT');
 });
 
-test('preview enables the new source while production and explicit rollback retain legacy', (t) => {
+test('Shopify is the default in production and preview with an explicit legacy rollback', (t) => {
   const previousFlag = process.env.SHOPIFY_CATALOG_ENABLED;
   const previousEnvironment = process.env.VERCEL_ENV;
   t.after(() => {
@@ -223,7 +223,7 @@ test('preview enables the new source while production and explicit rollback reta
   });
   delete process.env.SHOPIFY_CATALOG_ENABLED;
   process.env.VERCEL_ENV = 'production';
-  assert.equal(isShopifyCatalogEnabled(), false);
+  assert.equal(isShopifyCatalogEnabled(), true);
   process.env.VERCEL_ENV = 'preview';
   assert.equal(isShopifyCatalogEnabled(), true);
   process.env.SHOPIFY_CATALOG_ENABLED = 'false';
