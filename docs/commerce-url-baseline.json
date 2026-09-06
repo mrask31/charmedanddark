@@ -1,0 +1,2552 @@
+{
+  "version": 1,
+  "checkedAt": "2026-09-06T17:38:00.350Z",
+  "origin": "https://www.charmedanddark.com",
+  "sitemap": [
+    "https://www.charmedanddark.com",
+    "https://www.charmedanddark.com/about",
+    "https://www.charmedanddark.com/shop",
+    "https://www.charmedanddark.com/drops",
+    "https://www.charmedanddark.com/join",
+    "https://www.charmedanddark.com/sanctuary",
+    "https://www.charmedanddark.com/sanctuary/grimoire",
+    "https://www.charmedanddark.com/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+    "https://www.charmedanddark.com/shop/s-g-g-secret-society-water-bottle-20oz",
+    "https://www.charmedanddark.com/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+    "https://www.charmedanddark.com/shop/smutty-good-girl-society-tote",
+    "https://www.charmedanddark.com/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+    "https://www.charmedanddark.com/shop/ghost-in-strawberry-field-in-linen-blend",
+    "https://www.charmedanddark.com/shop/summerween-fourth-of-july-halloween-shirt",
+    "https://www.charmedanddark.com/shop/desert-moon-cowgirl-kiss-lock-bag",
+    "https://www.charmedanddark.com/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+    "https://www.charmedanddark.com/shop/ghost-cat-pumpkin-kiss-lock-bag",
+    "https://www.charmedanddark.com/shop/camp-charmed-and-dark-unisex-ringer-tee",
+    "https://www.charmedanddark.com/shop/bones-and-brew-summer-unisex-tee-1",
+    "https://www.charmedanddark.com/shop/hexes-heat-unisex-summer-tee-1",
+    "https://www.charmedanddark.com/shop/summerween-womens-flowy-scoop-muscle-tank-1",
+    "https://www.charmedanddark.com/shop/salty-spells-sunset-sins-womens-boxy-tee-1",
+    "https://www.charmedanddark.com/shop/summerween-trucker-snapback-hat",
+    "https://www.charmedanddark.com/shop/the-charmed-dark-sigil-cap-black",
+    "https://www.charmedanddark.com/shop/the-charmed-dark-sigil-cap",
+    "https://www.charmedanddark.com/shop/siren-of-the-underworld-unisex-tee",
+    "https://www.charmedanddark.com/shop/riley-crochet-anklets",
+    "https://www.charmedanddark.com/shop/claire-fishnet-ankle-socks",
+    "https://www.charmedanddark.com/shop/bow-babe-ankle-socks",
+    "https://www.charmedanddark.com/shop/bat-net-tights",
+    "https://www.charmedanddark.com/shop/sweetheart-ruffle-cuff-knee-high-socks",
+    "https://www.charmedanddark.com/shop/galaxy-net-ruffle-ankle-socks",
+    "https://www.charmedanddark.com/shop/maria-cross-net-ankle-socks",
+    "https://www.charmedanddark.com/shop/lola-ruffle-bow-ankle-socks",
+    "https://www.charmedanddark.com/shop/charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+    "https://www.charmedanddark.com/shop/the-charmed-dark-obsidian-zip-hoodie",
+    "https://www.charmedanddark.com/shop/womens-ringer-tee",
+    "https://www.charmedanddark.com/shop/matte-canvas-stretched-1-26",
+    "https://www.charmedanddark.com/shop/matte-canvas-stretched-1-25",
+    "https://www.charmedanddark.com/shop/unisex-softstyle-t-shirt",
+    "https://www.charmedanddark.com/shop/charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+    "https://www.charmedanddark.com/shop/the-charmed-dark-signature-hoodie",
+    "https://www.charmedanddark.com/shop/black-rose-twilight-blush-gothic-candle",
+    "https://www.charmedanddark.com/shop/black-rose-resin-tealight-candle-holder",
+    "https://www.charmedanddark.com/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+    "https://www.charmedanddark.com/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+    "https://www.charmedanddark.com/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+    "https://www.charmedanddark.com/shop/2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+    "https://www.charmedanddark.com/shop/victorian-tray",
+    "https://www.charmedanddark.com/shop/brass-glass-soap-dish",
+    "https://www.charmedanddark.com/shop/white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+    "https://www.charmedanddark.com/shop/white-sage-smudge-sticks-in-bulk",
+    "https://www.charmedanddark.com/shop/white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+    "https://www.charmedanddark.com/shop/coffin-studs-gold-and-silver-halloween-vampire-gothic",
+    "https://www.charmedanddark.com/shop/moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+    "https://www.charmedanddark.com/shop/2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+    "https://www.charmedanddark.com/shop/heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+    "https://www.charmedanddark.com/shop/skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+    "https://www.charmedanddark.com/shop/black-swan-dof-whiskey-glass-set-of-4",
+    "https://www.charmedanddark.com/shop/joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+    "https://www.charmedanddark.com/shop/luxury-satin-6-piece-sheet-set-black",
+    "https://www.charmedanddark.com/shop/crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+    "https://www.charmedanddark.com/shop/crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+    "https://www.charmedanddark.com/shop/medussa-christmas-spooky-portrait-glass-ornament",
+    "https://www.charmedanddark.com/shop/dracula-spooky-christmas-portrait-glass-ornament",
+    "https://www.charmedanddark.com/shop/headless-horseman-spooky-portrait-glass-christmas-ornament",
+    "https://www.charmedanddark.com/shop/wicked-witch-and-crescent-moon-glass-christmas-ornament",
+    "https://www.charmedanddark.com/shop/edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+    "https://www.charmedanddark.com/shop/frankenstein-santa-glass-christmas-ornament",
+    "https://www.charmedanddark.com/shop/spooky-decor-creepy-nun-themed-glass-ornament",
+    "https://www.charmedanddark.com/shop/halloween-skeleton-black-and-white-ornament-set",
+    "https://www.charmedanddark.com/shop/gossamer-guardian-spider-lariat-halloween-jewelry",
+    "https://www.charmedanddark.com/shop/moon-phase-double-necklace-stainless-steel-enamel",
+    "https://www.charmedanddark.com/shop/hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+    "https://www.charmedanddark.com/shop/celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+    "https://www.charmedanddark.com/shop/celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+    "https://www.charmedanddark.com/shop/celestial-kisslock-bag-in-linen-blended-fabric",
+    "https://www.charmedanddark.com/shop/hollow-moon-earrings-modern-witchy-jewelry",
+    "https://www.charmedanddark.com/shop/bat-candle-holder",
+    "https://www.charmedanddark.com/shop/taper-candle-holder-set",
+    "https://www.charmedanddark.com/shop/moon-and-stars-pillow",
+    "https://www.charmedanddark.com/shop/bird-branch-candle-holder",
+    "https://www.charmedanddark.com/shop/black-gothic-coffin-shaped-gothic-trinket-tray",
+    "https://www.charmedanddark.com/shop/witching-hour-white-sage-gothic-candle",
+    "https://www.charmedanddark.com/shop/spooky-gingerbread-man-gothic-christmas-ornament",
+    "https://www.charmedanddark.com/shop/mystic-raven-gothic-pillar-candle-holder",
+    "https://www.charmedanddark.com/shop/the-crown-of-crystals-tank",
+    "https://www.charmedanddark.com/shop/marked-by-the-rose-unisex-tee",
+    "https://www.charmedanddark.com/shop/the-crimson-reliquary-crop-tank",
+    "https://www.charmedanddark.com/shop/the-crimson-reliquary-unisex-tee",
+    "https://www.charmedanddark.com/shop/lunar-moth-phase-crop-tank",
+    "https://www.charmedanddark.com/shop/till-death-unisex-tee",
+    "https://www.charmedanddark.com/shop/graveyard-ballerina-crop-tee",
+    "https://www.charmedanddark.com/shop/crystal-ball-coven-crop",
+    "https://www.charmedanddark.com/shop/limited-edition-cursed-hearts-valentines-drop",
+    "https://www.charmedanddark.com/shop/the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+    "https://www.charmedanddark.com/shop/yolanda-24-round-upholstered-accent-ottoman",
+    "https://www.charmedanddark.com/shop/rectangle-vanity-mirror",
+    "https://www.charmedanddark.com/shop/two-tier-round-slate-stone-and-metal-serving-tray",
+    "https://www.charmedanddark.com/shop/set-of-3-large-black-cast-iron-starburst-wall-hangings",
+    "https://www.charmedanddark.com/shop/large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+    "https://www.charmedanddark.com/shop/venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+    "https://www.charmedanddark.com/shop/matte-black-cheese-knives-book-box",
+    "https://www.charmedanddark.com/shop/black-wood-board-small",
+    "https://www.charmedanddark.com/shop/set-of-3-starry-night-celestial-taper-candles",
+    "https://www.charmedanddark.com/shop/set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+    "https://www.charmedanddark.com/shop/protection-crystal-candle-with-rough-black-obsidian",
+    "https://www.charmedanddark.com/shop/gothic-striped-bat-wing-halloween-teacup",
+    "https://www.charmedanddark.com/shop/gothic-halloween-black-spider-teacup",
+    "https://www.charmedanddark.com/shop/calming-crystal-candle-with-rough-amethyst",
+    "https://www.charmedanddark.com/shop/undying-love-art-print",
+    "https://www.charmedanddark.com/shop/melancholy-monster-art-print",
+    "https://www.charmedanddark.com/shop/made-for-each-other-art-print",
+    "https://www.charmedanddark.com/shop/amorous-libation-art-print"
+  ],
+  "feed": [
+    {
+      "id": "31565906844226309932"
+    },
+    {
+      "id": "45093399625762"
+    },
+    {
+      "id": "24518631045032818501"
+    },
+    {
+      "id": "33895518787367889273"
+    },
+    {
+      "id": "20636232397014429182"
+    },
+    {
+      "id": "28184652612732462549"
+    },
+    {
+      "id": "29363258776216373595"
+    },
+    {
+      "id": "14717071269046351798"
+    },
+    {
+      "id": "13977783503563946756"
+    },
+    {
+      "id": "24091759786811488680"
+    },
+    {
+      "id": "12948714869987943356"
+    },
+    {
+      "id": "95676160556565006119"
+    },
+    {
+      "id": "25123606166118956753"
+    },
+    {
+      "id": "30100111233334048053"
+    },
+    {
+      "id": "89687135606484443440"
+    },
+    {
+      "id": "66160134235841921081"
+    },
+    {
+      "id": "25881712061749490602"
+    },
+    {
+      "id": "36573852968828890932"
+    },
+    {
+      "id": "19487436094096622765"
+    },
+    {
+      "id": "16389836353660564370"
+    },
+    {
+      "id": "32748694038100024919"
+    },
+    {
+      "id": "17623272266128226876"
+    },
+    {
+      "id": "23703321985388447890"
+    },
+    {
+      "id": "18276343287003570821"
+    },
+    {
+      "id": "22602216754931163946"
+    },
+    {
+      "id": "17032283948658125911"
+    },
+    {
+      "id": "63568553422664258380"
+    },
+    {
+      "id": "22320309104042057894"
+    },
+    {
+      "id": "12096127739045504136"
+    },
+    {
+      "id": "49201048464363348468"
+    },
+    {
+      "id": "92544530318586100212"
+    },
+    {
+      "id": "17103066702941000791"
+    },
+    {
+      "id": "31004785934207205279"
+    },
+    {
+      "id": "32596996730134300774"
+    },
+    {
+      "id": "17657659031202869417"
+    },
+    {
+      "id": "17017427812900210757"
+    },
+    {
+      "id": "30350746171245639926"
+    },
+    {
+      "id": "16134962187745548738"
+    },
+    {
+      "id": "17424852151743132108"
+    },
+    {
+      "id": "15184147568132343607"
+    },
+    {
+      "id": "27788831988532191519"
+    },
+    {
+      "id": "57025381775790021302"
+    },
+    {
+      "id": "27088537970672259588"
+    },
+    {
+      "id": "22719073948202202838"
+    },
+    {
+      "id": "64618502838800157989"
+    },
+    {
+      "id": "19110825180388069372"
+    },
+    {
+      "id": "24525152157481952629"
+    },
+    {
+      "id": "24547301911001378092"
+    },
+    {
+      "id": "26818366522288035512"
+    },
+    {
+      "id": "16840907367191531830"
+    },
+    {
+      "id": "15831314534167025176"
+    },
+    {
+      "id": "26555747748819656809"
+    },
+    {
+      "id": "21152953692481440571"
+    },
+    {
+      "id": "27745349354971922312"
+    },
+    {
+      "id": "10290710619158804201"
+    },
+    {
+      "id": "24515214932937811018"
+    },
+    {
+      "id": "17080541925503105668"
+    },
+    {
+      "id": "13475327109121243125"
+    },
+    {
+      "id": "30587010484677155490"
+    },
+    {
+      "id": "13529259931837197361"
+    },
+    {
+      "id": "29549356051290906102"
+    },
+    {
+      "id": "97993661358993611678"
+    },
+    {
+      "id": "28932517077574526608"
+    },
+    {
+      "id": "48248213255664008839"
+    },
+    {
+      "id": "75166985439135083296"
+    },
+    {
+      "id": "25186036289352913231"
+    },
+    {
+      "id": "25672068220009326161"
+    },
+    {
+      "id": "29574220427389466679"
+    },
+    {
+      "id": "91022953233540057048"
+    },
+    {
+      "id": "13075822419799581508"
+    },
+    {
+      "id": "10339361484392567315"
+    },
+    {
+      "id": "38027192378896291440"
+    },
+    {
+      "id": "30692699291448231674"
+    },
+    {
+      "id": "23336816533752995817"
+    },
+    {
+      "id": "93976754938353275408"
+    },
+    {
+      "id": "30485961343802300503"
+    },
+    {
+      "id": "22182246847710484236"
+    },
+    {
+      "id": "60820141114990353369"
+    },
+    {
+      "id": "21796760026975843043"
+    },
+    {
+      "id": "28827571863560410109"
+    },
+    {
+      "id": "11701883297971282123"
+    },
+    {
+      "id": "97844315704468748724"
+    },
+    {
+      "id": "32474867952343917186"
+    },
+    {
+      "id": "27162482359278538079"
+    },
+    {
+      "id": "12450603157091401704"
+    },
+    {
+      "id": "88411977813758290390"
+    },
+    {
+      "id": "27539187579694254510"
+    },
+    {
+      "id": "26845221638744090890"
+    },
+    {
+      "id": "62125243221536357727"
+    },
+    {
+      "id": "31268989580548112856"
+    },
+    {
+      "id": "48994412359895826650"
+    },
+    {
+      "id": "26747547559757266243"
+    },
+    {
+      "id": "28997584458312790259"
+    },
+    {
+      "id": "25549901647555932100"
+    },
+    {
+      "id": "17104124173933459032"
+    },
+    {
+      "id": "51495371268148349387"
+    },
+    {
+      "id": "79088666945245156111"
+    },
+    {
+      "id": "27664879188713172953"
+    },
+    {
+      "id": "22417802076690310982"
+    },
+    {
+      "id": "34078516507051480526"
+    },
+    {
+      "id": "31558455556297693735"
+    },
+    {
+      "id": "27268896300585404998"
+    },
+    {
+      "id": "82404770412993162730"
+    },
+    {
+      "id": "75889118609242144809"
+    },
+    {
+      "id": "16654223884610443660"
+    },
+    {
+      "id": "42022101242974827347"
+    },
+    {
+      "id": "18499514898967655811"
+    },
+    {
+      "id": "18226188831043272306"
+    },
+    {
+      "id": "50343276217042248672"
+    },
+    {
+      "id": "20467806707761866830"
+    },
+    {
+      "id": "16537366891205380568"
+    },
+    {
+      "id": "64704832474796605686"
+    },
+    {
+      "id": "24135129262367711511"
+    },
+    {
+      "id": "92536039647409274951"
+    },
+    {
+      "id": "54292466063682411884"
+    },
+    {
+      "id": "33185511059915920237"
+    },
+    {
+      "id": "11025709518749582206"
+    },
+    {
+      "id": "72368773617944449596"
+    },
+    {
+      "id": "30338923504476627134"
+    },
+    {
+      "id": "22744282145060253782"
+    },
+    {
+      "id": "21176899421999768205"
+    },
+    {
+      "id": "27612022080217734014"
+    },
+    {
+      "id": "13222184551295421308"
+    },
+    {
+      "id": "33245310415552937335"
+    },
+    {
+      "id": "33411702356606286290"
+    },
+    {
+      "id": "32539528968870187063"
+    },
+    {
+      "id": "20222162303063159681"
+    },
+    {
+      "id": "23256339543375598157"
+    },
+    {
+      "id": "29321577084614484854"
+    },
+    {
+      "id": "20770121347373501316"
+    },
+    {
+      "id": "15307627645535156077"
+    },
+    {
+      "id": "10456371492267358337"
+    },
+    {
+      "id": "23800071011597319236"
+    },
+    {
+      "id": "39596496511603841618"
+    },
+    {
+      "id": "29406598656854884104"
+    },
+    {
+      "id": "84826723321419897133"
+    },
+    {
+      "id": "12014001806158328974"
+    },
+    {
+      "id": "99388828390126140457"
+    },
+    {
+      "id": "19222308712498920119"
+    },
+    {
+      "id": "26403565989614277380"
+    },
+    {
+      "id": "26223051447125615294"
+    },
+    {
+      "id": "12961947203262678729"
+    },
+    {
+      "id": "34506074577472670794"
+    },
+    {
+      "id": "58481675035513610239"
+    },
+    {
+      "id": "27500686427804096706"
+    },
+    {
+      "id": "21541584573624092848"
+    },
+    {
+      "id": "29558254102616828145"
+    },
+    {
+      "id": "31145934566996553563"
+    },
+    {
+      "id": "14246101224403380154"
+    },
+    {
+      "id": "62230743409054874163"
+    },
+    {
+      "id": "28128199846642146487"
+    },
+    {
+      "id": "78412379046086784121"
+    },
+    {
+      "id": "81651737039246775035"
+    },
+    {
+      "id": "18566052431380954169"
+    },
+    {
+      "id": "31847156912914287670"
+    },
+    {
+      "id": "55775418410235837165"
+    },
+    {
+      "id": "72849661338164011303"
+    },
+    {
+      "id": "20545777968765117726"
+    },
+    {
+      "id": "26812763838320142588"
+    },
+    {
+      "id": "12542007224647878447"
+    },
+    {
+      "id": "28909036738474994171"
+    },
+    {
+      "id": "28784726297008856887"
+    },
+    {
+      "id": "27696644431888251799"
+    },
+    {
+      "id": "16917894971233515411"
+    },
+    {
+      "id": "10692380603284918040"
+    },
+    {
+      "id": "28701123410260993010"
+    },
+    {
+      "id": "10944170481029949840"
+    },
+    {
+      "id": "22760217612485577124"
+    },
+    {
+      "id": "57969267627573561846"
+    },
+    {
+      "id": "22289541990858814709"
+    },
+    {
+      "id": "14914278779070949675"
+    },
+    {
+      "id": "20048162629436290648"
+    },
+    {
+      "id": "15029142399778098056"
+    },
+    {
+      "id": "27794946672361022452"
+    },
+    {
+      "id": "54663235521235829408"
+    },
+    {
+      "id": "53662797004066205490"
+    },
+    {
+      "id": "97071182840084761746"
+    },
+    {
+      "id": "22623695517006022786"
+    },
+    {
+      "id": "28118872070568690485"
+    },
+    {
+      "id": "31866359780936874427"
+    },
+    {
+      "id": "32252051598562555986"
+    },
+    {
+      "id": "94973532229521459212"
+    },
+    {
+      "id": "79166118373701923372"
+    },
+    {
+      "id": "12849498987339057088"
+    },
+    {
+      "id": "16533124021295911950"
+    },
+    {
+      "id": "90738547029897474576"
+    },
+    {
+      "id": "16715538196687296197"
+    },
+    {
+      "id": "12483295837010405979"
+    },
+    {
+      "id": "26798080127603604565"
+    },
+    {
+      "id": "22249757601303516863"
+    },
+    {
+      "id": "26653232712805232342"
+    },
+    {
+      "id": "19978225554237740557"
+    },
+    {
+      "id": "21341871419481579275"
+    },
+    {
+      "id": "2345-950"
+    },
+    {
+      "id": "211010"
+    },
+    {
+      "id": "110823"
+    },
+    {
+      "id": "110822"
+    },
+    {
+      "id": "CM071-B1"
+    },
+    {
+      "id": "CM071-G2"
+    },
+    {
+      "id": "IT84018CN-BK"
+    },
+    {
+      "id": "GW-CS-G"
+    },
+    {
+      "id": "GW-CS-S"
+    },
+    {
+      "id": "lavendersage"
+    },
+    {
+      "id": "sagebulk"
+    },
+    {
+      "id": "Eucalyptus"
+    },
+    {
+      "id": "indHQ074"
+    },
+    {
+      "id": "indHQ041"
+    },
+    {
+      "id": "indHQ044"
+    },
+    {
+      "id": "CMHW017-B1-2"
+    },
+    {
+      "id": "CM4P008-R1"
+    },
+    {
+      "id": "CM4P005-R1"
+    },
+    {
+      "id": "CM4P006-G1"
+    },
+    {
+      "id": "VV_14324"
+    },
+    {
+      "id": "MR_81123"
+    },
+    {
+      "id": "RV_91325"
+    },
+    {
+      "id": "ME_28126"
+    },
+    {
+      "id": "MR_81223"
+    },
+    {
+      "id": "DE_96425"
+    },
+    {
+      "id": "117597"
+    },
+    {
+      "id": "122260"
+    },
+    {
+      "id": "116759"
+    },
+    {
+      "id": "121455"
+    },
+    {
+      "id": "GW-HME-OS"
+    },
+    {
+      "id": "82313CN"
+    },
+    {
+      "id": "85823cn"
+    },
+    {
+      "id": "IT85787CN"
+    },
+    {
+      "id": "GW-HMB-OS"
+    },
+    {
+      "id": "GW-MPDN-OS"
+    },
+    {
+      "id": "GW-GGSL-OS"
+    },
+    {
+      "id": "B117"
+    },
+    {
+      "id": "G206"
+    },
+    {
+      "id": "G127"
+    },
+    {
+      "id": "RGB-ORNAMENT-102"
+    },
+    {
+      "id": "G155"
+    },
+    {
+      "id": "RGB-ORNAMENT-106"
+    },
+    {
+      "id": "RGB-ORNAMENT-101"
+    },
+    {
+      "id": "RGB-ORNAMENT-108"
+    },
+    {
+      "id": "ID10-1943"
+    },
+    {
+      "id": "ID10-2056"
+    },
+    {
+      "id": "ID10-1659"
+    },
+    {
+      "id": "ID10-1970"
+    },
+    {
+      "id": "SHET20-173"
+    },
+    {
+      "id": "SHET20-174"
+    },
+    {
+      "id": "44860268904482"
+    },
+    {
+      "id": "44860268937250"
+    },
+    {
+      "id": "44860268970018"
+    },
+    {
+      "id": "44860269002786"
+    },
+    {
+      "id": "JT10110"
+    },
+    {
+      "id": "JB10317"
+    },
+    {
+      "id": "L5716"
+    },
+    {
+      "id": "N0464"
+    },
+    {
+      "id": "X002WBJF8J"
+    },
+    {
+      "id": "X0042MD9KV"
+    },
+    {
+      "id": "ZKO-99122"
+    },
+    {
+      "id": "ZKO-99120"
+    },
+    {
+      "id": "AUD-8D5078"
+    },
+    {
+      "id": "BJ_56324"
+    },
+    {
+      "id": "WE_54724"
+    },
+    {
+      "id": "NT_25226"
+    },
+    {
+      "id": "CW_92224"
+    },
+    {
+      "id": "ME_27826"
+    },
+    {
+      "id": "CW_91924"
+    },
+    {
+      "id": "33299203453754600660"
+    },
+    {
+      "id": "24140440051989636201"
+    },
+    {
+      "id": "53241839287946003917"
+    },
+    {
+      "id": "18866396725706002097"
+    },
+    {
+      "id": "12621649588164314186"
+    },
+    {
+      "id": "33339426633158806639"
+    },
+    {
+      "id": "20138689948720704671"
+    },
+    {
+      "id": "27809881445560758987"
+    },
+    {
+      "id": "29268809500133046091"
+    },
+    {
+      "id": "11236319358361042361"
+    },
+    {
+      "id": "99970028833810572227"
+    },
+    {
+      "id": "10893403052534039658"
+    },
+    {
+      "id": "22199548269356030547"
+    },
+    {
+      "id": "33908224195779922314"
+    },
+    {
+      "id": "21455383996829836036"
+    },
+    {
+      "id": "23424155797988919817"
+    },
+    {
+      "id": "17861730176439719041"
+    },
+    {
+      "id": "32146551019839421494"
+    },
+    {
+      "id": "24213108393083816599"
+    },
+    {
+      "id": "13273768973454252332"
+    },
+    {
+      "id": "90400941626013450776"
+    },
+    {
+      "id": "45093419810850"
+    },
+    {
+      "id": "45195323899938"
+    },
+    {
+      "id": "3029      00722"
+    },
+    {
+      "id": "3029      00122"
+    },
+    {
+      "id": "3049      00122"
+    },
+    {
+      "id": "3048      00122"
+    },
+    {
+      "id": "3984      00122"
+    },
+    {
+      "id": "9725      00122"
+    },
+    {
+      "id": "3003      00122"
+    },
+    {
+      "id": "3039      00122"
+    },
+    {
+      "id": "3061      00722"
+    },
+    {
+      "id": "43976652708024271278"
+    },
+    {
+      "id": "28129282415446233464"
+    },
+    {
+      "id": "38250054957709670066"
+    },
+    {
+      "id": "26909400175679748936"
+    },
+    {
+      "id": "66566813307768480927"
+    },
+    {
+      "id": "12313995459472574762"
+    },
+    {
+      "id": "23904066921353344104"
+    },
+    {
+      "id": "13364530272105039588"
+    },
+    {
+      "id": "39822465394411762451"
+    },
+    {
+      "id": "23440307512931154330"
+    },
+    {
+      "id": "33950044422599831151"
+    },
+    {
+      "id": "23237730542451734020"
+    },
+    {
+      "id": "37466934700915132298"
+    },
+    {
+      "id": "98576976290869002789"
+    },
+    {
+      "id": "28221848878029633994"
+    },
+    {
+      "id": "26663663508633446896"
+    },
+    {
+      "id": "10951721343668800009"
+    },
+    {
+      "id": "16036851016418659227"
+    },
+    {
+      "id": "25084970510373068646"
+    },
+    {
+      "id": "26187049960910913203"
+    },
+    {
+      "id": "98574377127859855048"
+    },
+    {
+      "id": "61442470872601738679"
+    },
+    {
+      "id": "13843194785644659874"
+    },
+    {
+      "id": "21949442622323066030"
+    },
+    {
+      "id": "12335915704219294724"
+    },
+    {
+      "id": "30392443343011486191"
+    },
+    {
+      "id": "23333504210392874782"
+    },
+    {
+      "id": "42901173064314679646"
+    },
+    {
+      "id": "27760226763321855476"
+    },
+    {
+      "id": "25267857342525463252"
+    },
+    {
+      "id": "17151949305882696718"
+    },
+    {
+      "id": "22385772918324426421"
+    },
+    {
+      "id": "29138144089921595193"
+    },
+    {
+      "id": "85859716176004213139"
+    },
+    {
+      "id": "17088232574650653718"
+    },
+    {
+      "id": "15939939182881018233"
+    },
+    {
+      "id": "27767371959933945090"
+    },
+    {
+      "id": "16819978208026969222"
+    },
+    {
+      "id": "87211728647753609920"
+    },
+    {
+      "id": "22783620523758067190"
+    },
+    {
+      "id": "52238253198843190677"
+    },
+    {
+      "id": "24722205017627714788"
+    },
+    {
+      "id": "28063511292374835448"
+    },
+    {
+      "id": "15686119086686564018"
+    },
+    {
+      "id": "29398967947980422766"
+    },
+    {
+      "id": "23836449175474764196"
+    },
+    {
+      "id": "73696024550816428528"
+    },
+    {
+      "id": "19896021595012403151"
+    },
+    {
+      "id": "78498119134782886073"
+    },
+    {
+      "id": "26454167570540258205"
+    },
+    {
+      "id": "12149778647436627413"
+    },
+    {
+      "id": "12226977650325868101"
+    },
+    {
+      "id": "27017076207033533503"
+    },
+    {
+      "id": "23434494677848548033"
+    },
+    {
+      "id": "18066743778426130490"
+    },
+    {
+      "id": "35034380944711710672"
+    },
+    {
+      "id": "43039093328544417344"
+    },
+    {
+      "id": "30439039594394766120"
+    },
+    {
+      "id": "21721541179178067689"
+    },
+    {
+      "id": "35581568227528418942"
+    },
+    {
+      "id": "23210115116060760754"
+    },
+    {
+      "id": "26560539199742531801"
+    },
+    {
+      "id": "31956404159775875035"
+    },
+    {
+      "id": "13986145661411574834"
+    },
+    {
+      "id": "63389496848262847940"
+    },
+    {
+      "id": "15472175205183833268"
+    },
+    {
+      "id": "27002030907535168891"
+    },
+    {
+      "id": "10568624872893282287"
+    },
+    {
+      "id": "25309521631169064319"
+    },
+    {
+      "id": "14885538220813393161"
+    },
+    {
+      "id": "22449276319948562201"
+    },
+    {
+      "id": "31765020662402192464"
+    },
+    {
+      "id": "84767CN"
+    },
+    {
+      "id": "85790cn"
+    },
+    {
+      "id": "KK84646CN"
+    },
+    {
+      "id": "16370893533806581590"
+    },
+    {
+      "id": "20913841417349482311"
+    },
+    {
+      "id": "17057818468143066146"
+    },
+    {
+      "id": "17595888940459398814"
+    },
+    {
+      "id": "15782649283081098407"
+    },
+    {
+      "id": "KK84649CN"
+    },
+    {
+      "id": "82356CN-BK"
+    },
+    {
+      "id": "28000037542030096071"
+    },
+    {
+      "id": "19526820034239917980"
+    },
+    {
+      "id": "13592289862529463083"
+    },
+    {
+      "id": "32238216354970736412"
+    },
+    {
+      "id": "26214872271203548664"
+    },
+    {
+      "id": "98208106667262500182"
+    },
+    {
+      "id": "14963064333925951857"
+    },
+    {
+      "id": "22311917899275083285"
+    },
+    {
+      "id": "24853108081026409931"
+    },
+    {
+      "id": "21564922143323550781"
+    },
+    {
+      "id": "11718175902971420671"
+    },
+    {
+      "id": "36416146570188368706"
+    },
+    {
+      "id": "26242171535833800778"
+    }
+  ],
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "productLinks": [
+        "/shop/celestial-kisslock-bag-in-linen-blended-fabric",
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+        "/shop/bird-branch-candle-holder",
+        "/shop/set-of-3-starry-night-celestial-taper-candles",
+        "/shop/2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+        "/shop/bat-candle-holder",
+        "/shop/victorian-tray",
+        "/shop/gothic-striped-bat-wing-halloween-teacup",
+        "/shop/gothic-halloween-black-spider-teacup",
+        "/shop/black-gothic-coffin-shaped-gothic-trinket-tray",
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/summerween-trucker-snapback-hat",
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/hexes-heat-unisex-summer-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/salty-spells-sunset-sins-womens-boxy-tee-1"
+      ]
+    },
+    {
+      "path": "/collections/kiss-lock-bags",
+      "status": 200,
+      "productLinks": [
+        "/shop/celestial-kisslock-bag-in-linen-blended-fabric",
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag",
+        "/shop/celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+        "/shop/moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+        "/shop/celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material"
+      ]
+    },
+    {
+      "path": "/collections/smutty-good-girl",
+      "status": 200,
+      "productLinks": [
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz"
+      ]
+    },
+    {
+      "path": "/drops",
+      "status": 200,
+      "productLinks": [
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/summerween-trucker-snapback-hat",
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/hexes-heat-unisex-summer-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/salty-spells-sunset-sins-womens-boxy-tee-1",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee"
+      ]
+    },
+    {
+      "path": "/journal",
+      "status": 200,
+      "productLinks": []
+    },
+    {
+      "path": "/shop",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag",
+        "/shop/moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+        "/shop/celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+        "/shop/celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+        "/shop/celestial-kisslock-bag-in-linen-blended-fabric",
+        "/shop/coffin-studs-gold-and-silver-halloween-vampire-gothic",
+        "/shop/hollow-moon-earrings-modern-witchy-jewelry",
+        "/shop/gossamer-guardian-spider-lariat-halloween-jewelry",
+        "/shop/moon-phase-double-necklace-stainless-steel-enamel",
+        "/shop/hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+        "/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+        "/shop/2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+        "/shop/white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+        "/shop/white-sage-smudge-sticks-in-bulk",
+        "/shop/white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+        "/shop/2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+        "/shop/bat-candle-holder",
+        "/shop/taper-candle-holder-set",
+        "/shop/moon-and-stars-pillow",
+        "/shop/bird-branch-candle-holder",
+        "/shop/black-gothic-coffin-shaped-gothic-trinket-tray",
+        "/shop/witching-hour-white-sage-gothic-candle",
+        "/shop/spooky-gingerbread-man-gothic-christmas-ornament",
+        "/shop/mystic-raven-gothic-pillar-candle-holder",
+        "/shop/set-of-3-starry-night-celestial-taper-candles",
+        "/shop/set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+        "/shop/protection-crystal-candle-with-rough-black-obsidian",
+        "/shop/gothic-striped-bat-wing-halloween-teacup",
+        "/shop/gothic-halloween-black-spider-teacup",
+        "/shop/calming-crystal-candle-with-rough-amethyst",
+        "/shop/victorian-tray",
+        "/shop/brass-glass-soap-dish",
+        "/shop/heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+        "/shop/skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+        "/shop/black-swan-dof-whiskey-glass-set-of-4",
+        "/shop/joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+        "/shop/luxury-satin-6-piece-sheet-set-black",
+        "/shop/crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+        "/shop/crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+        "/shop/medussa-christmas-spooky-portrait-glass-ornament",
+        "/shop/dracula-spooky-christmas-portrait-glass-ornament",
+        "/shop/headless-horseman-spooky-portrait-glass-christmas-ornament",
+        "/shop/wicked-witch-and-crescent-moon-glass-christmas-ornament",
+        "/shop/edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+        "/shop/frankenstein-santa-glass-christmas-ornament",
+        "/shop/spooky-decor-creepy-nun-themed-glass-ornament",
+        "/shop/halloween-skeleton-black-and-white-ornament-set",
+        "/shop/yolanda-24-round-upholstered-accent-ottoman",
+        "/shop/rectangle-vanity-mirror",
+        "/shop/two-tier-round-slate-stone-and-metal-serving-tray",
+        "/shop/set-of-3-large-black-cast-iron-starburst-wall-hangings",
+        "/shop/large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+        "/shop/venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+        "/shop/matte-black-cheese-knives-book-box",
+        "/shop/black-wood-board-small",
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1",
+        "/shop/salty-spells-sunset-sins-womens-boxy-tee-1",
+        "/shop/summerween-trucker-snapback-hat",
+        "/shop/the-charmed-dark-sigil-cap-black",
+        "/shop/the-charmed-dark-sigil-cap",
+        "/shop/siren-of-the-underworld-unisex-tee",
+        "/shop/riley-crochet-anklets",
+        "/shop/claire-fishnet-ankle-socks",
+        "/shop/bow-babe-ankle-socks",
+        "/shop/bat-net-tights",
+        "/shop/sweetheart-ruffle-cuff-knee-high-socks",
+        "/shop/galaxy-net-ruffle-ankle-socks",
+        "/shop/maria-cross-net-ankle-socks",
+        "/shop/lola-ruffle-bow-ankle-socks",
+        "/shop/charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+        "/shop/the-charmed-dark-obsidian-zip-hoodie",
+        "/shop/womens-ringer-tee",
+        "/shop/unisex-softstyle-t-shirt",
+        "/shop/charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+        "/shop/the-charmed-dark-signature-hoodie",
+        "/shop/the-crown-of-crystals-tank",
+        "/shop/marked-by-the-rose-unisex-tee",
+        "/shop/the-crimson-reliquary-crop-tank",
+        "/shop/the-crimson-reliquary-unisex-tee",
+        "/shop/lunar-moth-phase-crop-tank",
+        "/shop/till-death-unisex-tee",
+        "/shop/graveyard-ballerina-crop-tee",
+        "/shop/crystal-ball-coven-crop",
+        "/shop/limited-edition-cursed-hearts-valentines-drop",
+        "/shop/the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+        "/shop/matte-canvas-stretched-1-26",
+        "/shop/matte-canvas-stretched-1-25",
+        "/shop/undying-love-art-print",
+        "/shop/melancholy-monster-art-print",
+        "/shop/made-for-each-other-art-print",
+        "/shop/amorous-libation-art-print"
+      ]
+    },
+    {
+      "path": "/shop/2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/amorous-libation-art-print",
+      "status": 200,
+      "productLinks": [
+        "/shop/matte-canvas-stretched-1-26",
+        "/shop/matte-canvas-stretched-1-25",
+        "/shop/undying-love-art-print",
+        "/shop/melancholy-monster-art-print"
+      ]
+    },
+    {
+      "path": "/shop/bat-candle-holder",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/bat-net-tights",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/bird-branch-candle-holder",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/black-gothic-coffin-shaped-gothic-trinket-tray",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/black-rose-resin-tealight-candle-holder",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+        "/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles"
+      ]
+    },
+    {
+      "path": "/shop/black-rose-twilight-blush-gothic-candle",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+        "/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles"
+      ]
+    },
+    {
+      "path": "/shop/black-swan-dof-whiskey-glass-set-of-4",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/black-wood-board-small",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/bones-and-brew-summer-unisex-tee-1",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/hexes-heat-unisex-summer-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1"
+      ]
+    },
+    {
+      "path": "/shop/bow-babe-ankle-socks",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/brass-glass-soap-dish",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/calming-crystal-candle-with-rough-amethyst",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1"
+      ]
+    },
+    {
+      "path": "/shop/celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/celestial-kisslock-bag-in-linen-blended-fabric",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+      "status": 200,
+      "productLinks": [
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles"
+      ]
+    },
+    {
+      "path": "/shop/claire-fishnet-ankle-socks",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/coffin-studs-gold-and-silver-halloween-vampire-gothic",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/crystal-ball-coven-crop",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/desert-moon-cowgirl-kiss-lock-bag",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/dracula-spooky-christmas-portrait-glass-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/frankenstein-santa-glass-christmas-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/galaxy-net-ruffle-ankle-socks",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/ghost-cat-pumpkin-kiss-lock-bag",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/ghost-in-strawberry-field-in-linen-blend",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/gossamer-guardian-spider-lariat-halloween-jewelry",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/gothic-halloween-black-spider-teacup",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/gothic-striped-bat-wing-halloween-teacup",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/graveyard-ballerina-crop-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+        "/shop/4-packs-spring-metallic-red-handmade-spiral-taper-candles"
+      ]
+    },
+    {
+      "path": "/shop/halloween-skeleton-black-and-white-ornament-set",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/headless-horseman-spooky-portrait-glass-christmas-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/hexes-heat-unisex-summer-tee-1",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1"
+      ]
+    },
+    {
+      "path": "/shop/hollow-moon-earrings-modern-witchy-jewelry",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/limited-edition-cursed-hearts-valentines-drop",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/lola-ruffle-bow-ankle-socks",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/lunar-moth-phase-crop-tank",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/luxury-satin-6-piece-sheet-set-black",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/made-for-each-other-art-print",
+      "status": 200,
+      "productLinks": [
+        "/shop/matte-canvas-stretched-1-26",
+        "/shop/matte-canvas-stretched-1-25",
+        "/shop/undying-love-art-print",
+        "/shop/melancholy-monster-art-print"
+      ]
+    },
+    {
+      "path": "/shop/maria-cross-net-ankle-socks",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/marigold-memory-sugar-skull-kiss-lock-bag",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/ghost-cat-pumpkin-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/marked-by-the-rose-unisex-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/matte-black-cheese-knives-book-box",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/matte-canvas-stretched-1-25",
+      "status": 200,
+      "productLinks": [
+        "/shop/matte-canvas-stretched-1-26",
+        "/shop/undying-love-art-print",
+        "/shop/melancholy-monster-art-print",
+        "/shop/made-for-each-other-art-print"
+      ]
+    },
+    {
+      "path": "/shop/matte-canvas-stretched-1-26",
+      "status": 200,
+      "productLinks": [
+        "/shop/matte-canvas-stretched-1-25",
+        "/shop/undying-love-art-print",
+        "/shop/melancholy-monster-art-print",
+        "/shop/made-for-each-other-art-print"
+      ]
+    },
+    {
+      "path": "/shop/medussa-christmas-spooky-portrait-glass-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/melancholy-monster-art-print",
+      "status": 200,
+      "productLinks": [
+        "/shop/matte-canvas-stretched-1-26",
+        "/shop/matte-canvas-stretched-1-25",
+        "/shop/undying-love-art-print",
+        "/shop/made-for-each-other-art-print"
+      ]
+    },
+    {
+      "path": "/shop/moon-and-stars-pillow",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/moon-phase-double-necklace-stainless-steel-enamel",
+      "status": 200,
+      "productLinks": [
+        "/shop/cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "/shop/ghost-in-strawberry-field-in-linen-blend",
+        "/shop/desert-moon-cowgirl-kiss-lock-bag",
+        "/shop/marigold-memory-sugar-skull-kiss-lock-bag"
+      ]
+    },
+    {
+      "path": "/shop/mystic-raven-gothic-pillar-candle-holder",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/protection-crystal-candle-with-rough-black-obsidian",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/rectangle-vanity-mirror",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/riley-crochet-anklets",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/victorian-tray"
+      ]
+    },
+    {
+      "path": "/shop/s-g-g-secret-society-water-bottle-20oz",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/victorian-tray"
+      ]
+    },
+    {
+      "path": "/shop/salty-spells-sunset-sins-womens-boxy-tee-1",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/set-of-3-large-black-cast-iron-starburst-wall-hangings",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/set-of-3-starry-night-celestial-taper-candles",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/siren-of-the-underworld-unisex-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-society-tote",
+        "/shop/victorian-tray"
+      ]
+    },
+    {
+      "path": "/shop/smutty-good-girl-society-tote",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/victorian-tray"
+      ]
+    },
+    {
+      "path": "/shop/spooky-decor-creepy-nun-themed-glass-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/spooky-gingerbread-man-gothic-christmas-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/summerween-fourth-of-july-halloween-shirt",
+      "status": 200,
+      "productLinks": [
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1",
+        "/shop/summerween-womens-flowy-scoop-muscle-tank-1"
+      ]
+    },
+    {
+      "path": "/shop/summerween-trucker-snapback-hat",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/summerween-womens-flowy-scoop-muscle-tank-1",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/sweetheart-ruffle-cuff-knee-high-socks",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/taper-candle-holder-set",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-charmed-dark-obsidian-zip-hoodie",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-charmed-dark-sigil-cap",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-charmed-dark-sigil-cap-black",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-charmed-dark-signature-hoodie",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-crimson-reliquary-crop-tank",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-crimson-reliquary-unisex-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/the-crown-of-crystals-tank",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/till-death-unisex-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/two-tier-round-slate-stone-and-metal-serving-tray",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/undying-love-art-print",
+      "status": 200,
+      "productLinks": [
+        "/shop/matte-canvas-stretched-1-26",
+        "/shop/matte-canvas-stretched-1-25",
+        "/shop/melancholy-monster-art-print",
+        "/shop/made-for-each-other-art-print"
+      ]
+    },
+    {
+      "path": "/shop/unisex-softstyle-t-shirt",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/victorian-tray",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/white-sage-smudge-sticks-in-bulk",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/wicked-witch-and-crescent-moon-glass-christmas-ornament",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    },
+    {
+      "path": "/shop/witching-hour-white-sage-gothic-candle",
+      "status": 200,
+      "productLinks": [
+        "/shop/black-rose-twilight-blush-gothic-candle",
+        "/shop/black-rose-resin-tealight-candle-holder",
+        "/shop/green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "/shop/christmas-red-handmade-spiral-taper-holiday-candles-set-4"
+      ]
+    },
+    {
+      "path": "/shop/womens-ringer-tee",
+      "status": 200,
+      "productLinks": [
+        "/shop/summerween-fourth-of-july-halloween-shirt",
+        "/shop/camp-charmed-and-dark-unisex-ringer-tee",
+        "/shop/bones-and-brew-summer-unisex-tee-1",
+        "/shop/hexes-heat-unisex-summer-tee-1"
+      ]
+    },
+    {
+      "path": "/shop/yolanda-24-round-upholstered-accent-ottoman",
+      "status": 200,
+      "productLinks": [
+        "/shop/s-g-g-enchanted-reads-water-bottle-20oz",
+        "/shop/s-g-g-secret-society-water-bottle-20oz",
+        "/shop/smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "/shop/smutty-good-girl-society-tote"
+      ]
+    }
+  ]
+}

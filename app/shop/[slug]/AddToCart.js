@@ -5,390 +5,113 @@ import { Minus, Plus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
-import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';
 
-/**
- * AddToCart — handles Shopify variant selection, quantity, and cart logic.
- *
- * Props:
- *   shopifyVariants  { options: [{name, values}], variants: [{shopifyVariantId, title, price, selectedOptions, imageUrl, ...}] }
- *   product          product row (slug, name, price, imageUrls, ...)
- *   onVariantChange  optional callback(variant|null) — lets parent track selected variant for price display
- */
-export default function AddToCart({ shopifyVariants, product, onVariantChange, onColorSelect }) {
-  const { addItem, items } = useCart();
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [quantity, setQuantity] = useState(1);
-  const [cartState, setCartState] = useState('idle'); // idle | loading | success | error
-  const [selectionError, setSelectionError] = useState('');
-  const [inventoryNotice, setInventoryNotice] = useState(null);
-  const isAddingRef = useRef(false); // sync guard against rapid double-taps
-
+export default function AddToCart({ shopifyVariants, product, onVariantChange, onColorSelect, initialVariant }) {
+  const { addItem, pending, isLoaded } = useCart();
   const { options, variants } = shopifyVariants;
+  const [selectedOptions, setSelectedOptions] = useState(() => Object.fromEntries(initialVariant
+    ? initialVariant.selectedOptions.map(option => [option.name, option.value])
+    : options.filter(option => option.values.length === 1).map(option => [option.name, option.values[0]])));
+  const [quantity, setQuantity] = useState(1);
+  const [cartState, setCartState] = useState('idle');
+  const [selectionError, setSelectionError] = useState('');
+  const isAddingRef = useRef(false);
+  const visibleOptions = options.filter(option => !(option.name === 'Title' && option.values.length === 1 && option.values[0] === 'Default Title'));
+  const missingOptions = options.filter(option => !selectedOptions[option.name]);
+  const selectedVariant = missingOptions.length ? null : variants.find(variant => variant.selectedOptions.every(option => selectedOptions[option.name] === option.value));
+  const soldOut = selectedVariant?.available === false || selectedVariant?.availableForSale === false;
 
-  const allOptionsSelected = options.every((opt) => selectedOptions[opt.name]);
-  const missingOptions = options.filter((opt) => !selectedOptions[opt.name]);
-  const missingOptionNames = missingOptions.map((opt) => opt.name.toLowerCase());
-  const selectedOptionSummary = options
-    .filter((opt) => selectedOptions[opt.name])
-    .map((opt) => `${opt.name}: ${selectedOptions[opt.name]}`)
-    .join(' · ');
-
-  // Only attempt a match once every option has a value — prevents variants with
-  // empty selectedOptions (e.g. "Default Title") from matching prematurely via
-  // [].every() → true.
-  const selectedVariant = allOptionsSelected
-    ? variants.find((v) =>
-        v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
-      ) ?? null
-    : null;
-
-  // Shopify availability is authoritative. An option value stays enabled when
-  // at least one in-stock variant can satisfy that value plus any other choices
-  // the shopper has already made. This keeps multi-option products working while
-  // making sold-out single-option variants visibly unavailable before add-to-cart.
-  function isOptionValueAvailable(optionName, value) {
-    const candidateSelections = { ...selectedOptions, [optionName]: value };
-
-    return variants.some((variant) => {
-      const matchesSelections = variant.selectedOptions.every((opt) =>
-        !candidateSelections[opt.name] || candidateSelections[opt.name] === opt.value
-      );
-      const hasInventory =
-        variant.available !== false &&
-        (variant.quantityAvailable == null || Number(variant.quantityAvailable) > 0);
-
-      return matchesSelections && hasInventory;
-    });
+  function isOptionValueAvailable(index, value) {
+    return variants.some(variant => variant.available !== false && variant.availableForSale !== false && variant.selectedOptions.every(option => {
+      if (option.name === options[index].name) return option.value === value;
+      const optionIndex = options.findIndex(candidate => candidate.name === option.name);
+      return optionIndex >= index || !selectedOptions[option.name] || selectedOptions[option.name] === option.value;
+    }));
   }
-
-  const selectedVariantSoldOut = Boolean(
-    selectedVariant &&
-      (selectedVariant.available === false ||
-        (selectedVariant.quantityAvailable != null && Number(selectedVariant.quantityAvailable) <= 0))
-  );
 
   function handleOptionChange(optionName, value) {
     const next = { ...selectedOptions, [optionName]: value };
+    const optionIndex = options.findIndex(option => option.name === optionName);
+    // A new earlier choice can invalidate later choices. Ask for those again, never guess a replacement variant.
+    for (let i = optionIndex + 1; i < options.length; i++) {
+      const compatible = variants.some(variant => variant.available !== false && variant.availableForSale !== false && variant.selectedOptions.every(option => {
+        const index = options.findIndex(candidate => candidate.name === option.name);
+        return index > i || !next[option.name] || next[option.name] === option.value;
+      }));
+      if (!compatible) delete next[options[i].name];
+    }
     setSelectedOptions(next);
     setSelectionError('');
-    setInventoryNotice(null);
-
-    // Notify parent of color-variant image URL (fires even before all options selected)
-    if (onColorSelect && optionName === 'Color') {
-      const colorVariant = variants.find((v) =>
-        v.selectedOptions.some((opt) => opt.name === 'Color' && opt.value === value)
-      );
-      onColorSelect(colorVariant?.imageUrl || null);
-    }
-
-    // Notify parent of the newly matched variant (or null)
-    if (onVariantChange) {
-      const allSelected = options.every((opt) => next[opt.name]);
-      const match = allSelected
-        ? variants.find((v) =>
-            v.selectedOptions.every((opt) => next[opt.name] === opt.value)
-          ) ?? null
-        : null;
-      onVariantChange(match);
+    const match = options.every(option => next[option.name])
+      ? variants.find(variant => variant.selectedOptions.every(option => next[option.name] === option.value)) || null : null;
+    onVariantChange?.(match);
+    if (optionName.toLowerCase() === 'color') {
+      onColorSelect?.(variants.find(variant => variant.selectedOptions.some(option => option.name === optionName && option.value === value))?.imageUrl || null);
     }
   }
 
   async function handleAddToCart() {
-    if (isAddingRef.current || cartState === 'loading' || cartState === 'success') return;
-
-    if (!selectedVariant) {
-      const missing = missingOptions.map((o) => o.name.toLowerCase());
-      const msg = missing.length > 0
-        ? `Please select ${missing.join(' and ')} before adding to cart.`
-        : 'Please choose an available option combination.';
-      setSelectionError(msg);
-      posthog?.capture?.('add_to_cart_missing_variant', {
-        product: product.name,
-        product_title: product.name,
-        product_handle: product.slug,
-        product_type: product.category || undefined,
-        missing,
-        url: typeof window !== 'undefined' ? window.location.href : undefined,
-        ...getAttributionProps(),
-      });
+    if (isAddingRef.current || pending || cartState === 'success') return;
+    if (!selectedVariant || soldOut) {
+      const missing = missingOptions.map(option => option.name.toLowerCase());
+      setSelectionError(soldOut ? 'This option is sold out. Please choose another option.' : missing.length ? `Please select ${missing.join(' and ')}.` : 'Please choose an available option combination.');
+      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, product_title: product.name, product_handle: product.slug, missing, ...getAttributionProps() });
       return;
     }
-
     isAddingRef.current = true;
     setCartState('loading');
     setSelectionError('');
-    setInventoryNotice(null);
-
-    // Inventory check using Shopify variant quantityAvailable
-    const available = getAvailableInventory({
-      productQty: product.qty,
-      variantQuantityAvailable: selectedVariant.quantityAvailable,
-    });
-    const cartKey = `${product.slug}__sv_${selectedVariant.shopifyVariantId}`;
-    const alreadyInCart = items.find((i) => i.cartKey === cartKey)?.quantity || 0;
-    const { canAdd, limited, reason } = calculateAddableQuantity({
-      requested: quantity,
-      alreadyInCart,
-      available,
-    });
-
-    if (limited) {
-      if (reason === 'sold_out') {
-        setInventoryNotice('This item is currently sold out.');
-        setCartState('idle');
-        isAddingRef.current = false;
-        posthog?.capture?.('inventory_quantity_limited', {
-          product_title: product.name, product_handle: product.slug,
-          variant_title: selectedVariant.title || undefined,
-          variant_id: selectedVariant.shopifyVariantId || undefined,
-          requested_quantity: quantity, available_quantity: available,
-          cart_quantity_before: alreadyInCart, quantity_added: 0,
-          location: 'product_page', url: window.location.href,
-        });
-        return;
-      }
-      if (reason === 'at_limit') {
-        setInventoryNotice(`Only ${available} available. You already have the maximum quantity in your cart.`);
-        setCartState('idle');
-        isAddingRef.current = false;
-        posthog?.capture?.('inventory_quantity_limited', {
-          product_title: product.name, product_handle: product.slug,
-          variant_title: selectedVariant.title || undefined,
-          variant_id: selectedVariant.shopifyVariantId || undefined,
-          requested_quantity: quantity, available_quantity: available,
-          cart_quantity_before: alreadyInCart, quantity_added: 0,
-          location: 'product_page', url: window.location.href,
-        });
-        return;
-      }
-      if (reason === 'partial') {
-        setInventoryNotice(`Only ${available} available. We added ${canAdd} to your cart.`);
-        posthog?.capture?.('inventory_quantity_limited', {
-          product_title: product.name, product_handle: product.slug,
-          variant_title: selectedVariant.title || undefined,
-          variant_id: selectedVariant.shopifyVariantId || undefined,
-          requested_quantity: quantity, available_quantity: available,
-          cart_quantity_before: alreadyInCart, quantity_added: canAdd,
-          location: 'product_page', url: window.location.href,
-        });
-      }
-    }
-
-    const addQty = limited ? canAdd : quantity;
-
     try {
-      addItem(
-        {
-          ...product,
-          // Use Supabase variant price_override if available, otherwise base price
-          price: (() => {
-            if (product.productVariants?.length > 0 && selectedVariant) {
-              const match = product.productVariants.find((pv) =>
-                selectedVariant.selectedOptions?.some(
-                  (opt) => pv.variant_type === opt.name.toLowerCase() && pv.variant_value === opt.value
-                )
-              );
-              if (match?.price_override != null) return parseFloat(match.price_override);
-            }
-            return product.price;
-          })(),
-          shopifyVariantId: selectedVariant.shopifyVariantId,
-          imageUrl: selectedVariant.imageUrl || product.imageUrls?.[0] || null,
-          availableQty: available,
-        },
-        addQty
-      );
+      await addItem({
+        ...product,
+        price: selectedVariant.price,
+        currency: selectedVariant.currency || product.currency || 'USD',
+        shopifyVariantId: selectedVariant.shopifyVariantId,
+        variantTitle: selectedVariant.title,
+        imageUrl: selectedVariant.imageUrl || product.imageUrls?.[0],
+      }, quantity);
       setCartState('success');
       posthog?.capture?.('add_to_cart', {
-        product_title: product.name,
-        product_handle: product.slug,
-        product_type: product.category || undefined,
-        variant_title: selectedVariant.title || undefined,
-        variant_id: selectedVariant.shopifyVariantId || undefined,
-        sku: selectedVariant.sku || product.sku || undefined,
-        price: product.price,
-        currency: 'USD',
-        quantity: addQty,
-        url: typeof window !== 'undefined' ? window.location.href : undefined,
-        ...getAttributionProps(),
+        product_title: product.name, product_handle: product.slug, product_type: product.category,
+        variant_title: selectedVariant.title, variant_id: selectedVariant.shopifyVariantId,
+        sku: selectedVariant.sku || product.sku, price: selectedVariant.price,
+        currency: selectedVariant.currency || 'USD', quantity, url: window.location.href, ...getAttributionProps(),
       });
       setTimeout(() => setCartState('idle'), 2000);
-    } catch (err) {
-      console.error('Add to cart failed:', err);
+    } catch (error) {
       setCartState('error');
-    } finally {
-      isAddingRef.current = false;
-    }
+      setSelectionError(error.message || 'We could not add this item. Please try again.');
+    } finally { isAddingRef.current = false; }
   }
 
-  const needsSelection = !allOptionsSelected;
-  const buttonDisabled = cartState === 'loading' || cartState === 'success' || selectedVariantSoldOut;
-  const buttonLabel =
-    cartState === 'loading' ? 'Adding...'
-    : cartState === 'success' ? 'Added to Cart ✓'
-    : cartState === 'error' ? 'Something went wrong'
-    : selectedVariantSoldOut ? 'Sold Out'
-    : needsSelection && missingOptions.length === 1 ? `Select ${missingOptions[0].name}`
-    : needsSelection && missingOptions.length > 1 ? `Select ${missingOptionNames.join(' + ')}`
-    : 'Add to Cart';
-
+  const buttonLabel = cartState === 'loading' ? 'Adding…' : cartState === 'success' ? 'Added to Cart ✓' : soldOut ? 'Sold Out' : missingOptions.length ? `Select ${missingOptions.map(option => option.name).join(' + ')}` : 'Add to Cart';
   return (
     <div className="flex flex-col gap-6">
-      {/* Option selectors (Size, Color, etc.) */}
-      {options.map((option) => {
-        const isMissing = !selectedOptions[option.name];
-
-        return (
-          <div key={option.name} className="flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-3">
-              <label
-                className="text-[11px] uppercase tracking-[0.2em]"
-                style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-              >
-                {option.name}
-              </label>
-              {isMissing && (
-                <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                  Required
-                </span>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${option.name}`}>
-              {option.values.map((value) => {
-                const isSelected = selectedOptions[option.name] === value;
-                const isAvailable = isOptionValueAvailable(option.name, value);
-
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => isAvailable && handleOptionChange(option.name, value)}
-                    disabled={!isAvailable}
-                    aria-pressed={isSelected}
-                    aria-label={isAvailable ? value : `${value} — Sold out`}
-                    className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                      !isAvailable
-                        ? 'cursor-not-allowed border border-white/10 text-[#4f4b46] opacity-55'
-                        : isSelected
-                        ? 'border border-[#c9a96e] text-[#c9a96e]'
-                        : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                    }`}
-                    style={{
-                      backgroundColor: '#0e0e1a',
-                      fontFamily: 'Inter, sans-serif',
-                      cursor: isAvailable ? 'pointer' : 'not-allowed',
-                    }}
-                  >
-                    <span>{value}</span>
-                    {!isAvailable && (
-                      <span className="ml-2 text-[9px] uppercase tracking-[0.12em] text-[#6b6760]">
-                        Sold Out
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+      {visibleOptions.map(option => (
+        <fieldset key={option.name} className="flex flex-col gap-3">
+          <legend className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[#c9a96e]">{option.name}{!selectedOptions[option.name] ? ' · Required' : ''}</legend>
+          <div className="flex flex-wrap gap-2">
+            {option.values.map(value => {
+              const available = isOptionValueAvailable(options.indexOf(option), value);
+              const selected = selectedOptions[option.name] === value;
+              return <button key={value} type="button" onClick={() => handleOptionChange(option.name, value)} disabled={!available || pending} aria-pressed={selected} aria-label={available ? value : `${value}, sold out`} className={`min-h-11 rounded-full px-4 py-2 text-[13px] tracking-wider border focus-visible:outline focus-visible:outline-[#c9a96e] ${selected ? 'border-[#c9a96e] text-[#c9a96e]' : 'border-[#c9a96e]/30 text-zinc-300'} disabled:opacity-45 disabled:cursor-not-allowed`}>
+                {value}{!available && <span className="ml-2 text-[10px]">Sold Out</span>}
+              </button>;
+            })}
           </div>
-        );
-      })}
-
-      <p className="text-[12px] font-light leading-relaxed" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-        {selectedOptionSummary || `Choose ${missingOptionNames.join(' and ')} before adding this item to your cart.`}
-      </p>
-
-      {/* Quantity */}
+        </fieldset>
+      ))}
+      {!!visibleOptions.length && <p className="text-xs text-zinc-300" aria-live="polite">{visibleOptions.filter(option => selectedOptions[option.name]).map(option => `${option.name}: ${selectedOptions[option.name]}`).join(' · ') || 'Choose your options above.'}</p>}
       <div className="flex flex-col gap-3">
-        <label
-          className="text-[11px] uppercase tracking-[0.2em]"
-          style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-        >
-          Qty
-        </label>
+        <span className="text-[11px] uppercase tracking-[0.2em] text-[#c9a96e]">Quantity</span>
         <div className="flex items-center" role="group" aria-label="Select quantity">
-          <button
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            aria-label="Decrease quantity"
-            className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
-            style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
-          >
-            <Minus size={14} />
-          </button>
-          <div
-            className="flex h-10 w-12 items-center justify-center text-sm font-light"
-            style={{
-              color: '#e8e4dc',
-              borderTop: '1px solid rgba(201,169,110,0.2)',
-              borderBottom: '1px solid rgba(201,169,110,0.2)',
-              backgroundColor: '#0e0e1a',
-              fontFamily: 'Inter, sans-serif',
-            }}
-            aria-live="polite"
-          >
-            {quantity}
-          </div>
-          <button
-            onClick={() => {
-              // Compute dynamic max based on available inventory
-              const available = selectedVariant
-                ? getAvailableInventory({ productQty: product.qty, variantQuantityAvailable: selectedVariant.quantityAvailable })
-                : getAvailableInventory({ productQty: product.qty, variantQuantityAvailable: null });
-              const cartKey = selectedVariant
-                ? `${product.slug}__sv_${selectedVariant.shopifyVariantId}`
-                : product.slug;
-              const alreadyInCart = items.find((i) => i.cartKey === cartKey)?.quantity || 0;
-              const maxSelectable = available != null ? Math.max(0, available - alreadyInCart) : 10;
-              if (maxSelectable <= 0 || quantity >= maxSelectable) {
-                if (available === 0) {
-                  setInventoryNotice('This item is currently sold out.');
-                } else {
-                  setInventoryNotice(`Only ${available} available.${alreadyInCart > 0 ? ` You already have ${alreadyInCart} in your cart.` : ''}`);
-                }
-                return;
-              }
-              setQuantity((q) => Math.min(maxSelectable, q + 1));
-            }}
-            aria-label="Increase quantity"
-            className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
-            style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
-          >
-            <Plus size={14} />
-          </button>
+          <button type="button" disabled={pending || quantity <= 1} onClick={() => setQuantity(q => q - 1)} aria-label="Decrease quantity" className="h-11 w-11 flex items-center justify-center border border-[#c9a96e]/30 text-[#c9a96e] disabled:opacity-40"><Minus size={14} /></button>
+          <span className="h-11 w-12 flex items-center justify-center border-y border-[#c9a96e]/30 text-[#e8e4dc] text-sm" aria-live="polite">{quantity}</span>
+          <button type="button" disabled={pending || quantity >= 100} onClick={() => setQuantity(q => q + 1)} aria-label="Increase quantity" className="h-11 w-11 flex items-center justify-center border border-[#c9a96e]/30 text-[#c9a96e] disabled:opacity-40"><Plus size={14} /></button>
         </div>
       </div>
-
-      {/* Add to Cart */}
-      <button
-        onClick={handleAddToCart}
-        disabled={buttonDisabled}
-        className={`h-[52px] w-full rounded-full border text-sm uppercase tracking-[0.15em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-          cartState === 'loading' ? 'animate-pulse' : ''
-        } ${
-          cartState === 'success'
-            ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
-            : cartState === 'error'
-            ? 'border-red-500/50 text-red-400'
-            : selectedVariantSoldOut
-            ? 'cursor-not-allowed border-white/10 bg-white/[0.02] text-[#6b6760]'
-            : needsSelection
-            ? 'border-[rgba(201,169,110,0.45)] bg-[rgba(201,169,110,0.06)] text-[#c9a96e] hover:bg-[rgba(201,169,110,0.12)]'
-            : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
-        } disabled:opacity-50`}
-        style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-      >
-        {buttonLabel}
-      </button>
-      {selectionError && (
-        <p role="alert" style={{ color: '#e24b4a', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
-          {selectionError}
-        </p>
-      )}
-      {inventoryNotice && (
-        <p role="status" style={{ color: '#c9a96e', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
-          {inventoryNotice}
-        </p>
-      )}
+      <button type="button" data-product-add-button onClick={handleAddToCart} disabled={!isLoaded || pending || cartState === 'success' || soldOut} className="h-[52px] w-full rounded-full border border-[#c9a96e] text-[#c9a96e] text-sm uppercase tracking-[0.15em] hover:bg-[#c9a96e]/10 disabled:opacity-50 focus-visible:outline focus-visible:outline-[#c9a96e]">{!isLoaded ? 'Loading Cart…' : buttonLabel}</button>
+      {selectionError && <p role="alert" className="text-sm text-[#e8b1ad]">{selectionError}</p>}
     </div>
   );
 }

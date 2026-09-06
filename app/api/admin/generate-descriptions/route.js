@@ -1,3 +1,4 @@
+import { isShopifyCatalogEnabled } from '@/lib/commerce-config';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { isSyncAdminRequest } from '@/lib/admin/sync-auth';
@@ -177,6 +178,15 @@ function sleep(ms) {
 export async function POST(request) {
   if (!isSyncAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Stop the competing catalog writer only after the Shopify read path is on.
+  // A rollback to the legacy source retains its existing maintenance behavior.
+  if (isShopifyCatalogEnabled()) {
+    return NextResponse.json({
+      error: 'Catalog maintenance has moved to Shopify. Review storefront diagnostics in Commerce Admin.',
+      code: 'CATALOG_WRITER_RETIRED',
+    }, { status: 410 });
   }
 
   const url = new URL(request.url);

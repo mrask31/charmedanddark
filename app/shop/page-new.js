@@ -5,16 +5,10 @@ import ShopHero from "@/components/shop/ShopHero";
 import StickyFilterBar from "@/components/shop/StickyFilterBar";
 import SectionHeader from "@/components/shop/SectionHeader";
 import ProductCard from "@/components/shop/ProductCard";
+import { productInCollection, productPricing } from "@/lib/product-display";
 import { useSanctuaryAccess } from "@/hooks/useSanctuaryAccess";
 
-const SGG_HANDLES = new Set([
-  'smutty-good-girl-society-tote',
-  'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz',
-  's-g-g-enchanted-reads-water-bottle-20oz',
-  's-g-g-secret-society-water-bottle-20oz',
-]);
-
-// Category mapping for filter bar - matches exact Supabase category column values
+// Category mapping for filter bar - matches the normalized public catalog categories
 const CATEGORY_MAP = {
   ALL: null,
   ON_SALE: "__sale__",  // Special: filters products with salePrice set
@@ -36,8 +30,7 @@ const ACCESSORIES_GROUP_ORDER = [
 ];
 
 function isSmuttyGoodGirlProduct(product) {
-  const handle = product.handle || product.slug || '';
-  return SGG_HANDLES.has(handle);
+  return productInCollection(product, 'smutty-good-girl') || product.collection === 'smutty-good-girl';
 }
 
 /**
@@ -65,7 +58,7 @@ function sortAccessoriesByGroup(products) {
   });
 }
 
-// Section configuration - matches exact Supabase category values
+// Section configuration - matches the normalized public catalog categories
 const SECTIONS = {
   SGG: {
     title: "Smutty Good Girl",
@@ -92,6 +85,11 @@ const SECTIONS = {
     subtitle: "Wearable darkness, crafted for those who move between worlds",
     categories: ["Apparel"],
   },
+  OTHER: {
+    title: "More to Discover",
+    subtitle: "Explore the rest of the collection",
+    categories: [],
+  },
   WALL_ART: {
     title: "The Gallery",
     subtitle: "Dark art for walls that refuse to be ordinary",
@@ -100,7 +98,7 @@ const SECTIONS = {
 };
 
 function getEffectivePrice(product) {
-  return product.salePrice || product.price;
+  return productPricing(product).publicPrice;
 }
 
 function sortProducts(products, sortOption) {
@@ -119,13 +117,33 @@ function sortProducts(products, sortOption) {
   }
 }
 
-export default function ShopPageClient({ products }) {
-  const [activeFilter, setActiveFilter] = useState("ALL");
+export default function ShopPageClient({ products, initialFilter, initialQuery, initialCollection }) {
+  const [activeFilter, setActiveFilter] = useState(Object.hasOwn(CATEGORY_MAP, initialFilter) ? initialFilter : "ALL");
+  const [searchQuery, setSearchQuery] = useState(typeof initialQuery === "string" ? initialQuery : "");
+  const [collectionFilter, setCollectionFilter] = useState(typeof initialCollection === "string" ? initialCollection : "");
   const [sortOption, setSortOption] = useState("Featured");
   const { isMember } = useSanctuaryAccess();
 
   // Check if any products are on sale (promotion engine enriched them)
-  const hasOnSale = useMemo(() => products.some((p) => p.salePrice && p.salePrice < p.price), [products]);
+  const hasOnSale = useMemo(() => products.some((p) => productPricing(p).isOnSale), [products]);
+
+  // Preserve shareable filters without triggering a catalog refetch per keypress.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    activeFilter === 'ALL' ? url.searchParams.delete('category') : url.searchParams.set('category', activeFilter);
+    searchQuery ? url.searchParams.set('q', searchQuery) : url.searchParams.delete('q');
+    collectionFilter ? url.searchParams.set('collection', collectionFilter) : url.searchParams.delete('collection');
+    window.history.replaceState(null, '', url);
+  }, [activeFilter, searchQuery, collectionFilter]);
+
+  const changeFilter = (filter) => {
+    setActiveFilter(filter);
+    setCollectionFilter('');
+  };
+  const resetFilters = () => {
+    changeFilter('ALL');
+    setSearchQuery('');
+  };
 
   const SCROLL_KEY = 'charmed-shop-scroll';
 
@@ -155,7 +173,7 @@ export default function ShopPageClient({ products }) {
 
     if (activeFilter === "ON_SALE") {
       // Special filter: only products with an active sale price
-      filtered = filtered.filter((p) => p.salePrice && p.salePrice < p.price);
+      filtered = filtered.filter((p) => productPricing(p).isOnSale);
     } else if (activeFilter === "SGG") {
       filtered = filtered.filter(isSmuttyGoodGirlProduct);
     } else if (activeFilter !== "ALL") {
@@ -166,8 +184,11 @@ export default function ShopPageClient({ products }) {
       }
     }
 
+    if (collectionFilter) filtered = filtered.filter((p) => productInCollection(p, collectionFilter) || p.collection === collectionFilter);
+    const query = searchQuery.trim().toLocaleLowerCase();
+    if (query) filtered = filtered.filter((p) => [p.name, p.category, ...(p.tags || [])].join(' ').toLocaleLowerCase().includes(query));
     return sortProducts(filtered, sortOption);
-  }, [products, activeFilter, sortOption]);
+  }, [products, activeFilter, sortOption, searchQuery, collectionFilter]);
 
   // Group products by section with empty state safety
   const productsBySection = useMemo(() => {
@@ -175,17 +196,19 @@ export default function ShopPageClient({ products }) {
 
     Object.entries(SECTIONS).forEach(([key, config]) => {
       if (key === 'SGG') {
-        grouped[key] = filteredProducts.filter(isSmuttyGoodGirlProduct);
+        grouped[key] = ["ALL", "ON_SALE", "SGG"].includes(activeFilter) ? filteredProducts.filter(isSmuttyGoodGirlProduct) : [];
         return;
       }
 
-      grouped[key] = filteredProducts.filter((p) =>
-        !isSmuttyGoodGirlProduct(p) && config.categories && config.categories.includes(p.category)
-      ) || [];
+      const isCategoryFilter = !['ALL', 'ON_SALE', 'SGG'].includes(activeFilter);
+      const candidates = filteredProducts.filter((p) => isCategoryFilter || !isSmuttyGoodGirlProduct(p));
+      grouped[key] = key === 'OTHER'
+        ? candidates.filter((p) => !Object.values(CATEGORY_MAP).some((categories) => Array.isArray(categories) && categories.includes(p.category)))
+        : candidates.filter((p) => config.categories?.includes(p.category));
     });
 
     return grouped;
-  }, [filteredProducts]);
+  }, [filteredProducts, activeFilter]);
 
   // Determine which sections to show based on active filter
   const visibleSections = useMemo(() => {
@@ -212,13 +235,17 @@ export default function ShopPageClient({ products }) {
       
       <StickyFilterBar
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={changeFilter}
         sortOption={sortOption}
         onSortChange={setSortOption}
         hasOnSale={hasOnSale}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        resultCount={filteredProducts.length}
       />
 
-      <div className="mx-auto max-w-7xl px-6 py-16">
+      <div className="mx-auto max-w-7xl px-6 py-16" id="shop-results">
+        {collectionFilter && <div className="mb-8 flex items-center gap-4 text-sm text-zinc-300"><span>Collection: {collectionFilter.replaceAll('-', ' ')}</span><button type="button" onClick={() => setCollectionFilter('')} className="underline">Clear collection</button></div>}
         {visibleSections.map((sectionKey) => {
           const section = SECTIONS[sectionKey];
           const sectionProducts = productsBySection[sectionKey] || [];
@@ -285,7 +312,8 @@ export default function ShopPageClient({ products }) {
 
         {filteredProducts.length === 0 && (
           <div className="py-20 text-center">
-            <p className="text-zinc-500">No products found in this category.</p>
+            <p className="text-zinc-400">No products match these filters.</p>
+            <button type="button" onClick={resetFilters} className="mt-5 border border-[#c9a96e] px-6 py-3 text-sm text-[#c9a96e]">View all products</button>
           </div>
         )}
       </div>

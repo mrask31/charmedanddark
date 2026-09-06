@@ -10,9 +10,9 @@ import { posthog } from '@/components/providers/posthog-provider';
 
 const TRUST_ITEMS = [
   { icon: '✓', text: 'Secure checkout' },
-  { icon: '✓', text: 'Ships from trusted production partners' },
+  { icon: '✓', text: 'Shipping options are shown at checkout' },
   { icon: '✓', text: 'Easy returns on eligible items' },
-  { icon: '✓', text: 'Sanctuary members save 10%' },
+  { icon: '✓', text: 'Eligible Sanctuary benefits verified in your cart' },
 ];
 
 export default function TrustModule({ productName }) {

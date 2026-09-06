@@ -1,53 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
-import { supabase } from "@/lib/supabase/client";
-import { enrichProductsWithPromotions } from "@/lib/promotions";
-
-const SGG_HANDLES = [
-  'smutty-good-girl-society-tote',
-  'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz',
-  's-g-g-enchanted-reads-water-bottle-20oz',
-  's-g-g-secret-society-water-bottle-20oz',
-];
+import { getMerchandisingProducts } from '@/lib/catalog-merchandising';
+import { productIsAvailable, productPricing } from '@/lib/product-display';
 
 async function fetchProducts() {
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('id, name, title, handle, slug, price, image_url, image_urls, images, description, qty, category, collection, tags')
-      .in('handle', SGG_HANDLES)
-      .eq('hidden', false);
-
-    if (error) {
-      console.error('Failed to fetch Smutty Good Girl products:', error);
-      return [];
-    }
-
-    const enriched = await enrichProductsWithPromotions(data || []);
-    return SGG_HANDLES
-      .map((handle) => enriched.find((product) => product.handle === handle || product.slug === handle))
-      .filter(Boolean);
-  } catch (error) {
-    console.error('Failed to fetch Smutty Good Girl products:', error);
-    return [];
-  }
+  const products = await getMerchandisingProducts('smutty-good-girl');
+  return [...products].sort((a, b) => Number(productIsAvailable(b)) - Number(productIsAvailable(a)));
 }
 
 function getImage(product) {
-  return product.image_url || product.image_urls?.[0] || product.images?.[0] || null;
+  return product.imageUrls?.[0] || null;
 }
 
-function formatPrice(value) {
+function formatPrice(value, currency = 'USD') {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency,
     minimumFractionDigits: 2,
   }).format(Number(value));
 }
 
 export const metadata = {
-  title: 'Smutty Good Girl Collection | Charmed & Dark',
+  title: 'Smutty Good Girl Collection',
+  alternates: { canonical: 'https://www.charmedanddark.com/collections/smutty-good-girl' },
   description: 'Bookish drinkware, totes, and everyday essentials for dark-romance readers, fictional-boyfriend collectors, and anyone with a suspiciously long TBR.',
 };
 
@@ -89,7 +65,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
 
       <section className="px-6 pb-10 sm:px-8 lg:px-16">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-7 gap-y-3 border border-[#d7a0b5]/15 bg-[#d7a0b5]/[0.03] px-6 py-4 text-center">
-          {['Dark romance approved', 'Bookish gift ready', 'Secure checkout', 'Sanctuary members save 10%'].map((item) => (
+          {['Dark romance approved', 'Bookish gift ready', 'Secure checkout', 'Sanctuary member benefits'].map((item) => (
             <span key={item} className="text-[10px] uppercase tracking-[0.18em] text-[#a98b96]" style={{ fontFamily: 'Inter, sans-serif' }}>
               {item}
             </span>
@@ -100,17 +76,10 @@ export default async function SmuttyGoodGirlCollectionPage() {
       <section className="px-6 pb-24 sm:px-8 lg:px-16">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => {
-            const slug = product.handle || product.slug;
+            const slug = product.slug || product.handle;
             const imageUrl = getImage(product);
-            const retailPrice = Number(product.price || 0);
-            const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
-            const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
-            const price = isOnSale ? promotionPrice : retailPrice;
-            const salePercentage = isOnSale
-              ? Math.round(Number(product.salePercentage) || ((retailPrice - price) / retailPrice) * 100)
-              : null;
-            const sanctuaryPrice = (price * 0.9).toFixed(2);
-            const isSoldOut = product.qty != null && product.qty <= 0;
+            const { publicPrice: price, originalPrice: retailPrice, isOnSale, salePercentage } = productPricing(product);
+            const isSoldOut = !productIsAvailable(product);
 
             return (
               <Link key={slug} href={`/shop/${slug}`} className="group flex flex-col gap-4">
@@ -155,15 +124,15 @@ export default async function SmuttyGoodGirlCollectionPage() {
                     <div className="mt-2 space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                         {isOnSale && (
-                          <span className="text-xs line-through text-[#776a70]">{formatPrice(retailPrice)}</span>
+                          <span className="text-xs line-through text-[#776a70]">{formatPrice(retailPrice, product.currency)}</span>
                         )}
-                        <span className="text-sm font-light text-[#f7f1f3]">{formatPrice(price)}</span>
+                        <span className="text-sm font-light text-[#f7f1f3]">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatPrice(price, product.currency)}</span>
                         {isOnSale && (
                           <span className="text-[9px] uppercase tracking-[0.14em] text-[#d7a0b5]">{salePercentage}% off</span>
                         )}
                       </div>
                       <div className="text-[10px] uppercase tracking-[0.14em] text-[#d7a0b5]">
-                        Sanctuary ${sanctuaryPrice}{isOnSale ? ' · additional 10%' : ''}
+                        Member benefits confirmed in cart
                       </div>
                     </div>
                   )}

@@ -1,0 +1,1293 @@
+{
+  "observedAt": "2026-09-06",
+  "productionCommit": "9221b11c13684e13d6d51894c12c41265cf93781",
+  "deployment": "dpl_4QS3eMsBxg87Xof32tKDcvLMbHLq",
+  "products": {
+    "nodes": [
+      {
+        "handle": "the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+        "id": "gid://shopify/Product/8228020551714",
+        "productType": "Hats",
+        "status": "ACTIVE",
+        "tags": [
+          "Accessories",
+          "Back to School",
+          "Beanies",
+          "Embroidery",
+          "Hats",
+          "Unisex"
+        ],
+        "title": "The Charmed & Dark Cuffed Beanie — Embroidered Gothic Streetwear Essential"
+      },
+      {
+        "handle": "the-charmed-dark-obsidian-zip-hoodie",
+        "id": "gid://shopify/Product/8228020584482",
+        "productType": "Hoodie",
+        "status": "ACTIVE",
+        "tags": [
+          "DTG",
+          "Embroidery",
+          "Hoodies",
+          "Men's Clothing",
+          "Regular fit",
+          "TikTok",
+          "Unisex",
+          "With zipper",
+          "Women's Clothing"
+        ],
+        "title": "The Charmed & Dark Obsidian Zip Hoodie"
+      },
+      {
+        "handle": "limited-edition-cursed-hearts-valentines-drop",
+        "id": "gid://shopify/Product/8228020846626",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Embroidery",
+          "Men's Clothing",
+          "Oversized",
+          "Personalization Picks",
+          "Premium",
+          "Premium Apparel",
+          "Simple designs on large embroidery",
+          "T-shirts",
+          "TikTok",
+          "Unisex",
+          "US Elections Season",
+          "Women's Clothing"
+        ],
+        "title": "Limited Edition Cursed Hearts Valentine's Drop"
+      },
+      {
+        "handle": "crystal-ball-coven-crop",
+        "id": "gid://shopify/Product/8228020879394",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Neck Labels",
+          "Premium Apparel",
+          "Relaxed fit",
+          "T-shirts",
+          "Women's Clothing"
+        ],
+        "title": "Crystal Ball Coven Crop"
+      },
+      {
+        "handle": "graveyard-ballerina-crop-tee",
+        "id": "gid://shopify/Product/8228020912162",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Neck Labels",
+          "Premium Apparel",
+          "Relaxed fit",
+          "T-shirts",
+          "Women's Clothing"
+        ],
+        "title": "Graveyard Ballerina Crop Tee"
+      },
+      {
+        "handle": "till-death-unisex-tee",
+        "id": "gid://shopify/Product/8228020944930",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Embroidery",
+          "Men's Clothing",
+          "Oversized",
+          "Personalization Picks",
+          "Premium",
+          "Premium Apparel",
+          "Simple designs on large embroidery",
+          "T-shirts",
+          "TikTok",
+          "Unisex",
+          "US Elections Season",
+          "Women's Clothing"
+        ],
+        "title": "Till Death Unisex Tee"
+      },
+      {
+        "handle": "lunar-moth-phase-crop-tank",
+        "id": "gid://shopify/Product/8228020977698",
+        "productType": "Tank Top",
+        "status": "ACTIVE",
+        "tags": [
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Regular fit",
+          "Tank Tops",
+          "Women's Clothing"
+        ],
+        "title": "Lunar Moth Phase Crop Tank"
+      },
+      {
+        "handle": "the-crimson-reliquary-unisex-tee",
+        "id": "gid://shopify/Product/8228021010466",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Crew neck",
+          "DTG",
+          "Embroidery",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Simple designs on large embroidery",
+          "T-shirts",
+          "TikTok",
+          "Unisex",
+          "Valentine's Day",
+          "Women's Clothing"
+        ],
+        "title": "The Crimson Reliquary Unisex Tee"
+      },
+      {
+        "handle": "the-crimson-reliquary-crop-tank",
+        "id": "gid://shopify/Product/8228021043234",
+        "productType": "Tank Top",
+        "status": "ACTIVE",
+        "tags": [
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Regular fit",
+          "Tank Tops",
+          "Women's Clothing"
+        ],
+        "title": "The Crimson Reliquary Crop Tank"
+      },
+      {
+        "handle": "marked-by-the-rose-unisex-tee",
+        "id": "gid://shopify/Product/8228021076002",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ],
+        "title": "Marked by the Rose Unisex Tee"
+      },
+      {
+        "handle": "the-moon-maiden-crop-top",
+        "id": "gid://shopify/Product/8228021108770",
+        "productType": "T-Shirt",
+        "status": "DRAFT",
+        "tags": [
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "T-shirts",
+          "Women's Clothing"
+        ],
+        "title": "The Moon Maiden Crop Top"
+      },
+      {
+        "handle": "the-crown-of-crystals-tank",
+        "id": "gid://shopify/Product/8228021141538",
+        "productType": "Tank Top",
+        "status": "ACTIVE",
+        "tags": [
+          "Athleisure Wear",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTF",
+          "Premium Apparel",
+          "Tank Tops",
+          "Women's Clothing"
+        ],
+        "title": "The Crown of Crystals Tank"
+      },
+      {
+        "handle": "yolanda-24-round-upholstered-accent-ottoman",
+        "id": "gid://shopify/Product/8247948640290",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Emerald Boudoir Ottoman – Vintage Velvet & Gold Fringe"
+      },
+      {
+        "handle": "heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+        "id": "gid://shopify/Product/8247948705826",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Sacred Heart – Anatomical Resin Vase Collection"
+      },
+      {
+        "handle": "2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+        "id": "gid://shopify/Product/8247948771362",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Serpent's Coil – Sculpted 3D Snake Taper Candles (Pair)"
+      },
+      {
+        "handle": "moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+        "id": "gid://shopify/Product/8247948804130",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Moon Moth Vintage Kisslock Bag"
+      },
+      {
+        "handle": "coffin-studs-gold-and-silver-halloween-vampire-gothic",
+        "id": "gid://shopify/Product/8247948836898",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Eternal Rest Coffin Studs"
+      },
+      {
+        "handle": "white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+        "id": "gid://shopify/Product/8247948869666",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Serenity Ritual – White Sage & Lavender Cleansing Bundle"
+      },
+      {
+        "handle": "white-sage-smudge-sticks-in-bulk",
+        "id": "gid://shopify/Product/8247948902434",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Foundation Ritual – Classic White Sage Cleansing Bundle"
+      },
+      {
+        "handle": "white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+        "id": "gid://shopify/Product/8247948935202",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Clarity Ritual – White Sage & Eucalyptus Cleansing Bundle"
+      },
+      {
+        "handle": "rectangle-vanity-mirror",
+        "id": "gid://shopify/Product/8247948967970",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Victorian Oracle – Brass & Beadwork Tabletop Mirror"
+      },
+      {
+        "handle": "brass-glass-soap-dish",
+        "id": "gid://shopify/Product/8247949000738",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Gilded Claw-Foot Vanity Dish – Vintage Brass & Glass"
+      },
+      {
+        "handle": "victorian-tray",
+        "id": "gid://shopify/Product/8247949033506",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Offering Tray"
+      },
+      {
+        "handle": "2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+        "id": "gid://shopify/Product/8247949066274",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Obsidian Twist – Glossy Black Spiral Taper Candles (Pair)"
+      },
+      {
+        "handle": "4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+        "id": "gid://shopify/Product/8247949099042",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Crimson Fade Spiral – Metallic Blood Ombre Tapers (4-Pack)"
+      },
+      {
+        "handle": "christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+        "id": "gid://shopify/Product/8247949131810",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Blood Moon Spiral – Solid Crimson Taper Set (4-Pack)"
+      },
+      {
+        "handle": "green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+        "id": "gid://shopify/Product/8247949164578",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Verdant Gradient – Spiral Taper Candle Set (4-Pack)"
+      },
+      {
+        "handle": "black-rose-resin-tealight-candle-holder",
+        "id": "gid://shopify/Product/8247949197346",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Midnight Bloom Tealight Holder – Matte Black Resin Rose"
+      },
+      {
+        "handle": "black-rose-twilight-blush-gothic-candle",
+        "id": "gid://shopify/Product/8247949230114",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Twilight Blush Ritual Candle – Black Rose & Cork"
+      },
+      {
+        "handle": "mystic-raven-gothic-pillar-candle-holder",
+        "id": "gid://shopify/Product/8247949262882",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Raven’s Watch Pillar Stand – Gothic Candle Holder"
+      },
+      {
+        "handle": "spooky-gingerbread-man-gothic-christmas-ornament",
+        "id": "gid://shopify/Product/8247949295650",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Gloomy Gingerbread – Spooky Gothic Creepmas Ornament"
+      },
+      {
+        "handle": "witching-hour-white-sage-gothic-candle",
+        "id": "gid://shopify/Product/8247949328418",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Witching Hour Ritual Candle – White Sage Cleansing Blend"
+      },
+      {
+        "handle": "black-gothic-coffin-shaped-gothic-trinket-tray",
+        "id": "gid://shopify/Product/8247949426722",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Midnight Coffin Vanity Tray – Matte Black Trinket Dish"
+      },
+      {
+        "handle": "bird-branch-candle-holder",
+        "id": "gid://shopify/Product/8247949459490",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Ravenwood Branch Candelabra – Dark Metal Triple Taper Holder with Birds"
+      },
+      {
+        "handle": "moon-and-stars-pillow",
+        "id": "gid://shopify/Product/8247949492258",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Emerald Celestial Pillow – Velvet Moon & Star Embroidery"
+      },
+      {
+        "handle": "taper-candle-holder-set",
+        "id": "gid://shopify/Product/8247949525026",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Shadow Spire Trio – Matte Black 3-Piece Candlestick Set"
+      },
+      {
+        "handle": "bat-candle-holder",
+        "id": "gid://shopify/Product/8247949557794",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Midnight Wing Dual-Taper Candle Holder - Matte Black"
+      },
+      {
+        "handle": "hollow-moon-earrings-modern-witchy-jewelry",
+        "id": "gid://shopify/Product/8247949590562",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Hollow Moon Earrings"
+      },
+      {
+        "handle": "celestial-kisslock-bag-in-linen-blended-fabric",
+        "id": "gid://shopify/Product/8247949623330",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Celestial Kisslock Bag"
+      },
+      {
+        "handle": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+        "id": "gid://shopify/Product/8247949656098",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Celestial Dragon Kisslock Bag"
+      },
+      {
+        "handle": "celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+        "id": "gid://shopify/Product/8247949688866",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Celestial Mushroom Kisslock Bag"
+      },
+      {
+        "handle": "hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+        "id": "gid://shopify/Product/8247949721634",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Lunar Arc Hammered Bracelet"
+      },
+      {
+        "handle": "moon-phase-double-necklace-stainless-steel-enamel",
+        "id": "gid://shopify/Product/8247949754402",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Moon Phase Double Necklace"
+      },
+      {
+        "handle": "gossamer-guardian-spider-lariat-halloween-jewelry",
+        "id": "gid://shopify/Product/8247949787170",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Web of Becoming Spider Lariat"
+      },
+      {
+        "handle": "halloween-skeleton-black-and-white-ornament-set",
+        "id": "gid://shopify/Product/8247949819938",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Halloween Skeleton Black and White Ornament Set"
+      },
+      {
+        "handle": "spooky-decor-creepy-nun-themed-glass-ornament",
+        "id": "gid://shopify/Product/8247949852706",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Spooky Decor Creepy Nun Themed Glass Ornament"
+      },
+      {
+        "handle": "frankenstein-santa-glass-christmas-ornament",
+        "id": "gid://shopify/Product/8247949885474",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Frankenstein Santa Glass Christmas Ornament"
+      },
+      {
+        "handle": "edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+        "id": "gid://shopify/Product/8247949918242",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Edgar Allan Poe Spooky Christmas Portrait Glass Ornament"
+      },
+      {
+        "handle": "wicked-witch-and-crescent-moon-glass-christmas-ornament",
+        "id": "gid://shopify/Product/8247949951010",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Wicked Witch and Crescent Moon Glass Christmas Ornament"
+      },
+      {
+        "handle": "headless-horseman-spooky-portrait-glass-christmas-ornament",
+        "id": "gid://shopify/Product/8247949983778",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Headless Horseman Spooky Portrait Glass Christmas Ornament"
+      },
+      {
+        "handle": "dracula-spooky-christmas-portrait-glass-ornament",
+        "id": "gid://shopify/Product/8247950016546",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Dracula Spooky Christmas Portrait Glass Ornament"
+      },
+      {
+        "handle": "medussa-christmas-spooky-portrait-glass-ornament",
+        "id": "gid://shopify/Product/8247950049314",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Medussa Christmas Spooky Portrait Glass Ornament"
+      },
+      {
+        "handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+        "id": "gid://shopify/Product/8247950245922",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Crushed Velvet 4-Piece Comforter or Duvet Cover Set, Black"
+      },
+      {
+        "handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+        "id": "gid://shopify/Product/8247950278690",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Crushed Velvet 4-Piece Comforter or Duvet Cover Set, Blush"
+      },
+      {
+        "handle": "luxury-satin-6-piece-sheet-set-black",
+        "id": "gid://shopify/Product/8247950311458",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Luxury Satin 6-Piece Sheet Set, Black"
+      },
+      {
+        "handle": "undying-love-art-print",
+        "id": "gid://shopify/Product/8247950344226",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Undying Love - Art Print"
+      },
+      {
+        "handle": "made-for-each-other-art-print",
+        "id": "gid://shopify/Product/8247950376994",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Made for Each Other - Art Print"
+      },
+      {
+        "handle": "amorous-libation-art-print",
+        "id": "gid://shopify/Product/8247950409762",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Amorous Libation - Art Print"
+      },
+      {
+        "handle": "melancholy-monster-art-print",
+        "id": "gid://shopify/Product/8247950442530",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Melancholy Monster - Art Print"
+      },
+      {
+        "handle": "joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+        "id": "gid://shopify/Product/8247950475298",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Mesa Ritual Collection – 18-Piece Matte Stoneware Set"
+      },
+      {
+        "handle": "black-swan-dof-whiskey-glass-set-of-4",
+        "id": "gid://shopify/Product/8247950508066",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Black Swan – Noir Whiskey Tumbler Set"
+      },
+      {
+        "handle": "matte-black-cheese-knives-book-box",
+        "id": "gid://shopify/Product/8247950573602",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Midnight Feast – Matte Black Cheese Knife Set"
+      },
+      {
+        "handle": "black-wood-board-small",
+        "id": "gid://shopify/Product/8247950606370",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Midnight Plank – Small Black Wood Ritual & Serving Board"
+      },
+      {
+        "handle": "skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+        "id": "gid://shopify/Product/8247950639138",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Catacomb Scholar – Aged Skull Bookend Set"
+      },
+      {
+        "handle": "venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+        "id": "gid://shopify/Product/8247950671906",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Sepia & Smoke Ribbed Coupe Set – Vintage Glassware Collection"
+      },
+      {
+        "handle": "large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+        "id": "gid://shopify/Product/8247950704674",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Gilded North Star Trio – Alchemical Wall Decor"
+      },
+      {
+        "handle": "set-of-3-large-black-cast-iron-starburst-wall-hangings",
+        "id": "gid://shopify/Product/8247950737442",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Obsidian Compass Stars – Cast Iron Wall Trio"
+      },
+      {
+        "handle": "two-tier-round-slate-stone-and-metal-serving-tray",
+        "id": "gid://shopify/Product/8247950770210",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Obsidian Tier – Slate Stone & Chrome Display Stand"
+      },
+      {
+        "handle": "gothic-striped-bat-wing-halloween-teacup",
+        "id": "gid://shopify/Product/8247950802978",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Midnight Striped Bat Wing Teacup – Gothic Statement Mug"
+      },
+      {
+        "handle": "gothic-halloween-black-spider-teacup",
+        "id": "gid://shopify/Product/8247950835746",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Weaver’s Teacup – Thorny Handle Ceramic Mug"
+      },
+      {
+        "handle": "set-of-3-starry-night-celestial-taper-candles",
+        "id": "gid://shopify/Product/8247950868514",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "The Starry Night Taper Trio – Celestial Wax Candles"
+      },
+      {
+        "handle": "protection-crystal-candle-with-rough-black-obsidian",
+        "id": "gid://shopify/Product/8247950901282",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [
+          "dept:objects",
+          "img:branded",
+          "source:faire"
+        ],
+        "title": "The Obsidian Tower – Protection Ritual Candle with Hidden Crystal"
+      },
+      {
+        "handle": "set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+        "id": "gid://shopify/Product/8247950934050",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [
+          "dept:objects",
+          "img:branded",
+          "source:faire"
+        ],
+        "title": "The Shadow Stripe Taper Trio – Gothic \"Creepmas\" Candles"
+      },
+      {
+        "handle": "calming-crystal-candle-with-rough-amethyst",
+        "id": "gid://shopify/Product/8247950966818",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [
+          "bg:stone",
+          "dept:objects",
+          "img:branded",
+          "source:faire"
+        ],
+        "title": "The Amethyst Spire – Calming Ritual Candle with Hidden Crystal"
+      },
+      {
+        "handle": "the-charmed-dark-signature-hoodie",
+        "id": "gid://shopify/Product/8344998772770",
+        "productType": "Hoodie",
+        "status": "ACTIVE",
+        "tags": [
+          "DTG",
+          "Embroidery",
+          "Hoodies",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "TikTok",
+          "Unisex",
+          "Women's Clothing"
+        ],
+        "title": "The Charmed & Dark Signature Hoodie"
+      },
+      {
+        "handle": "unisex-softstyle-t-shirt",
+        "id": "gid://shopify/Product/8344998936610",
+        "productType": "T-Shirt",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ],
+        "title": "Charmed & Dark Gothic Softstyle Tee"
+      },
+      {
+        "handle": "matte-canvas-stretched-1-25",
+        "id": "gid://shopify/Product/8344998969378",
+        "productType": "Canvas",
+        "status": "ACTIVE",
+        "tags": [
+          "Art & Wall Decor",
+          "Canvas",
+          "Decor",
+          "Hanging Hardware",
+          "Home & Living",
+          "Matte",
+          "Price Drop",
+          "Sustainable"
+        ],
+        "title": "After Death — Matte Canvas"
+      },
+      {
+        "handle": "matte-canvas-stretched-1-26",
+        "id": "gid://shopify/Product/8344999133218",
+        "productType": "Canvas",
+        "status": "ACTIVE",
+        "tags": [
+          "Art & Wall Decor",
+          "Canvas",
+          "Decor",
+          "Hanging Hardware",
+          "Home & Living",
+          "Matte",
+          "Price Drop",
+          "Sustainable"
+        ],
+        "title": "Last Kiss — Matte Canvas"
+      },
+      {
+        "handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+        "id": "gid://shopify/Product/8345373507618",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Charmed and Dark Signature Gothic Tee | Unisex Alternative Graphic Shirt"
+      },
+      {
+        "handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+        "id": "gid://shopify/Product/8362287661090",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Charmed and Dark Gothic Graphic Tee | Women’s Alternative Fashion Top"
+      },
+      {
+        "handle": "lola-ruffle-bow-ankle-socks",
+        "id": "gid://shopify/Product/8392384217122",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Lola Ruffle Bow Ankle Socks"
+      },
+      {
+        "handle": "maria-cross-net-ankle-socks",
+        "id": "gid://shopify/Product/8392384249890",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Maria Cross Net Ankle Socks"
+      },
+      {
+        "handle": "galaxy-net-ruffle-ankle-socks",
+        "id": "gid://shopify/Product/8392384282658",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Galaxy Net Ruffle Ankle Socks"
+      },
+      {
+        "handle": "sweetheart-ruffle-cuff-knee-high-socks",
+        "id": "gid://shopify/Product/8392384315426",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Sweetheart Ruffle Cuff Knee High Socks"
+      },
+      {
+        "handle": "bat-net-tights",
+        "id": "gid://shopify/Product/8392384348194",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Bat Net Tights"
+      },
+      {
+        "handle": "bow-babe-ankle-socks",
+        "id": "gid://shopify/Product/8392384380962",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Bow Babe Ankle Socks"
+      },
+      {
+        "handle": "claire-fishnet-ankle-socks",
+        "id": "gid://shopify/Product/8392384413730",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Claire Fishnet Ankle Socks"
+      },
+      {
+        "handle": "riley-crochet-anklets",
+        "id": "gid://shopify/Product/8392384446498",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Riley Crochet Anklets"
+      },
+      {
+        "handle": "womens-ringer-tee",
+        "id": "gid://shopify/Product/8405954461730",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Charmed by Night Women's Ringer Tee"
+      },
+      {
+        "handle": "siren-of-the-underworld-unisex-tee",
+        "id": "gid://shopify/Product/8406000042018",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Mother's Day",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ],
+        "title": "Siren of the Underworld Unisex Tee"
+      },
+      {
+        "handle": "the-charmed-dark-sigil-cap",
+        "id": "gid://shopify/Product/8406030712866",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Accessories",
+          "DTF",
+          "Embroidery",
+          "Hats",
+          "Unisex",
+          "Valentine's Day"
+        ],
+        "title": "The Charmed & Dark Sigil Cap"
+      },
+      {
+        "handle": "the-charmed-dark-sigil-cap-black",
+        "id": "gid://shopify/Product/8406033465378",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Accessories",
+          "DTF",
+          "Embroidery",
+          "Hats",
+          "Unisex",
+          "Valentine's Day"
+        ],
+        "title": "The Charmed & Dark Sigil Cap - Black"
+      },
+      {
+        "handle": "summerween-trucker-snapback-hat",
+        "id": "gid://shopify/Product/8408563417122",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Accessories",
+          "Bestsellers",
+          "Embroidery",
+          "Hats",
+          "On Sale",
+          "Sale"
+        ],
+        "title": "Summerween Trucker Snapback Hat"
+      },
+      {
+        "handle": "salty-spells-sunset-sins-womens-boxy-tee-1",
+        "id": "gid://shopify/Product/8408622858274",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Neck Labels",
+          "Premium Apparel",
+          "Relaxed fit",
+          "Streetwear",
+          "T-shirts",
+          "Women's Clothing"
+        ],
+        "title": "Salty Spells & Sunset Sins Women's Boxy Tee"
+      },
+      {
+        "handle": "summerween-womens-flowy-scoop-muscle-tank-1",
+        "id": "gid://shopify/Product/8408636489762",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "DTG",
+          "Loose fit",
+          "Oversized",
+          "Relaxed fit",
+          "Tank Tops",
+          "TikTok",
+          "Women's Clothing"
+        ],
+        "title": "Summerween Women's Flowy Scoop Muscle Tank"
+      },
+      {
+        "handle": "hexes-heat-unisex-summer-tee-1",
+        "id": "gid://shopify/Product/8408692129826",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Mother's Day",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ],
+        "title": "Hexes & Heat Unisex Summer Tee"
+      },
+      {
+        "handle": "bones-and-brew-summer-unisex-tee-1",
+        "id": "gid://shopify/Product/8408700747810",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Mother's Day",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ],
+        "title": "Bones and Brew Summer Unisex Tee"
+      },
+      {
+        "handle": "camp-charmed-and-dark-unisex-ringer-tee",
+        "id": "gid://shopify/Product/8408724537378",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Streetwear",
+          "T-shirts",
+          "Unisex",
+          "Valentine's Day",
+          "Women's Clothing"
+        ],
+        "title": "Camp Charmed and Dark Unisex Ringer Tee"
+      },
+      {
+        "handle": "marigold-memory-sugar-skull-kiss-lock-bag",
+        "id": "gid://shopify/Product/8444896378914",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Marigold Memory Sugar Skull Kisslock Bag"
+      },
+      {
+        "handle": "desert-moon-cowgirl-kiss-lock-bag",
+        "id": "gid://shopify/Product/8444896575522",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Cowgirl on Horseback Kisslock Bag"
+      },
+      {
+        "handle": "ghost-cat-pumpkin-kiss-lock-bag",
+        "id": "gid://shopify/Product/8444896772130",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Ghost Cat & Pumpkin Kisslock Bag"
+      },
+      {
+        "handle": "summerween-fourth-of-july-halloween-shirt",
+        "id": "gid://shopify/Product/8469015429154",
+        "productType": "Apparel",
+        "status": "ACTIVE",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Seasonal Picks",
+          "summerween patriotic halloween fourth of july halloween halloween shirt spooky summer gothic apparel haunted americana summerween shirt halloween lover gift",
+          "T-shirts",
+          "Unisex",
+          "Women's Clothing"
+        ],
+        "title": "Summerween Patriot Tee"
+      },
+      {
+        "handle": "ghost-in-strawberry-field-in-linen-blend",
+        "id": "gid://shopify/Product/8496325165090",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Ghost in Strawberry Field Kisslock Bag"
+      },
+      {
+        "handle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+        "id": "gid://shopify/Product/8496325197858",
+        "productType": "",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Cherry Kisslock Bag"
+      },
+      {
+        "handle": "smutty-good-girl-society-tote",
+        "id": "gid://shopify/Product/8556134563874",
+        "productType": "Bags",
+        "status": "ACTIVE",
+        "tags": [],
+        "title": "Smutty Good Girl Society Tote"
+      },
+      {
+        "handle": "smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+        "id": "gid://shopify/Product/8556173066274",
+        "productType": "Mug",
+        "status": "ACTIVE",
+        "tags": [
+          "11 oz",
+          "11oz",
+          "15 oz",
+          "15oz",
+          "accent mug",
+          "Back to School",
+          "Beverage",
+          "Coffee Mugs",
+          "Drink",
+          "Drinks",
+          "Home & Living",
+          "Kitchen",
+          "Mugs",
+          "Personalization Picks",
+          "two tone",
+          "White base"
+        ],
+        "title": "Smutty Good Girl Reading Fuel Accent Coffee Mug (15oz)"
+      },
+      {
+        "handle": "s-g-g-secret-society-water-bottle-20oz",
+        "id": "gid://shopify/Product/8556173295650",
+        "productType": "Mug",
+        "status": "ACTIVE",
+        "tags": [
+          "Back to School",
+          "Bottles",
+          "Bottles & Tumblers",
+          "Engraving",
+          "Home & Living",
+          "Indoor",
+          "Kids",
+          "New Mockups",
+          "Outdoor"
+        ],
+        "title": "S.G.G. Secret Society Water Bottle,  20oz"
+      },
+      {
+        "handle": "s-g-g-enchanted-reads-water-bottle-20oz",
+        "id": "gid://shopify/Product/8556174540834",
+        "productType": "Mug",
+        "status": "ACTIVE",
+        "tags": [
+          "Back to School",
+          "Bottles",
+          "Bottles & Tumblers",
+          "Engraving",
+          "Home & Living",
+          "Indoor",
+          "Kids",
+          "New Mockups",
+          "Outdoor"
+        ],
+        "title": "S. G. G. Enchanted Reads Water Bottle, 20oz"
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "eyJsYXN0X2lkIjo4NTU2MTc0NTQwODM0LCJsYXN0X3ZhbHVlIjoiODU1NjE3NDU0MDgzNCJ9",
+      "hasNextPage": false
+    }
+  },
+  "collections": {
+    "nodes": [
+      {
+        "handle": "frontpage",
+        "id": "gid://shopify/Collection/496996122658",
+        "products": {
+          "nodes": [
+            {
+              "handle": "the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+              "id": "gid://shopify/Product/8228020551714"
+            }
+          ],
+          "pageInfo": {
+            "endCursor": "eyJsYXN0X2lkIjo4MjI4MDIwNTUxNzE0LCJsYXN0X3ZhbHVlIjoiMCJ9",
+            "hasNextPage": false
+          }
+        },
+        "title": "Home page"
+      },
+      {
+        "handle": "smutty-good-girl",
+        "id": "gid://shopify/Collection/506482720802",
+        "products": {
+          "nodes": [
+            {
+              "handle": "smutty-good-girl-society-tote",
+              "id": "gid://shopify/Product/8556134563874"
+            },
+            {
+              "handle": "smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+              "id": "gid://shopify/Product/8556173066274"
+            },
+            {
+              "handle": "s-g-g-enchanted-reads-water-bottle-20oz",
+              "id": "gid://shopify/Product/8556174540834"
+            },
+            {
+              "handle": "s-g-g-secret-society-water-bottle-20oz",
+              "id": "gid://shopify/Product/8556173295650"
+            }
+          ],
+          "pageInfo": {
+            "endCursor": "eyJsYXN0X2lkIjo4NTU2MTczMjk1NjUwLCJsYXN0X3ZhbHVlIjoiMDAwaW51Z3htemMifQ==",
+            "hasNextPage": false
+          }
+        },
+        "title": "Smutty Good Girl"
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "eyJsYXN0X2lkIjo1MDY0ODI3MjA4MDIsImxhc3RfdmFsdWUiOiI1MDY0ODI3MjA4MDIifQ==",
+      "hasNextPage": false
+    }
+  },
+  "publications": {
+    "nodes": [
+      {
+        "app": {
+          "id": "gid://shopify/App/580111",
+          "title": "Online Store"
+        },
+        "id": "gid://shopify/Publication/281203048482",
+        "name": "Online Store"
+      },
+      {
+        "app": {
+          "id": "gid://shopify/App/3890849",
+          "title": "Shop"
+        },
+        "id": "gid://shopify/Publication/281203081250",
+        "name": "Shop"
+      },
+      {
+        "app": {
+          "id": "gid://shopify/App/129785",
+          "title": "Point of Sale"
+        },
+        "id": "gid://shopify/Publication/281203114018",
+        "name": "Point of Sale"
+      },
+      {
+        "app": {
+          "id": "gid://shopify/App/1780363",
+          "title": "Google & YouTube"
+        },
+        "id": "gid://shopify/Publication/312993644578",
+        "name": "Google & YouTube"
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "eyJsYXN0X2lkIjozMTI5OTM2NDQ1NzgsImxhc3RfdmFsdWUiOjMxMjk5MzY0NDU3OH0=",
+      "hasNextPage": false
+    }
+  }
+}

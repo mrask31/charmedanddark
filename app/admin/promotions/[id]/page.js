@@ -76,6 +76,10 @@ export default function EditPromotionPage() {
   }
 
   async function handlePublish() {
+    if (promo.commercePolicy?.publishingEnabled === false) {
+      setError(promo.commercePolicy.message);
+      return;
+    }
     if (!confirm("Publish this promotion? It will become visible to customers.")) return;
     setSaving(true);
     setError(null);
@@ -229,8 +233,9 @@ export default function EditPromotionPage() {
           {(promo.status === "draft" || promo.status === "scheduled") && (
             <button
               onClick={handlePublish}
-              disabled={saving}
-              style={{ padding: "0.6rem 1.5rem", fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#000", backgroundColor: "#4ade80", border: "none", cursor: saving ? "not-allowed" : "pointer", fontFamily: "Inter, sans-serif" }}
+              disabled={saving || promo.commercePolicy?.publishingEnabled === false}
+              aria-describedby={promo.commercePolicy?.requiresShopifyVerification ? "shopify-campaign-requirement" : undefined}
+              style={{ padding: "0.6rem 1.5rem", fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#000", backgroundColor: "#4ade80", border: "none", cursor: saving || promo.commercePolicy?.publishingEnabled === false ? "not-allowed" : "pointer", opacity: promo.commercePolicy?.publishingEnabled === false ? 0.55 : 1, fontFamily: "Inter, sans-serif" }}
             >
               {saving ? "..." : "Publish"}
             </button>
@@ -239,6 +244,15 @@ export default function EditPromotionPage() {
 
         {error && <p role="alert" style={{ color: "#e55", fontSize: "0.8rem", marginBottom: "1rem" }}>{error}</p>}
         {success && <p role="status" style={{ color: "#4ade80", fontSize: "0.8rem", marginBottom: "1rem" }}>{success}</p>}
+
+        {promo.commercePolicy?.requiresShopifyVerification && (
+          <div id="shopify-campaign-requirement" style={{ ...sectionStyle, borderColor: "rgba(201,169,110,0.3)" }}>
+            <p style={labelStyle}>Shopify discount connection required</p>
+            <p style={{ fontSize: "0.85rem", color: "#c8bdab", lineHeight: 1.6, marginBottom: 0 }}>
+              {promo.commercePolicy.message} Shopify product sale prices and checkout discounts continue to work independently of these campaign drafts.
+            </p>
+          </div>
+        )}
 
         <div style={{ ...sectionStyle, borderColor: "rgba(201,169,110,0.2)" }}>
           <p style={labelStyle}>Preview</p>

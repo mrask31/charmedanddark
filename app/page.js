@@ -1,6 +1,5 @@
 import { Hero } from "@/components/hero";
 import { BrandPositioning } from "@/components/brand-positioning";
-import { CategoryPortals } from "@/components/category-portals";
 import { HomepageProductSection } from "@/components/homepage-product-section";
 import { SocialProof } from "@/components/social-proof";
 import { EditorialBreak } from "@/components/editorial-break";
@@ -8,118 +7,33 @@ import TheMirror from "@/components/the-mirror";
 import { MembershipPitch } from "@/components/membership-pitch";
 import { JournalPreview } from "@/components/journal-preview";
 import { Footer } from "@/components/footer";
-import { supabase } from "@/lib/supabase/client";
-import { getActivePromotions, enrichProductsWithPromotions, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
+import { getMerchandisingProducts } from "@/lib/catalog-merchandising";
+import { getActivePromotions, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
 import { PromotionHero } from "@/components/promotions/PromotionHero";
 import { PreviewWrapper } from "@/components/promotions/PreviewWrapper";
 
-// ─── Best Sellers: Kiss Lock Bags (conference-validated #1 seller) ───
-const BEST_SELLER_HANDLES = [
-  'celestial-kisslock-bag-in-linen-blended-fabric',
-  'cherry-kiss-lock-bag-in-linen-blend-fabric',
-  'ghost-in-strawberry-field-in-linen-blend',
-  'ghost-cat-pumpkin-kiss-lock-bag',
-  'desert-moon-cowgirl-kiss-lock-bag',
-  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
-];
-
-// ─── Light the Darkness: Candles (conference-validated #2 seller) ───
-const CANDLE_HANDLES = [
-  'bird-branch-candle-holder',
-  'set-of-3-starry-night-celestial-taper-candles',
-  '2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071',
-  'bat-candle-holder',
-];
-
-// ─── Dark Home: Decor pieces ───
-const DARK_HOME_HANDLES = [
-  'victorian-tray',
-  'gothic-striped-bat-wing-halloween-teacup',
-  'gothic-halloween-black-spider-teacup',
-  'black-gothic-coffin-shaped-gothic-trinket-tray',
-];
-
-// ─── Smutty Good Girl: New bookish capsule collection ───
-const SGG_HANDLES = [
-  'smutty-good-girl-society-tote',
-  'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz',
-  's-g-g-enchanted-reads-water-bottle-20oz',
-  's-g-g-secret-society-water-bottle-20oz',
-];
-
-// ─── Summerween: Seasonal (lower priority after conference data) ───
-const SUMMERWEEN_HANDLES = [
-  'summerween-trucker-snapback-hat',
-  'summerween-fourth-of-july-halloween-shirt',
-  'hexes-heat-unisex-summer-tee-1',
-  'summerween-womens-flowy-scoop-muscle-tank-1',
-];
-
-// ─── Apparel: Moved lowest (almost no shirt sales at conference) ───
-const APPAREL_HANDLES = [
-  'camp-charmed-and-dark-unisex-ringer-tee',
-  'salty-spells-sunset-sins-womens-boxy-tee-1',
-  'charmed-by-night-womens-ringer-tee',
-  'hexes-heat-unisex-summer-tee-1',
-];
-
-const HOMEPAGE_HANDLES = [...new Set([
-  ...BEST_SELLER_HANDLES,
-  ...CANDLE_HANDLES,
-  ...DARK_HOME_HANDLES,
-  ...SGG_HANDLES,
-  ...SUMMERWEEN_HANDLES,
-  ...APPAREL_HANDLES,
-])];
-
-async function fetchHomepageProducts() {
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('id, name, title, handle, slug, price, image_url, image_urls, images, qty, category, collection, tags')
-      .in('handle', HOMEPAGE_HANDLES)
-      .eq('hidden', false);
-
-    if (error) throw error;
-    return data || [];
-  } catch (err) {
-    console.error('Failed to fetch homepage products:', err);
-    return [];
-  }
-}
-
-function pickProductsByHandles(products, handles) {
-  return handles
-    .map((handle) => products.find((product) => product.handle === handle || product.slug === handle))
-    .filter(Boolean);
-}
+export const revalidate = 60;
+export const metadata = { alternates: { canonical: 'https://www.charmedanddark.com' } };
 
 export default async function Home({ searchParams }) {
-  const homepageProducts = await fetchHomepageProducts();
-  let promotionAwareProducts = homepageProducts;
+  const [bestSellers, candles, darkHome, smuttyGoodGirl, summerween, apparel] = await Promise.all([
+    getMerchandisingProducts('homepage-best-sellers', 6),
+    getMerchandisingProducts('homepage-candles', 4),
+    getMerchandisingProducts('homepage-dark-home', 4),
+    getMerchandisingProducts('smutty-good-girl', 4),
+    getMerchandisingProducts('summerween', 4),
+    getMerchandisingProducts('homepage-apparel', 4),
+  ]);
+  const enrichedProducts = { bestSellers, candles, darkHome, smuttyGoodGirl, summerween, apparel };
   let homepagePromotion = null;
-
   if (PROMOTION_ENGINE_ENABLED) {
     try {
-      const [activePromos, enriched] = await Promise.all([
-        getActivePromotions(),
-        enrichProductsWithPromotions(homepageProducts),
-      ]);
+      const activePromos = await getActivePromotions();
       homepagePromotion = activePromos.find((promotion) => promotion.homepageEnabled) || null;
-      promotionAwareProducts = enriched;
     } catch (err) {
-      console.error('[Homepage] Promotion enrichment failed:', err);
+      console.error('[Homepage] Campaign unavailable:', err.message);
     }
   }
-
-  const enrichedProducts = {
-    bestSellers: pickProductsByHandles(promotionAwareProducts, BEST_SELLER_HANDLES),
-    candles: pickProductsByHandles(promotionAwareProducts, CANDLE_HANDLES),
-    darkHome: pickProductsByHandles(promotionAwareProducts, DARK_HOME_HANDLES),
-    smuttyGoodGirl: pickProductsByHandles(promotionAwareProducts, SGG_HANDLES),
-    summerween: pickProductsByHandles(promotionAwareProducts, SUMMERWEEN_HANDLES),
-    apparel: pickProductsByHandles(promotionAwareProducts, APPAREL_HANDLES),
-  };
 
   return (
     <main className="min-h-screen bg-black">
@@ -172,7 +86,7 @@ export default async function Home({ searchParams }) {
         title="Light the Darkness"
         products={enrichedProducts.candles}
         badge="Ritual Favorite"
-        viewAllHref="/shop"
+        viewAllHref="/shop?category=RITUAL"
         ctaLabel="Shop Candles & Ritual"
         intro="The second thing customers stopped for: candles, holders, and objects that make a room feel like a ceremony."
       />
@@ -182,7 +96,7 @@ export default async function Home({ searchParams }) {
         title="Dark Home"
         products={enrichedProducts.darkHome}
         badge="Home Favorite"
-        viewAllHref="/shop"
+        viewAllHref="/shop?category=HOME"
         ctaLabel="Shop Home"
         intro="Trays, teacups, and objects designed to make ordinary routines feel intentional."
       />
@@ -211,7 +125,7 @@ export default async function Home({ searchParams }) {
       <HomepageProductSection
         title="Apparel"
         products={enrichedProducts.apparel}
-        viewAllHref="/shop"
+        viewAllHref="/shop?category=APPAREL"
         ctaLabel="Shop Apparel"
         intro="Wearable darkness for those who dress the mood year-round."
       />

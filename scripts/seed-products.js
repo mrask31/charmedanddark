@@ -5,9 +5,14 @@
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { getProducts as getProductsCSV } from '../lib/products-csv.js';
+import { isShopifyCatalogEnabled } from '../lib/commerce-config.js';
 
 // Load .env.local explicitly
 dotenv.config({ path: '.env.local' });
+
+if (isShopifyCatalogEnabled()) {
+  throw new Error('Catalog seeding is retired. Manage products in Shopify; preserve the identity archive.');
+}
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,

@@ -1,0 +1,220 @@
+{
+  "createdAt": "2026-09-06",
+  "publicationStatus": "published to existing Online Store publication 281203048482; runtime Storefront visibility still requires preview verification",
+  "collections": [
+    {
+      "handle": "homepage-best-sellers",
+      "id": "gid://shopify/Collection/509422108706",
+      "products": {
+        "nodes": [
+          {
+            "handle": "celestial-kisslock-bag-in-linen-blended-fabric",
+            "id": "gid://shopify/Product/8247949623330"
+          },
+          {
+            "handle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+            "id": "gid://shopify/Product/8496325197858"
+          },
+          {
+            "handle": "ghost-in-strawberry-field-in-linen-blend",
+            "id": "gid://shopify/Product/8496325165090"
+          },
+          {
+            "handle": "ghost-cat-pumpkin-kiss-lock-bag",
+            "id": "gid://shopify/Product/8444896772130"
+          },
+          {
+            "handle": "desert-moon-cowgirl-kiss-lock-bag",
+            "id": "gid://shopify/Product/8444896575522"
+          },
+          {
+            "handle": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+            "id": "gid://shopify/Product/8247949656098"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "eyJsYXN0X2lkIjo4MjQ3OTQ5NjU2MDk4LCJsYXN0X3ZhbHVlIjoiMDAwcnpycGVnaDAifQ==",
+          "hasNextPage": false
+        }
+      },
+      "title": "Homepage — Best Sellers"
+    },
+    {
+      "handle": "homepage-candles",
+      "id": "gid://shopify/Collection/509422141474",
+      "products": {
+        "nodes": [
+          {
+            "handle": "bird-branch-candle-holder",
+            "id": "gid://shopify/Product/8247949459490"
+          },
+          {
+            "handle": "set-of-3-starry-night-celestial-taper-candles",
+            "id": "gid://shopify/Product/8247950868514"
+          },
+          {
+            "handle": "2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+            "id": "gid://shopify/Product/8247948771362"
+          },
+          {
+            "handle": "bat-candle-holder",
+            "id": "gid://shopify/Product/8247949557794"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "eyJsYXN0X2lkIjo4MjQ3OTQ5NTU3Nzk0LCJsYXN0X3ZhbHVlIjoiMDAwaW51Z3htemMifQ==",
+          "hasNextPage": false
+        }
+      },
+      "title": "Homepage — Candles & Ritual"
+    },
+    {
+      "handle": "homepage-dark-home",
+      "id": "gid://shopify/Collection/509422174242",
+      "products": {
+        "nodes": [
+          {
+            "handle": "victorian-tray",
+            "id": "gid://shopify/Product/8247949033506"
+          },
+          {
+            "handle": "gothic-striped-bat-wing-halloween-teacup",
+            "id": "gid://shopify/Product/8247950802978"
+          },
+          {
+            "handle": "gothic-halloween-black-spider-teacup",
+            "id": "gid://shopify/Product/8247950835746"
+          },
+          {
+            "handle": "black-gothic-coffin-shaped-gothic-trinket-tray",
+            "id": "gid://shopify/Product/8247949426722"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "eyJsYXN0X2lkIjo4MjQ3OTQ5NDI2NzIyLCJsYXN0X3ZhbHVlIjoiMDAwaW51Z3htemMifQ==",
+          "hasNextPage": false
+        }
+      },
+      "title": "Homepage — Dark Home"
+    },
+    {
+      "handle": "homepage-apparel",
+      "id": "gid://shopify/Collection/509422207010",
+      "products": {
+        "nodes": [
+          {
+            "handle": "camp-charmed-and-dark-unisex-ringer-tee",
+            "id": "gid://shopify/Product/8408724537378"
+          },
+          {
+            "handle": "salty-spells-sunset-sins-womens-boxy-tee-1",
+            "id": "gid://shopify/Product/8408622858274"
+          },
+          {
+            "handle": "womens-ringer-tee",
+            "id": "gid://shopify/Product/8405954461730"
+          },
+          {
+            "handle": "hexes-heat-unisex-summer-tee-1",
+            "id": "gid://shopify/Product/8408692129826"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "eyJsYXN0X2lkIjo4NDA4NjkyMTI5ODI2LCJsYXN0X3ZhbHVlIjoiMDAwaW51Z3htemMifQ==",
+          "hasNextPage": false
+        }
+      },
+      "title": "Homepage — Apparel"
+    },
+    {
+      "handle": "kiss-lock-bags",
+      "id": "gid://shopify/Collection/509422239778",
+      "products": {
+        "nodes": [
+          {
+            "handle": "celestial-kisslock-bag-in-linen-blended-fabric",
+            "id": "gid://shopify/Product/8247949623330"
+          },
+          {
+            "handle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+            "id": "gid://shopify/Product/8496325197858"
+          },
+          {
+            "handle": "ghost-in-strawberry-field-in-linen-blend",
+            "id": "gid://shopify/Product/8496325165090"
+          },
+          {
+            "handle": "desert-moon-cowgirl-kiss-lock-bag",
+            "id": "gid://shopify/Product/8444896575522"
+          },
+          {
+            "handle": "ghost-cat-pumpkin-kiss-lock-bag",
+            "id": "gid://shopify/Product/8444896772130"
+          },
+          {
+            "handle": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+            "id": "gid://shopify/Product/8247949656098"
+          },
+          {
+            "handle": "moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+            "id": "gid://shopify/Product/8247948804130"
+          },
+          {
+            "handle": "marigold-memory-sugar-skull-kiss-lock-bag",
+            "id": "gid://shopify/Product/8444896378914"
+          },
+          {
+            "handle": "celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+            "id": "gid://shopify/Product/8247949688866"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "eyJsYXN0X2lkIjo4MjQ3OTQ5Njg4ODY2LCJsYXN0X3ZhbHVlIjoiMDAxNXpuazNvcGkifQ==",
+          "hasNextPage": false
+        }
+      },
+      "title": "Gothic Kisslock Bags"
+    },
+    {
+      "handle": "summerween",
+      "id": "gid://shopify/Collection/509422272546",
+      "products": {
+        "nodes": [
+          {
+            "handle": "summerween-trucker-snapback-hat",
+            "id": "gid://shopify/Product/8408563417122"
+          },
+          {
+            "handle": "summerween-fourth-of-july-halloween-shirt",
+            "id": "gid://shopify/Product/8469015429154"
+          },
+          {
+            "handle": "hexes-heat-unisex-summer-tee-1",
+            "id": "gid://shopify/Product/8408692129826"
+          },
+          {
+            "handle": "summerween-womens-flowy-scoop-muscle-tank-1",
+            "id": "gid://shopify/Product/8408636489762"
+          },
+          {
+            "handle": "bones-and-brew-summer-unisex-tee-1",
+            "id": "gid://shopify/Product/8408700747810"
+          },
+          {
+            "handle": "salty-spells-sunset-sins-womens-boxy-tee-1",
+            "id": "gid://shopify/Product/8408622858274"
+          },
+          {
+            "handle": "camp-charmed-and-dark-unisex-ringer-tee",
+            "id": "gid://shopify/Product/8408724537378"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "eyJsYXN0X2lkIjo4NDA4NzI0NTM3Mzc4LCJsYXN0X3ZhbHVlIjoiMDAwd25xYm12N3UifQ==",
+          "hasNextPage": false
+        }
+      },
+      "title": "Summerween"
+    }
+  ]
+}

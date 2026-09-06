@@ -1,31 +1,10 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
+import { productIsAvailable } from '@/lib/product-display';
 
-const PRODUCTS = [
-  {
-    name: 'Smutty Good Girl Society Tote',
-    handle: 'smutty-good-girl-society-tote',
-    image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/SGG_Tote_bag2.png?v=1784758418',
-  },
-  {
-    name: 'Smutty Good Girl Reading Fuel Mug',
-    handle: 'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz',
-    image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/SGG_Mug_2.png?v=1784758465',
-  },
-  {
-    name: 'S.G.G. Enchanted Reads Water Bottle',
-    handle: 's-g-g-enchanted-reads-water-bottle-20oz',
-    image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/SGG_Water_Bottle_label_3.png?v=1784765351',
-  },
-  {
-    name: 'S.G.G. Secret Society Water Bottle',
-    handle: 's-g-g-secret-society-water-bottle-20oz',
-    image: 'https://cdn.shopify.com/s/files/1/0861/2079/2098/files/SGG_Water_Bottle_1.png?v=1784758514',
-  },
-];
-
-export default function SmuttyGoodGirlDrop() {
+export default function SmuttyGoodGirlDrop({ products = [] }) {
   return (
     <section
       className="overflow-hidden border p-6 sm:p-8 lg:p-10"
@@ -69,33 +48,35 @@ export default function SmuttyGoodGirlDrop() {
               className="rounded-full px-8 py-3 text-sm font-medium transition-colors hover:bg-white/5"
               style={{ border: '1px solid rgba(232,228,220,0.2)', color: '#e8e4dc' }}
             >
-              Sanctuary Members Save 10%
+              Explore Sanctuary Benefits
             </Link>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {PRODUCTS.map((product) => (
+          {products.map((product) => (
             <Link
-              key={product.handle}
-              href={`/shop/${product.handle}`}
+              key={(product.slug || product.handle)}
+              href={`/shop/${(product.slug || product.handle)}`}
               className="group overflow-hidden border transition-colors hover:border-[#d7a0b5]/50"
               style={{ borderColor: 'rgba(215,160,181,0.15)', backgroundColor: '#08080f' }}
             >
               <div className="aspect-square overflow-hidden">
-                <img
-                  src={product.image}
+                {product.imageUrls?.[0] ? <Image
+                  src={product.imageUrls?.[0]}
                   alt={product.name}
                   loading="lazy"
-                  decoding="async"
+                  width={320}
+                  height={320}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                /> : <div className="flex h-full items-center justify-center text-zinc-500">S.G.G.</div>}
               </div>
               <p
                 className="px-3 py-3 text-[10px] uppercase tracking-[0.14em] transition-colors group-hover:text-[#d7a0b5] sm:text-[11px]"
                 style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif' }}
               >
                 {product.name}
+                {!productIsAvailable(product) && <span className="mt-1 block text-[10px] text-zinc-400">Out of stock</span>}
               </p>
             </Link>
           ))}

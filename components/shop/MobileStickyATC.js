@@ -63,7 +63,7 @@ export default function MobileStickyATC({
 
   if (isSoldOut) return null;
 
-  const displayPrice = isMember ? (price * 0.9).toFixed(2) : price?.toFixed(2);
+  const displayPrice = price?.toFixed(2);
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added ✓'
@@ -78,11 +78,6 @@ export default function MobileStickyATC({
       sale_percentage: effectiveSalePercentage,
       needs_selection: needsSelection,
     });
-
-    if (needsSelection) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
 
     onAddToCart();
   }
@@ -128,7 +123,7 @@ export default function MobileStickyATC({
             )}
             {isMember && (
               <span className="text-[10px] uppercase tracking-wider" style={{ color: '#c9a96e', opacity: 0.7 }}>
-                Sanctuary
+                Benefits verified in cart
               </span>
             )}
           </div>

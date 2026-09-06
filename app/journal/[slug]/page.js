@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/client";
-import { enrichProductsWithPromotions } from "@/lib/promotions";
+import { getProductsByIds } from "@/lib/products";
+import { getInlineProductReferences, productMatchesReference, buildProductLinks } from "@/lib/blog/product-references";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import ProductCallout from "@/components/ProductCallout";
 import EmailSignupCTA from "@/components/EmailSignupCTA";
 
-// ISR: Revalidate every 1 hour (3600 seconds)
-export const revalidate = 3600;
+// Keep product callouts fresh without changing Journal storage or URLs.
+export const revalidate = 60;
 
 /**
  * Query a blog post by slug
@@ -28,26 +29,15 @@ async function getPostBySlug(slug) {
   return data;
 }
 
-/**
- * Query featured products by IDs and apply the same Promotion Engine used by
- * the rest of the storefront so journal callouts cannot drift from shop pricing.
- */
-async function getFeaturedProducts(productIds) {
-  if (!productIds || productIds.length === 0) {
+/** Product lookup failures must not take a published Journal article offline. */
+async function getReferencedProducts(references) {
+  if (!references.length) return [];
+  try {
+    return await getProductsByIds(references);
+  } catch (error) {
+    console.error('[Journal] Product references unavailable:', error.message);
     return [];
   }
-
-  const { data, error } = await supabase
-    .from("products")
-    .select("id, slug, handle, name, title, lore, description, image_url, image_urls, price, category, collection, tags")
-    .in("id", productIds)
-    .eq("hidden", false);
-
-  if (error || !data) {
-    return [];
-  }
-
-  return enrichProductsWithPromotions(data);
 }
 
 /**
@@ -84,7 +74,7 @@ export async function generateMetadata({ params }) {
 
   const keywords = [post.primary_keyword, ...(post.secondary_keywords || [])].filter(Boolean);
   const description = post.meta_description || post.excerpt || "";
-  const canonicalUrl = `https://charmedanddark.com/journal/${post.slug}`;
+  const canonicalUrl = `https://www.charmedanddark.com/journal/${post.slug}`;
   const ogImages = post.featured_image_url
     ? [{ url: post.featured_image_url, width: 1200, height: 630, alt: post.title }]
     : [];
@@ -130,11 +120,14 @@ export default async function JournalEntry({ params }) {
     return notFound();
   }
 
-  const featuredProducts = await getFeaturedProducts(
-    post.featured_product_ids || []
-  );
-
-  const productSlugs = featuredProducts.map((p) => p.slug || p.handle);
+  const featuredIds = post.featured_product_ids || [];
+  const references = [...new Set([...featuredIds, ...getInlineProductReferences(post.body_markdown)])];
+  const products = await getReferencedProducts(references);
+  const featuredProducts = featuredIds.flatMap((id) => {
+    const product = products.find((candidate) => productMatchesReference(candidate, id));
+    return product ? [product] : [];
+  }).filter((product, index, list) => list.findIndex((item) => item.id === product.id) === index);
+  const productLinks = buildProductLinks(products);
 
   const publishDate = new Date(post.publish_date).toLocaleDateString("en-US", {
     year: "numeric",
@@ -174,7 +167,7 @@ export default async function JournalEntry({ params }) {
         <div className="prose prose-invert max-w-none">
           <MarkdownRenderer
             content={post.body_markdown}
-            productSlugs={productSlugs}
+            productLinks={productLinks}
           />
         </div>
 
@@ -205,22 +198,22 @@ export default async function JournalEntry({ params }) {
             author: {
               "@type": "Organization",
               name: post.author || "Charmed & Dark",
-              url: "https://charmedanddark.com",
+              url: "https://www.charmedanddark.com",
             },
             publisher: {
               "@type": "Organization",
               name: "Charmed & Dark",
-              url: "https://charmedanddark.com",
+              url: "https://www.charmedanddark.com",
               ...(post.featured_image_url && {
                 logo: {
                   "@type": "ImageObject",
-                  url: "https://charmedanddark.com/images/logo.png",
+                  url: "https://www.charmedanddark.com/images/logo.png",
                 },
               }),
             },
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://charmedanddark.com/journal/${post.slug}`,
+              "@id": `https://www.charmedanddark.com/journal/${post.slug}`,
             },
             ...(post.category && { articleSection: post.category }),
             ...(post.primary_keyword && {
@@ -231,7 +224,7 @@ export default async function JournalEntry({ params }) {
                 .filter(Boolean)
                 .join(", "),
             }),
-          }),
+          }).replace(/</g, '\\u003c'),
         }}
       />
     </div>

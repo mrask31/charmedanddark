@@ -13,6 +13,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { invalidatePromotionCache } from '@/lib/promotions';
 import { isPromotionAdminRequest } from '@/lib/admin/promotion-auth';
+import { getCampaignCommercePolicy, requestsCampaignActivation } from '@/lib/promotions/commerce-policy';
 
 export async function GET(request, { params }) {
   if (!isPromotionAdminRequest(request)) {
@@ -40,6 +41,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({
       ...promotion,
+      commercePolicy: getCampaignCommercePolicy(),
       products: productsRes.data || [],
       collections: collectionsRes.data || [],
       tags: tagsRes.data || [],
@@ -59,6 +61,18 @@ export async function PUT(request, { params }) {
 
   try {
     const body = await request.json();
+
+    if (body.enabled !== undefined && typeof body.enabled !== 'boolean') {
+      return NextResponse.json({ error: 'enabled must be a boolean' }, { status: 400 });
+    }
+
+    const commercePolicy = getCampaignCommercePolicy();
+    if (!commercePolicy.publishingEnabled && requestsCampaignActivation(body)) {
+      return NextResponse.json({
+        error: commercePolicy.message,
+        code: 'SHOPIFY_DISCOUNT_VERIFICATION_REQUIRED',
+      }, { status: 409 });
+    }
 
     if (body.start_date && Number.isNaN(new Date(body.start_date).getTime())) {
       return NextResponse.json({ error: 'start_date must be a valid date' }, { status: 400 });
@@ -124,7 +138,7 @@ export async function PUT(request, { params }) {
     revalidatePath('/sale');
     revalidatePath('/shop');
 
-    return NextResponse.json(data);
+    return NextResponse.json({ ...data, commercePolicy });
   } catch (err) {
     console.error('[Admin Promotions] Update error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

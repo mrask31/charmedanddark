@@ -6,6 +6,7 @@ export default function PromotionProductTargeting({ targetedProducts, onAdd, onR
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [catalogNotice, setCatalogNotice] = useState(null);
   const [search, setSearch] = useState("");
   const [mutatingId, setMutatingId] = useState(null);
 
@@ -19,7 +20,10 @@ export default function PromotionProductTargeting({ targetedProducts, onAdd, onR
         const response = await fetch("/api/admin/products", { cache: "no-store" });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Unable to load products");
-        if (!cancelled) setCatalog(data.products || []);
+        if (!cancelled) {
+          setCatalog(data.products || []);
+          setCatalogNotice(data.monetaryManagedByShopify ? data : null);
+        }
       } catch (err) {
         if (!cancelled) setError(err.message);
       } finally {
@@ -49,10 +53,14 @@ export default function PromotionProductTargeting({ targetedProducts, onAdd, onR
     [targetedProducts, catalogById]
   );
 
+  const selectedShopifyIds = useMemo(() => new Set(
+    selectedProducts.map((product) => product.shopifyId).filter(Boolean)
+  ), [selectedProducts]);
+
   const searchResults = useMemo(() => {
     const needle = search.trim().toLowerCase();
     return catalog
-      .filter((product) => !selectedIds.has(product.id))
+      .filter((product) => !product.legacyAlias && !selectedIds.has(product.id) && !selectedShopifyIds.has(product.shopifyId))
       .filter((product) => {
         if (!needle) return true;
         return `${product.name} ${product.category || ""} ${product.slug || ""}`
@@ -60,7 +68,7 @@ export default function PromotionProductTargeting({ targetedProducts, onAdd, onR
           .includes(needle);
       })
       .slice(0, 20);
-  }, [catalog, search, selectedIds]);
+  }, [catalog, search, selectedIds, selectedShopifyIds]);
 
   async function mutate(productId, action) {
     setMutatingId(productId);
@@ -84,9 +92,16 @@ export default function PromotionProductTargeting({ targetedProducts, onAdd, onR
           <p style={{ margin: 0, fontSize: "0.75rem", color: "#e8e4dc" }}>
             {selectedProducts.length} product{selectedProducts.length === 1 ? "" : "s"} selected
           </p>
-          <p style={{ ...smallText, margin: "0.2rem 0 0" }}>Review the exact assortment before publishing.</p>
+          <p style={{ ...smallText, margin: "0.2rem 0 0" }}>{catalogNotice ? "Saved campaign product references" : "Review the exact assortment before publishing."}</p>
         </div>
       </div>
+
+      {catalogNotice && (
+        <p style={{ ...smallText, color: "#c9a96e", marginBottom: "1rem" }}>
+          {catalogNotice.message}
+          {catalogNotice.unmappedProductCount > 0 && ` ${catalogNotice.unmappedProductCount} new product(s) have no historical reference; manage their discount targets in Shopify.`}
+        </p>
+      )}
 
       {loading && <p style={smallText}>Loading product names…</p>}
       {error && <p role="alert" style={{ color: "#ef4444", fontSize: "0.72rem" }}>{error}</p>}
@@ -115,7 +130,7 @@ export default function PromotionProductTargeting({ targetedProducts, onAdd, onR
                 )}
                 <div style={{ minWidth: 0 }}>
                   <p style={{ margin: 0, fontSize: "0.75rem", color: missing ? "#ef4444" : "#e8e4dc", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {missing ? `Unknown product (${product.id.slice(0, 8)}…)` : product.name}
+                    {missing ? `Archived or unpublished product (${product.id.slice(0, 8)}…)` : product.name}
                   </p>
                   {!missing && (
                     <p style={{ ...smallText, margin: "0.15rem 0 0" }}>

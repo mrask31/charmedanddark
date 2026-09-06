@@ -1,254 +1,122 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext';
 import { posthog } from '@/components/providers/posthog-provider';
-import { buildCartAttributes, getAttributionProps } from '@/lib/attribution';
+import { getAttributionProps } from '@/lib/attribution';
+
+const money = (amount, currency = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
 
 export default function SlideOutCart() {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, sanctuarySubtotal, clearCart } = useCart();
-  const { isMember, supabase } = useAuth();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [inventoryNotices, setInventoryNotices] = useState({});
-  const [checkoutBlocked, setCheckoutBlocked] = useState(false);
+  const { items, cart, isOpen, setIsOpen, removeItem, updateQuantity, subtotal, clearCart, refreshCart, checkout, pending, isLoaded, validated, error, issues } = useCart();
+  const dialogRef = useRef(null);
   const prevIsOpen = useRef(false);
 
   useEffect(() => {
-    if (checkoutBlocked) setCheckoutBlocked(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
-
-  useEffect(() => {
     if (isOpen && !prevIsOpen.current) {
-      const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
       posthog?.capture?.('cart_opened', {
-        item_count: itemCount,
-        cart_total: subtotal,
-        url: typeof window !== 'undefined' ? window.location.href : undefined,
-        ...getAttributionProps(),
+        item_count: items.reduce((sum, item) => sum + item.quantity, 0), cart_total: subtotal,
+        url: window.location.href, ...getAttributionProps(),
       });
+      refreshCart();
     }
     prevIsOpen.current = isOpen;
-  }, [isOpen, items, subtotal]);
+  }, [isOpen, items, subtotal, refreshCart]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousFocus = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    dialogRef.current?.querySelector('button')?.focus();
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') { setIsOpen(false); return; }
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(dialogRef.current?.querySelectorAll('button:not([disabled]), a[href], [tabindex="0"]') || []);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first) { event.preventDefault(); return; }
+      if (event.shiftKey && (document.activeElement === first || !dialogRef.current?.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !dialogRef.current?.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
+  }, [isOpen, setIsOpen]);
 
   async function handleCheckout() {
-    const overStockItems = items.filter(
-      (item) => item.availableQty != null && item.quantity > item.availableQty
-    );
-    if (overStockItems.length > 0) {
-      const notices = {};
-      for (const item of overStockItems) {
-        const key = item.cartKey || item.slug;
-        notices[key] = `Only ${item.availableQty} available.`;
-      }
-      setInventoryNotices(notices);
-      setCheckoutBlocked(true);
-      posthog?.capture?.('checkout_blocked_inventory', {
-        blocked_items: overStockItems.map((i) => ({
-          product_title: i.name,
-          product_handle: i.slug,
-          cart_quantity: i.quantity,
-          available_quantity: i.availableQty,
-        })),
-        url: typeof window !== 'undefined' ? window.location.href : undefined,
-      });
-      return;
-    }
-    setCheckoutBlocked(false);
-
-    setIsCheckingOut(true);
-    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     posthog?.capture?.('checkout_started', {
-      item_count: itemCount,
-      cart_total: subtotal,
-      product_titles: items.map((i) => i.name),
-      product_handles: items.map((i) => i.slug),
-      skus: items.map((i) => i.shopifyVariantId || i.slug),
-      url: typeof window !== 'undefined' ? window.location.href : undefined,
-      ...getAttributionProps(),
+      item_count: items.reduce((sum, item) => sum + item.quantity, 0), cart_total: cart?.total,
+      product_titles: items.map(item => item.name), product_handles: items.map(item => item.slug),
+      skus: items.map(item => item.shopifyVariantId), url: window.location.href, ...getAttributionProps(),
     });
-
-    try {
-      const attribution = buildCartAttributes();
-      const { data: { session } } = await supabase.auth.getSession();
-      const headers = { 'Content-Type': 'application/json' };
-      if (session?.access_token) {
-        headers.Authorization = `Bearer ${session.access_token}`;
-      }
-
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ items, attribution }),
-      });
-
-      const data = await response.json();
-
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else {
-        console.error('Checkout failed:', data.error);
-        alert('Checkout temporarily unavailable. Please try again.');
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-      alert('Checkout temporarily unavailable. Please try again.');
-    } finally {
-      setIsCheckingOut(false);
-    }
+    try { await checkout(); } catch { /* CartContext displays the actionable error inline. */ }
   }
-
-  const FREE_SHIPPING_THRESHOLD = 100;
-  const MID_TIER_THRESHOLD = 50;
-
-  function getShippingBanner(value) {
-    if (value >= FREE_SHIPPING_THRESHOLD) {
-      return { message: "🖤 You've unlocked free shipping!", type: 'success' };
-    }
-    if (value >= MID_TIER_THRESHOLD) {
-      const remaining = (FREE_SHIPPING_THRESHOLD - value).toFixed(2);
-      return { message: `You're $${remaining} away from FREE shipping!`, type: 'progress' };
-    }
-    const remaining = (MID_TIER_THRESHOLD - value).toFixed(2);
-    return { message: `You're $${remaining} away from discounted shipping ($4.99)!`, type: 'progress' };
-  }
-
-  const shippingBanner = getShippingBanner(subtotal);
 
   if (!isOpen) return null;
-
+  const pricesReady = validated && !pending;
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={() => setIsOpen(false)} />
-
-      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#08080f] border-l border-zinc-800 z-50 flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-zinc-800">
-          <h2 className="text-white uppercase tracking-widest text-sm font-light">Your Selection</h2>
-          <button onClick={() => setIsOpen(false)} className="text-zinc-400 hover:text-white transition-colors duration-160">Close</button>
+      <div className="fixed inset-0 bg-black/60 z-40" aria-hidden="true" onClick={() => setIsOpen(false)} />
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="cart-heading" className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#08080f] border-l border-zinc-800 z-50 flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
+          <h2 id="cart-heading" className="text-white uppercase tracking-widest text-sm font-light">Your Selection</h2>
+          <button onClick={() => setIsOpen(false)} className="min-h-11 px-2 text-zinc-300 hover:text-white focus-visible:outline focus-visible:outline-[#c9a96e]">Close</button>
         </div>
-
-        {items.length > 0 && (
-          <div className={`mx-4 mt-3 mb-1 rounded-md px-3 py-2 text-center text-sm transition-all duration-300 ${
-            shippingBanner.type === 'success'
-              ? 'bg-[#c9a96e]/20 text-[#c9a96e] border border-[#c9a96e]/40'
-              : 'bg-[#1a1a2e] text-[#e8e4dc]/80 border border-white/10'
-          }`}>
-            {shippingBanner.type === 'progress' && (
-              <div className="w-full bg-white/10 rounded-full h-1 mb-2">
-                <div className="bg-[#c9a96e] h-1 rounded-full transition-all duration-500" style={{ width: `${Math.min(subtotal, 100)}%` }} />
-              </div>
-            )}
-            <span>{shippingBanner.message}</span>
-          </div>
-        )}
-
-        {items.length > 0 && isMember && (
-          <div className="mx-4 mt-1 mb-2 text-center text-xs text-[#c9a96e]">
-            🖤 Sanctuary saves an additional 10% on eligible sale prices
-          </div>
-        )}
-
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {items.length === 0 ? (
-            <p className="text-zinc-500 text-sm">The cart is empty.</p>
-          ) : (
-            items.map(item => {
-              const hasPromotion = item.originalPrice != null && Number(item.originalPrice) > Number(item.price);
-              return (
-                <div key={item.cartKey || item.slug} className="flex gap-4 border-b border-zinc-900 pb-6">
-                  {item.imageUrl && (
-                    <img src={item.imageUrl} alt={item.name} className="w-20 h-20 object-cover" style={{ borderRadius: '0px' }} />
-                  )}
-                  <div className="flex-1">
-                    <h3 className="text-white text-sm">
-                      {item.name}
-                      {item.variant && <span className="text-zinc-500 ml-2">({item.variant})</span>}
-                      {!item.variant && item.size && <span className="text-zinc-500 ml-2">({item.size})</span>}
-                    </h3>
-                    <div className="text-sm mt-1 space-y-0.5">
-                      <div className="flex flex-wrap items-baseline gap-2">
-                        {hasPromotion && <span className="line-through text-zinc-600">${Number(item.originalPrice).toFixed(2)}</span>}
-                        <span className="text-zinc-300">${Number(item.price).toFixed(2)}</span>
-                      </div>
-                      {isMember && (
-                        <div className="text-[#c9a96e]">${(Number(item.price) * 0.9).toFixed(2)} Sanctuary</div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 mt-2">
-                      <button onClick={() => updateQuantity(item.cartKey || item.slug, item.quantity - 1)} className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800">-</button>
-                      <span className="text-white text-sm">{item.quantity}</span>
-                      <button
-                        onClick={() => {
-                          const key = item.cartKey || item.slug;
-                          if (item.availableQty != null && item.quantity >= item.availableQty) {
-                            setInventoryNotices((prev) => ({ ...prev, [key]: `Only ${item.availableQty} available.` }));
-                            posthog?.capture?.('inventory_quantity_limited', {
-                              product_title: item.name,
-                              product_handle: item.slug,
-                              variant_title: item.variant || undefined,
-                              variant_id: item.shopifyVariantId || undefined,
-                              requested_quantity: item.quantity + 1,
-                              available_quantity: item.availableQty,
-                              cart_quantity_before: item.quantity,
-                              quantity_added: 0,
-                              location: 'cart',
-                              url: window.location.href,
-                            });
-                            setTimeout(() => setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; }), 3000);
-                            return;
-                          }
-                          setInventoryNotices((prev) => { const n = { ...prev }; delete n[key]; return n; });
-                          updateQuantity(key, item.quantity + 1);
-                        }}
-                        className="text-zinc-500 hover:text-white w-6 h-6 flex items-center justify-center border border-zinc-800"
-                      >+
-                      </button>
-                    </div>
-                    {inventoryNotices[item.cartKey || item.slug] && (
-                      <p className="text-[11px] mt-1" style={{ color: '#c9a96e' }}>{inventoryNotices[item.cartKey || item.slug]}</p>
-                    )}
-                  </div>
-                  <button onClick={() => removeItem(item.cartKey || item.slug)} className="text-zinc-600 hover:text-red-400 text-xs uppercase tracking-wider">Remove</button>
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {items.length > 0 && (
-          <div className="border-t border-zinc-800 p-6 space-y-4 bg-[#08080f]">
-            <div className="flex justify-between text-sm">
-              <span className="text-zinc-400 uppercase tracking-wider">Sale/Public Price</span>
-              <span className={isMember ? 'text-zinc-500 line-through' : 'text-zinc-300'}>${subtotal.toFixed(2)}</span>
+        <div className="flex-1 overflow-y-auto p-6 space-y-6" aria-busy={pending}>
+          <p role="status" className="text-sm text-zinc-300">{pending ? 'Updating your selection…' : !isLoaded ? 'Loading your selection…' : ''}</p>
+          {error && (
+            <div role="alert" className="rounded border border-[#c9a96e]/40 bg-[#c9a96e]/10 p-3 text-sm text-[#e8e4dc]">
+              <p>{error}</p>
+              <button disabled={pending} onClick={refreshCart} className="mt-2 min-h-11 underline underline-offset-4 text-[#c9a96e] disabled:opacity-50">Retry cart update</button>
             </div>
-            {isMember && (
-              <div className="flex justify-between text-sm">
-                <span className="text-[#B89C6D] uppercase tracking-wider">Sanctuary Price</span>
-                <span className="text-[#B89C6D] font-medium">${sanctuarySubtotal.toFixed(2)}</span>
+          )}
+          {!items.length ? (
+            <div className="space-y-4">
+              <p className="text-zinc-300 text-sm">Your cart is empty.</p>
+              <Link href="/shop" onClick={() => setIsOpen(false)} className="inline-flex min-h-11 items-center text-[#c9a96e] underline underline-offset-4">Explore the shop</Link>
+            </div>
+          ) : items.map((item, index) => {
+            const itemIssues = issues.filter(issue => issue.merchandiseId === item.shopifyVariantId || issue.cartKey === item.cartKey || issue.index === index);
+            return (
+              <div key={item.cartKey} className="flex gap-4 border-b border-zinc-800 pb-5">
+                {item.imageUrl && <Image src={item.imageUrl} alt={item.name || 'Saved product'} width={80} height={100} className="w-20 h-24 object-cover" />}
+                <div className="min-w-0 flex-1">
+                  <Link href={item.slug ? `/shop/${encodeURIComponent(item.slug)}` : '/shop'} onClick={() => setIsOpen(false)} className="text-white text-sm hover:underline">{item.name || 'Saved product'}</Link>
+                  {(item.variant || item.size) && <p className="text-xs text-zinc-300 mt-1">{item.variant || item.size}</p>}
+                  <div className="text-sm mt-2">
+                    {pricesReady ? <><span className="text-zinc-200">{money(item.price, item.currency)} each</span><p className="text-zinc-300">{money(item.lineTotal, item.currency)} total</p></> : <span className="text-zinc-400">Price confirmed when cart updates</span>}
+                    {pricesReady && item.discounts?.map((discount, i) => <p key={i} className="text-xs text-[#c9a96e]">{discount.title}: −{money(discount.amount, discount.currency)}</p>)}
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <button disabled={pending} onClick={() => updateQuantity(item.cartKey, item.quantity - 1)} aria-label={`Decrease quantity of ${item.name}`} className="h-11 w-11 border border-zinc-700 text-zinc-200 disabled:opacity-40">−</button>
+                    <span className="text-white text-sm min-w-5 text-center" aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span>
+                    <button disabled={pending || item.quantity >= 100} onClick={() => updateQuantity(item.cartKey, item.quantity + 1)} aria-label={`Increase quantity of ${item.name}`} className="h-11 w-11 border border-zinc-700 text-zinc-200 disabled:opacity-40">+</button>
+                  </div>
+                  {item.needsSelection && <Link href={item.slug ? `/shop/${encodeURIComponent(item.slug)}` : '/shop'} onClick={() => setIsOpen(false)} className="inline-block py-3 text-sm text-[#c9a96e] underline">Review this product’s options</Link>}
+                  {itemIssues.map((issue, i) => <div key={i} className="mt-2 text-xs text-[#c9a96e]"><p>{issue.message}</p>{Number.isInteger(issue.acceptedQuantity) && issue.acceptedQuantity > 0 && issue.acceptedQuantity !== item.quantity && <button disabled={pending} onClick={() => updateQuantity(item.cartKey, issue.acceptedQuantity)} className="min-h-11 underline underline-offset-4 disabled:opacity-40">Use quantity {issue.acceptedQuantity}</button>}</div>)}
+                  <button disabled={pending} onClick={() => removeItem(item.cartKey)} className="min-h-11 text-xs text-zinc-300 underline underline-offset-4 disabled:opacity-40" aria-label={`Remove ${item.name}`}>Remove</button>
+                </div>
               </div>
-            )}
-            <p className="text-zinc-600 text-xs">
-              Autumn Haunting is applied automatically in Shopify. Verified Sanctuary members receive HOUSE10 on top of eligible sale prices.
-            </p>
-
-            {checkoutBlocked && (
-              <div className="rounded px-3 py-2 text-[11px] leading-relaxed" style={{ backgroundColor: 'rgba(201, 169, 110, 0.08)', border: '1px solid rgba(201, 169, 110, 0.3)', color: '#c9a96e' }}>
-                <p className="font-medium uppercase tracking-wider mb-1">Some quantities exceed available stock.</p>
-                <p style={{ color: 'rgba(232, 228, 220, 0.6)' }}>Please adjust before checkout.</p>
-              </div>
-            )}
-
-            <button
-              onClick={handleCheckout}
-              disabled={isCheckingOut}
-              className="w-full bg-black text-white border border-zinc-700 hover:border-[#B89C6D] py-4 uppercase tracking-widest text-sm transition-colors duration-160 disabled:opacity-50"
-              style={{ borderRadius: '0px' }}
-            >
-              {isCheckingOut ? 'Opening Checkout...' : 'Proceed to Checkout'}
-            </button>
-
-            <button onClick={clearCart} className="w-full text-zinc-600 hover:text-zinc-400 text-xs uppercase tracking-wider py-2 transition-colors duration-160">Clear Selection</button>
+            );
+          })}
+        </div>
+        {!!items.length && (
+          <div className="border-t border-zinc-800 p-6 space-y-3 bg-[#08080f]">
+            {pricesReady && cart ? <>
+              <div className="flex justify-between text-sm text-zinc-300"><span>Subtotal</span><span>{money(cart.subtotal, cart.currency)}</span></div>
+              {cart.discounts.map((discount, i) => <div key={i} className="flex justify-between text-xs text-[#c9a96e]"><span>{discount.title}</span><span>−{money(discount.amount, discount.currency)}</span></div>)}
+              <div className="flex justify-between text-base text-white"><span>Estimated total</span><span>{money(cart.total, cart.currency)}</span></div>
+              {cart.memberDiscountApplied && <p className="text-xs text-[#c9a96e]">Your Sanctuary discount is applied to eligible items.</p>}
+            </> : <p className="text-sm text-zinc-300">We’ll confirm your current total before checkout.</p>}
+            <p className="text-zinc-400 text-xs">Shipping, taxes and final discounts are confirmed at checkout.</p>
+            <button onClick={handleCheckout} disabled={pending || !isLoaded || !validated || items.some(item => item.needsSelection || item.available === false)} className="w-full min-h-12 bg-black text-white border border-zinc-600 hover:border-[#B89C6D] py-3 uppercase tracking-widest text-sm disabled:opacity-50 focus-visible:outline focus-visible:outline-[#c9a96e]">{pending ? 'Updating Cart…' : 'Proceed to Checkout'}</button>
+            <button disabled={pending} onClick={clearCart} className="w-full min-h-11 text-zinc-400 hover:text-zinc-200 text-xs uppercase tracking-wider disabled:opacity-40">Clear Selection</button>
           </div>
         )}
       </div>

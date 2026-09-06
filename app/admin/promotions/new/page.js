@@ -8,6 +8,7 @@ export default function NewPromotionPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [catalogProducts, setCatalogProducts] = useState([]);
+  const [catalogNotice, setCatalogNotice] = useState(null);
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [productQuery, setProductQuery] = useState("");
   const [selectedProductIds, setSelectedProductIds] = useState([]);
@@ -48,7 +49,10 @@ export default function NewPromotionPage() {
         const res = await fetch(`/api/admin/products?${params.toString()}`, { cache: "no-store" });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Unable to load products");
-        if (!cancelled) setCatalogProducts(data.products || []);
+        if (!cancelled) {
+          setCatalogProducts((data.products || []).filter((product) => !product.legacyAlias));
+          setCatalogNotice(data.monetaryManagedByShopify ? data : null);
+        }
       } catch (err) {
         if (!cancelled) setError(err.message);
       } finally {
@@ -154,6 +158,13 @@ export default function NewPromotionPage() {
         <p style={{ fontSize: "0.7rem", color: "#6b6760", marginBottom: "2rem" }}>
           Configure the campaign and choose its eligible products before creating the draft.
         </p>
+
+        {catalogNotice && (
+          <p style={{ fontSize: "0.75rem", color: "#c9a96e", lineHeight: 1.5, marginBottom: "1.5rem" }}>
+            {catalogNotice.message}
+            {catalogNotice.unmappedProductCount > 0 && ` ${catalogNotice.unmappedProductCount} new product(s) have no historical reference; manage their discount targets in Shopify.`}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div style={sectionStyle}>
