@@ -101,6 +101,7 @@ test('Shopify quantity adjustment forces review before checkout', async () => {
   const result = await reconcileCart({ items: [item(1, 3)], checkout: true }, fetcher);
   assert.equal(result.needsReview, true);
   assert.equal(result.cart.items[0].quantity, 1);
+  assert.equal(result.hasUnavailableItems, false);
   assert.ok(result.messages.some(message => message.includes('review')));
   assert.equal(result.issues[0].acceptedQuantity, 1);
   assert.ok(result.issues[0].message.includes('Change the quantity to 1'));
@@ -170,4 +171,18 @@ test('existing cart country is aligned without sending null or replacement conta
   await reconcileCart({ cartId: existing.id, items: [item(1)] }, fetcher);
   assert.deepEqual(calls[2].variables, { cartId: existing.id, buyerIdentity: { countryCode: 'US' } });
   assert.ok(calls[2].query.includes('cartBuyerIdentityUpdate'));
+});
+
+
+test('successful stock warning that removes a whole line requires preservation and explicit review', async () => {
+  const remaining = rawCart([1]);
+  const fetcher = async query => {
+    if (query.includes('query CommerceCartVariants')) return { nodes: [variant(1), variant(2)] };
+    return { cartCreate: { cart: remaining, userErrors: [], warnings: [{ code: 'MERCHANDISE_NOT_ENOUGH_STOCK', message: 'The second option became unavailable.' }] } };
+  };
+  const result = await reconcileCart({ items: [item(1), item(2)] }, fetcher);
+  assert.equal(result.hasUnavailableItems, true);
+  assert.equal(result.needsReview, true);
+  assert.equal(result.issues[0].merchandiseId, id(2));
+  assert.match(result.issues[0].message, /Choose another option or remove it/);
 });

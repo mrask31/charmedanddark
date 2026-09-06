@@ -9,6 +9,10 @@ export async function POST(request) {
   try {
     const { cartId, items } = await request.json();
     const result = await reconcileCart({ cartId, items, isMember: await hasActiveSanctuaryMembership(request) });
+    if (result.hasUnavailableItems) {
+      // Keep the shopper's complete intended selection visible until they explicitly resolve unavailable lines.
+      return NextResponse.json({ ...result, error: 'An item became unavailable. Please review your selection below.' }, { status: 409, headers });
+    }
     return NextResponse.json(result, { headers });
   } catch (error) {
     if (!error.status) console.error('Cart update failed:', error.message);
