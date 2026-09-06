@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-09-06",
+  "visibleLegacyProducts": 107,
+  "missingShopifyIdentities": 0,
+  "titleDifferences": 0,
+  "seoFieldDifferences": 0,
+  "descriptionDifferences": [
+    {
+      "legacyHandle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+      "shopifyHandle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+      "decision": "Use current Shopify description. Bag copy is newer brand merchandising; ringer tee preserves exact cotton/polyester materials versus legacy generated copy."
+    },
+    {
+      "legacyHandle": "ghost-in-strawberry-field-in-linen-blend",
+      "shopifyHandle": "ghost-in-strawberry-field-in-linen-blend",
+      "decision": "Use current Shopify description. Bag copy is newer brand merchandising; ringer tee preserves exact cotton/polyester materials versus legacy generated copy."
+    },
+    {
+      "legacyHandle": "womens-ringer-tee",
+      "shopifyHandle": "womens-ringer-tee",
+      "decision": "Use current Shopify description. Bag copy is newer brand merchandising; ringer tee preserves exact cotton/polyester materials versus legacy generated copy."
+    }
+  ],
+  "decision": "No Shopify title/handle/description/SEO writes required. Preserve existing Shopify editorial source."
+}

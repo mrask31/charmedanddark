@@ -12,6 +12,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { invalidatePromotionCache } from '@/lib/promotions';
 import { isPromotionAdminRequest } from '@/lib/admin/promotion-auth';
+import { getCampaignCommercePolicy } from '@/lib/promotions/commerce-policy';
 
 export async function POST(request, { params }) {
   if (!isPromotionAdminRequest(request)) {
@@ -42,6 +43,14 @@ export async function POST(request, { params }) {
         { error: 'Cannot publish an archived promotion. Create a new one instead.' },
         { status: 400 }
       );
+    }
+
+    const commercePolicy = getCampaignCommercePolicy();
+    if (!commercePolicy.publishingEnabled) {
+      return NextResponse.json({
+        error: commercePolicy.message,
+        code: 'SHOPIFY_DISCOUNT_VERIFICATION_REQUIRED',
+      }, { status: 409 });
     }
 
     const now = new Date();

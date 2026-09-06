@@ -4,8 +4,13 @@
 
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+import { isShopifyCatalogEnabled } from '../lib/commerce-config.js';
 
 dotenv.config({ path: '.env.local' });
+
+if (isShopifyCatalogEnabled()) {
+  throw new Error('Catalog image sync is retired. Manage product images in Shopify.');
+}
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,

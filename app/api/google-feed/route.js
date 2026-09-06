@@ -1,121 +1,9 @@
-/**
- * Google Merchant Center Product Feed
- * Serves valid RSS 2.0 XML at /api/google-feed
- *
- * Required apparel attributes for Google free listings:
- * g:age_group, g:gender, g:color, g:size, g:item_group_id
- *
- * Pricing contract:
- * - g:price is always the regular Shopify variant price
- * - g:sale_price is emitted only for an active public Promotion Engine promotion
- * - Sanctuary/member pricing is intentionally excluded from the public Google feed
- * - g:custom_label_0 carries the active promotion slug for campaign targeting
- */
+/** Public feed uses the same fully paginated Shopify variants as product pages. */
+import { getProducts, isShopifyCatalogEnabled } from '@/lib/products';
+import { productBrand } from '@/lib/product-display';
+import { getShopifyProducts } from '@/lib/shopify/catalog';
 
-import { supabaseAdmin } from '@/lib/supabase/admin';
-import {
-  computePromotionPrice,
-  getActivePromotions,
-  getPromotionForProduct,
-} from '@/lib/promotions/engine';
-
-const domain = process.env.SHOPIFY_STORE_DOMAIN;
-const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 const SITE_URL = 'https://www.charmedanddark.com';
-
-// Products with known unavailable pages — exclude from feed until fixed
-const EXCLUDED_HANDLES = [];
-
-const PRODUCTS_QUERY = `
-  query Products($first: Int!, $after: String) {
-    products(first: $first, after: $after) {
-      pageInfo { hasNextPage endCursor }
-      edges {
-        node {
-          id
-          title
-          handle
-          descriptionHtml
-          productType
-          vendor
-          images(first: 5) { edges { node { url } } }
-          variants(first: 50) {
-            edges {
-              node {
-                id
-                title
-                sku
-                availableForSale
-                price { amount currencyCode }
-                selectedOptions { name value }
-                image { url }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-async function shopifyFetch(query, variables = {}) {
-  const res = await fetch(`https://${domain}/api/2024-01/graphql.json`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': storefrontToken,
-    },
-    body: JSON.stringify({ query, variables }),
-  });
-  const json = await res.json();
-  if (json.errors) throw new Error(json.errors[0]?.message);
-  return json.data;
-}
-
-async function fetchAllProducts() {
-  const all = [];
-  let hasNextPage = true;
-  let after = null;
-  while (hasNextPage) {
-    const data = await shopifyFetch(PRODUCTS_QUERY, { first: 250, after });
-    all.push(...data.products.edges.map(({ node }) => node));
-    hasNextPage = data.products.pageInfo.hasNextPage;
-    after = data.products.pageInfo.endCursor;
-  }
-  return all;
-}
-
-/**
- * Promotion targeting is keyed to the Supabase product UUID, while the Merchant
- * feed is sourced from Shopify. Resolve Shopify handles back to their canonical
- * Supabase product rows once per feed request so both systems use the exact same
- * Promotion Engine targeting semantics.
- */
-async function fetchPromotionProductMap(products) {
-  const handles = [...new Set(products.map((product) => product.handle).filter(Boolean))];
-  if (!handles.length) return new Map();
-
-  const { data, error } = await supabaseAdmin
-    .from('products')
-    .select('id, shopify_handle, handle, category, collection, tags')
-    .in('shopify_handle', handles);
-
-  if (error) {
-    console.error('[GoogleFeed] Failed to resolve promotion product identities:', error.message);
-    return new Map();
-  }
-
-  const byHandle = new Map();
-  for (const product of data || []) {
-    const handle = product.shopify_handle || product.handle;
-    if (handle) byHandle.set(handle, product);
-  }
-  return byHandle;
-}
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
 
 function stripHtml(html) {
   if (!html) return '';
@@ -228,131 +116,71 @@ const CATEGORY_MAP = {
 };
 
 function getGoogleCategory(productType) {
-  return CATEGORY_MAP[productType] || 'Home & Garden > Decor';
+  return CATEGORY_MAP[productType] || null;
 }
-
-const POD_VENDORS = ['Printify', 'Charmed & Dark'];
 
 export async function GET() {
   try {
-    const products = await fetchAllProducts();
-    const [promotionProductsByHandle, activePromotions] = await Promise.all([
-      fetchPromotionProductMap(products),
-      getActivePromotions(),
-    ]);
-    const channelDesc = 'Charmed & Dark — Premium gothic lifestyle brand.';
-
-    let items = '';
-
+    // The existing feed already used Shopify before the storefront migration.
+    const products = await (isShopifyCatalogEnabled() ? getProducts() : getShopifyProducts());
+    const items = [];
     for (const product of products) {
-      // Exclude products with known unavailable pages
-      if (EXCLUDED_HANDLES.includes(product.handle)) continue;
-
-      const desc = escapeXml(stripHtml(product.descriptionHtml) || product.title);
-      const link = `${SITE_URL}/shop/${product.handle}`;
-      const primaryImage = product.images.edges[0]?.node?.url || '';
-      const additionalImages = product.images.edges.slice(1).map(({ node }) => node.url);
-      const googleCategory = getGoogleCategory(product.productType);
-      const isPod = POD_VENDORS.includes(product.vendor);
-      const needsApparelAttrs = isApparelOrAccessory(product.productType, googleCategory);
-      const promotionProduct = promotionProductsByHandle.get(product.handle) || null;
-      const promotion = promotionProduct && activePromotions.length
-        ? await getPromotionForProduct(promotionProduct, activePromotions)
-        : null;
-
-      for (const { node: variant } of product.variants.edges) {
-        // Build title
-        const itemTitle = (variant.title === 'Default Title' && product.variants.edges.length === 1)
-          ? product.title
-          : `${product.title} - ${variant.title}`;
-
-        const itemId = variant.sku || variant.id.split('/').pop();
-        const basePrice = parseFloat(variant.price.amount);
-        const price = `${basePrice.toFixed(2)} ${variant.price.currencyCode}`;
-        const available = isPod ? true : variant.availableForSale;
-        const variantImage = variant.image?.url || primaryImage;
-        const promotionPricing = promotion
-          ? computePromotionPrice(basePrice, promotion, promotionProduct.id)
-          : null;
-        const hasPublicSalePrice = promotionPricing
-          && promotionPricing.displayPrice > 0
-          && promotionPricing.displayPrice < basePrice;
-        const salePriceField = hasPublicSalePrice
-          ? `\n      <g:sale_price>${promotionPricing.displayPrice.toFixed(2)} ${variant.price.currencyCode}</g:sale_price>`
-          : '';
-        const promotionLabelField = hasPublicSalePrice && promotionPricing.promotionSlug
-          ? `\n      <g:custom_label_0>${escapeXml(promotionPricing.promotionSlug)}</g:custom_label_0>`
-          : '';
-
-        // Validate image URL
-        if (!variantImage || !variantImage.startsWith('https://')) continue;
-
-        let apparelFields = '';
-
-        // Google Merchant Center requires these for apparel/accessories
+      const variants = product.shopifyVariants?.variants || [];
+      const productName = product.name || product.title;
+      const handle = product.slug || product.handle;
+      const primaryImage = product.imageUrls?.[0];
+      const additionalImages = (product.imageUrls || []).slice(1, 10);
+      const productType = product.productType || product.category || '';
+      const googleCategory = getGoogleCategory(productType);
+      const needsApparelAttrs = isApparelOrAccessory(productType, googleCategory);
+      for (const variant of variants) {
+        const variantId = variant.shopifyVariantId || variant.id;
+        const itemId = variant.sku || variantId.split('/').pop();
+        const itemTitle = variant.title === 'Default Title' && variants.length === 1 ? productName : `${productName} - ${variant.title}`;
+        const currentPrice = Number(variant.price);
+        const compareAt = Number(variant.compareAtPrice);
+        const isSale = compareAt > currentPrice;
+        const currency = variant.currency || product.currency || 'USD';
+        const image = variant.imageUrl || primaryImage;
+        if (!image?.startsWith('https://') || !Number.isFinite(currentPrice)) continue;
+        const link = `${SITE_URL}/shop/${handle}?variant=${variantId.split('/').pop()}`;
+        const fields = {
+          id: itemId,
+          title: itemTitle,
+          description: stripHtml(product.descriptionHtml || product.description) || productName,
+          link,
+          image_link: image,
+          price: `${(isSale ? compareAt : currentPrice).toFixed(2)} ${currency}`,
+          ...(isSale && { sale_price: `${currentPrice.toFixed(2)} ${currency}` }),
+          availability: (variant.availableForSale ?? variant.available) ? 'in stock' : 'out of stock',
+          condition: 'new',
+          brand: productBrand(product),
+          ...(googleCategory && { google_product_category: googleCategory }),
+          ...(productType && { product_type: productType }),
+        };
         if (needsApparelAttrs) {
-          const attrs = extractVariantAttributes(product, variant);
-
-          if (attrs.ageGroup) {
-            apparelFields += `\n      <g:age_group>${escapeXml(attrs.ageGroup)}</g:age_group>`;
-          }
-          if (attrs.gender) {
-            apparelFields += `\n      <g:gender>${escapeXml(attrs.gender)}</g:gender>`;
-          }
-          if (attrs.color) {
-            apparelFields += `\n      <g:color>${escapeXml(attrs.color)}</g:color>`;
-          }
-          if (attrs.size) {
-            apparelFields += `\n      <g:size>${escapeXml(attrs.size)}</g:size>`;
-          }
-          if (attrs.itemGroupId) {
-            apparelFields += `\n      <g:item_group_id>${escapeXml(attrs.itemGroupId)}</g:item_group_id>`;
-          }
+          const attrs = extractVariantAttributes({ title: productName, handle }, variant);
+          Object.assign(fields, { age_group: attrs.ageGroup, gender: attrs.gender, item_group_id: attrs.itemGroupId });
+          if (attrs.color) fields.color = attrs.color;
+          if (attrs.size) fields.size = attrs.size;
         }
-
-        // Additional images
-        let additionalImageFields = '';
-        for (const img of additionalImages.slice(0, 9)) {
-          additionalImageFields += `\n      <g:additional_image_link>${escapeXml(img)}</g:additional_image_link>`;
-        }
-
-        items += `
-    <item>
-      <g:id>${escapeXml(itemId)}</g:id>
-      <g:title>${escapeXml(itemTitle)}</g:title>
-      <g:description>${desc}</g:description>
-      <g:link>${escapeXml(link)}</g:link>
-      <g:image_link>${escapeXml(variantImage)}</g:image_link>${additionalImageFields}
-      <g:price>${price}</g:price>${salePriceField}${promotionLabelField}
-      <g:availability>${available ? 'in stock' : 'out of stock'}</g:availability>
-      <g:condition>new</g:condition>
-      <g:brand>Charmed &amp; Dark</g:brand>
-      <g:google_product_category>${escapeXml(googleCategory)}</g:google_product_category>
-      <g:product_type>${escapeXml(product.productType || 'Home Decor')}</g:product_type>${apparelFields}
-    </item>`;
+        const xmlFields = Object.entries(fields).map(([key, value]) => `      <g:${key}>${escapeXml(value)}</g:${key}>`);
+        for (const imageUrl of additionalImages) xmlFields.push(`      <g:additional_image_link>${escapeXml(imageUrl)}</g:additional_image_link>`);
+        items.push(`    <item>\n${xmlFields.join('\n')}\n    </item>`);
       }
     }
-
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
     <title>Charmed &amp; Dark</title>
     <link>${SITE_URL}</link>
-    <description>${escapeXml(channelDesc)}</description>${items}
+    <description>Charmed &amp; Dark — Premium gothic lifestyle brand.</description>
+${items.join('\n')}
   </channel>
 </rss>`;
-
-    return new Response(xml, {
-      headers: {
-        'Content-Type': 'application/xml',
-        'Cache-Control': 'public, max-age=3600',
-      },
-    });
-  } catch (err) {
-    console.error('Google feed error:', err);
-    return new Response('<error>Feed generation failed</error>', {
-      status: 500,
-      headers: { 'Content-Type': 'application/xml' },
-    });
+    return new Response(xml, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=60, s-maxage=60' } });
+  } catch (error) {
+    console.error('[GoogleFeed] Catalog unavailable:', error.message);
+    return new Response('<error>Product feed temporarily unavailable</error>', { status: 503, headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'no-store', 'Retry-After': '60' } });
   }
 }

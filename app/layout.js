@@ -25,7 +25,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://charmedanddark.com'),
+  metadataBase: new URL('https://www.charmedanddark.com'),
   title: {
     default: 'Charmed & Dark | Premium Gothic Lifestyle',
     template: '%s | Charmed & Dark',
@@ -61,8 +61,8 @@ export default function RootLayout({ children }) {
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'Charmed & Dark',
-              url: 'https://charmedanddark.com',
-              logo: 'https://charmedanddark.com/logo.png',
+              url: 'https://www.charmedanddark.com',
+              logo: 'https://www.charmedanddark.com/logo.png',
               sameAs: [
                 'https://instagram.com/charmedanddark',
               ],

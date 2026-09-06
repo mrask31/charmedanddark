@@ -1,12 +1,14 @@
+import { isShopifyCatalogEnabled } from '@/lib/commerce-config';
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { getProducts } from '@/lib/products'
+import { getMirrorCandidates, resolveMirrorRecommendations } from '@/lib/mirror-catalog'
 
 export async function POST(request) {
   try {
     const body = await request.json()
     const { mood, mode = 'self' } = body
 
-    if (!mood || mood.trim().length === 0) {
+    if (typeof mood !== 'string' || mood.trim().length === 0) {
       return NextResponse.json({ error: 'Mood is required' }, { status: 400 })
     }
 
@@ -23,48 +25,39 @@ export async function POST(request) {
 
     let productList = []
     try {
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      )
-      const { data } = await supabase
-        .from('products')
-        .select('title, handle, price, category')
-        .or('hidden.is.null,hidden.eq.false')
-        .limit(30)
-
-      if (data && data.length > 0) {
-        productList = data.sort(() => Math.random() - 0.5).slice(0, 12)
-      }
+      productList = getMirrorCandidates(await getProducts(), {
+        shopifyCatalogEnabled: isShopifyCatalogEnabled(),
+      })
     } catch (err) {
-      console.error('Supabase product fetch error:', err)
+      console.error('Mirror catalog lookup failed:', err.message)
     }
 
     const productContext = productList.length > 0
-      ? `\n\nAvailable products:\n${productList.map(p => `- "${p.title}" (${p.category}, $${p.price}, handle: ${p.handle})`).join('\n')}`
-      : ''
+      ? `\n\nAvailable products (select only an exact ID from this list):\n${JSON.stringify(productList.map(({ id, title, category }) => ({ id, title, category })))}`
+      : '\n\nNo products are available for recommendations. Return an empty products array.'
 
     const selfSystemPrompt = `You are The Mirror — a quiet, poetic oracle for Charmed & Dark, a gothic lifestyle brand.
 When someone describes their mood, respond with exactly three things:
 1. VALIDATION: 1-2 sentences acknowledging their feeling in elegant, dark, atmospheric prose. Never use the word "valid". Speak as if you understand them deeply.
 2. PRESCRIPTION: 1 evocative sentence suggesting a ritual or aesthetic that matches their energy.
-3. PRODUCTS: Choose the single most mood-appropriate product from the list. Return it as an array with one object.
+3. PRODUCTS: Choose the single most mood-appropriate product from the available list, if any. Return it as an array with one object. Never suggest a product outside that list.
 ${productContext}
 Respond ONLY with a raw JSON object. No markdown, no code fences, no preamble. Just the JSON.
-Format: {"validation":"string","prescription":"string","products":[{"title":"exact product title","handle":"exact handle","price":"price string","reason":"one sentence why this fits their mood"}]}`
+Format: {"validation":"string","prescription":"string","products":[{"id":"exact Shopify product ID","reason":"one sentence why this fits their mood"}]}`
 
     const giftSystemPrompt = `You are The Mirror — a quiet, poetic gift guide for Charmed & Dark, a gothic lifestyle brand.
-Someone is shopping for a friend. Based on their description of the person, recommend 2-3 products that would suit them.
+Someone is shopping for a friend. Based on their description of the person, recommend up to 3 products from the available list that would suit them. Never suggest a product outside that list.
 For each product, write one evocative sentence explaining why it fits this person specifically.
 Also write a brief atmospheric intro (1-2 sentences) acknowledging who this person sounds like.
 ${productContext}
 Respond ONLY with a raw JSON object. No markdown, no code fences, no preamble. Just the JSON.
-Format: {"validation":"string — poetic description of who this person is","prescription":"string — one line about their aesthetic","products":[{"title":"exact product title","handle":"exact handle","price":"price string","reason":"one sentence why this fits them"}]}`
+Format: {"validation":"string — poetic description of who this person is","prescription":"string — one line about their aesthetic","products":[{"id":"exact Shopify product ID","reason":"one sentence why this fits them"}]}`
 
     const systemPrompt = mode === 'gift' ? giftSystemPrompt : selfSystemPrompt
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      signal: AbortSignal.timeout(15000),
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': ANTHROPIC_API_KEY,
@@ -91,28 +84,18 @@ Format: {"validation":"string — poetic description of who this person is","pre
     let parsed
     try {
       parsed = JSON.parse(text)
-    } catch (parseErr) {
-      console.error('JSON parse failed. Raw text:', text)
+    } catch {
+      console.error('Mirror returned invalid JSON')
       parsed = null
     }
 
-    const enrichedProducts = (parsed?.products || []).map(claudeProduct => {
-      let match = productList.find(p => p.handle === claudeProduct.handle)
-      if (!match && claudeProduct.title) {
-        match = productList.find(p => p.title.toLowerCase() === claudeProduct.title.toLowerCase())
-      }
-      return {
-        title: match?.title || claudeProduct.title,
-        handle: match?.handle || claudeProduct.handle,
-        price: match?.price ?? null,
-        category: match?.category || claudeProduct.category,
-        reason: claudeProduct.reason,
-      }
-    }).filter(p => p.handle)
+    const enrichedProducts = resolveMirrorRecommendations(
+      parsed?.products, productList, mode === 'gift' ? 3 : 1
+    )
 
     return NextResponse.json({
-      validation: parsed?.validation || 'The mirror sees you.',
-      prescription: parsed?.prescription || 'Light a candle. Let the dark hold you for a moment.',
+      validation: typeof parsed?.validation === 'string' ? parsed.validation.slice(0, 1000) : 'The mirror sees you.',
+      prescription: typeof parsed?.prescription === 'string' ? parsed.prescription.slice(0, 500) : 'Light a candle. Let the dark hold you for a moment.',
       products: enrichedProducts,
       mode,
     })

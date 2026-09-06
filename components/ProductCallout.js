@@ -2,15 +2,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 /**
- * Product callout used inside Journal posts. Pricing is already enriched by
- * the Promotion Engine before it reaches this component.
+ * Journal callouts consume the same normalized commerce record as the shop.
  */
 export default function ProductCallout({ product }) {
-  const slug = product.slug || product.handle;
+  const shopifyCatalog = product.commerceSource === 'shopify';
+  const slug = product.handle || product.slug;
   const name = product.name || product.title;
   const lore = product.lore || product.description || '';
   const imageUrl = product.image_url || product.imageUrls?.[0] || product.image_urls?.[0];
-  const retailPrice = Number(product.price || 0);
+  const retailPrice = Number(shopifyCatalog ? product.originalPrice ?? product.price : product.price || 0);
   const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
   const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
   const publicPrice = isOnSale ? promotionPrice : retailPrice;
@@ -18,6 +18,9 @@ export default function ProductCallout({ product }) {
     ? Math.round(Number(product.salePercentage) || ((retailPrice - publicPrice) / retailPrice) * 100)
     : null;
   const sanctuaryPrice = +(publicPrice * 0.9).toFixed(2);
+  const formatPrice = (value) => new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: product.currencyCode || 'USD',
+  }).format(value);
 
   const loreExcerpt = lore.length > 150 ? lore.substring(0, 150) + '...' : lore;
 
@@ -66,11 +69,11 @@ export default function ProductCallout({ product }) {
           <div className="flex flex-wrap items-baseline gap-2">
             {isOnSale && (
               <span className="text-sm text-zinc-500 line-through">
-                ${retailPrice.toFixed(2)}
+                {formatPrice(retailPrice)}
               </span>
             )}
             <span className="text-lg font-medium" style={{ color: isOnSale ? '#e8e4dc' : '#B89C6D' }}>
-              ${publicPrice.toFixed(2)}
+              {product.priceRange?.max > product.priceRange?.min ? 'From ' : ''}{formatPrice(publicPrice)}
             </span>
             {isOnSale && (
               <span className="text-[10px] uppercase tracking-[0.14em]" style={{ color: '#B89C6D' }}>
@@ -78,9 +81,14 @@ export default function ProductCallout({ product }) {
               </span>
             )}
           </div>
-          <div className="text-[11px] uppercase tracking-[0.14em]" style={{ color: '#B89C6D' }}>
-            Sanctuary ${sanctuaryPrice.toFixed(2)}{isOnSale ? ' · additional 10%' : ''}
-          </div>
+          {!shopifyCatalog && (
+            <div className="text-[11px] uppercase tracking-[0.14em]" style={{ color: '#B89C6D' }}>
+              Sanctuary {formatPrice(sanctuaryPrice)}{isOnSale ? ' · additional 10%' : ''}
+            </div>
+          )}
+          {shopifyCatalog && product.availableForSale === false && (
+            <p className="text-xs text-zinc-400">Currently sold out</p>
+          )}
         </div>
 
         <div className="text-sm uppercase tracking-widest" style={{ color: '#B89C6D' }}>

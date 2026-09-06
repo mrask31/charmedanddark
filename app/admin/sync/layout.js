@@ -17,7 +17,7 @@ export default async function SyncAdminLayout({ children }) {
       initialAuthenticated={isPromotionAdminSessionToken(token)}
       configured={isPromotionAdminConfigured()}
       title="Commerce Admin"
-      description="Enter the admin key to run product sync and catalog maintenance."
+      description="Enter the admin key to manage the storefront catalog."
     >
       {children}
     </AdminSessionGate>

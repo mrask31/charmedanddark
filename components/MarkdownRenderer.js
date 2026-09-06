@@ -14,12 +14,12 @@ import { parseProductReferences } from '@/lib/blog/markdown-parser';
  * 
  * Requirements: 2.2, 8.1, 8.2, 8.3, 8.4, 9.1, 9.2, 9.3, 9.4, 9.5
  */
-export default function MarkdownRenderer({ content, productSlugs = [] }) {
+export default function MarkdownRenderer({ content, productSlugs = [], productLinks = {} }) {
   if (!content) return null;
 
   // Replace [product:slug] with markdown links to /shop/[slug]
   // Invalid product slugs are rendered as plain text
-  const processedContent = parseProductReferences(content, productSlugs);
+  const processedContent = parseProductReferences(content, productSlugs, productLinks);
 
   return (
     <ReactMarkdown

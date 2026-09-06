@@ -63,7 +63,7 @@ export default function MobileStickyATC({
 
   if (isSoldOut) return null;
 
-  const displayPrice = isMember ? (price * 0.9).toFixed(2) : price?.toFixed(2);
+  const displayPrice = price?.toFixed(2);
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added ✓'
@@ -79,23 +79,20 @@ export default function MobileStickyATC({
       needs_selection: needsSelection,
     });
 
-    if (needsSelection) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
     onAddToCart();
   }
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-40 md:hidden transition-transform duration-300 ${
-        isVisible ? 'translate-y-0' : 'translate-y-full'
+      aria-hidden={!isVisible}
+      inert={!isVisible}
+      className={`fixed left-0 right-0 z-40 md:hidden transition-[transform,opacity] duration-300 ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-[calc(100%+4rem+env(safe-area-inset-bottom,0px))] opacity-0 pointer-events-none'
       }`}
       style={{
         backgroundColor: '#08080f',
         borderTop: '1px solid rgba(201, 169, 110, 0.2)',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        bottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))',
       }}
     >
       <div className="flex items-center gap-3 px-4 py-3">
@@ -128,7 +125,7 @@ export default function MobileStickyATC({
             )}
             {isMember && (
               <span className="text-[10px] uppercase tracking-wider" style={{ color: '#c9a96e', opacity: 0.7 }}>
-                Sanctuary
+                Benefits verified in cart
               </span>
             )}
           </div>
@@ -136,8 +133,9 @@ export default function MobileStickyATC({
 
         <button
           onClick={handleClick}
+          tabIndex={isVisible ? 0 : -1}
           disabled={isDisabled}
-          className={`shrink-0 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.12em] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
+          className={`min-h-11 shrink-0 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.12em] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
             cartState === 'success'
               ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
               : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'

@@ -3,19 +3,21 @@
  *
  * GET /api/promotions/active
  *
- * Returns currently active promotions (cached via ISR).
+ * Returns currently active promotions with request-time schedule checks.
  * No auth required — uses RLS (only active + enabled promotions visible).
  */
 
 import { NextResponse } from 'next/server';
 import { getActivePromotions, PROMOTION_ENGINE_ENABLED } from '@/lib/promotions';
 
-// Cache for 60 seconds
-export const revalidate = 60;
+// A response cache could keep a campaign visible beyond its end time.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+const responseOptions = { headers: { 'Cache-Control': 'no-store' } };
 
 export async function GET() {
   if (!PROMOTION_ENGINE_ENABLED) {
-    return NextResponse.json({ promotions: [] });
+    return NextResponse.json({ promotions: [] }, responseOptions);
   }
 
   try {
@@ -40,9 +42,9 @@ export async function GET() {
         navEnabled: p.navEnabled,
         endDate: p.endDate,
       })),
-    });
+    }, responseOptions);
   } catch (err) {
     console.error('[Promotions API] Active error:', err);
-    return NextResponse.json({ promotions: [] });
+    return NextResponse.json({ promotions: [] }, responseOptions);
   }
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/product-display";
 
 /**
  * Reusable homepage product section.
@@ -20,9 +21,9 @@ export function HomepageProductSection({
     <section className="bg-black px-8 py-20 lg:px-16">
       <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
-          <span className="text-xs uppercase tracking-widest text-[#B89C6D]">
+          <h2 className="text-xs uppercase tracking-widest text-[#B89C6D]">
             {title}
-          </span>
+          </h2>
           {intro && (
             <p className="mt-3 text-sm font-light leading-relaxed text-zinc-400 md:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
               {intro}
@@ -39,21 +40,10 @@ export function HomepageProductSection({
 
       <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:gap-8">
         {products.map((product) => {
-          const retailPrice = Number(product.price || 0);
-          const promotionPrice = product.salePrice != null
-            ? Number(product.salePrice)
-            : product.sale_price != null
-              ? Number(product.sale_price)
-              : null;
-          const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
-          const publicPrice = isOnSale ? promotionPrice : retailPrice;
-          const salePercentage = isOnSale
-            ? Math.round(Number(product.salePercentage) || ((retailPrice - publicPrice) / retailPrice) * 100)
-            : null;
-          const sanctuaryPrice = (publicPrice * 0.9).toFixed(2);
-          const slug = product.handle || product.slug;
-          const imageUrl = product.image_url || product.imageUrls?.[0] || product.image_urls?.[0];
-          const isSoldOut = product.qty != null && product.qty <= 0;
+          const { publicPrice, originalPrice: retailPrice, isOnSale, salePercentage } = productPricing(product);
+          const slug = product.slug || product.handle;
+          const imageUrl = product.imageUrls?.[0];
+          const isSoldOut = !productIsAvailable(product);
 
           return (
             <Link key={slug} href={`/shop/${slug}`} className="group">
@@ -126,15 +116,15 @@ export function HomepageProductSection({
                   <div className="mt-1.5 space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {isOnSale ? (
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                        <span className="text-xs text-zinc-600 line-through">${retailPrice.toFixed(2)}</span>
-                        <span className="text-sm text-white">${publicPrice.toFixed(2)}</span>
+                        <span className="text-xs text-zinc-600 line-through">{formatProductPrice(retailPrice, product.currency)}</span>
+                        <span className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                         <span className="text-[9px] uppercase tracking-[0.14em] text-[#B89C6D]">{salePercentage}% off</span>
                       </div>
                     ) : (
-                      <span className="text-sm text-zinc-400">${publicPrice.toFixed(2)}</span>
+                      <span className="text-sm text-zinc-400">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                     )}
                     <div className="text-[10px] uppercase tracking-wider text-[#B89C6D]">
-                      Sanctuary ${sanctuaryPrice}{isOnSale ? ' · additional 10%' : ''}
+                      Member benefits confirmed in cart
                     </div>
                   </div>
                 )}

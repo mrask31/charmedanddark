@@ -2,6 +2,8 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import { generateSlug } from '@/lib/blog/slug';
 import { NextResponse } from 'next/server';
 import { isSyncAdminRequest } from '@/lib/admin/sync-auth';
+import { getProductsByIds } from '@/lib/products';
+import { productMatchesReference } from '@/lib/blog/product-references';
 
 export async function POST(request) {
   if (!isSyncAdminRequest(request)) {
@@ -18,18 +20,24 @@ export async function POST(request) {
       );
     }
 
+    if (featured_product_ids != null && (!Array.isArray(featured_product_ids)
+      || featured_product_ids.some((id) => typeof id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)))) {
+      return NextResponse.json({ error: 'Featured products must use saved product references' }, { status: 400 });
+    }
+
     let productContext = '';
     if (featured_product_ids && featured_product_ids.length > 0) {
-      const { data: products, error: productsError } = await supabaseAdmin
-        .from('products')
-        .select('name, lore')
-        .in('id', featured_product_ids);
-
-      if (productsError) {
-        console.error('Error fetching products:', productsError);
-      } else if (products && products.length > 0) {
+      // Existing Journal UUID references remain unchanged in storage. The shared
+      // catalog resolves those identities to current Shopify product content.
+      const products = await getProductsByIds(featured_product_ids);
+      if (featured_product_ids.some((id) => !products.some((product) => productMatchesReference(product, id)))) {
+        return NextResponse.json({
+          error: 'A featured product is no longer published. Update the product selection before generating the draft.',
+        }, { status: 409 });
+      }
+      if (products.length > 0) {
         productContext = '\n\nFeatured products:\n' +
-          products.map((product) => `- ${product.name}: ${product.lore}`).join('\n');
+          products.map((product) => `- ${product.name || product.title}: ${product.description || product.lore || ''}`).join('\n');
       }
     }
 

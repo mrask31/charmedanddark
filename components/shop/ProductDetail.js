@@ -3,52 +3,22 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Lock, Minus, Plus } from 'lucide-react';
 import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
-import { useCart } from '@/context/CartContext';
 import AddToCart from '@/app/shop/[slug]/AddToCart';
 import MobileStickyATC from '@/components/shop/MobileStickyATC';
 import TrustModule from '@/components/shop/TrustModule';
-import ProductDeliveryEstimate from '@/components/shop/ProductDeliveryEstimate';
 import SmallBusinessTrust from '@/components/shop/SmallBusinessTrust';
 import ProductReturnsSummary from '@/components/shop/ProductReturnsSummary';
 import ProductBadge from '@/components/shop/ProductBadge';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
-import { getAvailableInventory, calculateAddableQuantity } from '@/lib/inventory';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
-const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
-
-function getPromotionPricing(product, retailPriceOverride = null) {
-  const productRetailPrice = Number(product?.price || 0);
-  const retailPrice = retailPriceOverride != null
-    ? Number(retailPriceOverride)
-    : productRetailPrice;
-  const promotionPrice = product?.salePrice != null ? Number(product.salePrice) : null;
-  const hasPromotion =
-    productRetailPrice > 0 &&
-    promotionPrice != null &&
-    promotionPrice > 0 &&
-    promotionPrice < productRetailPrice;
-
-  const promotionRatio = hasPromotion ? promotionPrice / productRetailPrice : 1;
-  const publicPrice = hasPromotion
-    ? +(retailPrice * promotionRatio).toFixed(2)
-    : retailPrice;
-  const sanctuaryPrice = publicPrice > 0 ? +(publicPrice * 0.9).toFixed(2) : null;
-  const salePercentage = hasPromotion
-    ? Math.round(Number(product.salePercentage) || ((productRetailPrice - promotionPrice) / productRetailPrice) * 100)
-    : null;
-
-  return {
-    retailPrice,
-    publicPrice,
-    sanctuaryPrice,
-    salePercentage,
-    isOnSale: hasPromotion,
-    promotionRatio,
-  };
+function getPromotionPricing(product, priceOverride = null, compareOverride = undefined) {
+  const publicPrice = Number(priceOverride ?? product?.price ?? 0);
+  const compareAt = Number(compareOverride === undefined ? product?.compareAtPrice : compareOverride);
+  const isOnSale = compareAt > publicPrice;
+  return { publicPrice, retailPrice: isOnSale ? compareAt : publicPrice, isOnSale, salePercentage: isOnSale ? Math.round((1 - publicPrice / compareAt) * 100) : null };
 }
 
 // ============================================================================
@@ -57,10 +27,13 @@ function getPromotionPricing(product, retailPriceOverride = null) {
 function ProductGallery({ images, productName, overrideImage, shopifyVariants }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fading, setFading] = useState(false);
+  const [dismissedOverride, setDismissedOverride] = useState(null);
+  const activeOverride = overrideImage && dismissedOverride !== overrideImage ? overrideImage : null;
   const fadeTimeoutRef = useRef(null);
 
   function handleThumbnailClick(index) {
-    if (index === activeIndex && !overrideImage) return;
+    if (index === activeIndex && !activeOverride) return;
+    setDismissedOverride(overrideImage);
     if (fadeTimeoutRef.current) {
       clearTimeout(fadeTimeoutRef.current);
       fadeTimeoutRef.current = null;
@@ -101,13 +74,13 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     return map;
   }, [shopifyVariants]);
 
-  const displayImage = overrideImage || images?.[activeIndex];
+  const displayImage = activeOverride || images?.[activeIndex];
   const hasMultipleImages = images?.length > 1;
 
   return (
     <div className="flex flex-col gap-3">
       <div
-        className="relative w-full overflow-hidden"
+        className="group relative w-full overflow-hidden"
         style={{ aspectRatio: '4/5', backgroundColor: '#08080f' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -130,12 +103,12 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
           </div>
         )}
 
-        {hasMultipleImages && !overrideImage && (
+        {hasMultipleImages && (
           <>
             <button
               onClick={() => handleThumbnailClick(activeIndex === 0 ? images.length - 1 : activeIndex - 1)}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
             >
               <svg width="14" height="14" viewBox="0 0 12 12" fill="none" className="text-[#c9a96e]">
                 <path d="M7.5 2.5L4 6L7.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -144,7 +117,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
             <button
               onClick={() => handleThumbnailClick(activeIndex === images.length - 1 ? 0 : activeIndex + 1)}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
             >
               <svg width="14" height="14" viewBox="0 0 12 12" fill="none" className="text-[#c9a96e]">
                 <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -153,7 +126,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
           </>
         )}
 
-        {hasMultipleImages && !overrideImage && (
+        {hasMultipleImages && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
             {images.slice(0, 6).map((_, i) => (
               <span
@@ -177,7 +150,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
                   onClick={() => handleThumbnailClick(i)}
                   aria-label={colorLabel ? `View ${colorLabel}` : `View image ${i + 1}`}
                   className={`relative w-full overflow-hidden transition-all duration-200 focus-visible:outline-none ${
-                    i === activeIndex && !overrideImage
+                    i === activeIndex && !activeOverride
                       ? 'ring-1 ring-[#c9a96e] ring-offset-1 ring-offset-[#08080f]'
                       : 'opacity-50 hover:opacity-80'
                   }`}
@@ -198,54 +171,6 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
           })}
         </div>
       )}
-    </div>
-  );
-}
-
-// ============================================================================
-// VARIANT SELECTOR
-// ============================================================================
-function VariantSelector({ variants, selectedByType, onSelectByType }) {
-  const grouped = useMemo(() => {
-    return variants.reduce((acc, v) => {
-      if (!acc[v.variant_type]) acc[v.variant_type] = [];
-      acc[v.variant_type].push(v);
-      return acc;
-    }, {});
-  }, [variants]);
-
-  return (
-    <div className="flex flex-col gap-5">
-      {Object.entries(grouped).map(([type, options]) => (
-        <div key={type} className="flex flex-col gap-3">
-          <label
-            className="text-[11px] uppercase tracking-[0.2em]"
-            style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-          >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
-          </label>
-          <div className="flex flex-wrap gap-2" role="group" aria-label={`Select ${type}`}>
-            {options.map((variant) => {
-              const isSelected = selectedByType[type]?.id === variant.id;
-              return (
-                <button
-                  key={variant.id}
-                  onClick={() => onSelectByType(type, isSelected ? null : variant)}
-                  aria-pressed={isSelected}
-                  className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                    isSelected
-                      ? 'border border-[#c9a96e] text-[#c9a96e]'
-                      : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                  }`}
-                  style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
-                >
-                  {variant.variant_value}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
     </div>
   );
 }
@@ -304,7 +229,7 @@ function RelatedProducts({ products }) {
       </p>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
         {products.map((p) => {
-          const isSoldOut = p.qty != null && p.qty <= 0;
+          const isSoldOut = p.availableForSale === false;
           const pricing = getPromotionPricing(p);
           return (
           <Link
@@ -312,7 +237,7 @@ function RelatedProducts({ products }) {
             href={`/shop/${p.slug}`}
             className="group flex flex-col gap-3 focus-visible:outline-none"
           >
-            <div className="relative w-full overflow-hidden" style={{ aspectRatio: '3/4', backgroundColor: '#08080f' }}>
+            <div className="group relative w-full overflow-hidden" style={{ aspectRatio: '3/4', backgroundColor: '#08080f' }}>
               {p.imageUrls?.[0] ? (
                 <Image
                   src={p.imageUrls[0]}
@@ -380,9 +305,7 @@ function RelatedProducts({ products }) {
                       ${pricing.publicPrice.toFixed(2)}
                     </span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-[0.12em]" style={{ color: '#c9a96e' }}>
-                    ${pricing.sanctuaryPrice?.toFixed(2)} Sanctuary{pricing.isOnSale ? ' · +10%' : ''}
-                  </span>
+
                 </div>
               )}
             </div>
@@ -397,272 +320,38 @@ function RelatedProducts({ products }) {
 // ============================================================================
 // MAIN PRODUCT DETAIL COMPONENT
 // ============================================================================
-export default function ProductDetail({ product, relatedProducts, shopifyVariants }) {
+export default function ProductDetail({ product, relatedProducts, shopifyVariants, initialVariantId }) {
   const { isMember, loading: authLoading } = useSanctuaryAccess();
-  const { addItem, items } = useCart();
   const galleryRef = useRef(null);
-
-  const isApparel = APPAREL_CATEGORIES.includes(product.category);
-  const hasProductVariants = product.productVariants?.length > 0;
+  const initialVariant = shopifyVariants?.variants?.find(variant => variant.shopifyVariantId === initialVariantId || variant.shopifyVariantId?.split('/').pop() === initialVariantId)
+    || (shopifyVariants?.variants?.length === 1 ? shopifyVariants.variants[0] : null);
+  const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(initialVariant);
+  const [colorImage, setColorImage] = useState(null);
+  const isApparel = APPAREL_CATEGORIES.includes(product.category) || product.category === 'Apparel';
   const hasShopifyVariants = shopifyVariants?.variants?.length > 0;
-  const baseProductPricing = getPromotionPricing(product);
-
-  const saleAwareShopifyVariants = useMemo(() => {
-    if (!shopifyVariants?.variants || !baseProductPricing.isOnSale) return shopifyVariants;
-
-    return {
-      ...shopifyVariants,
-      variants: shopifyVariants.variants.map((variant) => {
-        const retailVariantPrice = Number(variant.price || product.price || 0);
-        return {
-          ...variant,
-          _retailPrice: retailVariantPrice,
-          price: +(retailVariantPrice * baseProductPricing.promotionRatio).toFixed(2),
-          compareAtPrice: Number(variant.compareAtPrice) > retailVariantPrice
-            ? Number(variant.compareAtPrice)
-            : retailVariantPrice,
-        };
-      }),
-    };
-  }, [shopifyVariants, baseProductPricing.isOnSale, baseProductPricing.promotionRatio, product.price]);
-
-  const saleAwareCartProduct = useMemo(() => {
-    if (!baseProductPricing.isOnSale) return product;
-
-    return {
-      ...product,
-      price: baseProductPricing.publicPrice,
-      originalPrice: product.price,
-      productVariants: product.productVariants?.map((variant) => ({
-        ...variant,
-        price_override: variant.price_override != null
-          ? +(Number(variant.price_override) * baseProductPricing.promotionRatio).toFixed(2)
-          : variant.price_override,
-      })),
-    };
-  }, [product, baseProductPricing.isOnSale, baseProductPricing.publicPrice, baseProductPricing.promotionRatio]);
+  const activePricing = getPromotionPricing(product, selectedShopifyVariant?.price, selectedShopifyVariant ? selectedShopifyVariant.compareAtPrice : undefined);
+  const basePrice = activePricing.publicPrice;
+  const variantImage = colorImage || selectedShopifyVariant?.imageUrl || null;
 
   useEffect(() => {
     posthog?.capture?.('product_viewed', {
-      product_title: product.name,
-      product_handle: product.slug,
-      product_type: product.category || undefined,
-      vendor: product.vendor || undefined,
-      price: baseProductPricing.publicPrice,
-      retail_price: baseProductPricing.retailPrice,
-      promotion_percentage: baseProductPricing.salePercentage || undefined,
-      currency: 'USD',
-      url: typeof window !== 'undefined' ? window.location.href : undefined,
-      referrer: typeof window !== 'undefined' ? document.referrer || undefined : undefined,
-      ...getAttributionProps(),
+      product_title: product.name, product_handle: product.slug, product_type: product.category,
+      vendor: product.vendor, price: Number(product.price), currency: product.currency || 'USD',
+      url: window.location.href, referrer: document.referrer || undefined, ...getAttributionProps(),
     });
-  }, [product.name, product.category, product.slug, product.vendor, baseProductPricing.publicPrice, baseProductPricing.retailPrice, baseProductPricing.salePercentage]);
+  }, [product.name, product.slug, product.category, product.vendor, product.price, product.currency]);
 
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedVariant, setSelectedVariant] = useState(null);
-  const [selectedByType, setSelectedByType] = useState({});
-  const [selectedShopifyVariant, setSelectedShopifyVariant] = useState(null);
-  const [colorImage, setColorImage] = useState(null);
-  const [shopifyVariantPriceOverride, setShopifyVariantPriceOverride] = useState(null);
-  const [shopifyVariantPrice, setShopifyVariantPrice] = useState(null);
-  const [shopifyVariantCompareAtPrice, setShopifyVariantCompareAtPrice] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [cartState, setCartState] = useState('idle');
-  const [selectionError, setSelectionError] = useState('');
-  const [inventoryNotice, setInventoryNotice] = useState(null);
-
-  function handleVariantSelectByType(type, variant) {
-    setSelectionError('');
-    setSelectedByType((prev) => {
-      const next = { ...prev };
-      if (variant) {
-        next[type] = variant;
-      } else {
-        delete next[type];
-      }
-      return next;
-    });
-
-    if (type === 'color' && variant?.image_url) {
-      setColorImage(variant.image_url);
-    } else if (type === 'color' && !variant) {
-      setColorImage(null);
-    }
-
-    if (variant) {
-      setSelectedVariant(variant);
+  function handleStickyAdd() {
+    const section = document.querySelector('[data-atc-section]');
+    if (selectedShopifyVariant) section?.querySelector('[data-product-add-button]')?.click();
+    else {
+      section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      section?.focus({ preventScroll: true });
     }
   }
-
-  function handleShopifyVariantChange(shopifyVariant) {
-    setSelectedShopifyVariant(shopifyVariant);
-
-    if (shopifyVariant) {
-      const retailVariantPrice = shopifyVariant._retailPrice ?? shopifyVariant.price ?? null;
-      setShopifyVariantPrice(retailVariantPrice);
-      setShopifyVariantCompareAtPrice(shopifyVariant.compareAtPrice ?? null);
-
-      if (product.productVariants?.length > 0) {
-        const match = product.productVariants.find((pv) =>
-          shopifyVariant.selectedOptions?.some(
-            (opt) => pv.variant_type === opt.name.toLowerCase() && pv.variant_value === opt.value
-          )
-        );
-        setShopifyVariantPriceOverride(match?.price_override != null ? parseFloat(match.price_override) : null);
-      } else {
-        setShopifyVariantPriceOverride(null);
-      }
-    } else {
-      setShopifyVariantPrice(null);
-      setShopifyVariantCompareAtPrice(null);
-      setShopifyVariantPriceOverride(null);
-    }
-  }
-
-  const variantPriceOverride = selectedVariant?.price_override != null
-    ? parseFloat(selectedVariant.price_override)
-    : null;
-  const retailBasePrice = variantPriceOverride ?? shopifyVariantPriceOverride ?? shopifyVariantPrice ?? Number(product.price || 0);
-  const activePricing = getPromotionPricing(product, retailBasePrice);
-  const basePrice = activePricing.publicPrice;
-  const nativeCompareAtPrice = shopifyVariantCompareAtPrice && shopifyVariantCompareAtPrice > retailBasePrice
-    ? shopifyVariantCompareAtPrice
-    : null;
-  const compareAtPrice = activePricing.isOnSale
-    ? Math.max(activePricing.retailPrice, nativeCompareAtPrice || 0)
-    : nativeCompareAtPrice;
-  const sanctuaryPrice = activePricing.sanctuaryPrice;
-
-  const variantImage = colorImage
-    || selectedShopifyVariant?.imageUrl
-    || selectedVariant?.image_url
-    || null;
-
-  async function handleAddToCart() {
-    if (cartState !== 'idle') return;
-
-    if (isApparel && !hasProductVariants && !selectedSize) {
-      setSelectionError('Please select a size.');
-      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing: ['size'] });
-      return;
-    }
-    if (hasProductVariants && !allVariantsSelected) {
-      const missing = variantTypes.filter((type) => !selectedByType[type]);
-      setSelectionError(`Please select ${missing.join(' and ')}.`);
-      posthog?.capture?.('add_to_cart_missing_variant', { product: product.name, missing });
-      return;
-    }
-
-    setCartState('loading');
-    setSelectionError('');
-    setInventoryNotice(null);
-
-    const available = getAvailableInventory({ productQty: product.qty, variantQuantityAvailable: null });
-    const cartKey = selectedVariant
-      ? `${product.slug}__v_${selectedVariant.id}`
-      : selectedSize
-      ? `${product.slug}__${selectedSize}`
-      : product.slug;
-    const alreadyInCart = items.find((i) => i.cartKey === cartKey)?.quantity || 0;
-    const { canAdd, limited, reason } = calculateAddableQuantity({
-      requested: quantity,
-      alreadyInCart,
-      available,
-    });
-
-    if (limited) {
-      if (reason === 'sold_out') {
-        setInventoryNotice('This item is currently sold out.');
-        setCartState('idle');
-        posthog?.capture?.('inventory_quantity_limited', {
-          product_title: product.name, product_handle: product.slug,
-          variant_title: undefined, variant_id: selectedVariant?.id || undefined,
-          requested_quantity: quantity, available_quantity: available,
-          cart_quantity_before: alreadyInCart, quantity_added: 0,
-          location: 'product_page', url: window.location.href,
-        });
-        return;
-      }
-      if (reason === 'at_limit') {
-        setInventoryNotice(`Only ${available} available. You already have the maximum quantity in your cart.`);
-        setCartState('idle');
-        posthog?.capture?.('inventory_quantity_limited', {
-          product_title: product.name, product_handle: product.slug,
-          variant_title: undefined, variant_id: selectedVariant?.id || undefined,
-          requested_quantity: quantity, available_quantity: available,
-          cart_quantity_before: alreadyInCart, quantity_added: 0,
-          location: 'product_page', url: window.location.href,
-        });
-        return;
-      }
-      if (reason === 'partial') {
-        setInventoryNotice(`Only ${available} available. We added ${canAdd} to your cart.`);
-        posthog?.capture?.('inventory_quantity_limited', {
-          product_title: product.name, product_handle: product.slug,
-          variant_title: undefined, variant_id: selectedVariant?.id || undefined,
-          requested_quantity: quantity, available_quantity: available,
-          cart_quantity_before: alreadyInCart, quantity_added: canAdd,
-          location: 'product_page', url: window.location.href,
-        });
-      }
-    }
-
-    const variantSelections = Object.entries(selectedByType)
-      .map(([type, v]) => `${type.charAt(0).toUpperCase() + type.slice(1)}: ${v.variant_value}`)
-      .join(', ');
-
-    const addQty = limited ? canAdd : quantity;
-
-    try {
-      addItem({
-        ...product,
-        originalPrice: activePricing.isOnSale ? activePricing.retailPrice : product.originalPrice,
-        price: basePrice,
-        salePrice: activePricing.isOnSale ? basePrice : product.salePrice,
-        selectedSize: isApparel ? selectedSize : null,
-        selectedVariant: selectedVariant
-          ? { ...selectedVariant, _combinedLabel: variantSelections || null }
-          : null,
-        shopifyVariantId: product.shopifyVariantId,
-        availableQty: available,
-      }, addQty);
-
-      setCartState('success');
-      posthog?.capture?.('add_to_cart', {
-        product_title: product.name,
-        product_handle: product.slug,
-        variant_title: variantSelections || selectedSize || undefined,
-        variant_id: selectedVariant?.id || undefined,
-        sku: product.sku || undefined,
-        price: basePrice,
-        retail_price: activePricing.retailPrice,
-        promotion_percentage: activePricing.salePercentage || undefined,
-        currency: 'USD',
-        quantity: addQty,
-        url: typeof window !== 'undefined' ? window.location.href : undefined,
-        ...getAttributionProps(),
-      });
-      setTimeout(() => setCartState('idle'), 2000);
-    } catch (err) {
-      console.error('Add to cart failed:', err);
-      setCartState('error');
-    }
-  }
-
-  const variantTypes = hasProductVariants
-    ? [...new Set(product.productVariants.map((v) => v.variant_type))]
-    : [];
-  const allVariantsSelected = variantTypes.every((type) => selectedByType[type]);
-  const needsSelection = (isApparel && !hasProductVariants && !selectedSize) || (hasProductVariants && !allVariantsSelected);
-  const buttonDisabled = cartState === 'loading' || cartState === 'success';
-  const buttonLabel =
-    cartState === 'loading' ? 'Adding...'
-    : cartState === 'success' ? 'Added to Cart ✓'
-    : cartState === 'error' ? 'Something went wrong'
-    : 'Add to Cart';
 
   return (
-    <div style={{ backgroundColor: '#08080f', overflowX: 'hidden' }}>
+    <div className="pb-[calc(10rem+env(safe-area-inset-bottom,0px))] md:pb-0" style={{ backgroundColor: '#08080f', overflowX: 'hidden' }}>
       <div className="mx-auto max-w-[1280px] px-6 py-12 md:py-16">
         <nav aria-label="Breadcrumb" className="mb-8">
           <ol className="flex items-center gap-2 text-[11px] font-light tracking-[0.1em]" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -702,67 +391,15 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 {product.name}
               </h1>
 
-              {basePrice > 0 && (
-                <div className="flex flex-col gap-2">
-                  {activePricing.isOnSale && (
-                    <span
-                      className="w-fit px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em]"
-                      style={{ backgroundColor: '#c9a96e', color: '#08080f', fontFamily: 'Inter, sans-serif' }}
-                    >
-                      {activePricing.salePercentage}% OFF
-                    </span>
-                  )}
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    {isMember ? (
-                      <>
-                        {(activePricing.isOnSale || compareAtPrice) && (
-                          <span className="font-light text-[14px] line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                            ${(activePricing.isOnSale ? activePricing.retailPrice : compareAtPrice).toFixed(2)}
-                          </span>
-                        )}
-                        <span className="font-light text-xl line-through" style={{ color: activePricing.isOnSale ? '#e8e4dc' : '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                          ${basePrice.toFixed(2)}
-                        </span>
-                        <span className="font-light text-[18px]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
-                          ${sanctuaryPrice?.toFixed(2)}
-                        </span>
-                        <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#c9a96e', opacity: 0.7, fontFamily: 'Inter, sans-serif' }}>
-                          Sanctuary Price
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {(activePricing.isOnSale || compareAtPrice) && (
-                          <span className="font-light text-[14px] line-through" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                            ${(activePricing.isOnSale ? activePricing.retailPrice : compareAtPrice).toFixed(2)}
-                          </span>
-                        )}
-                        <span className="font-light text-xl" style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif' }}>
-                          ${basePrice.toFixed(2)}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <Lock size={12} className="shrink-0" style={{ color: '#c9a96e', opacity: 0.8 }} aria-hidden="true" />
-                          <span className="font-light text-[18px]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif' }}>
-                            ${sanctuaryPrice?.toFixed(2)}
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  {activePricing.isOnSale && (
-                    <p className="text-[10px] uppercase tracking-[0.13em]" style={{ color: '#8f7a55', fontFamily: 'Inter, sans-serif' }}>
-                      Sanctuary members take an additional 10% off the sale price
-                    </p>
-                  )}
-                  {!isMember && !authLoading && (
-                    <p className="text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                      <Link href="/join" className="underline underline-offset-2 transition-opacity hover:opacity-80" style={{ color: '#6b6760' }}>
-                        Join the Sanctuary to unlock this price
-                      </Link>
-                    </p>
-                  )}
+              <div className="flex flex-col gap-2" aria-live="polite">
+                {activePricing.isOnSale && <span className="w-fit px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] bg-[#c9a96e] text-[#08080f]">{activePricing.salePercentage}% OFF</span>}
+                <div className="flex items-baseline gap-3">
+                  {activePricing.isOnSale && <span className="text-sm text-zinc-400 line-through">${activePricing.retailPrice.toFixed(2)}</span>}
+                  <span className="text-xl text-[#e8e4dc]">{!selectedShopifyVariant && product.priceRange?.max > product.priceRange?.min ? 'From ' : ''}${basePrice.toFixed(2)}</span>
                 </div>
-              )}
+                <p className="text-xs text-zinc-300">{isMember ? 'Your eligible Sanctuary benefits are verified in your cart.' : 'Eligible discounts are confirmed in your cart.'}</p>
+                {!isMember && !authLoading && <Link href="/join" className="text-xs text-[#c9a96e] underline underline-offset-4">Explore Sanctuary membership</Link>}
+              </div>
 
               <div style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.2)' }} />
 
@@ -793,121 +430,12 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               })()}
 
               <TrustModule productName={product.name} />
-              <ProductDeliveryEstimate vendor={product.vendor} />
               <SmallBusinessTrust />
 
-              {hasShopifyVariants ? (
-                <div data-atc-section>
-                  <AddToCart
-                    shopifyVariants={saleAwareShopifyVariants}
-                    product={saleAwareCartProduct}
-                    onVariantChange={handleShopifyVariantChange}
-                    onColorSelect={setColorImage}
-                  />
-                </div>
-              ) : (
-                <>
-                  {hasProductVariants && (
-                    <VariantSelector
-                      variants={product.productVariants}
-                      selectedByType={selectedByType}
-                      onSelectByType={handleVariantSelectByType}
-                    />
-                  )}
-
-                  {isApparel && !hasProductVariants && (
-                    <div className="flex flex-col gap-3">
-                      <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
-                        Size
-                      </label>
-                      <div className="flex flex-wrap gap-2" role="group" aria-label="Select size">
-                        {SIZES.map((size) => (
-                          <button
-                            key={size}
-                            onClick={() => { setSelectedSize(size); setSelectionError(''); }}
-                            aria-pressed={selectedSize === size}
-                            className={`rounded-full px-4 py-2 text-[13px] font-light tracking-wider transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                              selectedSize === size
-                                ? 'border border-[#c9a96e] text-[#c9a96e]'
-                                : 'border border-[rgba(201,169,110,0.25)] text-[#6b6760] hover:border-[rgba(201,169,110,0.5)] hover:text-[#e8e4dc]'
-                            }`}
-                            style={{ backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
-                          >
-                            {size}
-                          </button>
-                        ))}
-                      </div>
-                      {!selectedSize && (
-                        <p className="text-[12px] font-light" style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}>
-                          Select a size to add to cart
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="flex flex-col gap-3">
-                    <label className="text-[11px] uppercase tracking-[0.2em]" style={{ color: '#c9a96e', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
-                      Qty
-                    </label>
-                    <div className="flex items-center" role="group" aria-label="Select quantity">
-                      <button
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        aria-label="Decrease quantity"
-                        className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
-                        style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <div
-                        className="flex h-10 w-12 items-center justify-center text-sm font-light"
-                        style={{ color: '#e8e4dc', borderTop: '1px solid rgba(201,169,110,0.2)', borderBottom: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a', fontFamily: 'Inter, sans-serif' }}
-                        aria-live="polite"
-                      >
-                        {quantity}
-                      </div>
-                      <button
-                        onClick={() => setQuantity((q) => Math.min(10, q + 1))}
-                        aria-label="Increase quantity"
-                        className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-none"
-                        style={{ color: '#c9a96e', border: '1px solid rgba(201,169,110,0.2)', backgroundColor: '#0e0e1a' }}
-                      >
-                        <Plus size={14} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handleAddToCart}
-                    disabled={buttonDisabled}
-                    className={`h-[52px] w-full rounded-full border text-sm uppercase tracking-[0.15em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] ${
-                      cartState === 'loading' ? 'animate-pulse' : ''
-                    } ${
-                      cartState === 'success'
-                        ? 'border-[#c9a96e] bg-[rgba(201,169,110,0.12)] text-[#c9a96e]'
-                        : cartState === 'error'
-                        ? 'border-red-500/50 text-red-400'
-                        : 'border-[#c9a96e] bg-transparent text-[#c9a96e] hover:bg-[rgba(201,169,110,0.15)]'
-                    } disabled:opacity-50`}
-                    style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
-                  >
-                    {buttonLabel}
-                  </button>
-                  {selectionError && (
-                    <p role="alert" style={{ color: '#e24b4a', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
-                      {selectionError}
-                    </p>
-                  )}
-                  {inventoryNotice && (
-                    <p role="status" style={{ color: '#c9a96e', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', textAlign: 'center' }}>
-                      {inventoryNotice}
-                    </p>
-                  )}
-                </>
-              )}
-
-              <p className="text-xs text-[#e8e4dc]/50 mt-1 text-center">
-                Free shipping on orders $100+ · Ships to continental US only
-              </p>
+              <div data-atc-section data-cart-return-focus tabIndex={-1} role="region" aria-label="Product purchase options">
+                {hasShopifyVariants ? <AddToCart shopifyVariants={shopifyVariants} product={product} initialVariant={initialVariant} onVariantChange={setSelectedShopifyVariant} onColorSelect={setColorImage} /> : <p role="status" className="text-sm text-zinc-300">We could not load the purchase options. Please refresh this page to try again.</p>}
+              </div>
+              <p className="text-xs text-zinc-300 text-center">Shipping options and delivery estimates are shown at checkout.</p>
 
               <ProductReturnsSummary />
 
@@ -958,15 +486,15 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
       <MobileStickyATC
         productName={product.name}
         price={basePrice}
-        isMember={isMember}
-        onAddToCart={hasShopifyVariants
-          ? () => { document.querySelector('[data-atc-section]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-          : handleAddToCart
-        }
-        cartState={hasShopifyVariants ? 'idle' : cartState}
-        needsSelection={hasShopifyVariants ? !selectedShopifyVariant : needsSelection}
+        retailPrice={activePricing.retailPrice}
+        isOnSale={activePricing.isOnSale}
+        salePercentage={activePricing.salePercentage}
+        isMember={false}
+        onAddToCart={handleStickyAdd}
+        cartState="idle"
+        needsSelection={!selectedShopifyVariant}
         galleryRef={galleryRef}
-        isSoldOut={product.qty <= 0}
+        isSoldOut={!hasShopifyVariants || product.availableForSale === false || selectedShopifyVariant?.available === false}
       />
     </div>
   );

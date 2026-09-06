@@ -1,84 +1,38 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
 import { getProducts } from "@/lib/products";
+import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/product-display";
 import {
   getActivePromotions,
-  getSaleProducts,
   PROMOTION_ENGINE_ENABLED,
 } from "@/lib/promotions";
 
 // ISR: revalidate every 60 seconds (matches promotion cache TTL)
 export const revalidate = 60;
 
-/**
- * Dynamic metadata for the /sale page.
- * Uses the first active promotion's SEO fields, or generic fallback.
- */
-export async function generateMetadata() {
-  if (!PROMOTION_ENGINE_ENABLED) {
-    return { title: "Sale | Charmed & Dark" };
-  }
+export const metadata = {
+  title: 'Sale',
+  description: 'Shop current savings on gothic bags, candles, apparel, and dark home decor at Charmed & Dark.',
+  alternates: { canonical: 'https://www.charmedanddark.com/sale' },
+};
 
-  const promotions = await getActivePromotions();
-  if (!promotions.length) {
-    return { title: "Sale | Charmed & Dark" };
-  }
-
-  const primary = promotions[0];
-
-  return {
-    title: primary.seoTitle || `${primary.name} | Charmed & Dark`,
-    description:
-      primary.seoDescription ||
-      `Shop the ${primary.name}. Limited time savings on gothic bags, candles, and dark home decor.`,
-    openGraph: {
-      title: primary.seoTitle || primary.name,
-      description: primary.seoDescription || `Shop the ${primary.name}`,
-      url: "https://www.charmedanddark.com/sale",
-      siteName: "Charmed & Dark",
-      type: "website",
-      ...(primary.ogImageUrl && {
-        images: [{ url: primary.ogImageUrl, width: 1200, height: 630 }],
-      }),
-    },
-    alternates: {
-      canonical: "https://www.charmedanddark.com/sale",
-    },
-  };
-}
-
-/**
- * /sale — Dynamic sale landing page.
- *
- * Behavior:
- * - When PROMOTION_ENGINE_ENABLED=false → 404
- * - When no active promotions exist → 404
- * - When active promotions exist → renders all on-sale products with hero + grid
- */
 export default async function SalePage() {
-  if (!PROMOTION_ENGINE_ENABLED) {
-    return notFound();
-  }
-
-  const promotions = await getActivePromotions();
-  if (!promotions.length) {
-    return notFound();
-  }
-
-  const primary = promotions[0];
   const allProducts = await getProducts();
-  const saleItems = await getSaleProducts(allProducts, promotions);
-
-  if (!saleItems.length) {
-    return notFound();
+  let promotions = [];
+  if (PROMOTION_ENGINE_ENABLED) {
+    try { promotions = await getActivePromotions(); } catch { /* Campaign copy is optional. */ }
   }
-
-  // Sort by discount percentage (highest first) by default
-  const sorted = [...saleItems].sort(
-    (a, b) => b.pricing.percentage - a.pricing.percentage
-  );
+  const sorted = allProducts.map((product) => {
+    const price = productPricing(product);
+    return { product, pricing: { displayPrice: price.publicPrice, basePrice: price.originalPrice, percentage: price.salePercentage, savings: price.originalPrice - price.publicPrice, isOnSale: price.isOnSale } };
+  }).filter(({ pricing }) => pricing.isOnSale).sort((a, b) => b.pricing.percentage - a.pricing.percentage);
+  const primary = (sorted.length && promotions[0]) || {
+    name: 'Current Savings',
+    heroTitle: 'Discover a Little More Darkness',
+    heroSubtitle: sorted.length ? 'Current savings on pieces for your wardrobe, rituals, and home.' : 'Our next sale is still taking shape. Explore the full collection while you wait.',
+    accentColor: '#c9a96e',
+  };
 
   return (
     <main
@@ -107,7 +61,7 @@ export default async function SalePage() {
               backgroundColor: `${primary.accentColor}08`,
             }}
           >
-            Limited Time
+            {sorted.length ? "Current Savings" : "The Collection Awaits"}
           </span>
 
           <h1
@@ -147,8 +101,8 @@ export default async function SalePage() {
           {sorted.map(({ product, pricing }) => {
             const slug = product.slug || product.handle;
             const imageUrl =
-              product.imageUrls?.[0] || product.image_url || null;
-            const sanctuaryPrice = (pricing.displayPrice * 0.9).toFixed(2);
+              product.imageUrls?.[0] || null;
+            const isSoldOut = !productIsAvailable(product);
 
             return (
               <Link
@@ -163,7 +117,7 @@ export default async function SalePage() {
                       src={imageUrl}
                       alt={product.name}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className={`object-cover transition-transform duration-500 group-hover:scale-105 ${isSoldOut ? "grayscale opacity-60" : ""}`}
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                   ) : (
@@ -172,6 +126,7 @@ export default async function SalePage() {
                     </div>
                   )}
 
+                  {isSoldOut && <span className="absolute left-3 top-3 z-20 bg-black/80 px-3 py-1 text-xs text-zinc-200">Out of stock</span>}
                   {/* Sale badge */}
                   {pricing.badgeText && (
                     <span
@@ -216,7 +171,7 @@ export default async function SalePage() {
                       className="text-sm font-light line-through"
                       style={{ color: "#6b6760", fontFamily: "Inter, sans-serif" }}
                     >
-                      ${pricing.basePrice.toFixed(2)}
+                      {formatProductPrice(pricing.basePrice, product.currency)}
                     </span>
                     <span
                       className="text-sm font-medium"
@@ -225,13 +180,13 @@ export default async function SalePage() {
                         fontFamily: "Inter, sans-serif",
                       }}
                     >
-                      ${pricing.displayPrice.toFixed(2)}
+                      {formatProductPrice(pricing.displayPrice, product.currency)}
                     </span>
                     <span
                       className="text-[10px] uppercase tracking-[0.15em]"
                       style={{ color: "#6b6760", fontFamily: "Inter, sans-serif" }}
                     >
-                      Save ${pricing.savings.toFixed(2)}
+                      Save {formatProductPrice(pricing.savings, product.currency)}
                     </span>
                   </div>
 
@@ -253,7 +208,7 @@ export default async function SalePage() {
                       className="text-[11px]"
                       style={{ color: "#c9a96e", fontFamily: "Inter, sans-serif" }}
                     >
-                      ${sanctuaryPrice} Sanctuary
+                      Member benefits confirmed in cart
                     </span>
                   </div>
                 </div>
@@ -275,8 +230,8 @@ export default async function SalePage() {
           className="mx-auto max-w-2xl text-sm font-light leading-relaxed"
           style={{ color: "#a89a80", fontFamily: "Inter, sans-serif" }}
         >
-          All sale prices reflect the promotion discount. Final price calculated
-          at Shopify checkout. Sanctuary members save an additional 10%.
+          Current product prices are shown above. Eligible discounts, member benefits,
+          shipping, and taxes are confirmed in your cart and at checkout.
         </p>
         <Link
           href="/shop"

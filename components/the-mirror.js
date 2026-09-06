@@ -152,9 +152,9 @@ export default function TheMirror() {
                 }}>
                   {reading.mode === 'gift' ? 'For them' : 'The prescription'}
                 </p>
-                {reading.products.map((product, i) => (
+                {reading.products.map((product) => (
                   <a
-                    key={i}
+                    key={product.id || product.handle}
                     href={`/shop/${product.handle}`}
                     style={{
                       display: 'block',
@@ -194,7 +194,7 @@ export default function TheMirror() {
                       color: '#c9a96e',
                       letterSpacing: '0.05em',
                     }}>
-                      {product.price ? `$${parseFloat(product.price).toFixed(2)}` : ''} — View →
+                      {product.priceVaries ? 'From ' : ''}{product.price != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: product.currencyCode || 'USD' }).format(Number(product.price)) : ''} — View →
                     </div>
                   </a>
                 ))}

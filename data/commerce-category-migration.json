@@ -1,0 +1,3776 @@
+{
+  "schemaVersion": 1,
+  "status": "applied-and-readback-verified-2026-09-06",
+  "observedAt": "2026-09-06",
+  "purpose": "One-time migration of established storefront categories into additive Shopify tags, preserving existing product types and all current provider tags.",
+  "source": {
+    "supabaseProject": "ewsztwchfbjclbjsqhnd",
+    "table": "public.products",
+    "visibleFilter": "hidden IS NULL OR hidden = false",
+    "shopifyBaseline": "docs/commerce-baseline.json",
+    "shopifyBaselineObservedAt": "2026-09-06"
+  },
+  "mutationPolicy": {
+    "operation": "tagsAdd",
+    "onlyAddListedTags": true,
+    "neverReplaceTags": true,
+    "preserveProductTypes": true,
+    "preserveInventoryAndFulfillment": true,
+    "refreshCurrentTagsBeforeApply": true,
+    "stopOnCategoryDisagreement": true,
+    "rollback": "Remove only the exact tags added by this manifest if they were absent immediately before application; never replace tag lists from a snapshot."
+  },
+  "summary": {
+    "legacyRows": 116,
+    "visibleLegacyRows": 111,
+    "mainLegacyListingRows": 107,
+    "shopifyBaselineProducts": 108,
+    "proposedProducts": 107,
+    "proposedCategoryTags": 107,
+    "categoryCounts": {
+      "Accessories": 14,
+      "Ritual": 24,
+      "Home Decor": 29,
+      "Apparel": 34,
+      "Wall Art": 6
+    },
+    "conflicts": 0,
+    "excludedGroups": 7
+  },
+  "reviewNotes": [
+    "Categories preserve the current storefront merchandising exactly. A category may differ from the product type or ordinary tags; those are not overwritten.",
+    "This manifest does not publish products, change availability, rename products, infer category from a title, or alter vendor/provider mappings.",
+    "Nonhidden legacy records absent from current Shopify remain excluded; do not substitute similarly named replacement products.",
+    "Shopify ACTIVE status is only a baseline check; runtime Storefront publication remains the final customer-facing visibility authority."
+  ],
+  "conflicts": [],
+  "excluded": [
+    {
+      "shopifyId": "gid://shopify/Product/8406006038562",
+      "reason": "not-in-shopify-baseline",
+      "visibleLegacyRows": [
+        {
+          "id": "0521e2c9-9fb2-4bfc-ad3e-ee3b67dc4768",
+          "shopify_id": "gid://shopify/Product/8406006038562",
+          "slug": "salty-spells-sunset-sins-womens-boxy-tee",
+          "handle": "salty-spells-sunset-sins-womens-boxy-tee",
+          "shopify_handle": "salty-spells-sunset-sins-womens-boxy-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": false
+        }
+      ]
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228021108770",
+      "reason": "only-hidden-legacy-rows",
+      "legacyRows": [
+        {
+          "id": "0a7eb136-974a-4793-b0f9-b8b1b1fbab75",
+          "shopify_id": "gid://shopify/Product/8228021108770",
+          "slug": "the-moon-maiden-crop-top",
+          "handle": "the-moon-maiden-crop-top",
+          "shopify_handle": "the-moon-maiden-crop-top",
+          "category": "Apparel",
+          "hidden": true,
+          "is_available": false
+        }
+      ]
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8406005383202",
+      "reason": "not-in-shopify-baseline",
+      "visibleLegacyRows": [
+        {
+          "id": "1073bd09-d146-4aa2-bd2b-039132b80478",
+          "shopify_id": "gid://shopify/Product/8406005383202",
+          "slug": "hexes-heat-unisex-summer-tee",
+          "handle": "hexes-heat-unisex-summer-tee",
+          "shopify_handle": "hexes-heat-unisex-summer-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": false
+        }
+      ]
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8344999493666",
+      "reason": "only-hidden-legacy-rows",
+      "legacyRows": [
+        {
+          "id": "1e33114e-7438-4cdd-9d38-e25a3091d6f5",
+          "shopify_id": "gid://shopify/Product/8344999493666",
+          "slug": "charmed-by-night-womens-ringer-tee",
+          "handle": "charmed-by-night-womens-ringer-tee",
+          "shopify_handle": "charmed-by-night-womens-ringer-tee",
+          "category": "Apparel",
+          "hidden": true,
+          "is_available": false
+        }
+      ]
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8406004989986",
+      "reason": "not-in-shopify-baseline",
+      "visibleLegacyRows": [
+        {
+          "id": "270e4574-ffdb-4ece-8472-b7d4fea478d5",
+          "shopify_id": "gid://shopify/Product/8406004989986",
+          "slug": "bones-and-brew-summer-unisex-tee",
+          "handle": "bones-and-brew-summer-unisex-tee",
+          "shopify_handle": "bones-and-brew-summer-unisex-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": false
+        }
+      ]
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392487764002",
+      "reason": "only-hidden-legacy-rows",
+      "legacyRows": [
+        {
+          "id": "9ae95b21-416d-4ef7-9c41-a5431973bb81",
+          "shopify_id": "gid://shopify/Product/8392487764002",
+          "slug": "womens-ringer-tee-1",
+          "handle": "womens-ringer-tee-1",
+          "shopify_handle": "womens-ringer-tee-1",
+          "category": "Apparel",
+          "hidden": true,
+          "is_available": false
+        }
+      ]
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8406005645346",
+      "reason": "not-in-shopify-baseline",
+      "visibleLegacyRows": [
+        {
+          "id": "de99dd6c-78f9-44b8-b834-3b20f7adcb3a",
+          "shopify_id": "gid://shopify/Product/8406005645346",
+          "slug": "summerween-womens-flowy-scoop-muscle-tank",
+          "handle": "summerween-womens-flowy-scoop-muscle-tank",
+          "shopify_handle": "summerween-womens-flowy-scoop-muscle-tank",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": false
+        }
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "shopifyId": "gid://shopify/Product/8247949426722",
+      "handle": "black-gothic-coffin-shaped-gothic-trinket-tray",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "00b242f7-b9c2-4331-a014-64b63fb33f46",
+          "slug": "black-gothic-coffin-shaped-gothic-trinket-tray",
+          "handle": "black-gothic-coffin-shaped-gothic-trinket-tray",
+          "shopify_handle": "black-gothic-coffin-shaped-gothic-trinket-tray",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949983778",
+      "handle": "headless-horseman-spooky-portrait-glass-christmas-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "02e25c75-00ad-4f88-82e0-b7b14b540921",
+          "slug": "headless-horseman-spooky-portrait-glass-christmas-ornament",
+          "handle": "headless-horseman-spooky-portrait-glass-christmas-ornament",
+          "shopify_handle": "headless-horseman-spooky-portrait-glass-christmas-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8408724537378",
+      "handle": "camp-charmed-and-dark-unisex-ringer-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "0336f31a-a689-49f7-b564-6469beaf9f11",
+          "slug": "camp-charmed-and-dark-unisex-ringer-tee",
+          "handle": "camp-charmed-and-dark-unisex-ringer-tee",
+          "shopify_handle": "camp-charmed-and-dark-unisex-ringer-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Streetwear",
+          "T-shirts",
+          "Unisex",
+          "Valentine's Day",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Streetwear",
+        "T-shirts",
+        "Unisex",
+        "Valentine's Day",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950639138",
+      "handle": "skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "0848d077-b154-407e-979f-23e4d1431eb3",
+          "slug": "skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+          "handle": "skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+          "shopify_handle": "skull-book-ends-gothic-lifesize-human-halloween-fall-decor",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950311458",
+      "handle": "luxury-satin-6-piece-sheet-set-black",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "0996aa00-e653-4c6e-b6e7-bc8e0bd75ab6",
+          "slug": "luxury-satin-6-piece-sheet-set-black",
+          "handle": "luxury-satin-6-piece-sheet-set-black",
+          "shopify_handle": "luxury-satin-6-piece-sheet-set-black",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384348194",
+      "handle": "bat-net-tights",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "0a38d31c-26e2-4547-a4a3-f33cb8e119d1",
+          "slug": "bat-net-tights",
+          "handle": "bat-net-tights",
+          "shopify_handle": "bat-net-tights",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948935202",
+      "handle": "white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "0b23ca1c-4544-4777-b21c-26bfdc44bc3e",
+          "slug": "white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+          "handle": "white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+          "shopify_handle": "white-sage-w-eucalyptus-smudge-sticks-in-bulk",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228021010466",
+      "handle": "the-crimson-reliquary-unisex-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "1184e30f-e303-4608-aa8e-6ddb88485b35",
+          "slug": "the-crimson-reliquary-unisex-tee",
+          "handle": "the-crimson-reliquary-unisex-tee",
+          "shopify_handle": "the-crimson-reliquary-unisex-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Crew neck",
+          "DTG",
+          "Embroidery",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Simple designs on large embroidery",
+          "T-shirts",
+          "TikTok",
+          "Unisex",
+          "Valentine's Day",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Crew neck",
+        "DTG",
+        "Embroidery",
+        "Men's Clothing",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "Simple designs on large embroidery",
+        "T-shirts",
+        "TikTok",
+        "Unisex",
+        "Valentine's Day",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949033506",
+      "handle": "victorian-tray",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "15b1bf00-4fb5-4c1e-b7b6-d480bd2f95b3",
+          "slug": "victorian-tray",
+          "handle": "victorian-tray",
+          "shopify_handle": "victorian-tray",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950901282",
+      "handle": "protection-crystal-candle-with-rough-black-obsidian",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "168e2532-b3f1-4412-a15a-4fdf7d28ffbc",
+          "slug": "protection-crystal-candle-with-rough-black-obsidian",
+          "handle": "protection-crystal-candle-with-rough-black-obsidian",
+          "shopify_handle": "protection-crystal-candle-with-rough-black-obsidian",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": [
+          "dept:objects",
+          "img:branded",
+          "source:faire"
+        ]
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "dept:objects",
+        "img:branded",
+        "source:faire",
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8406030712866",
+      "handle": "the-charmed-dark-sigil-cap",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "1721e8d5-2a89-42e1-a87d-fa2e4febde80",
+          "slug": "the-charmed-dark-sigil-cap",
+          "handle": "the-charmed-dark-sigil-cap",
+          "shopify_handle": "the-charmed-dark-sigil-cap",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Accessories",
+          "DTF",
+          "Embroidery",
+          "Hats",
+          "Unisex",
+          "Valentine's Day"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Accessories",
+        "DTF",
+        "Embroidery",
+        "Hats",
+        "Unisex",
+        "Valentine's Day",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8344998772770",
+      "handle": "the-charmed-dark-signature-hoodie",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "1a0fadc8-d769-437a-ac64-8fd1de65c1d4",
+          "slug": "the-charmed-dark-signature-hoodie",
+          "handle": "the-charmed-dark-signature-hoodie",
+          "shopify_handle": "the-charmed-dark-signature-hoodie",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Hoodie",
+        "tags": [
+          "DTG",
+          "Embroidery",
+          "Hoodies",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "TikTok",
+          "Unisex",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "DTG",
+        "Embroidery",
+        "Hoodies",
+        "Men's Clothing",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "TikTok",
+        "Unisex",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384249890",
+      "handle": "maria-cross-net-ankle-socks",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "21639ac7-a359-4b61-8ba2-df6f5c7eedc2",
+          "slug": "maria-cross-net-ankle-socks",
+          "handle": "maria-cross-net-ankle-socks",
+          "shopify_handle": "maria-cross-net-ankle-socks",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949230114",
+      "handle": "black-rose-twilight-blush-gothic-candle",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "2175832b-dbb0-4ae9-94ef-49d014e6b174",
+          "slug": "black-rose-twilight-blush-gothic-candle",
+          "handle": "black-rose-twilight-blush-gothic-candle",
+          "shopify_handle": "black-rose-twilight-blush-gothic-candle",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950049314",
+      "handle": "medussa-christmas-spooky-portrait-glass-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "22b5d6d6-a4bb-4828-ae4c-98f40fe16ff2",
+          "slug": "medussa-christmas-spooky-portrait-glass-ornament",
+          "handle": "medussa-christmas-spooky-portrait-glass-ornament",
+          "shopify_handle": "medussa-christmas-spooky-portrait-glass-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8444896378914",
+      "handle": "marigold-memory-sugar-skull-kiss-lock-bag",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "23045ee4-74fa-4332-aaf1-07d718c7f02f",
+          "slug": "sugar-skull-kiss-lock-bag-in-linen-cotton-blend",
+          "handle": "sugar-skull-kiss-lock-bag-in-linen-cotton-blend",
+          "shopify_handle": "sugar-skull-kiss-lock-bag-in-linen-cotton-blend",
+          "category": "Accessories",
+          "hidden": true,
+          "is_available": false
+        },
+        {
+          "id": "b24bf276-8fe0-4aae-ad90-779e01ef24e3",
+          "slug": "marigold-memory-sugar-skull-kiss-lock-bag",
+          "handle": "marigold-memory-sugar-skull-kiss-lock-bag",
+          "shopify_handle": "marigold-memory-sugar-skull-kiss-lock-bag",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950835746",
+      "handle": "gothic-halloween-black-spider-teacup",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "2aded87f-9fdc-4620-974c-d9e803e30b38",
+          "slug": "gothic-halloween-black-spider-teacup",
+          "handle": "gothic-halloween-black-spider-teacup",
+          "shopify_handle": "gothic-halloween-black-spider-teacup",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950475298",
+      "handle": "joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "2c08c43a-cc52-4bb5-887e-bafdfde03164",
+          "slug": "joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+          "handle": "joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+          "shopify_handle": "joyjolt-mesa-18-piece-stoneware-dinnerware-set",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950737442",
+      "handle": "set-of-3-large-black-cast-iron-starburst-wall-hangings",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "2c319197-4952-495f-a872-a936a1de5f2b",
+          "slug": "set-of-3-large-black-cast-iron-starburst-wall-hangings",
+          "handle": "set-of-3-large-black-cast-iron-starburst-wall-hangings",
+          "shopify_handle": "set-of-3-large-black-cast-iron-starburst-wall-hangings",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8469015429154",
+      "handle": "summerween-fourth-of-july-halloween-shirt",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "2c459b61-39ae-4bbb-beb7-cdaa7bb665d0",
+          "slug": "summerween-fourth-of-july-halloween-shirt",
+          "handle": "summerween-fourth-of-july-halloween-shirt",
+          "shopify_handle": "summerween-fourth-of-july-halloween-shirt",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Seasonal Picks",
+          "summerween patriotic halloween fourth of july halloween halloween shirt spooky summer gothic apparel haunted americana summerween shirt halloween lover gift",
+          "T-shirts",
+          "Unisex",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Seasonal Picks",
+        "summerween patriotic halloween fourth of july halloween halloween shirt spooky summer gothic apparel haunted americana summerween shirt halloween lover gift",
+        "T-shirts",
+        "Unisex",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8344998969378",
+      "handle": "matte-canvas-stretched-1-25",
+      "legacyCategory": "Wall Art",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "33255983-99ba-4e2b-8cc2-b1db143e06cc",
+          "slug": "matte-canvas-stretched-1-25",
+          "handle": "matte-canvas-stretched-1-25",
+          "shopify_handle": "matte-canvas-stretched-1-25",
+          "category": "Wall Art",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Canvas",
+        "tags": [
+          "Art & Wall Decor",
+          "Canvas",
+          "Decor",
+          "Hanging Hardware",
+          "Home & Living",
+          "Matte",
+          "Price Drop",
+          "Sustainable"
+        ]
+      },
+      "addTags": [
+        "category:Wall Art"
+      ],
+      "proposedTags": [
+        "Art & Wall Decor",
+        "Canvas",
+        "Decor",
+        "Hanging Hardware",
+        "Home & Living",
+        "Matte",
+        "Price Drop",
+        "Sustainable",
+        "category:Wall Art"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949918242",
+      "handle": "edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "341260f6-6cbe-4ba4-8436-5bca957d2053",
+          "slug": "edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+          "handle": "edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+          "shopify_handle": "edgar-allan-poe-spooky-christmas-portrait-glass-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949787170",
+      "handle": "gossamer-guardian-spider-lariat-halloween-jewelry",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "35500a88-2668-4512-aa82-f3483878b8af",
+          "slug": "gossamer-guardian-spider-lariat-halloween-jewelry",
+          "handle": "gossamer-guardian-spider-lariat-halloween-jewelry",
+          "shopify_handle": "gossamer-guardian-spider-lariat-halloween-jewelry",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8408636489762",
+      "handle": "summerween-womens-flowy-scoop-muscle-tank-1",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "38578dcc-0fbe-4f40-8ee9-5ba42b57ea1a",
+          "slug": "summerween-womens-flowy-scoop-muscle-tank-1",
+          "handle": "summerween-womens-flowy-scoop-muscle-tank-1",
+          "shopify_handle": "summerween-womens-flowy-scoop-muscle-tank-1",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "DTG",
+          "Loose fit",
+          "Oversized",
+          "Relaxed fit",
+          "Tank Tops",
+          "TikTok",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "DTG",
+        "Loose fit",
+        "Oversized",
+        "Relaxed fit",
+        "Tank Tops",
+        "TikTok",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950573602",
+      "handle": "matte-black-cheese-knives-book-box",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "38ea4054-fdad-44f9-a216-260d927eb462",
+          "slug": "matte-black-cheese-knives-book-box",
+          "handle": "matte-black-cheese-knives-book-box",
+          "shopify_handle": "matte-black-cheese-knives-book-box",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228021043234",
+      "handle": "the-crimson-reliquary-crop-tank",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "396997f3-b94e-4095-900a-d027b0f9b2f6",
+          "slug": "the-crimson-reliquary-crop-tank",
+          "handle": "the-crimson-reliquary-crop-tank",
+          "shopify_handle": "the-crimson-reliquary-crop-tank",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Tank Top",
+        "tags": [
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Regular fit",
+          "Tank Tops",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Crop tops",
+        "Cropped",
+        "DTG",
+        "Regular fit",
+        "Tank Tops",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950016546",
+      "handle": "dracula-spooky-christmas-portrait-glass-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "39f31396-0e10-48fe-a9c9-ea3b460c2590",
+          "slug": "dracula-spooky-christmas-portrait-glass-ornament",
+          "handle": "dracula-spooky-christmas-portrait-glass-ornament",
+          "shopify_handle": "dracula-spooky-christmas-portrait-glass-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8496325197858",
+      "handle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3a87d8ce-3f72-4f21-afba-28556cc7bf46",
+          "slug": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+          "handle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+          "shopify_handle": "cherry-kiss-lock-bag-in-linen-blend-fabric",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949099042",
+      "handle": "4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3b24e4e1-b2c3-4806-bc98-0c85f4e898a6",
+          "slug": "4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+          "handle": "4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+          "shopify_handle": "4-packs-spring-metallic-red-handmade-spiral-taper-candles",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950868514",
+      "handle": "set-of-3-starry-night-celestial-taper-candles",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3b95bc4e-2d35-4989-825e-a4b4d8024a87",
+          "slug": "set-of-3-starry-night-celestial-taper-candles",
+          "handle": "set-of-3-starry-night-celestial-taper-candles",
+          "shopify_handle": "set-of-3-starry-night-celestial-taper-candles",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020846626",
+      "handle": "limited-edition-cursed-hearts-valentines-drop",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3d1ba5fa-2387-4de5-9ae8-c4e86fbec319",
+          "slug": "limited-edition-cursed-hearts-valentines-drop",
+          "handle": "limited-edition-cursed-hearts-valentines-drop",
+          "shopify_handle": "limited-edition-cursed-hearts-valentines-drop",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Embroidery",
+          "Men's Clothing",
+          "Oversized",
+          "Personalization Picks",
+          "Premium",
+          "Premium Apparel",
+          "Simple designs on large embroidery",
+          "T-shirts",
+          "TikTok",
+          "Unisex",
+          "US Elections Season",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Embroidery",
+        "Men's Clothing",
+        "Oversized",
+        "Personalization Picks",
+        "Premium",
+        "Premium Apparel",
+        "Simple designs on large embroidery",
+        "T-shirts",
+        "TikTok",
+        "Unisex",
+        "US Elections Season",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949557794",
+      "handle": "bat-candle-holder",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3de522be-12ee-4644-b181-25993d3e0017",
+          "slug": "bat-candle-holder",
+          "handle": "bat-candle-holder",
+          "shopify_handle": "bat-candle-holder",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948967970",
+      "handle": "rectangle-vanity-mirror",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3e4f2c4a-44c8-4e1e-aea4-b87969e6ab7a",
+          "slug": "rectangle-vanity-mirror",
+          "handle": "rectangle-vanity-mirror",
+          "shopify_handle": "rectangle-vanity-mirror",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950802978",
+      "handle": "gothic-striped-bat-wing-halloween-teacup",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "3f20676d-6ad5-4925-befd-1a35412b6341",
+          "slug": "gothic-striped-bat-wing-halloween-teacup",
+          "handle": "gothic-striped-bat-wing-halloween-teacup",
+          "shopify_handle": "gothic-striped-bat-wing-halloween-teacup",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020977698",
+      "handle": "lunar-moth-phase-crop-tank",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "40271336-bb51-4fc0-b016-540f6a1ca10a",
+          "slug": "lunar-moth-phase-crop-tank",
+          "handle": "lunar-moth-phase-crop-tank",
+          "shopify_handle": "lunar-moth-phase-crop-tank",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Tank Top",
+        "tags": [
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Regular fit",
+          "Tank Tops",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Crop tops",
+        "Cropped",
+        "DTG",
+        "Regular fit",
+        "Tank Tops",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950442530",
+      "handle": "melancholy-monster-art-print",
+      "legacyCategory": "Wall Art",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "40fa1597-993a-4f93-a943-02dfbf6c57ad",
+          "slug": "melancholy-monster-art-print",
+          "handle": "melancholy-monster-art-print",
+          "shopify_handle": "melancholy-monster-art-print",
+          "category": "Wall Art",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Wall Art"
+      ],
+      "proposedTags": [
+        "category:Wall Art"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950245922",
+      "handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "41fedf52-1965-4981-bf32-aebb08457336",
+          "slug": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+          "handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+          "shopify_handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-black",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8344999133218",
+      "handle": "matte-canvas-stretched-1-26",
+      "legacyCategory": "Wall Art",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "445f476b-c912-40fa-a7b4-0850e3745646",
+          "slug": "matte-canvas-stretched-1-26",
+          "handle": "matte-canvas-stretched-1-26",
+          "shopify_handle": "matte-canvas-stretched-1-26",
+          "category": "Wall Art",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Canvas",
+        "tags": [
+          "Art & Wall Decor",
+          "Canvas",
+          "Decor",
+          "Hanging Hardware",
+          "Home & Living",
+          "Matte",
+          "Price Drop",
+          "Sustainable"
+        ]
+      },
+      "addTags": [
+        "category:Wall Art"
+      ],
+      "proposedTags": [
+        "Art & Wall Decor",
+        "Canvas",
+        "Decor",
+        "Hanging Hardware",
+        "Home & Living",
+        "Matte",
+        "Price Drop",
+        "Sustainable",
+        "category:Wall Art"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8362287661090",
+      "handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "4c81412b-440e-4e40-b786-536fce364bb9",
+          "slug": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+          "handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+          "shopify_handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt-copy",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950508066",
+      "handle": "black-swan-dof-whiskey-glass-set-of-4",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "4d8e2a3d-d140-414c-82f4-b30fd8514d04",
+          "slug": "black-swan-dof-whiskey-glass-set-of-4",
+          "handle": "black-swan-dof-whiskey-glass-set-of-4",
+          "shopify_handle": "black-swan-dof-whiskey-glass-set-of-4",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8444896575522",
+      "handle": "desert-moon-cowgirl-kiss-lock-bag",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "4f1e5886-362c-40b4-a48a-5fee7fb5019d",
+          "slug": "cow-girl-kiss-lock-bag-in-cotton-linen-blended-material",
+          "handle": "cow-girl-kiss-lock-bag-in-cotton-linen-blended-material",
+          "shopify_handle": "cow-girl-kiss-lock-bag-in-cotton-linen-blended-material",
+          "category": "Accessories",
+          "hidden": true,
+          "is_available": false
+        },
+        {
+          "id": "f12930d8-0560-4fa2-89be-6348466fb044",
+          "slug": "desert-moon-cowgirl-kiss-lock-bag",
+          "handle": "desert-moon-cowgirl-kiss-lock-bag",
+          "shopify_handle": "desert-moon-cowgirl-kiss-lock-bag",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949852706",
+      "handle": "spooky-decor-creepy-nun-themed-glass-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "4f2c5b18-e90a-4db2-9b64-443bb0388957",
+          "slug": "spooky-decor-creepy-nun-themed-glass-ornament",
+          "handle": "spooky-decor-creepy-nun-themed-glass-ornament",
+          "shopify_handle": "spooky-decor-creepy-nun-themed-glass-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384413730",
+      "handle": "claire-fishnet-ankle-socks",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "52211703-2472-4789-9311-edbeb29db1c1",
+          "slug": "claire-fishnet-ankle-socks",
+          "handle": "claire-fishnet-ankle-socks",
+          "shopify_handle": "claire-fishnet-ankle-socks",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8345373507618",
+      "handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "5a0bd2fb-eb56-4f31-a8db-08cab385993d",
+          "slug": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+          "handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+          "shopify_handle": "charmed-and-dark-signature-gothic-tee-unisex-alternative-graphic-shirt",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949066274",
+      "handle": "2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "5e4ae8b7-f8a5-4b34-9d3d-1f2823b98b18",
+          "slug": "2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+          "handle": "2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+          "shopify_handle": "2-pack-17-halloween-handmade-black-home-decor-taper-candles",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8344998936610",
+      "handle": "unisex-softstyle-t-shirt",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "5e992b88-38fe-420b-bcfd-2e8ce1af7579",
+          "slug": "unisex-softstyle-t-shirt",
+          "handle": "unisex-softstyle-t-shirt",
+          "shopify_handle": "unisex-softstyle-t-shirt",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "Summer Picks",
+        "T-shirts",
+        "TikTok",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948771362",
+      "handle": "2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "5f2d6a96-00e6-42bb-8925-3f584af7174a",
+          "slug": "2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+          "handle": "2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+          "shopify_handle": "2pcs-halloween-3d-snake-shaped-smokeless-taper-candle-cm071",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948705826",
+      "handle": "heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "619d79b6-5060-46b1-9083-bd64bedbb374",
+          "slug": "heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+          "handle": "heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+          "shopify_handle": "heart-shaped-resin-flower-vases-stunning-decorative-6-5x4-5",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020584482",
+      "handle": "the-charmed-dark-obsidian-zip-hoodie",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "63ac5660-e188-4b1b-9d9f-80609e34e5dd",
+          "slug": "the-charmed-dark-obsidian-zip-hoodie",
+          "handle": "the-charmed-dark-obsidian-zip-hoodie",
+          "shopify_handle": "the-charmed-dark-obsidian-zip-hoodie",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Hoodie",
+        "tags": [
+          "DTG",
+          "Embroidery",
+          "Hoodies",
+          "Men's Clothing",
+          "Regular fit",
+          "TikTok",
+          "Unisex",
+          "With zipper",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "DTG",
+        "Embroidery",
+        "Hoodies",
+        "Men's Clothing",
+        "Regular fit",
+        "TikTok",
+        "Unisex",
+        "With zipper",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949656098",
+      "handle": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "64f2a3d8-27e0-44d2-81d3-22953e3e0ede",
+          "slug": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+          "handle": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+          "shopify_handle": "celestial-dragon-kiss-lock-bag-in-linen-cotton-blend",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8406000042018",
+      "handle": "siren-of-the-underworld-unisex-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "66634463-8946-4d79-a314-305b4928e072",
+          "slug": "siren-of-the-underworld-unisex-tee",
+          "handle": "siren-of-the-underworld-unisex-tee",
+          "shopify_handle": "siren-of-the-underworld-unisex-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Mother's Day",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Mother's Day",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "Summer Picks",
+        "T-shirts",
+        "TikTok",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228021141538",
+      "handle": "the-crown-of-crystals-tank",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "6ede6106-c506-4a43-90d4-73d3e9ab6553",
+          "slug": "the-crown-of-crystals-tank",
+          "handle": "the-crown-of-crystals-tank",
+          "shopify_handle": "the-crown-of-crystals-tank",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Tank Top",
+        "tags": [
+          "Athleisure Wear",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTF",
+          "Premium Apparel",
+          "Tank Tops",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Athleisure Wear",
+        "Crew neck",
+        "Crop",
+        "Crop tops",
+        "Cropped",
+        "DTF",
+        "Premium Apparel",
+        "Tank Tops",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384315426",
+      "handle": "sweetheart-ruffle-cuff-knee-high-socks",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "715fd6c6-d583-48e9-82f0-cc60156b7968",
+          "slug": "sweetheart-ruffle-cuff-knee-high-socks",
+          "handle": "sweetheart-ruffle-cuff-knee-high-socks",
+          "shopify_handle": "sweetheart-ruffle-cuff-knee-high-socks",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949590562",
+      "handle": "hollow-moon-earrings-modern-witchy-jewelry",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "73fe964a-4fac-4055-b7ba-b239c5c4d0f5",
+          "slug": "hollow-moon-earrings-modern-witchy-jewelry",
+          "handle": "hollow-moon-earrings-modern-witchy-jewelry",
+          "shopify_handle": "hollow-moon-earrings-modern-witchy-jewelry",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949721634",
+      "handle": "hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "7660897a-86c0-4a5c-867a-ec5cc21ed092",
+          "slug": "hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+          "handle": "hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+          "shopify_handle": "hammered-moon-bracelet-delicate-modern-witchy-jewelry",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948869666",
+      "handle": "white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "7d7f4360-7220-4254-ab54-83e12b525771",
+          "slug": "white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+          "handle": "white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+          "shopify_handle": "white-sage-dried-lavender-smudge-sticks-bulk-handcrafted",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020551714",
+      "handle": "the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "7eef3496-cab5-42e0-a57a-f458e2285155",
+          "slug": "the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+          "handle": "the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+          "shopify_handle": "the-charmed-dark-cuffed-beanie-embroidered-gothic-streetwear-essential",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Hats",
+        "tags": [
+          "Accessories",
+          "Back to School",
+          "Beanies",
+          "Embroidery",
+          "Hats",
+          "Unisex"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Accessories",
+        "Back to School",
+        "Beanies",
+        "Embroidery",
+        "Hats",
+        "Unisex",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949623330",
+      "handle": "celestial-kisslock-bag-in-linen-blended-fabric",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "815f197e-f7e4-46c1-9798-d1dd59a6aaa1",
+          "slug": "celestial-kisslock-bag-in-linen-blended-fabric",
+          "handle": "celestial-kisslock-bag-in-linen-blended-fabric",
+          "shopify_handle": "celestial-kisslock-bag-in-linen-blended-fabric",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020879394",
+      "handle": "crystal-ball-coven-crop",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "83d13335-900c-4d36-87af-83e6f09e5f04",
+          "slug": "crystal-ball-coven-crop",
+          "handle": "crystal-ball-coven-crop",
+          "shopify_handle": "crystal-ball-coven-crop",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Neck Labels",
+          "Premium Apparel",
+          "Relaxed fit",
+          "T-shirts",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "Crop",
+        "Crop tops",
+        "Cropped",
+        "DTG",
+        "Neck Labels",
+        "Premium Apparel",
+        "Relaxed fit",
+        "T-shirts",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949525026",
+      "handle": "taper-candle-holder-set",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "8971a897-96cf-45fc-baa7-3a2978cf3b06",
+          "slug": "taper-candle-holder-set",
+          "handle": "taper-candle-holder-set",
+          "shopify_handle": "taper-candle-holder-set",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8406033465378",
+      "handle": "the-charmed-dark-sigil-cap-black",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "8c30af58-161b-402a-8dd2-2899b05d8efb",
+          "slug": "the-charmed-dark-sigil-cap-black",
+          "handle": "the-charmed-dark-sigil-cap-black",
+          "shopify_handle": "the-charmed-dark-sigil-cap-black",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Accessories",
+          "DTF",
+          "Embroidery",
+          "Hats",
+          "Unisex",
+          "Valentine's Day"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Accessories",
+        "DTF",
+        "Embroidery",
+        "Hats",
+        "Unisex",
+        "Valentine's Day",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950344226",
+      "handle": "undying-love-art-print",
+      "legacyCategory": "Wall Art",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "8e7d1a79-dd38-46dc-9293-6e8625ee9091",
+          "slug": "undying-love-art-print",
+          "handle": "undying-love-art-print",
+          "shopify_handle": "undying-love-art-print",
+          "category": "Wall Art",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Wall Art"
+      ],
+      "proposedTags": [
+        "category:Wall Art"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8556134563874",
+      "handle": "smutty-good-girl-society-tote",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "98183cd0-64d0-45f2-a39b-ce771bc871be",
+          "slug": "smutty-good-girl-society-tote",
+          "handle": "smutty-good-girl-society-tote",
+          "shopify_handle": "smutty-good-girl-society-tote",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Bags",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8408692129826",
+      "handle": "hexes-heat-unisex-summer-tee-1",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "990043bc-6d76-4df6-853b-a9fd805b6596",
+          "slug": "hexes-heat-unisex-summer-tee-1",
+          "handle": "hexes-heat-unisex-summer-tee-1",
+          "shopify_handle": "hexes-heat-unisex-summer-tee-1",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Mother's Day",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Mother's Day",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "Summer Picks",
+        "T-shirts",
+        "TikTok",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950278690",
+      "handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "9b157b4b-dfcb-496d-8493-7f0932fb016e",
+          "slug": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+          "handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+          "shopify_handle": "crushed-velvet-4-piece-comforter-or-duvet-cover-set-blush",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949328418",
+      "handle": "witching-hour-white-sage-gothic-candle",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "9cd98518-ca27-43b1-86af-3df4b5f98d40",
+          "slug": "witching-hour-white-sage-gothic-candle",
+          "handle": "witching-hour-white-sage-gothic-candle",
+          "shopify_handle": "witching-hour-white-sage-gothic-candle",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949819938",
+      "handle": "halloween-skeleton-black-and-white-ornament-set",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "9cddf081-eb35-4a93-9040-bd7e3e194dff",
+          "slug": "halloween-skeleton-black-and-white-ornament-set",
+          "handle": "halloween-skeleton-black-and-white-ornament-set",
+          "shopify_handle": "halloween-skeleton-black-and-white-ornament-set",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020912162",
+      "handle": "graveyard-ballerina-crop-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "a2310593-ad69-4597-a36a-9d03002436f0",
+          "slug": "graveyard-ballerina-crop-tee",
+          "handle": "graveyard-ballerina-crop-tee",
+          "shopify_handle": "graveyard-ballerina-crop-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Neck Labels",
+          "Premium Apparel",
+          "Relaxed fit",
+          "T-shirts",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "Crop",
+        "Crop tops",
+        "Cropped",
+        "DTG",
+        "Neck Labels",
+        "Premium Apparel",
+        "Relaxed fit",
+        "T-shirts",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949885474",
+      "handle": "frankenstein-santa-glass-christmas-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "a39f1762-7aa9-48b2-b17b-0d4c3c407003",
+          "slug": "frankenstein-santa-glass-christmas-ornament",
+          "handle": "frankenstein-santa-glass-christmas-ornament",
+          "shopify_handle": "frankenstein-santa-glass-christmas-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949754402",
+      "handle": "moon-phase-double-necklace-stainless-steel-enamel",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "a667a6bd-1383-44d5-9015-9e9641d369b1",
+          "slug": "moon-phase-double-necklace-stainless-steel-enamel",
+          "handle": "moon-phase-double-necklace-stainless-steel-enamel",
+          "shopify_handle": "moon-phase-double-necklace-stainless-steel-enamel",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948804130",
+      "handle": "moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "a6f1e5a8-d6a6-4dfe-8bf8-b272b1eb8e18",
+          "slug": "moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+          "handle": "moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+          "shopify_handle": "moon-moth-vintage-kiss-lock-bag-in-linen-blended-material",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950704674",
+      "handle": "large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "aafb37c7-41d5-4309-8d8d-e8d27cf5f8a9",
+          "slug": "large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+          "handle": "large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+          "shopify_handle": "large-set-of-3-metallic-gold-cast-iron-starburst-wall-decor",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950376994",
+      "handle": "made-for-each-other-art-print",
+      "legacyCategory": "Wall Art",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "ada293ce-9c47-4c09-88ba-1f254a07ee87",
+          "slug": "made-for-each-other-art-print",
+          "handle": "made-for-each-other-art-print",
+          "shopify_handle": "made-for-each-other-art-print",
+          "category": "Wall Art",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Wall Art"
+      ],
+      "proposedTags": [
+        "category:Wall Art"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228021076002",
+      "handle": "marked-by-the-rose-unisex-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "b03f2852-51aa-4adf-b6b3-254f5f466707",
+          "slug": "marked-by-the-rose-unisex-tee",
+          "handle": "marked-by-the-rose-unisex-tee",
+          "shopify_handle": "marked-by-the-rose-unisex-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "Summer Picks",
+        "T-shirts",
+        "TikTok",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8556173066274",
+      "handle": "smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "b06446f7-0490-49f0-888e-748244296d4d",
+          "slug": "smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+          "handle": "smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+          "shopify_handle": "smutty-good-girl-reading-fuel-accent-coffee-mug-15oz",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Mug",
+        "tags": [
+          "11 oz",
+          "11oz",
+          "15 oz",
+          "15oz",
+          "accent mug",
+          "Back to School",
+          "Beverage",
+          "Coffee Mugs",
+          "Drink",
+          "Drinks",
+          "Home & Living",
+          "Kitchen",
+          "Mugs",
+          "Personalization Picks",
+          "two tone",
+          "White base"
+        ]
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "11 oz",
+        "11oz",
+        "15 oz",
+        "15oz",
+        "accent mug",
+        "Back to School",
+        "Beverage",
+        "Coffee Mugs",
+        "Drink",
+        "Drinks",
+        "Home & Living",
+        "Kitchen",
+        "Mugs",
+        "Personalization Picks",
+        "two tone",
+        "White base",
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948836898",
+      "handle": "coffin-studs-gold-and-silver-halloween-vampire-gothic",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "b13d9258-d74d-4f77-92b4-c9e1d8b2ceb3",
+          "slug": "coffin-studs-gold-and-silver-halloween-vampire-gothic",
+          "handle": "coffin-studs-gold-and-silver-halloween-vampire-gothic",
+          "shopify_handle": "coffin-studs-gold-and-silver-halloween-vampire-gothic",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384282658",
+      "handle": "galaxy-net-ruffle-ankle-socks",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "b58a176d-085b-4330-afc5-e66eeaa54604",
+          "slug": "galaxy-net-ruffle-ankle-socks",
+          "handle": "galaxy-net-ruffle-ankle-socks",
+          "shopify_handle": "galaxy-net-ruffle-ankle-socks",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384446498",
+      "handle": "riley-crochet-anklets",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "bfbefa6d-a351-4dfa-99c3-931a4cc86f80",
+          "slug": "riley-crochet-anklets",
+          "handle": "riley-crochet-anklets",
+          "shopify_handle": "riley-crochet-anklets",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949459490",
+      "handle": "bird-branch-candle-holder",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "c0557db5-7622-4a7f-b33d-421c5e7c7ee7",
+          "slug": "bird-branch-candle-holder",
+          "handle": "bird-branch-candle-holder",
+          "shopify_handle": "bird-branch-candle-holder",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949197346",
+      "handle": "black-rose-resin-tealight-candle-holder",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "c27c6ca6-e427-4426-9af4-fb04ad8b9c17",
+          "slug": "black-rose-resin-tealight-candle-holder",
+          "handle": "black-rose-resin-tealight-candle-holder",
+          "shopify_handle": "black-rose-resin-tealight-candle-holder",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949164578",
+      "handle": "green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "ca1d13b6-b296-4243-9a05-698115525089",
+          "slug": "green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+          "handle": "green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+          "shopify_handle": "green-gradient-set-4-handmade-spiral-taper-holiday-candles",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949262882",
+      "handle": "mystic-raven-gothic-pillar-candle-holder",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "caaf6435-3c09-4ead-8ccf-1a5dd87d9fd7",
+          "slug": "mystic-raven-gothic-pillar-candle-holder",
+          "handle": "mystic-raven-gothic-pillar-candle-holder",
+          "shopify_handle": "mystic-raven-gothic-pillar-candle-holder",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384217122",
+      "handle": "lola-ruffle-bow-ankle-socks",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "cd091cf7-8ac1-424e-b1de-bcaf114e6bf3",
+          "slug": "lola-ruffle-bow-ankle-socks",
+          "handle": "lola-ruffle-bow-ankle-socks",
+          "shopify_handle": "lola-ruffle-bow-ankle-socks",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950671906",
+      "handle": "venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "cd2b56fd-8fe0-43cf-b086-313bc3ef2cbe",
+          "slug": "venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+          "handle": "venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+          "shopify_handle": "venus-ribbed-champagne-coupe-set-7oz-set-of-6",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949131810",
+      "handle": "christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "cdaaeb89-7e18-4655-879e-52b6a53e93b8",
+          "slug": "christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+          "handle": "christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+          "shopify_handle": "christmas-red-handmade-spiral-taper-holiday-candles-set-4",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8392384380962",
+      "handle": "bow-babe-ankle-socks",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "ce2310c1-a1bf-4f81-b356-280a8486b3a0",
+          "slug": "bow-babe-ankle-socks",
+          "handle": "bow-babe-ankle-socks",
+          "shopify_handle": "bow-babe-ankle-socks",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949295650",
+      "handle": "spooky-gingerbread-man-gothic-christmas-ornament",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "ce340de0-4f72-4de2-b144-a8dfd23bd5c1",
+          "slug": "spooky-gingerbread-man-gothic-christmas-ornament",
+          "handle": "spooky-gingerbread-man-gothic-christmas-ornament",
+          "shopify_handle": "spooky-gingerbread-man-gothic-christmas-ornament",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949492258",
+      "handle": "moon-and-stars-pillow",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "d402b6ef-de82-4e43-b099-994b5738d307",
+          "slug": "moon-and-stars-pillow",
+          "handle": "moon-and-stars-pillow",
+          "shopify_handle": "moon-and-stars-pillow",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950770210",
+      "handle": "two-tier-round-slate-stone-and-metal-serving-tray",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "d431e45a-67ba-4b50-b0a5-45a632186243",
+          "slug": "two-tier-round-slate-stone-and-metal-serving-tray",
+          "handle": "two-tier-round-slate-stone-and-metal-serving-tray",
+          "shopify_handle": "two-tier-round-slate-stone-and-metal-serving-tray",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948640290",
+      "handle": "yolanda-24-round-upholstered-accent-ottoman",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "d6ef40e2-6b6b-47ab-8a1d-49b926afd7cb",
+          "slug": "yolanda-24-round-upholstered-accent-ottoman",
+          "handle": "yolanda-24-round-upholstered-accent-ottoman",
+          "shopify_handle": "yolanda-24-round-upholstered-accent-ottoman",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8496325165090",
+      "handle": "ghost-in-strawberry-field-in-linen-blend",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "d8ee7796-177c-4d73-9394-4033da4dc4b3",
+          "slug": "ghost-in-strawberry-field-in-linen-blend",
+          "handle": "ghost-in-strawberry-field-in-linen-blend",
+          "shopify_handle": "ghost-in-strawberry-field-in-linen-blend",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8556174540834",
+      "handle": "s-g-g-enchanted-reads-water-bottle-20oz",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "daa0cfbd-8f4c-43f6-9c50-c447447a8f01",
+          "slug": "s-g-g-enchanted-reads-water-bottle-20oz",
+          "handle": "s-g-g-enchanted-reads-water-bottle-20oz",
+          "shopify_handle": "s-g-g-enchanted-reads-water-bottle-20oz",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Mug",
+        "tags": [
+          "Back to School",
+          "Bottles",
+          "Bottles & Tumblers",
+          "Engraving",
+          "Home & Living",
+          "Indoor",
+          "Kids",
+          "New Mockups",
+          "Outdoor"
+        ]
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "Back to School",
+        "Bottles",
+        "Bottles & Tumblers",
+        "Engraving",
+        "Home & Living",
+        "Indoor",
+        "Kids",
+        "New Mockups",
+        "Outdoor",
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8405954461730",
+      "handle": "womens-ringer-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "dd06655e-faa5-4acf-ba7d-85a46beda4ef",
+          "slug": "womens-ringer-tee",
+          "handle": "womens-ringer-tee",
+          "shopify_handle": "womens-ringer-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": []
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949688866",
+      "handle": "celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "e08f5710-a80c-47ef-8170-a89b91e4806a",
+          "slug": "celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+          "handle": "celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+          "shopify_handle": "celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8228020944930",
+      "handle": "till-death-unisex-tee",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "e1c25917-cac8-4cc2-b369-73fb17b8a544",
+          "slug": "till-death-unisex-tee",
+          "handle": "till-death-unisex-tee",
+          "shopify_handle": "till-death-unisex-tee",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "T-Shirt",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Embroidery",
+          "Men's Clothing",
+          "Oversized",
+          "Personalization Picks",
+          "Premium",
+          "Premium Apparel",
+          "Simple designs on large embroidery",
+          "T-shirts",
+          "TikTok",
+          "Unisex",
+          "US Elections Season",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Embroidery",
+        "Men's Clothing",
+        "Oversized",
+        "Personalization Picks",
+        "Premium",
+        "Premium Apparel",
+        "Simple designs on large embroidery",
+        "T-shirts",
+        "TikTok",
+        "Unisex",
+        "US Elections Season",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8408622858274",
+      "handle": "salty-spells-sunset-sins-womens-boxy-tee-1",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "e2d1814a-a8b7-45d9-94ca-31a961682293",
+          "slug": "salty-spells-sunset-sins-womens-boxy-tee-1",
+          "handle": "salty-spells-sunset-sins-womens-boxy-tee-1",
+          "shopify_handle": "salty-spells-sunset-sins-womens-boxy-tee-1",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "Crop",
+          "Crop tops",
+          "Cropped",
+          "DTG",
+          "Neck Labels",
+          "Premium Apparel",
+          "Relaxed fit",
+          "Streetwear",
+          "T-shirts",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "Crop",
+        "Crop tops",
+        "Cropped",
+        "DTG",
+        "Neck Labels",
+        "Premium Apparel",
+        "Relaxed fit",
+        "Streetwear",
+        "T-shirts",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949951010",
+      "handle": "wicked-witch-and-crescent-moon-glass-christmas-ornament",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "e2db98ab-ed3d-4df7-969b-554977ace9fa",
+          "slug": "wicked-witch-and-crescent-moon-glass-christmas-ornament",
+          "handle": "wicked-witch-and-crescent-moon-glass-christmas-ornament",
+          "shopify_handle": "wicked-witch-and-crescent-moon-glass-christmas-ornament",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950409762",
+      "handle": "amorous-libation-art-print",
+      "legacyCategory": "Wall Art",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "f1fb243c-ad59-44f8-a08a-8d9c80356ef3",
+          "slug": "amorous-libation-art-print",
+          "handle": "amorous-libation-art-print",
+          "shopify_handle": "amorous-libation-art-print",
+          "category": "Wall Art",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Wall Art"
+      ],
+      "proposedTags": [
+        "category:Wall Art"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8444896772130",
+      "handle": "ghost-cat-pumpkin-kiss-lock-bag",
+      "legacyCategory": "Accessories",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "f2ce6aca-6fcc-4aa0-bb1d-661e3cf21f93",
+          "slug": "ghost-cat-pumpkin-kiss-lock-bag",
+          "handle": "ghost-cat-pumpkin-kiss-lock-bag",
+          "shopify_handle": "ghost-cat-pumpkin-kiss-lock-bag",
+          "category": "Accessories",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Accessories"
+      ],
+      "proposedTags": [
+        "category:Accessories"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8408700747810",
+      "handle": "bones-and-brew-summer-unisex-tee-1",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "f450a7a1-adf5-4972-9f83-a72e9a52be58",
+          "slug": "bones-and-brew-summer-unisex-tee-1",
+          "handle": "bones-and-brew-summer-unisex-tee-1",
+          "shopify_handle": "bones-and-brew-summer-unisex-tee-1",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Cotton",
+          "Crew neck",
+          "DTG",
+          "Men's Clothing",
+          "Mother's Day",
+          "Neck Labels",
+          "Personalization Picks",
+          "Regular fit",
+          "Summer Picks",
+          "T-shirts",
+          "TikTok",
+          "Women's Clothing"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Cotton",
+        "Crew neck",
+        "DTG",
+        "Men's Clothing",
+        "Mother's Day",
+        "Neck Labels",
+        "Personalization Picks",
+        "Regular fit",
+        "Summer Picks",
+        "T-shirts",
+        "TikTok",
+        "Women's Clothing",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950606370",
+      "handle": "black-wood-board-small",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "f50d13af-55d1-4305-ba5b-56c6c279c717",
+          "slug": "black-wood-board-small",
+          "handle": "black-wood-board-small",
+          "shopify_handle": "black-wood-board-small",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8408563417122",
+      "handle": "summerween-trucker-snapback-hat",
+      "legacyCategory": "Apparel",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "f6bacbf8-7134-45dc-97a0-25b033fd6b5e",
+          "slug": "summerween-trucker-snapback-hat",
+          "handle": "summerween-trucker-snapback-hat",
+          "shopify_handle": "summerween-trucker-snapback-hat",
+          "category": "Apparel",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Apparel",
+        "tags": [
+          "Accessories",
+          "Bestsellers",
+          "Embroidery",
+          "Hats",
+          "On Sale",
+          "Sale"
+        ]
+      },
+      "addTags": [
+        "category:Apparel"
+      ],
+      "proposedTags": [
+        "Accessories",
+        "Bestsellers",
+        "Embroidery",
+        "Hats",
+        "On Sale",
+        "Sale",
+        "category:Apparel"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247948902434",
+      "handle": "white-sage-smudge-sticks-in-bulk",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "f9d4e534-0163-4bda-9e80-b316941f6e7b",
+          "slug": "white-sage-smudge-sticks-in-bulk",
+          "handle": "white-sage-smudge-sticks-in-bulk",
+          "shopify_handle": "white-sage-smudge-sticks-in-bulk",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247949000738",
+      "handle": "brass-glass-soap-dish",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "fa4e797f-9026-472c-9072-99a74d4fe469",
+          "slug": "brass-glass-soap-dish",
+          "handle": "brass-glass-soap-dish",
+          "shopify_handle": "brass-glass-soap-dish",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": []
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8556173295650",
+      "handle": "s-g-g-secret-society-water-bottle-20oz",
+      "legacyCategory": "Home Decor",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "fb0a2b42-3dae-408a-a125-613967ca18e2",
+          "slug": "s-g-g-secret-society-water-bottle-20oz",
+          "handle": "s-g-g-secret-society-water-bottle-20oz",
+          "shopify_handle": "s-g-g-secret-society-water-bottle-20oz",
+          "category": "Home Decor",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "Mug",
+        "tags": [
+          "Back to School",
+          "Bottles",
+          "Bottles & Tumblers",
+          "Engraving",
+          "Home & Living",
+          "Indoor",
+          "Kids",
+          "New Mockups",
+          "Outdoor"
+        ]
+      },
+      "addTags": [
+        "category:Home Decor"
+      ],
+      "proposedTags": [
+        "Back to School",
+        "Bottles",
+        "Bottles & Tumblers",
+        "Engraving",
+        "Home & Living",
+        "Indoor",
+        "Kids",
+        "New Mockups",
+        "Outdoor",
+        "category:Home Decor"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950934050",
+      "handle": "set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "fb4dad38-0960-492a-9522-9cef227e29a5",
+          "slug": "set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+          "handle": "set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+          "shopify_handle": "set-of-3-black-candy-cane-stripe-creepmas-taper-candles",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": [
+          "dept:objects",
+          "img:branded",
+          "source:faire"
+        ]
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "dept:objects",
+        "img:branded",
+        "source:faire",
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    },
+    {
+      "shopifyId": "gid://shopify/Product/8247950966818",
+      "handle": "calming-crystal-candle-with-rough-amethyst",
+      "legacyCategory": "Ritual",
+      "currentlyInMainLegacyListing": true,
+      "legacyIdentities": [
+        {
+          "id": "fceceac8-5c96-4b1a-a506-faa48ee85ed4",
+          "slug": "calming-crystal-candle-with-rough-amethyst",
+          "handle": "calming-crystal-candle-with-rough-amethyst",
+          "shopify_handle": "calming-crystal-candle-with-rough-amethyst",
+          "category": "Ritual",
+          "hidden": false,
+          "is_available": true
+        }
+      ],
+      "before": {
+        "productType": "",
+        "tags": [
+          "bg:stone",
+          "dept:objects",
+          "img:branded",
+          "source:faire"
+        ]
+      },
+      "addTags": [
+        "category:Ritual"
+      ],
+      "proposedTags": [
+        "bg:stone",
+        "dept:objects",
+        "img:branded",
+        "source:faire",
+        "category:Ritual"
+      ],
+      "operation": "tagsAdd"
+    }
+  ]
+}

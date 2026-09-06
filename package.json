@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:commerce": "node --conditions=react-server --test tests/*.test.mjs",
+    "verify:commerce": "node scripts/verify-commerce.mjs",
     "seed": "node scripts/seed-products.js",
     "sync-images": "node scripts/sync-images.js"
   },
@@ -22,7 +24,8 @@
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "resend": "^6.10.0"
+    "resend": "^6.10.0",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/product-display";
 import { useState, useRef } from "react";
 import ProductBadge from '@/components/shop/ProductBadge';
 
@@ -41,8 +43,10 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
       onTouchEnd={hasMultiple ? handleTouchEnd : undefined}
     >
       <Link href={`/shop/${slug}`} className="block h-full w-full">
-        <img
+        <Image
           src={images[activeIndex]}
+          fill
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           alt={productName}
           className={`h-full w-full object-cover transition duration-300 group-hover:scale-105 ${
             isSoldOut ? "grayscale" : ""
@@ -74,6 +78,7 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
       {hasMultiple && (
         <>
           <button
+            type="button"
             onClick={handlePrev}
             aria-label="Previous image"
             className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
@@ -83,6 +88,7 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
             </svg>
           </button>
           <button
+            type="button"
             onClick={handleNext}
             aria-label="Next image"
             className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
@@ -107,15 +113,8 @@ export default function ProductCard({ product, isMember }) {
   const [notifyStatus, setNotifyStatus] = useState(null);
   const [showNotifyForm, setShowNotifyForm] = useState(false);
 
-  const isSoldOut = product.qty <= 0;
-  const originalPrice = Number(product.price || 0);
-  const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
-  const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < originalPrice;
-  const publicPrice = isOnSale ? promotionPrice : originalPrice;
-  const sanctuaryPrice = +(publicPrice * 0.9).toFixed(2);
-  const salePercentage = isOnSale
-    ? Math.round(Number(product.salePercentage) || ((originalPrice - publicPrice) / originalPrice) * 100)
-    : null;
+  const isSoldOut = !productIsAvailable(product);
+  const { publicPrice, originalPrice, isOnSale, salePercentage } = productPricing(product);
   const images = product.imageUrls?.length ? product.imageUrls : [];
 
   const handleNotifySubmit = async (e) => {
@@ -184,12 +183,12 @@ export default function ProductCard({ product, isMember }) {
             <div className="space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
               {isOnSale ? (
                 <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                  <span className="text-xs text-zinc-600 line-through">${originalPrice.toFixed(2)}</span>
-                  <span className="text-sm font-medium text-white">${publicPrice.toFixed(2)}</span>
+                  <span className="text-xs text-zinc-600 line-through">{formatProductPrice(originalPrice, product.currency)}</span>
+                  <span className="text-sm font-medium text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                   <span className="text-[9px] uppercase tracking-[0.16em] text-[#c9a96e]">{salePercentage}% off</span>
                 </div>
               ) : (
-                <div className="text-sm text-white">${publicPrice.toFixed(2)}</div>
+                <div className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</div>
               )}
 
               <div className="flex items-center gap-1.5">
@@ -199,13 +198,13 @@ export default function ProductCard({ product, isMember }) {
                   </svg>
                 )}
                 <span className="text-sm font-medium text-[#c9a96e]">
-                  ${sanctuaryPrice.toFixed(2)} Sanctuary
+                  Sanctuary member benefits
                 </span>
                 {isOnSale && (
-                  <span className="text-[9px] uppercase tracking-[0.12em] text-[#8f7a55]">+10% member</span>
+                  <span className="text-[9px] uppercase tracking-[0.12em] text-[#8f7a55]">Confirmed in cart</span>
                 )}
               </div>
-              {!isMember && <div className="text-xs text-zinc-500">Join to unlock</div>}
+              {!isMember && <div className="text-xs text-zinc-500">Benefits confirmed in cart</div>}
 
               {product.variantSummary?.length > 0 && (
                 <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>
@@ -228,6 +227,8 @@ export default function ProductCard({ product, isMember }) {
             <form onSubmit={handleNotifySubmit} className="space-y-2">
               <input
                 type="email"
+                aria-label={`Email for ${product.name} restock notification`}
+                autoComplete="email"
                 value={notifyEmail}
                 onChange={(e) => setNotifyEmail(e.target.value)}
                 placeholder="Your email"
@@ -240,8 +241,8 @@ export default function ProductCard({ product, isMember }) {
                 </button>
                 <button type="button" onClick={() => { setShowNotifyForm(false); setNotifyStatus(null); }} className="text-xs text-zinc-600 hover:text-zinc-400">Cancel</button>
               </div>
-              {notifyStatus === "success" && <p className="text-xs text-green-500">Subscribed!</p>}
-              {notifyStatus === "error" && <p className="text-xs text-red-500">Error. Try again.</p>}
+              {notifyStatus === "success" && <p role="status" className="text-xs text-green-500">You’ll hear from us when it returns.</p>}
+              {notifyStatus === "error" && <p role="alert" className="text-xs text-red-400">We couldn’t save your request. Please try again.</p>}
             </form>
           )}
         </div>

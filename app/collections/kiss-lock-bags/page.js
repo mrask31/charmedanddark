@@ -1,70 +1,31 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
-import { supabase } from "@/lib/supabase/client";
-import { enrichProductsWithPromotions } from "@/lib/promotions";
-
-const KISS_LOCK_BAG_HANDLES = [
-  'celestial-kisslock-bag-in-linen-blended-fabric',
-  'cherry-kiss-lock-bag-in-linen-blend-fabric',
-  'ghost-in-strawberry-field-in-linen-blend',
-  'desert-moon-cowgirl-kiss-lock-bag',
-  'ghost-cat-pumpkin-kiss-lock-bag',
-  'celestial-dragon-kiss-lock-bag-in-linen-cotton-blend',
-  'moon-moth-vintage-kiss-lock-bag-in-linen-blended-material',
-  'marigold-memory-sugar-skull-kiss-lock-bag',
-  'celestial-mushroom-kiss-lock-bag-in-linen-cotton-blend-material',
-];
-
-function isSoldOutProduct(product) {
-  return product.qty != null && product.qty <= 0;
-}
-
-function sortInStockFirst(products) {
-  const inStock = products.filter((product) => !isSoldOutProduct(product));
-  const soldOut = products.filter(isSoldOutProduct);
-  return [...inStock, ...soldOut];
-}
+import { getMerchandisingProducts } from '@/lib/catalog-merchandising';
+import { productIsAvailable, productPricing } from '@/lib/product-display';
 
 async function fetchBagProducts() {
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('id, name, title, handle, slug, price, image_url, image_urls, images, description, qty, category, collection, tags')
-      .in('handle', KISS_LOCK_BAG_HANDLES)
-      .eq('hidden', false);
-
-    if (error) {
-      console.error('Failed to fetch kiss lock bags:', error);
-      return [];
-    }
-
-    const enriched = await enrichProductsWithPromotions(data || []);
-    const orderedProducts = KISS_LOCK_BAG_HANDLES
-      .map((h) => enriched.find((p) => p.handle === h || p.slug === h))
-      .filter(Boolean);
-
-    return sortInStockFirst(orderedProducts);
-  } catch (err) {
-    console.error('Failed to fetch kiss lock bags:', err);
-    return [];
-  }
+  const products = await getMerchandisingProducts('kiss-lock-bags');
+  return [...products].sort((a, b) => Number(productIsAvailable(b)) - Number(productIsAvailable(a)));
 }
 
-function formatPrice(value) {
+function formatPrice(value, currency = 'USD') {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency,
     minimumFractionDigits: 2,
   }).format(value);
 }
 
 function getImage(product) {
-  return product.image_url || product.image_urls?.[0] || product.images?.[0] || null;
+  return product.imageUrls?.[0] || null;
 }
 
+export const revalidate = 60;
+
 export const metadata = {
-  title: 'Kiss Lock Bags | Charmed & Dark',
+  title: 'Kiss Lock Bags',
+  alternates: { canonical: 'https://www.charmedanddark.com/collections/kiss-lock-bags' },
   description: 'Vintage-inspired gothic kiss lock bags. Small statement pieces that carry the whole mood — one bag at a time.',
 };
 
@@ -155,18 +116,11 @@ export default async function KissLockBagsPage() {
       <section className="px-8 pb-24 lg:px-16">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product, index) => {
-            const retailPrice = Number(product.price || 0);
-            const promotionPrice = product.salePrice != null ? Number(product.salePrice) : null;
-            const isOnSale = promotionPrice != null && promotionPrice > 0 && promotionPrice < retailPrice;
-            const price = isOnSale ? promotionPrice : retailPrice;
-            const salePercentage = isOnSale
-              ? Math.round(Number(product.salePercentage) || ((retailPrice - price) / retailPrice) * 100)
-              : null;
-            const slug = product.handle || product.slug;
+            const { publicPrice: price, originalPrice: retailPrice, isOnSale, salePercentage } = productPricing(product);
+            const slug = product.slug || product.handle;
             const imageUrl = getImage(product);
             const isIntentPick = index < 2;
-            const isSoldOut = isSoldOutProduct(product);
-            const sanctuaryPrice = (price * 0.9).toFixed(2);
+            const isSoldOut = !productIsAvailable(product);
 
             return (
               <Link key={slug} href={`/shop/${slug}`} className="group flex flex-col gap-4">
@@ -255,11 +209,11 @@ export default async function KissLockBagsPage() {
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                         {isOnSale && (
                           <span className="text-xs line-through" style={{ color: '#6b6760' }}>
-                            {formatPrice(retailPrice)}
+                            {formatPrice(retailPrice, product.currency)}
                           </span>
                         )}
                         <span className="text-sm font-light" style={{ color: isOnSale ? '#f5f0e8' : '#c4bfb4' }}>
-                          {formatPrice(price)}
+                          {product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatPrice(price, product.currency)}
                         </span>
                         {isOnSale && (
                           <span className="text-[9px] uppercase tracking-[0.14em]" style={{ color: '#c9a96e' }}>
@@ -268,7 +222,7 @@ export default async function KissLockBagsPage() {
                         )}
                       </div>
                       <div className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#c9a96e' }}>
-                        Sanctuary ${sanctuaryPrice}{isOnSale ? ' · additional 10%' : ''}
+                        Member benefits confirmed in cart
                       </div>
                     </div>
                   )}
