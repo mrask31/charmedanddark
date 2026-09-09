@@ -11,6 +11,12 @@ export const REQUIRED_SCOPES = Object.freeze(['sync_products/read']);
 // Store/file read scope visibility varies by token configuration. The actual GET
 // requests below independently prove access; they never bypass a 403 response.
 export const ALLOWED_SCOPES = Object.freeze([...REQUIRED_SCOPES, 'stores_list/read', 'file_library/read']);
+// These public permission identifiers are diagnostic labels, not additional grants.
+// Never print unknown upstream strings or display_name values into public job logs.
+const KNOWN_SCOPE_LABELS = Object.freeze([
+  ...ALLOWED_SCOPES, 'orders', 'orders/read', 'sync_products', 'file_library',
+  'webhooks', 'webhooks/read', 'product_templates',
+]);
 
 const DEFAULT_TIMEOUT_MS = 12_000;
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
@@ -137,10 +143,15 @@ function readerFor({ token, fetchImpl, timeoutMs, maxResponseBytes }) {
   };
 }
 
-function verifyScopes(result) {
+function verifyScopes(result, report) {
   if (!isObject(result) || !boundedArray(result.scopes)
       || !result.scopes.every((entry) => isObject(entry) && typeof entry.scope === 'string')) fail('invalid_response');
   const scopes = new Set(result.scopes.map(({ scope }) => scope));
+  report.permissions = {
+    recognized_scopes: KNOWN_SCOPE_LABELS.filter((scope) => scopes.has(scope)),
+    unrecognized_scope_count: [...scopes].filter((scope) => !KNOWN_SCOPE_LABELS.includes(scope)).length,
+    missing_required_scopes: REQUIRED_SCOPES.filter((scope) => !scopes.has(scope)),
+  };
   if ([...scopes].some((scope) => !ALLOWED_SCOPES.includes(scope))) fail('extra_scope_refused');
   if (REQUIRED_SCOPES.some((scope) => !scopes.has(scope))) fail('missing_required_scope');
 }
@@ -207,7 +218,7 @@ function summarizeProduct(result, storeId) {
   return summary;
 }
 
-/** Public-log-safe: fixed statuses and counts; no store IDs, names, URLs, or raw API data. */
+/** Public-log-safe: fixed statuses, public scope labels and counts; no IDs, URLs or raw API data. */
 export async function runProbe({ env = process.env, fetchImpl = globalThis.fetch,
   timeoutMs = DEFAULT_TIMEOUT_MS, maxResponseBytes = MAX_RESPONSE_BYTES } = {}) {
   const report = {
@@ -224,7 +235,7 @@ export async function runProbe({ env = process.env, fetchImpl = globalThis.fetch
     passed();
     const get = readerFor({ token: config.token, fetchImpl, timeoutMs, maxResponseBytes });
     check = 'minimal_read_scopes';
-    verifyScopes(await get('/oauth/scopes'));
+    verifyScopes(await get('/oauth/scopes'), report);
     passed();
     check = 'shopify_store_selection';
     const storeId = selectStore(await get('/stores'), config.storeId);
