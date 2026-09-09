@@ -128,6 +128,34 @@ test('missing required scope and malformed scope envelope are blocked', async (t
   });
 });
 
+test('scope diagnostics identify known extra permissions while hiding untrusted labels', async () => {
+  const mock = mockFetch([{ scopes: [
+    ...scopes.scopes,
+    { scope: 'sync_products', display_name: TEST_TOKEN },
+    { scope: 'orders/read' },
+    { scope: 'orders/read' },
+    { scope: TEST_TOKEN, display_name: 'private.example' },
+  ] }]);
+  const report = await runProbe({ env, fetchImpl: mock.fetchImpl });
+  assert.equal(report.error, 'extra_scope_refused');
+  assert.deepEqual(report.permissions, {
+    recognized_scopes: ['sync_products/read', 'stores_list/read', 'orders/read', 'sync_products'],
+    unrecognized_scope_count: 1,
+    missing_required_scopes: [],
+  });
+  assert.equal(mock.calls.length, 1);
+  assertRedacted(report);
+});
+
+test('write permission never substitutes for the required read permission', async () => {
+  const mock = mockFetch([{ scopes: [{ scope: 'sync_products' }] }]);
+  const report = await runProbe({ env, fetchImpl: mock.fetchImpl });
+  assert.equal(report.error, 'extra_scope_refused');
+  assert.deepEqual(report.permissions.missing_required_scopes, ['sync_products/read']);
+  assert.equal(mock.calls.length, 1);
+  assertRedacted(report);
+});
+
 test('wrong, ambiguous, and non-Shopify stores stop before product access', async (t) => {
   for (const [stores, config, expected] of [
     [[{ ...store, name: 'Other store' }], env, 'store_not_found'],
