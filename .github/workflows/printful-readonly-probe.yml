@@ -1,4 +1,4 @@
-# Read-only investigation on the dedicated branch; official actions are pinned.
+# Read-only investigation on the dedicated branch.
 # This branch-only probe neither changes Printful nor publishes Shopify products.
 # Configure the environment deployment branch policy to crew/printful-api-probe.
 # Merely referencing an environment here does not enforce that policy.
@@ -27,12 +27,21 @@ jobs:
     timeout-minutes: 5
     environment: printful-api-probe
     steps:
-      # Official actions/checkout v4 ref, verified by root against GitHub.
-      - name: Check out reviewed probe branch
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          persist-credentials: false
-          fetch-depth: 1
+      # Download only the two reviewed public files at this immutable run commit.
+      # The repository contains an unrelated invalid legacy submodule entry.
+      - name: Fetch exact probe files without checking out legacy submodules
+        shell: bash
+        env:
+          PROBE_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$PROBE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          mkdir -p scripts
+          for name in printful-readonly-probe.mjs printful-readonly-probe.test.mjs; do
+            curl --fail --silent --show-error --proto '=https' --tlsv1.2 --max-time 30 \
+              "https://raw.githubusercontent.com/mrask31/charmedanddark/$PROBE_COMMIT/scripts/$name" \
+              --output "scripts/$name"
+          done
       # Official actions/setup-node v4 ref, verified by root against GitHub.
       - name: Set up Node 24 without dependency installation
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
