@@ -4,20 +4,22 @@ Prepared September 9, 2026 for Charmed & Dark.
 
 ## Result
 
-The API is reachable independently of the failing cloud browser. The user added an environment secret, and the authenticated `GET /oauth/scopes` succeeded. The token grants product, file, order and webhook read/write permissions, so the deliberately narrow read-only probe stops with `extra_scope_refused` before any store or product request. Store identity and the known draft are not yet verified.
+The Printful API connection is verified independently of the failing cloud browser. The replacement single-store token grants only `sync_products/read`. All five live checks passed: configuration, minimal read scopes, Charmed & Dark Shopify store selection, store identity confirmation, and the known S.G.G. Secret Society draft. That product has one synced variant, one artwork file with status `ok`, and one preview file. This establishes the tested read access; it does not establish physical print quality, placement correctness or permission to create/migrate products.
 
 The first test uses a separate GitHub Actions environment and requires a read-only private Printful token. It reads store identity and one already synced S.G.G. product. It cannot create products, change print files, submit orders, charge a payment method, publish to Shopify, or disable Printify.
 
 ## Latest executed check
 
-- GitHub Actions run: [34298256443](https://github.com/mrask31/charmedanddark/actions/runs/34298256443), job `102299481510`.
+- GitHub Actions run: [34298256443](https://github.com/mrask31/charmedanddark/actions/runs/34298256443), successful rerun job `102302294531`.
 - Tested code commit: `c9e99416f53517aef101d8b14d4b6b77fa925fa3`.
-- All 67 tests passed; the real API call then stopped at the scope check.
+- All 67 tests passed; all five real API checks passed.
+- Result: `status: verified`, `mode: read_only`, `store_verified: true`, `known_product_verified: true`.
+- Granted permission: `sync_products/read` only. No optional store-list scope or explicit store-ID environment variable was needed for the verified calls.
+- Known S.G.G. draft: one variant, one synced variant, zero unsynced variants; one ready artwork reference and one preview; zero processing, failed or unknown artwork references.
 - The diagnostic reports only fixed public permission labels and aggregate counts. Unknown upstream labels, display names, tokens and raw payloads remain hidden.
-- Recognized scopes: `sync_products/read`, `file_library/read`, `orders`, `orders/read`, `sync_products`, `file_library`, `webhooks`, `webhooks/read`.
-- Required read scope is present, but the extra permissions are outside the probe allowlist. No allowlist or request boundary was relaxed.
-- Next step: replace the GitHub environment secret with a single-store private token limited to `sync_products/read`; optional `stores_list/read` and `file_library/read` are accepted. Printful documents token scopes as fixed after creation, so create a replacement token.
+- The first token had additional product/file/order/webhook permissions and was refused. The user replaced the secret with the narrow token; no allowlist or request boundary was relaxed.
 - No Printful or Shopify product, order, inventory, publishing or fulfillment settings changed.
+- Next work is a read-only catalog reconciliation and source/placement review before preparing any separate draft-writing operation. This probe and token cannot perform a migration.
 
 ## Existing infrastructure checked
 
