@@ -4,9 +4,20 @@ Prepared September 9, 2026 for Charmed & Dark.
 
 ## Result
 
-The API is reachable independently of the failing cloud browser. An unauthenticated GET to `https://api.printful.com/stores` returned HTTP 401 with Printful's authentication-required response. This proves network access only. No private token has been supplied and account access has not yet been verified.
+The API is reachable independently of the failing cloud browser. The user added an environment secret, and the authenticated `GET /oauth/scopes` succeeded. The token grants product, file, order and webhook read/write permissions, so the deliberately narrow read-only probe stops with `extra_scope_refused` before any store or product request. Store identity and the known draft are not yet verified.
 
-The proposed first test uses a separate GitHub Actions environment and a read-only private Printful token. It reads store identity and one already synced S.G.G. product. It cannot create products, change print files, submit orders, charge a payment method, publish to Shopify, or disable Printify.
+The first test uses a separate GitHub Actions environment and requires a read-only private Printful token. It reads store identity and one already synced S.G.G. product. It cannot create products, change print files, submit orders, charge a payment method, publish to Shopify, or disable Printify.
+
+## Latest executed check
+
+- GitHub Actions run: [34298256443](https://github.com/mrask31/charmedanddark/actions/runs/34298256443), job `102299481510`.
+- Tested code commit: `c9e99416f53517aef101d8b14d4b6b77fa925fa3`.
+- All 67 tests passed; the real API call then stopped at the scope check.
+- The diagnostic reports only fixed public permission labels and aggregate counts. Unknown upstream labels, display names, tokens and raw payloads remain hidden.
+- Recognized scopes: `sync_products/read`, `file_library/read`, `orders`, `orders/read`, `sync_products`, `file_library`, `webhooks`, `webhooks/read`.
+- Required read scope is present, but the extra permissions are outside the probe allowlist. No allowlist or request boundary was relaxed.
+- Next step: replace the GitHub environment secret with a single-store private token limited to `sync_products/read`; optional `stores_list/read` and `file_library/read` are accepted. Printful documents token scopes as fixed after creation, so create a replacement token.
+- No Printful or Shopify product, order, inventory, publishing or fulfillment settings changed.
 
 ## Existing infrastructure checked
 
