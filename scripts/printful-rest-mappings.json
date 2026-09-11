@@ -1,0 +1,1356 @@
+[
+  {
+    "key": "cursed",
+    "shopifyId": "8648973418530",
+    "catalogId": 586,
+    "model": "1717",
+    "mappings": [
+      {
+        "id": 5495049988,
+        "externalId": "47501853524002",
+        "sku": "CND-CRSH-CC1717-WHT-S",
+        "price": "34.99",
+        "variantId": 15124,
+        "color": "White",
+        "size": "S",
+        "files": [
+          {
+            "key": "cursed-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-front-sept11.png?v=1789147960",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "cursed-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-back-sept11.png?v=1789147966",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495049989,
+        "externalId": "47501853556770",
+        "sku": "CND-CRSH-CC1717-WHT-M",
+        "price": "34.99",
+        "variantId": 15125,
+        "color": "White",
+        "size": "M",
+        "files": [
+          {
+            "key": "cursed-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-front-sept11.png?v=1789147960",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "cursed-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-back-sept11.png?v=1789147966",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495049990,
+        "externalId": "47501853589538",
+        "sku": "CND-CRSH-CC1717-WHT-L",
+        "price": "34.99",
+        "variantId": 15126,
+        "color": "White",
+        "size": "L",
+        "files": [
+          {
+            "key": "cursed-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-front-sept11.png?v=1789147960",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "cursed-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-back-sept11.png?v=1789147966",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495049991,
+        "externalId": "47501853622306",
+        "sku": "CND-CRSH-CC1717-WHT-XL",
+        "price": "34.99",
+        "variantId": 15127,
+        "color": "White",
+        "size": "XL",
+        "files": [
+          {
+            "key": "cursed-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-front-sept11.png?v=1789147960",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "cursed-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-back-sept11.png?v=1789147966",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495049992,
+        "externalId": "47501853655074",
+        "sku": "CND-CRSH-CC1717-WHT-2XL",
+        "price": "36.99",
+        "variantId": 15128,
+        "color": "White",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "cursed-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-front-sept11.png?v=1789147960",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "cursed-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-back-sept11.png?v=1789147966",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495049993,
+        "externalId": "47501853687842",
+        "sku": "CND-CRSH-CC1717-WHT-3XL",
+        "price": "38.99",
+        "variantId": 16335,
+        "color": "White",
+        "size": "3XL",
+        "files": [
+          {
+            "key": "cursed-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-front-sept11.png?v=1789147960",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "cursed-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-cursed-back-sept11.png?v=1789147966",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "ballerina",
+    "shopifyId": "8650224435234",
+    "catalogId": 862,
+    "model": "3023CL",
+    "mappings": [
+      {
+        "id": 5495050036,
+        "externalId": "47506884952098",
+        "sku": "CND-GB-CC3023CL-WHT-S",
+        "price": "29.99",
+        "variantId": 22588,
+        "color": "White",
+        "size": "S",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050037,
+        "externalId": "47506884984866",
+        "sku": "CND-GB-CC3023CL-WHT-M",
+        "price": "29.99",
+        "variantId": 22593,
+        "color": "White",
+        "size": "M",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050038,
+        "externalId": "47506885017634",
+        "sku": "CND-GB-CC3023CL-WHT-L",
+        "price": "29.99",
+        "variantId": 22598,
+        "color": "White",
+        "size": "L",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050039,
+        "externalId": "47506885050402",
+        "sku": "CND-GB-CC3023CL-WHT-XL",
+        "price": "29.99",
+        "variantId": 22603,
+        "color": "White",
+        "size": "XL",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050040,
+        "externalId": "47506885083170",
+        "sku": "CND-GB-CC3023CL-WHT-2XL",
+        "price": "31.99",
+        "variantId": 22608,
+        "color": "White",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050041,
+        "externalId": "47506885115938",
+        "sku": "CND-GB-CC3023CL-BLK-S",
+        "price": "29.99",
+        "variantId": 22584,
+        "color": "Black",
+        "size": "S",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050042,
+        "externalId": "47506885148706",
+        "sku": "CND-GB-CC3023CL-BLK-M",
+        "price": "29.99",
+        "variantId": 22589,
+        "color": "Black",
+        "size": "M",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050043,
+        "externalId": "47506885181474",
+        "sku": "CND-GB-CC3023CL-BLK-L",
+        "price": "29.99",
+        "variantId": 22594,
+        "color": "Black",
+        "size": "L",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050044,
+        "externalId": "47506885214242",
+        "sku": "CND-GB-CC3023CL-BLK-XL",
+        "price": "29.99",
+        "variantId": 22599,
+        "color": "Black",
+        "size": "XL",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050045,
+        "externalId": "47506885247010",
+        "sku": "CND-GB-CC3023CL-BLK-2XL",
+        "price": "31.99",
+        "variantId": 22604,
+        "color": "Black",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "ballerina-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-ballerina-front-sept11.png?v=1789147970",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "sgg-tote",
+    "shopifyId": "8650220109858",
+    "catalogId": 84,
+    "model": "All-Over Print Tote Bag",
+    "mappings": [
+      {
+        "id": 5495050028,
+        "externalId": "47506880528418",
+        "sku": "CND-SGG-TOTE15-WHT-BLK",
+        "price": "29.99",
+        "variantId": 4533,
+        "color": "Black",
+        "size": "15″×15″",
+        "files": [
+          {
+            "key": "sgg-tote",
+            "type": "default",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-sgg-tote-sept11.png?v=1789148005",
+            "width": 2550,
+            "height": 2475,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "siren",
+    "shopifyId": "8650242424866",
+    "catalogId": 71,
+    "model": "3001",
+    "mappings": [
+      {
+        "id": 5495050063,
+        "externalId": "47506910248994",
+        "sku": "CND-SIREN-BC3001-WHT-XS",
+        "price": "34.99",
+        "variantId": 9526,
+        "color": "White",
+        "size": "XS",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050064,
+        "externalId": "47506910281762",
+        "sku": "CND-SIREN-BC3001-WHT-S",
+        "price": "34.99",
+        "variantId": 4011,
+        "color": "White",
+        "size": "S",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050065,
+        "externalId": "47506910314530",
+        "sku": "CND-SIREN-BC3001-WHT-M",
+        "price": "34.99",
+        "variantId": 4012,
+        "color": "White",
+        "size": "M",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050066,
+        "externalId": "47506910347298",
+        "sku": "CND-SIREN-BC3001-WHT-L",
+        "price": "34.99",
+        "variantId": 4013,
+        "color": "White",
+        "size": "L",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050067,
+        "externalId": "47506910380066",
+        "sku": "CND-SIREN-BC3001-WHT-XL",
+        "price": "34.99",
+        "variantId": 4014,
+        "color": "White",
+        "size": "XL",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050068,
+        "externalId": "47506910412834",
+        "sku": "CND-SIREN-BC3001-WHT-2XL",
+        "price": "36.99",
+        "variantId": 4015,
+        "color": "White",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050069,
+        "externalId": "47506910445602",
+        "sku": "CND-SIREN-BC3001-WHT-3XL",
+        "price": "38.99",
+        "variantId": 5294,
+        "color": "White",
+        "size": "3XL",
+        "files": [
+          {
+            "key": "siren-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-front-sept11.png?v=1789147975",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "siren-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-siren-back-sept11.png?v=1789147981",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "hexes",
+    "shopifyId": "8650244816930",
+    "catalogId": 71,
+    "model": "3001",
+    "mappings": [
+      {
+        "id": 5495050109,
+        "externalId": "47506913165346",
+        "sku": "CND-HEX-BC3001-BLK-XS",
+        "price": "34.99",
+        "variantId": 9527,
+        "color": "Black",
+        "size": "XS",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050110,
+        "externalId": "47506913198114",
+        "sku": "CND-HEX-BC3001-BLK-S",
+        "price": "34.99",
+        "variantId": 4016,
+        "color": "Black",
+        "size": "S",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050111,
+        "externalId": "47506913230882",
+        "sku": "CND-HEX-BC3001-BLK-M",
+        "price": "34.99",
+        "variantId": 4017,
+        "color": "Black",
+        "size": "M",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050112,
+        "externalId": "47506913263650",
+        "sku": "CND-HEX-BC3001-BLK-L",
+        "price": "34.99",
+        "variantId": 4018,
+        "color": "Black",
+        "size": "L",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050113,
+        "externalId": "47506913296418",
+        "sku": "CND-HEX-BC3001-BLK-XL",
+        "price": "34.99",
+        "variantId": 4019,
+        "color": "Black",
+        "size": "XL",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050114,
+        "externalId": "47506913329186",
+        "sku": "CND-HEX-BC3001-BLK-2XL",
+        "price": "36.99",
+        "variantId": 4020,
+        "color": "Black",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050115,
+        "externalId": "47506913361954",
+        "sku": "CND-HEX-BC3001-BLK-3XL",
+        "price": "38.99",
+        "variantId": 5295,
+        "color": "Black",
+        "size": "3XL",
+        "files": [
+          {
+            "key": "hexes-black-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-front-sept11.png?v=1789147994",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-black-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-black-back-sept11.png?v=1789148000",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050116,
+        "externalId": "47506913394722",
+        "sku": "CND-HEX-BC3001-WHT-XS",
+        "price": "34.99",
+        "variantId": 9526,
+        "color": "White",
+        "size": "XS",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050117,
+        "externalId": "47506913427490",
+        "sku": "CND-HEX-BC3001-WHT-S",
+        "price": "34.99",
+        "variantId": 4011,
+        "color": "White",
+        "size": "S",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050118,
+        "externalId": "47506913460258",
+        "sku": "CND-HEX-BC3001-WHT-M",
+        "price": "34.99",
+        "variantId": 4012,
+        "color": "White",
+        "size": "M",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050119,
+        "externalId": "47506913493026",
+        "sku": "CND-HEX-BC3001-WHT-L",
+        "price": "34.99",
+        "variantId": 4013,
+        "color": "White",
+        "size": "L",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050120,
+        "externalId": "47506913525794",
+        "sku": "CND-HEX-BC3001-WHT-XL",
+        "price": "34.99",
+        "variantId": 4014,
+        "color": "White",
+        "size": "XL",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050121,
+        "externalId": "47506913558562",
+        "sku": "CND-HEX-BC3001-WHT-2XL",
+        "price": "36.99",
+        "variantId": 4015,
+        "color": "White",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050122,
+        "externalId": "47506913591330",
+        "sku": "CND-HEX-BC3001-WHT-3XL",
+        "price": "38.99",
+        "variantId": 5294,
+        "color": "White",
+        "size": "3XL",
+        "files": [
+          {
+            "key": "hexes-white-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-front-sept11.png?v=1789147985",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          },
+          {
+            "key": "hexes-white-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-hexes-white-back-sept11.png?v=1789147991",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "patriot",
+    "shopifyId": "8650245505058",
+    "catalogId": 593,
+    "model": "6030",
+    "mappings": [
+      {
+        "id": 5495050135,
+        "externalId": "47506915721250",
+        "sku": "CND-PAT-CC6030-WHT-S",
+        "price": "39.99",
+        "variantId": 15150,
+        "color": "White",
+        "size": "S",
+        "files": [
+          {
+            "key": "patriot-pocket",
+            "type": "pocket",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-pocket-sept11.png?v=1789148016",
+            "width": 450,
+            "height": 300,
+            "dpi": 150
+          },
+          {
+            "key": "patriot-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-back-sept11.png?v=1789148011",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050136,
+        "externalId": "47506915754018",
+        "sku": "CND-PAT-CC6030-WHT-M",
+        "price": "39.99",
+        "variantId": 15151,
+        "color": "White",
+        "size": "M",
+        "files": [
+          {
+            "key": "patriot-pocket",
+            "type": "pocket",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-pocket-sept11.png?v=1789148016",
+            "width": 450,
+            "height": 300,
+            "dpi": 150
+          },
+          {
+            "key": "patriot-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-back-sept11.png?v=1789148011",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050137,
+        "externalId": "47506915786786",
+        "sku": "CND-PAT-CC6030-WHT-L",
+        "price": "39.99",
+        "variantId": 15152,
+        "color": "White",
+        "size": "L",
+        "files": [
+          {
+            "key": "patriot-pocket",
+            "type": "pocket",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-pocket-sept11.png?v=1789148016",
+            "width": 450,
+            "height": 300,
+            "dpi": 150
+          },
+          {
+            "key": "patriot-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-back-sept11.png?v=1789148011",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050138,
+        "externalId": "47506915819554",
+        "sku": "CND-PAT-CC6030-WHT-XL",
+        "price": "39.99",
+        "variantId": 15153,
+        "color": "White",
+        "size": "XL",
+        "files": [
+          {
+            "key": "patriot-pocket",
+            "type": "pocket",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-pocket-sept11.png?v=1789148016",
+            "width": 450,
+            "height": 300,
+            "dpi": 150
+          },
+          {
+            "key": "patriot-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-back-sept11.png?v=1789148011",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495050139,
+        "externalId": "47506915852322",
+        "sku": "CND-PAT-CC6030-WHT-2XL",
+        "price": "41.99",
+        "variantId": 15154,
+        "color": "White",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "patriot-pocket",
+            "type": "pocket",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-pocket-sept11.png?v=1789148016",
+            "width": 450,
+            "height": 300,
+            "dpi": 150
+          },
+          {
+            "key": "patriot-back",
+            "type": "back",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-patriot-back-sept11.png?v=1789148011",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "beanie",
+    "shopifyId": "8650242228258",
+    "catalogId": 266,
+    "model": "1501KC",
+    "mappings": [
+      {
+        "id": 5495050061,
+        "externalId": "47506909986850",
+        "sku": "CND-WORD-Y1501KC-BLK-OS",
+        "price": "24.99",
+        "variantId": 8936,
+        "color": "Black",
+        "size": "One size",
+        "files": [
+          {
+            "key": "beanie-black",
+            "type": "embroidery_front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-beanie-black-sept11.png?v=1789148024",
+            "width": 1500,
+            "height": 525,
+            "dpi": 300
+          }
+        ],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors",
+            "value": [
+              "#FFFFFF"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5495050062,
+        "externalId": "47506910019618",
+        "sku": "CND-WORD-Y1501KC-WHT-OS",
+        "price": "24.99",
+        "variantId": 8938,
+        "color": "White",
+        "size": "One size",
+        "files": [
+          {
+            "key": "beanie-white",
+            "type": "embroidery_front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-beanie-white-sept11.png?v=1789148020",
+            "width": 1500,
+            "height": 525,
+            "dpi": 300
+          }
+        ],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors",
+            "value": [
+              "#000000"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "sigil-white",
+    "shopifyId": "8650242719778",
+    "catalogId": 952,
+    "model": "31-069",
+    "mappings": [
+      {
+        "id": 5495050070,
+        "externalId": "47506910707746",
+        "sku": "CND-SIGIL-O31069-W-WHT-OS",
+        "price": "27.99",
+        "variantId": 24385,
+        "color": "White",
+        "size": "One size",
+        "files": [
+          {
+            "key": "sigil-cap",
+            "type": "embroidery_front_large",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-sigil-cap-sept11.png?v=1789148028",
+            "width": 1890,
+            "height": 765,
+            "dpi": 300
+          }
+        ],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors_front_large",
+            "value": [
+              "#000000"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "sigil-black",
+    "shopifyId": "8650242949154",
+    "catalogId": 952,
+    "model": "31-069",
+    "mappings": [
+      {
+        "id": 5495050071,
+        "externalId": "47506911002658",
+        "sku": "CND-SIGIL-O31069-B-BLK-OS",
+        "price": "27.99",
+        "variantId": 24379,
+        "color": "Black",
+        "size": "One size",
+        "files": [
+          {
+            "key": "sigil-cap",
+            "type": "embroidery_front_large",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-sigil-cap-sept11.png?v=1789148028",
+            "width": 1890,
+            "height": 765,
+            "dpi": 300
+          }
+        ],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors_front_large",
+            "value": [
+              "#000000"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "trucker",
+    "shopifyId": "8650244390946",
+    "catalogId": 422,
+    "model": "112",
+    "mappings": [
+      {
+        "id": 5495050072,
+        "externalId": "47506912509986",
+        "sku": "CND-SW-R112-BLK-OS",
+        "price": "32.99",
+        "variantId": 11417,
+        "color": "Black",
+        "size": "One size",
+        "files": [
+          {
+            "key": "summerween-trucker",
+            "type": "embroidery_front_large",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-summerween-trucker-sept11.png?v=1789148034",
+            "width": 1770,
+            "height": 600,
+            "dpi": 300
+          }
+        ],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors_front_large",
+            "value": [
+              "#000000",
+              "#FFFFFF",
+              "#A67843",
+              "#E25C27"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
