@@ -1,0 +1,67 @@
+[
+  {
+    "key": "obsidian",
+    "shopifyId": "8650217816098",
+    "catalogId": 692,
+    "model": "18600",
+    "variantIds": [
+      17296
+    ],
+    "area": {
+      "width": 2250,
+      "height": 1500,
+      "dpi": 150
+    },
+    "file": {
+      "width": 4500,
+      "height": 3000,
+      "dpi": 300
+    },
+    "placement": "front",
+    "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-obsidian-production-front-300dpi.png?v=1789145057"
+  },
+  {
+    "key": "crown",
+    "shopifyId": "8650245734434",
+    "catalogId": 1635,
+    "model": "1019",
+    "variantIds": [
+      51613,
+      51637
+    ],
+    "area": {
+      "width": 2634,
+      "height": 2988,
+      "dpi": 300
+    },
+    "file": {
+      "width": 2634,
+      "height": 2988,
+      "dpi": 300
+    },
+    "placement": "front_dtf",
+    "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-crown-production-front-300dpi.png?v=1789145068"
+  },
+  {
+    "key": "moon",
+    "shopifyId": "8650227351586",
+    "catalogId": 636,
+    "model": "4062",
+    "variantIds": [
+      16096,
+      16121
+    ],
+    "area": {
+      "width": 1500,
+      "height": 1500,
+      "dpi": 150
+    },
+    "file": {
+      "width": 3000,
+      "height": 3000,
+      "dpi": 300
+    },
+    "placement": "front",
+    "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-moon-production-front-300dpi.png?v=1789145062"
+  }
+]
