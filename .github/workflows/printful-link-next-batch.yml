@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/printful-link-next-batch.yml
       - scripts/printful-link-next-batch.mjs
+      - scripts/printful-next-batch-mappings.json
 permissions:
   contents: read
 concurrency:
