@@ -1,0 +1,626 @@
+[
+  {
+    "key": "lunar-racer",
+    "shopifyId": "8650482647074",
+    "catalogId": 1635,
+    "model": "1019",
+    "mappings": [
+      {
+        "id": 5495408310,
+        "externalId": "47511932665890",
+        "sku": "CND-LUNAR-BC1019-BLK-XS",
+        "price": "36.99",
+        "variantId": 51611,
+        "color": "Solid Black Blend",
+        "size": "XS",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408311,
+        "externalId": "47511932698658",
+        "sku": "CND-LUNAR-BC1019-BLK-S",
+        "price": "36.99",
+        "variantId": 51612,
+        "color": "Solid Black Blend",
+        "size": "S",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408312,
+        "externalId": "47511932731426",
+        "sku": "CND-LUNAR-BC1019-BLK-M",
+        "price": "36.99",
+        "variantId": 51613,
+        "color": "Solid Black Blend",
+        "size": "M",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408313,
+        "externalId": "47511932764194",
+        "sku": "CND-LUNAR-BC1019-BLK-L",
+        "price": "36.99",
+        "variantId": 51614,
+        "color": "Solid Black Blend",
+        "size": "L",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408314,
+        "externalId": "47511932796962",
+        "sku": "CND-LUNAR-BC1019-BLK-XL",
+        "price": "36.99",
+        "variantId": 51615,
+        "color": "Solid Black Blend",
+        "size": "XL",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408315,
+        "externalId": "47511932829730",
+        "sku": "CND-LUNAR-BC1019-BLK-2XL",
+        "price": "38.99",
+        "variantId": 51616,
+        "color": "Solid Black Blend",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408316,
+        "externalId": "47511932862498",
+        "sku": "CND-LUNAR-BC1019-WHT-XS",
+        "price": "36.99",
+        "variantId": 51635,
+        "color": "Solid White Blend",
+        "size": "XS",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408317,
+        "externalId": "47511932895266",
+        "sku": "CND-LUNAR-BC1019-WHT-S",
+        "price": "36.99",
+        "variantId": 51636,
+        "color": "Solid White Blend",
+        "size": "S",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408318,
+        "externalId": "47511932928034",
+        "sku": "CND-LUNAR-BC1019-WHT-M",
+        "price": "36.99",
+        "variantId": 51637,
+        "color": "Solid White Blend",
+        "size": "M",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408319,
+        "externalId": "47511932960802",
+        "sku": "CND-LUNAR-BC1019-WHT-L",
+        "price": "36.99",
+        "variantId": 51638,
+        "color": "Solid White Blend",
+        "size": "L",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408320,
+        "externalId": "47511932993570",
+        "sku": "CND-LUNAR-BC1019-WHT-XL",
+        "price": "36.99",
+        "variantId": 51639,
+        "color": "Solid White Blend",
+        "size": "XL",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408321,
+        "externalId": "47511933026338",
+        "sku": "CND-LUNAR-BC1019-WHT-2XL",
+        "price": "38.99",
+        "variantId": 51640,
+        "color": "Solid White Blend",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "lunar-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "crimson-racer",
+    "shopifyId": "8650482843682",
+    "catalogId": 1635,
+    "model": "1019",
+    "mappings": [
+      {
+        "id": 5495408595,
+        "externalId": "47511933681698",
+        "sku": "CND-CRIMT-BC1019-BLK-XS",
+        "price": "36.99",
+        "variantId": 51611,
+        "color": "Solid Black Blend",
+        "size": "XS",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408596,
+        "externalId": "47511933714466",
+        "sku": "CND-CRIMT-BC1019-BLK-S",
+        "price": "36.99",
+        "variantId": 51612,
+        "color": "Solid Black Blend",
+        "size": "S",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408597,
+        "externalId": "47511933747234",
+        "sku": "CND-CRIMT-BC1019-BLK-M",
+        "price": "36.99",
+        "variantId": 51613,
+        "color": "Solid Black Blend",
+        "size": "M",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408598,
+        "externalId": "47511933780002",
+        "sku": "CND-CRIMT-BC1019-BLK-L",
+        "price": "36.99",
+        "variantId": 51614,
+        "color": "Solid Black Blend",
+        "size": "L",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408599,
+        "externalId": "47511933812770",
+        "sku": "CND-CRIMT-BC1019-BLK-XL",
+        "price": "36.99",
+        "variantId": 51615,
+        "color": "Solid Black Blend",
+        "size": "XL",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408600,
+        "externalId": "47511933845538",
+        "sku": "CND-CRIMT-BC1019-BLK-2XL",
+        "price": "38.99",
+        "variantId": 51616,
+        "color": "Solid Black Blend",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408601,
+        "externalId": "47511933878306",
+        "sku": "CND-CRIMT-BC1019-WHT-XS",
+        "price": "36.99",
+        "variantId": 51635,
+        "color": "Solid White Blend",
+        "size": "XS",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408602,
+        "externalId": "47511933911074",
+        "sku": "CND-CRIMT-BC1019-WHT-S",
+        "price": "36.99",
+        "variantId": 51636,
+        "color": "Solid White Blend",
+        "size": "S",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408603,
+        "externalId": "47511933943842",
+        "sku": "CND-CRIMT-BC1019-WHT-M",
+        "price": "36.99",
+        "variantId": 51637,
+        "color": "Solid White Blend",
+        "size": "M",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408604,
+        "externalId": "47511933976610",
+        "sku": "CND-CRIMT-BC1019-WHT-L",
+        "price": "36.99",
+        "variantId": 51638,
+        "color": "Solid White Blend",
+        "size": "L",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408605,
+        "externalId": "47511934009378",
+        "sku": "CND-CRIMT-BC1019-WHT-XL",
+        "price": "36.99",
+        "variantId": 51639,
+        "color": "Solid White Blend",
+        "size": "XL",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408606,
+        "externalId": "47511934042146",
+        "sku": "CND-CRIMT-BC1019-WHT-2XL",
+        "price": "38.99",
+        "variantId": 51640,
+        "color": "Solid White Blend",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "crimson-racer-front",
+            "type": "front_dtf",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608",
+            "width": 2634,
+            "height": 2988,
+            "dpi": 300
+          }
+        ],
+        "options": []
+      }
+    ]
+  },
+  {
+    "key": "charmed-ringer",
+    "shopifyId": "8650482909218",
+    "catalogId": 959,
+    "model": "3604",
+    "mappings": [
+      {
+        "id": 5495408493,
+        "externalId": "47511934107682",
+        "sku": "CND-CBNR-NL3604-WHTBLK-S",
+        "price": "34.99",
+        "variantId": 24483,
+        "color": "White / Black",
+        "size": "S",
+        "files": [
+          {
+            "key": "charmed-ringer-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408494,
+        "externalId": "47511934140450",
+        "sku": "CND-CBNR-NL3604-WHTBLK-M",
+        "price": "34.99",
+        "variantId": 24478,
+        "color": "White / Black",
+        "size": "M",
+        "files": [
+          {
+            "key": "charmed-ringer-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408495,
+        "externalId": "47511934173218",
+        "sku": "CND-CBNR-NL3604-WHTBLK-L",
+        "price": "34.99",
+        "variantId": 24488,
+        "color": "White / Black",
+        "size": "L",
+        "files": [
+          {
+            "key": "charmed-ringer-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408496,
+        "externalId": "47511934205986",
+        "sku": "CND-CBNR-NL3604-WHTBLK-XL",
+        "price": "34.99",
+        "variantId": 24493,
+        "color": "White / Black",
+        "size": "XL",
+        "files": [
+          {
+            "key": "charmed-ringer-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408497,
+        "externalId": "47511934238754",
+        "sku": "CND-CBNR-NL3604-WHTBLK-2XL",
+        "price": "36.99",
+        "variantId": 24498,
+        "color": "White / Black",
+        "size": "2XL",
+        "files": [
+          {
+            "key": "charmed-ringer-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      },
+      {
+        "id": 5495408498,
+        "externalId": "47511934271522",
+        "sku": "CND-CBNR-NL3604-WHTBLK-3XL",
+        "price": "38.99",
+        "variantId": 24503,
+        "color": "White / Black",
+        "size": "3XL",
+        "files": [
+          {
+            "key": "charmed-ringer-front",
+            "type": "front",
+            "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612",
+            "width": 1800,
+            "height": 2400,
+            "dpi": 150
+          }
+        ],
+        "options": []
+      }
+    ]
+  }
+]
