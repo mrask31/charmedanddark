@@ -1,0 +1,2 @@
+import {runPreflight} from './printful-migration-token-preflight.mjs';
+try{if((await runPreflight({})).status!=='verified')throw Error('preflight');for(const id of [780,163,857,959]){const r=await fetch(`https://api.printful.com/products/${id}`,{redirect:'error',headers:{Authorization:`Bearer ${process.env.PRINTFUL_MIGRATION_API_TOKEN}`,'X-PF-Store-Id':'18682636'}});if(!r.ok)throw Error('http_'+r.status);const d=await r.json();console.log('REPLACEMENT_DETAIL='+JSON.stringify(d.result));}}catch(e){console.log('REPLACEMENT_DETAIL_ERROR');process.exitCode=1}
