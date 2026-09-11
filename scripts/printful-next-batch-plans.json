@@ -1,0 +1,65 @@
+[
+  {
+    "key": "crimson-reliquary",
+    "shopifyId": "8648971616290",
+    "catalogId": 71,
+    "variantId": 4017,
+    "color": "Black",
+    "sides": [
+      "back"
+    ],
+    "files": [
+      {
+        "type": "back",
+        "placement": "back",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-crimson-reliquary-production-back-150dpi.png?v=1789143204"
+      }
+    ]
+  },
+  {
+    "key": "till-death",
+    "shopifyId": "8648970272802",
+    "catalogId": 586,
+    "variantId": 15125,
+    "color": "White",
+    "sides": [
+      "front",
+      "back"
+    ],
+    "files": [
+      {
+        "type": "default",
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-till-death-production-front-150dpi.png?v=1789143194"
+      },
+      {
+        "type": "back",
+        "placement": "back",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-till-death-production-back-150dpi.png?v=1789143215"
+      }
+    ]
+  },
+  {
+    "key": "bones-brews",
+    "shopifyId": "8650244882466",
+    "catalogId": 71,
+    "variantId": 4017,
+    "color": "Black",
+    "sides": [
+      "front",
+      "back"
+    ],
+    "files": [
+      {
+        "type": "default",
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-bones-brews-production-front-150dpi.png?v=1789143210"
+      },
+      {
+        "type": "back",
+        "placement": "back",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-bones-brews-production-back-150dpi.png?v=1789143221"
+      }
+    ]
+  }
+]
