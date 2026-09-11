@@ -4,6 +4,7 @@ const navLinks = [
   { label: "Shop", href: "/shop" },
   { label: "About", href: "/about" },
   { label: "Drops", href: "/drops" },
+  { label: "Last Chance", href: "/last-chance" },
   { label: "Join", href: "/join" },
   { label: "Journal", href: "/journal" },
   { label: "Contact", href: "/contact" },

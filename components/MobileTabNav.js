@@ -10,7 +10,7 @@ const tabs = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/drops", label: "Drops" },
-  { href: "/join", label: "Join" },
+  { href: "/last-chance", label: "Last Chance" },
 ];
 
 export default function MobileTabNav() {
@@ -32,7 +32,7 @@ export default function MobileTabNav() {
   return (
     <>
       {accountOpen && user && (
-        <div className="fixed bottom-[70px] right-3 z-50 w-52 border border-[rgba(201,169,110,0.25)] bg-[#0e0e1a] p-3 text-sm shadow-2xl md:hidden">
+        <div className="fixed bottom-[70px] right-3 z-50 w-52 border border-[rgba(201,169,110,0.25)] bg-[#0e0e1a] p-3 text-sm shadow-2xl lg:hidden">
           {isMember && (
             <p className="mb-2 text-xs" style={{ color: '#c9a96e' }}>🖤 Sanctuary Member</p>
           )}
@@ -48,7 +48,7 @@ export default function MobileTabNav() {
         </div>
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black lg:hidden">
         <div className="mx-auto grid max-w-5xl grid-cols-6 gap-1 px-2 py-3 text-center text-[11px] text-white/70">
           {tabs.map((tab) => (
             <Link

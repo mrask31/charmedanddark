@@ -1,3 +1,5 @@
+import Link from "next/link";
+import ShopDestinations from "@/components/shop/ShopDestinations";
 import { Hero } from "@/components/hero";
 import { BrandPositioning } from "@/components/brand-positioning";
 import { HomepageProductSection } from "@/components/homepage-product-section";
@@ -39,6 +41,7 @@ export default async function Home({ searchParams }) {
     <main className="min-h-screen bg-black">
       {/* 1. Hero */}
       <Hero />
+      <ShopDestinations />
 
       {/* Promotion Hero (only renders when an active promotion has homepage_enabled) */}
       {homepagePromotion && <PromotionHero promotion={homepagePromotion} />}
@@ -72,12 +75,12 @@ export default async function Home({ searchParams }) {
             Vintage-inspired gothic bags with kiss lock clasps, linen blends, and motifs that make people stop and ask.
             Chosen one at a time. Carried every day.
           </p>
-          <a
+          <Link
             href="/collections/kiss-lock-bags"
             className="mt-8 inline-block border border-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-[#B89C6D] transition-colors duration-160 hover:bg-[#B89C6D] hover:text-black"
           >
             Explore the Collection
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -86,7 +89,7 @@ export default async function Home({ searchParams }) {
         title="Light the Darkness"
         products={enrichedProducts.candles}
         badge="Ritual Favorite"
-        viewAllHref="/shop?category=RITUAL"
+        viewAllHref="/collections/candles-ritual"
         ctaLabel="Shop Candles & Ritual"
         intro="The second thing customers stopped for: candles, holders, and objects that make a room feel like a ceremony."
       />
@@ -96,7 +99,7 @@ export default async function Home({ searchParams }) {
         title="Dark Home"
         products={enrichedProducts.darkHome}
         badge="Home Favorite"
-        viewAllHref="/shop?category=HOME"
+        viewAllHref="/collections/gothic-home-decor"
         ctaLabel="Shop Home"
         intro="Trays, teacups, and objects designed to make ordinary routines feel intentional."
       />
@@ -116,7 +119,7 @@ export default async function Home({ searchParams }) {
         title="Summerween"
         products={enrichedProducts.summerween}
         badge="Seasonal"
-        viewAllHref="/drops"
+        viewAllHref="/collections/summerween"
         ctaLabel="Explore Summerween"
         intro="The sun is out. The ghosts are still here."
       />
@@ -125,7 +128,7 @@ export default async function Home({ searchParams }) {
       <HomepageProductSection
         title="Apparel"
         products={enrichedProducts.apparel}
-        viewAllHref="/shop?category=APPAREL"
+        viewAllHref="/collections/gothic-clothing"
         ctaLabel="Shop Apparel"
         intro="Wearable darkness for those who dress the mood year-round."
       />
