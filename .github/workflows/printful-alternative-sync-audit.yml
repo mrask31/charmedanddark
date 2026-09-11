@@ -1,0 +1,37 @@
+name: Alternative draft import audit
+on:
+  push:
+    branches: [crew/printful-api-probe]
+    paths:
+      - .github/workflows/printful-alternative-sync-audit.yml
+      - scripts/printful-alternative-sync-audit.mjs
+permissions:
+  contents: read
+concurrency:
+  group: printful-alternative-sync-audit
+  cancel-in-progress: false
+jobs:
+  proof:
+    if: github.ref == 'refs/heads/crew/printful-api-probe'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    environment: printful-api-probe
+    steps:
+      - name: Retrieve fixed source at immutable run commit
+        env:
+          PROOF_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$PROOF_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          mkdir -p scripts
+          for name in printful-migration-token-preflight.mjs printful-alternative-sync-audit.mjs ; do
+            curl --fail --silent --show-error --proto '=https' --tlsv1.2 --max-time 30 "https://raw.githubusercontent.com/mrask31/charmedanddark/$PROOF_COMMIT/scripts/$name" --output "scripts/$name"
+          done
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Generate native proofs within provider rate limits
+        env:
+          PRINTFUL_MIGRATION_API_TOKEN: ${{ secrets.PRINTFUL_MIGRATION_API_TOKEN }}
+        run: |
+          node scripts/printful-alternative-sync-audit.mjs

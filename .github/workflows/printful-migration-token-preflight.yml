@@ -1,0 +1,52 @@
+# Credential and single-store validation only. No product, file, or order writes.
+name: Printful migration token preflight
+
+on:
+  push:
+    branches:
+      - crew/printful-api-probe
+    paths:
+      - .github/workflows/printful-migration-token-preflight.yml
+      - scripts/printful-migration-token-preflight.mjs
+      - scripts/printful-migration-token-preflight.test.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: printful-migration-token-preflight
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    name: Check migration credential without writes
+    if: github.ref == 'refs/heads/crew/printful-api-probe'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: printful-api-probe
+    steps:
+      - name: Fetch reviewed preflight files at the immutable run commit
+        shell: bash
+        env:
+          PREFLIGHT_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$PREFLIGHT_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          mkdir -p scripts
+          for name in printful-migration-token-preflight.mjs printful-migration-token-preflight.test.mjs; do
+            curl --fail --silent --show-error --proto '=https' --tlsv1.2 --max-time 30 \
+              "https://raw.githubusercontent.com/mrask31/charmedanddark/$PREFLIGHT_COMMIT/scripts/$name" \
+              --output "scripts/$name"
+          done
+      - name: Set up Node 24 without installing dependencies
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Test credential and request boundaries without credentials
+        shell: bash
+        run: node --test scripts/printful-migration-token-preflight.test.mjs
+      - name: Verify migration permissions and store identity using GET only
+        shell: bash
+        env:
+          PRINTFUL_MIGRATION_API_TOKEN: ${{ secrets.PRINTFUL_MIGRATION_API_TOKEN }}
+        run: node scripts/printful-migration-token-preflight.mjs

@@ -1,0 +1,67 @@
+[
+  {
+    "key": "lunar-racer",
+    "shopifyId": "alternative-lunar-racer",
+    "catalogId": 1635,
+    "model": "1019",
+    "variantIds": [
+      51613,
+      51637
+    ],
+    "files": [
+      {
+        "dpi": 300,
+        "effectiveDpi": 314,
+        "height": 2988,
+        "key": "lunar-racer-front",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/alternatives/lunar-racer-front.png",
+        "width": 2634,
+        "placement": "front_dtf",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-lunar-racer-front-sept11.png?v=1789148603"
+      }
+    ]
+  },
+  {
+    "key": "crimson-racer",
+    "shopifyId": "alternative-crimson-racer",
+    "catalogId": 1635,
+    "model": "1019",
+    "variantIds": [
+      51613,
+      51637
+    ],
+    "files": [
+      {
+        "dpi": 300,
+        "effectiveDpi": 312,
+        "height": 2988,
+        "key": "crimson-racer-front",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/alternatives/crimson-racer-front.png",
+        "width": 2634,
+        "placement": "front_dtf",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-crimson-racer-front-sept11.png?v=1789148608"
+      }
+    ]
+  },
+  {
+    "key": "charmed-ringer",
+    "shopifyId": "alternative-charmed-ringer",
+    "catalogId": 959,
+    "model": "3604",
+    "variantIds": [
+      24478
+    ],
+    "files": [
+      {
+        "dpi": 150,
+        "effectiveDpi": 281.07142857142856,
+        "height": 2400,
+        "key": "charmed-ringer-front",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/alternatives/charmed-ringer-front.png",
+        "width": 1800,
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-alternative-production-charmed-ringer-front-sept11.png?v=1789148612"
+      }
+    ]
+  }
+]
