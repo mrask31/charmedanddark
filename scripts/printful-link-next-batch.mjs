@@ -34,10 +34,10 @@ export async function run({env=process.env,fetchImpl=fetch,delay=ms=>new Promise
  }}
  const products=[];
  for(const p of plans){const pilot=p.mappings.find(m=>m.size==='M');const order=[pilot,...p.mappings.filter(m=>m.id!==pilot.id)];const files=p.files.map(f=>({type:f.type,id:uploads.get(f.url).id}));
-  const checkFiles=v=>v.files.filter(f=>f.type!=='preview').length===files.length&&files.every(f=>v.files.some(x=>x.id===f.id&&x.type===f.type));
+  const checkFiles=v=>v.files.filter(f=>f.type!=='preview').length===files.length&&files.every(f=>v.files.some(x=>x.id===f.id&&(x.type==='front'?'default':x.type)===(f.type==='front'?'default':f.type)));
   for(const m of order){const current=before.get(p.shopifyId).sync_variants.find(v=>v.id===m.id);if(current.synced){check(checkFiles(current),'existing_file_conflict');continue}
    if(writes)await delay(6500);await req('PUT',`/sync/variant/${m.id}`,{variant_id:m.variantId,retail_price:m.price,sku:m.sku,is_ignored:false,files});writes++;
-   const updated=await req('GET',`/sync/products/@${p.shopifyId}`);const v=updated.sync_variants.find(v=>v.id===m.id);check(v&&v.synced&&!v.is_ignored&&v.variant_id===m.variantId&&checkFiles(v),'write_verification_failed');console.log('BATCH_VARIANT_LINKED='+JSON.stringify({key:p.key,id:m.id,size:m.size}));
+   const updated=await req('GET',`/sync/products/@${p.shopifyId}`);const v=updated.sync_variants.find(v=>v.id===m.id);console.log('BATCH_LINK_CHECK='+JSON.stringify({key:p.key,id:m.id,synced:v?.synced,ignored:v?.is_ignored,variantId:v?.variant_id,files:v?.files?.filter(f=>f.type!=='preview').map(f=>({id:f.id,type:f.type}))}));check(v&&v.synced&&!v.is_ignored&&v.variant_id===m.variantId&&checkFiles(v),'write_verification_failed');console.log('BATCH_VARIANT_LINKED='+JSON.stringify({key:p.key,id:m.id,size:m.size}));
   }
   const final=await req('GET',`/sync/products/@${p.shopifyId}`);validate(p,final,catalogs.get(p.catalogId));check(final.sync_variants.every(v=>v.synced&&!v.is_ignored&&checkFiles(v)),'final_verification_failed');
   const result={key:p.key,shopifyId:p.shopifyId,synced:final.sync_variants.length,variants:final.sync_variants.map(v=>({id:v.id,externalId:String(v.external_id),catalogVariantId:v.variant_id,sku:v.sku,retailPrice:v.retail_price,files:v.files.filter(f=>f.type!=='preview').map(f=>({id:f.id,type:f.type,status:f.status,width:f.width,height:f.height,dpi:f.dpi}))}))};products.push(result);console.log('BATCH_PRODUCT_COMPLETE='+JSON.stringify(result));
