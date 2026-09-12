@@ -225,9 +225,6 @@ export default async function KissLockBagsPage() {
                           </span>
                         )}
                       </div>
-                      <div className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#c9a96e' }}>
-                        Member benefits confirmed in cart
-                      </div>
                     </div>
                   )}
                 </div>

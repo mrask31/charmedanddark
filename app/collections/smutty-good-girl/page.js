@@ -135,9 +135,6 @@ export default async function SmuttyGoodGirlCollectionPage() {
                           <span className="text-[9px] uppercase tracking-[0.14em] text-[#d7a0b5]">{salePercentage}% off</span>
                         )}
                       </div>
-                      <div className="text-[10px] uppercase tracking-[0.14em] text-[#d7a0b5]">
-                        Member benefits confirmed in cart
-                      </div>
                     </div>
                   )}
                 </div>
