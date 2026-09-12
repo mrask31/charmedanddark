@@ -12,7 +12,7 @@ import { PreviewWrapper } from "@/components/promotions/PreviewWrapper";
 
 export const revalidate = 60;
 export const metadata = {
-  title: "Gothic Bags, Clothing & Home Décor",
+  title: { absolute: "Gothic Bags, Clothing & Home Décor | Charmed & Dark" },
   description: "Elegant gothic goods for the life you actually live. Discover distinctive kisslock bags, expressive clothing, candles, and atmospheric home décor at Charmed & Dark.",
   alternates: { canonical: "https://www.charmedanddark.com" },
   openGraph: {
