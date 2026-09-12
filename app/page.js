@@ -16,6 +16,10 @@ export const metadata = {
   description: "Elegant gothic goods for the life you actually live. Discover distinctive kisslock bags, expressive clothing, candles, and atmospheric home décor at Charmed & Dark.",
   alternates: { canonical: "https://www.charmedanddark.com" },
   openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Charmed & Dark",
+    images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Charmed & Dark" }],
     title: "Charmed & Dark — Gothic Goods for Everyday Living",
     description: "Distinctive bags, expressive apparel, and atmospheric pieces for your home.",
     url: "https://www.charmedanddark.com",
