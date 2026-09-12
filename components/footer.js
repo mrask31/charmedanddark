@@ -4,7 +4,9 @@ const navLinks = [
   { label: "Shop", href: "/shop" },
   { label: "About", href: "/about" },
   { label: "Drops", href: "/drops" },
-  { label: "Join", href: "/join" },
+  { label: "Last Chance", href: "/last-chance" },
+  { label: "The Sanctuary", href: "/join" },
+  { label: "The Mirror", href: "/mirror" },
   { label: "Journal", href: "/journal" },
   { label: "Contact", href: "/contact" },
   { label: "Returns", href: "/returns" },
@@ -12,20 +14,21 @@ const navLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-800 bg-black px-8 py-16 lg:px-16">
-      <div className="flex flex-col items-center gap-8">
+    <footer className="border-t border-white/10 bg-[#08080a] px-5 py-10 sm:px-8 lg:px-10">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-6">
         {/* Brand */}
-        <div className="font-serif text-lg uppercase tracking-[0.3em] text-white">
-          Charmed & Dark
+        <div className="text-center">
+          <Link href="/" className="font-serif text-lg uppercase tracking-[0.2em] text-[#f5f0e8]">Charmed &amp; Dark</Link>
+          <p className="mt-3 text-sm text-[#bdb5a9]">Elegant gothic goods for the life you actually live.</p>
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-wrap justify-center gap-6">
+        <nav aria-label="Footer navigation" className="flex max-w-3xl flex-wrap justify-center gap-x-6 gap-y-1">
           {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="text-xs uppercase tracking-widest text-zinc-400 transition-colors duration-160 hover:text-white"
+              className="inline-flex min-h-11 items-center text-sm text-[#c4bdb3] transition-colors hover:text-white"
             >
               {link.label}
             </Link>
@@ -38,7 +41,7 @@ export function Footer() {
             href="https://instagram.com/charmedanddark"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-400 transition-colors duration-160 hover:text-white"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center text-zinc-300 transition-colors hover:text-white"
             aria-label="Instagram"
           >
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -47,13 +50,8 @@ export function Footer() {
           </Link>
         </div>
 
-        {/* Category Labels */}
-        <div className="mt-8 text-center text-xs uppercase tracking-widest text-zinc-600">
-          Gothic Apparel · Gothic Home Decor · Limited Drops
-        </div>
-
         {/* Copyright */}
-        <div className="mt-4 text-xs text-zinc-600">
+        <div className="text-center text-xs leading-relaxed text-zinc-400">
           © 2026 Charmed & Dark. All rights reserved.
         </div>
       </div>

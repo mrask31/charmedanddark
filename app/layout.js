@@ -70,7 +70,7 @@ export default function RootLayout({ children }) {
             }),
           }}
         />
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-black pb-[calc(4rem+env(safe-area-inset-bottom,0px))] text-white lg:pb-0">
           <PHProvider>
           <Suspense fallback={null}><AttributionCapture /></Suspense>
           <AuthProvider>

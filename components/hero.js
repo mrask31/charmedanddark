@@ -1,45 +1,35 @@
 import Link from "next/link";
+import Image from "next/image";
 
-export function Hero() {
+export function Hero({ products = [] }) {
+  const images = products.filter((product) => product?.imageUrls?.[0]).slice(0, 3);
+
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black" style={{ paddingBottom: '32px' }}>
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/images/homepage/hero-background.jpg')`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
-        <p className="mb-4 text-[11px] uppercase tracking-[0.3em] text-[#B89C6D]" style={{ fontFamily: 'Inter, sans-serif' }}>
-          Dark Living — Haunted America 2026 Vendor
-        </p>
-        <h1 className="max-w-4xl font-serif text-3xl italic leading-tight text-white md:text-5xl lg:text-6xl">
-          Live Beautifully in the Shadows.
-        </h1>
-        <p className="mt-6 max-w-2xl text-sm font-light leading-relaxed text-zinc-300 md:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
-          Vintage Kiss Lock Bags, haunting home d&eacute;cor, candles, and everyday treasures for those who never stopped loving Halloween.
-        </p>
-
-        {/* CTAs */}
-        <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-          <Link
-            href="/collections/kiss-lock-bags"
-            className="bg-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-black transition-opacity duration-160 hover:opacity-90"
-          >
-            Shop Best Sellers
-          </Link>
-          <Link
-            href="/drops"
-            className="border border-white px-8 py-4 text-xs uppercase tracking-widest text-white transition-colors duration-160 hover:bg-white hover:text-black"
-          >
-            Explore Summerween
-          </Link>
+    <section aria-labelledby="home-heading" className="relative overflow-hidden bg-[#0b0a0c]">
+      <div aria-hidden="true" className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: "url('/images/homepage/hero-background.jpg')" }} />
+      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-2 lg:gap-14 lg:px-10 lg:py-16">
+        <div className="max-w-xl">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#d4b984]">Gothic goods for everyday living</p>
+          <h1 id="home-heading" className="mt-5 font-serif text-[2.75rem] italic leading-[1.08] text-[#f5f0e8] sm:text-6xl lg:text-7xl">
+            Live Beautifully<br className="hidden sm:block" /> in the Shadows.
+          </h1>
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-[#ded8cf]">Distinctive bags, expressive apparel, and atmospheric pieces for your home.</p>
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-[#bdb5a9]">Elegant gothic goods for the life you actually live.</p>
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link href="/shop" className="inline-flex min-h-12 items-center justify-center bg-[#c9a96e] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[#dfc394]">Explore the Collection</Link>
+            <Link href="/collections/kiss-lock-bags" className="inline-flex min-h-12 items-center gap-2 py-3 text-sm text-[#f5f0e8] underline underline-offset-4">Shop Kisslock Bags <span aria-hidden="true">↗</span></Link>
+          </div>
         </div>
+        {images.length > 0 && (
+          <div className="grid h-[300px] grid-cols-3 grid-rows-2 gap-3 sm:h-[410px] lg:h-[540px]">
+            {images.map((product, index) => (
+              <Link key={product.id} href={`/shop/${product.slug || product.handle}`} className={`group relative overflow-hidden bg-[#171318] ${index === 0 ? `row-span-2 ${images.length === 1 ? 'col-span-3' : 'col-span-2'}` : images.length === 2 ? 'row-span-2' : ''}`}>
+                <Image src={product.imageUrls[0]} alt={product.name || product.title} fill priority={index === 0} sizes={index === 0 ? '(max-width: 1023px) 65vw, 400px' : '(max-width: 1023px) 32vw, 200px'} className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-105" />
+                <span aria-hidden="true" className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-black/70 text-white">↗</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

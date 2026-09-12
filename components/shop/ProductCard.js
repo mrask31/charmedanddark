@@ -108,7 +108,7 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
   );
 }
 
-export default function ProductCard({ product, isMember }) {
+export default function ProductCard({ product }) {
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifyStatus, setNotifyStatus] = useState(null);
   const [showNotifyForm, setShowNotifyForm] = useState(false);
@@ -191,28 +191,13 @@ export default function ProductCard({ product, isMember }) {
                 <div className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</div>
               )}
 
-              <div className="flex items-center gap-1.5">
-                {!isMember && (
-                  <svg className="h-3 w-3 text-[#c9a96e]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                  </svg>
-                )}
-                <span className="text-sm font-medium text-[#c9a96e]">
-                  Sanctuary member benefits
-                </span>
-                {isOnSale && (
-                  <span className="text-[9px] uppercase tracking-[0.12em] text-[#8f7a55]">Confirmed in cart</span>
-                )}
-              </div>
-              {!isMember && <div className="text-xs text-zinc-500">Benefits confirmed in cart</div>}
-
               {product.variantSummary?.length > 0 && (
-                <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-400">
                   {product.variantSummary.map((v) => `${v.count} ${v.count === 1 ? v.type : v.type + 's'} available`).join(' · ')}
                 </p>
               )}
               {!product.variantSummary?.length && product.hasShopifyOptions && (
-                <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>Options available</p>
+                <p className="mt-1 text-xs text-zinc-400">Options available</p>
               )}
             </div>
           )}

@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { PUBLIC_COLLECTIONS } from "@/lib/discovery";
 import { getProducts } from "@/lib/products";
 import { supabase } from "@/lib/supabase/client";
 
@@ -28,11 +29,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: baseUrl, changeFrequency: 'daily', priority: 1 },
     { url: `${baseUrl}/shop`, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/collections/kiss-lock-bags`, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/collections/smutty-good-girl`, changeFrequency: 'weekly', priority: 0.8 },
+    ...PUBLIC_COLLECTIONS.map((collection) => ({ url: `${baseUrl}/collections/${collection.handle}`, changeFrequency: 'weekly' as const, priority: 0.8 })),
+    { url: `${baseUrl}/last-chance`, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/sale`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/drops`, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/mirror`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${baseUrl}/join`, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/sanctuary`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/journal`, changeFrequency: 'weekly', priority: 0.7 },

@@ -103,20 +103,50 @@ function extractVariantAttributes(product, variant) {
 }
 
 const CATEGORY_MAP = {
-  'T-Shirt': 'Apparel & Accessories > Clothing > Shirts & Tops',
-  'Tank Top': 'Apparel & Accessories > Clothing > Shirts & Tops',
-  'Hoodie': 'Apparel & Accessories > Clothing > Outerwear > Coats & Jackets',
+  "Mirror": "Home & Garden > Decor > Mirrors",
+  "Serving Stand": "Home & Garden > Kitchen & Dining > Tableware > Serveware > Cake Stands",
+  "Serving Board": "Home & Garden > Kitchen & Dining > Kitchen Tools & Utensils > Cutting Boards",
+  "Dinnerware Set": "Home & Garden > Kitchen & Dining > Tableware > Dinnerware > Dinnerware Sets",
+  "Bedding Set": "Home & Garden > Linens & Bedding > Bedding",
+  "Sheet Set": "Home & Garden > Linens & Bedding > Bedding > Bed Sheets",
+  "Throw Pillow": "Home & Garden > Decor > Throw Pillows",
+  "Decorative Tray": "Home & Garden > Decor > Decorative Trays",
+  "Bookends": "Home & Garden > Decor > Bookends",
+  "Ottoman": "Furniture > Ottomans",
+  "Vase": "Home & Garden > Decor > Vases",
+  "Ornament": "Home & Garden > Decor > Seasonal & Holiday Decorations > Holiday Ornaments",
+  "Art Print": "Home & Garden > Decor > Artwork > Posters, Prints, & Visual Artwork",
+  "Canvas Wall Art": "Home & Garden > Decor > Artwork > Posters, Prints, & Visual Artwork",
+  "Cocktail Glasses": "Home & Garden > Kitchen & Dining > Tableware > Drinkware > Stemware",
+  "Tumbler": "Home & Garden > Kitchen & Dining > Tableware > Drinkware > Tumblers",
+  "Water Bottle": "Home & Garden > Kitchen & Dining > Food & Beverage Carriers > Water Bottles",
+  "Mug": "Home & Garden > Kitchen & Dining > Tableware > Drinkware > Mugs",
+  "Cleansing Bundle": "Home & Garden > Decor > Home Fragrances > Incense",
+  "Candle Holder": "Home & Garden > Decor > Home Fragrance Accessories > Candle Holders",
+  "Necklace": "Apparel & Accessories > Jewelry > Necklaces",
+  "Bracelet": "Apparel & Accessories > Jewelry > Bracelets",
+  "Earrings": "Apparel & Accessories > Jewelry > Earrings",
+  "Tote Bag": "Apparel & Accessories > Handbags, Wallets & Cases > Handbags",
+  "Kisslock Bag": "Apparel & Accessories > Handbags, Wallets & Cases > Handbags",
+  "Tights": "Apparel & Accessories > Clothing > Underwear & Socks > Hosiery",
+  "Socks": "Apparel & Accessories > Clothing > Underwear & Socks > Socks",
+  "Trucker Hat": "Apparel & Accessories > Clothing Accessories > Hats",
+  "Baseball Cap": "Apparel & Accessories > Clothing Accessories > Hats",
+  "Beanie": "Apparel & Accessories > Clothing Accessories > Hats",
+  "T-Shirt": "Apparel & Accessories > Clothing > Shirts & Tops",
+  "Tank Top": "Apparel & Accessories > Clothing > Shirts & Tops",
+  "Hoodie": "Apparel & Accessories > Clothing > Shirts & Tops",
   'Hats': 'Apparel & Accessories > Clothing Accessories > Hats',
   'Apparel': 'Apparel & Accessories > Clothing',
   'Accessories': 'Apparel & Accessories > Jewelry',
   'Home Decor': 'Home & Garden > Decor',
-  'Candle': 'Home & Garden > Decor > Candles',
+  "Candle": "Home & Garden > Decor > Home Fragrances > Candles",
   'Ritual': 'Home & Garden > Decor > Candles',
   'Wall Art': 'Home & Garden > Decor > Artwork',
 };
 
-function getGoogleCategory(productType) {
-  return CATEGORY_MAP[productType] || null;
+function getGoogleCategory(productType, category) {
+  return CATEGORY_MAP[productType] || CATEGORY_MAP[category] || null;
 }
 
 export async function GET() {
@@ -131,7 +161,7 @@ export async function GET() {
       const primaryImage = product.imageUrls?.[0];
       const additionalImages = (product.imageUrls || []).slice(1, 10);
       const productType = product.productType || product.category || '';
-      const googleCategory = getGoogleCategory(productType);
+      const googleCategory = getGoogleCategory(productType, product.category);
       const needsApparelAttrs = isApparelOrAccessory(productType, googleCategory);
       for (const variant of variants) {
         const variantId = variant.shopifyVariantId || variant.id;
