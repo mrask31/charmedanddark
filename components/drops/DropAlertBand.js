@@ -10,7 +10,8 @@ export function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-export default function DropAlertBand() {
+export default function DropAlertBand({ variant = 'drops' }) {
+  const isHome = variant === 'home';
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -54,29 +55,29 @@ export default function DropAlertBand() {
     <section
       id="drop-alerts"
       style={{
-        backgroundColor: '#0e0e1a',
-        borderTop: '1px solid #c9a96e',
-        borderBottom: '1px solid #c9a96e',
+        backgroundColor: isHome ? 'transparent' : '#0e0e1a',
+        borderTop: isHome ? 'none' : '1px solid #c9a96e',
+        borderBottom: isHome ? 'none' : '1px solid #c9a96e',
         borderRadius: '0px',
       }}
       aria-labelledby="drop-alerts-heading"
     >
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10 lg:px-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8">
           {/* Left side — label + subtext */}
           <div className="space-y-2">
             <h2
               id="drop-alerts-heading"
-              className="text-[11px] uppercase tracking-[0.3em]"
+              className={isHome ? 'font-serif text-3xl text-[#f5f0e8]' : 'text-[11px] uppercase tracking-[0.3em]'}
               style={{ color: '#c9a96e' }}
             >
-              STAY IN THE WINDOW
+              {isHome ? 'Stay a little closer.' : 'STAY IN THE WINDOW'}
             </h2>
             <p
               className="max-w-md text-sm font-light sm:text-base"
               style={{ color: '#e8e4dc', fontWeight: 300, fontFamily: 'Inter, sans-serif' }}
             >
-              Get notified before each drop opens. No spam—just a quiet signal when it's time.
+              {isHome ? 'Sign up for new collections and the latest from Charmed & Dark.' : "Get notified before each drop opens. No spam—just a quiet signal when it's time."}
             </p>
           </div>
 
@@ -92,6 +93,8 @@ export default function DropAlertBand() {
             <input
               id="drop-alert-email"
               type="email"
+              autoComplete="email"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -118,7 +121,7 @@ export default function DropAlertBand() {
               }}
               aria-label={loading ? 'Subscribing to drop alerts, please wait' : 'Subscribe to drop alerts'}
             >
-              {loading ? 'SENDING…' : 'NOTIFY ME'}
+              {loading ? 'SENDING…' : isHome ? 'KEEP ME IN THE KNOW' : 'NOTIFY ME'}
             </button>
           </form>
         </div>
@@ -132,7 +135,7 @@ export default function DropAlertBand() {
             role="status"
             aria-live="polite"
           >
-            You're on the list. We'll signal you when the window opens.
+            {isHome ? 'You’re on the list. Thank you for making yourself at home.' : 'You’re on the list. We’ll signal you when the window opens.'}
           </p>
         )}
         {error && (

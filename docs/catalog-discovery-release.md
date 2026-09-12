@@ -42,6 +42,14 @@ Seven automated Shopify collections: gothic-clothing, gothic-home-decor, candles
 
 ## Validation and release gate
 
+### Homepage refinement after merchant review
+
+The merchant approved an everyday gothic boutique direction. The homepage now leads with the brand and actual published product photography, followed by four visual category entrances, four available signature pieces, one featured bookish collection, a brief brand introduction and shopping help, then Drops/signup and a compact footer. Retiring designs stay discoverable in Last Chance and their collections; they are excluded from the evergreen homepage selection. The Halloween/vendor opening and repeated homepage membership pitches are removed.
+
+The mobile navigation has five labeled icon buttons plus an explicit header menu for all categories, seasonal collections and secondary destinations. The fixed navigation and page bottom spacing account for the device safe area. The Mirror is preserved at /mirror, linked from the menu and footer; membership and Journal retain their existing pages. Product cards retain Shopify prices, sale calculations and availability without repeating membership marketing text. Loaded brand fonts are applied through the existing CSS variables, and base link resets no longer override explicit button colors and underlines.
+
+This revision changes the isolated website candidate only. No Shopify product, inventory, price, publication, retirement date, fulfillment, paid app or marketing-send changes are included. Signup reuses the existing subscription endpoint; email delivery is not newly verified. The white floating arrow visible in the supplied phone captures has no corresponding control in the repository; no third-party/browser overlay is assumed to be site code.
+
 55 commerce/discovery tests pass. Touched-file ESLint and diff whitespace checks pass. Storefront recommendation query validates against Shopify's schema.
 
 Local production build is blocked by Google Fonts network access in this runtime; use the Vercel preview build as the compilation gate. The browser connection times out on tab discovery, so interactive desktop/mobile checks are outstanding. Follow docs/commerce-release-gates.md before merging. Do not interpret HTTP checks as cart interaction, mobile, email-delivery, or payment validation.

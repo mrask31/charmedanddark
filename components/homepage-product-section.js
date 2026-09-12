@@ -18,21 +18,21 @@ export function HomepageProductSection({
   if (products.length === 0) return null;
 
   return (
-    <section className="bg-black px-8 py-20 lg:px-16">
-      <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
+      <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
-          <h2 className="text-xs uppercase tracking-widest text-[#B89C6D]">
+          <h2 className="font-serif text-3xl text-[#f5f0e8] sm:text-4xl">
             {title}
           </h2>
           {intro && (
-            <p className="mt-3 text-sm font-light leading-relaxed text-zinc-400 md:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <p className="mt-3 text-sm leading-relaxed text-[#c4bdb3] md:text-base">
               {intro}
             </p>
           )}
         </div>
         <Link
           href={viewAllHref}
-          className="text-xs uppercase tracking-widest text-zinc-400 transition-colors duration-160 hover:text-white"
+          className="inline-flex min-h-11 items-center text-sm text-[#d4b984] underline underline-offset-4 transition-colors hover:text-white"
         >
           {ctaLabel}
         </Link>
@@ -109,23 +109,20 @@ export function HomepageProductSection({
               </div>
 
               <div className="mt-3">
-                <h3 className="text-sm text-white font-light leading-tight">{product.name || product.title}</h3>
+                <h3 className="text-sm leading-relaxed text-[#f5f0e8] sm:text-base">{product.name || product.title}</h3>
                 {isSoldOut ? (
                   <p className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-zinc-500">Notify me when available</p>
                 ) : (
                   <div className="mt-1.5 space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {isOnSale ? (
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                        <span className="text-xs text-zinc-600 line-through">{formatProductPrice(retailPrice, product.currency)}</span>
+                        <span className="text-sm text-zinc-400 line-through">{formatProductPrice(retailPrice, product.currency)}</span>
                         <span className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                         <span className="text-[9px] uppercase tracking-[0.14em] text-[#B89C6D]">{salePercentage}% off</span>
                       </div>
                     ) : (
-                      <span className="text-sm text-zinc-400">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
+                      <span className="text-base text-[#ded8cf]">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                     )}
-                    <div className="text-[10px] uppercase tracking-wider text-[#B89C6D]">
-                      Member benefits confirmed in cart
-                    </div>
                   </div>
                 )}
               </div>
