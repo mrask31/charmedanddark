@@ -30,6 +30,29 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
   const [dismissedOverride, setDismissedOverride] = useState(null);
   const activeOverride = overrideImage && dismissedOverride !== overrideImage ? overrideImage : null;
   const fadeTimeoutRef = useRef(null);
+  const thumbnailStripRef = useRef(null);
+  const overrideIndex = activeOverride ? images?.indexOf(activeOverride) ?? -1 : -1;
+  const currentIndex = overrideIndex >= 0 ? overrideIndex : activeIndex;
+
+  useEffect(() => {
+    const strip = thumbnailStripRef.current;
+    const thumbnail = strip?.querySelector('[aria-pressed="true"]');
+    if (!thumbnail) return;
+
+    const stripBounds = strip.getBoundingClientRect();
+    const thumbnailBounds = thumbnail.getBoundingClientRect();
+    const leftOverflow = thumbnailBounds.left - stripBounds.left - 4;
+    const rightOverflow = thumbnailBounds.right - stripBounds.right + 4;
+    const offset = leftOverflow < 0 ? leftOverflow : rightOverflow > 0 ? rightOverflow : 0;
+    if (offset) {
+      strip.scrollBy({
+        left: offset,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+    }
+  }, [currentIndex, activeOverride]);
+
+  useEffect(() => () => clearTimeout(fadeTimeoutRef.current), []);
 
   function handleThumbnailClick(index) {
     if (index === activeIndex && !activeOverride) return;
@@ -55,10 +78,10 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     touchStartX.current = null;
     if (Math.abs(diff) < 40) return;
-    if (diff > 0 && activeIndex < (images?.length || 1) - 1) {
-      handleThumbnailClick(activeIndex + 1);
-    } else if (diff < 0 && activeIndex > 0) {
-      handleThumbnailClick(activeIndex - 1);
+    if (diff > 0 && currentIndex < (images?.length || 1) - 1) {
+      handleThumbnailClick(currentIndex + 1);
+    } else if (diff < 0 && currentIndex > 0) {
+      handleThumbnailClick(currentIndex - 1);
     }
   }
 
@@ -106,7 +129,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
         {hasMultipleImages && (
           <>
             <button
-              onClick={() => handleThumbnailClick(activeIndex === 0 ? images.length - 1 : activeIndex - 1)}
+              onClick={() => handleThumbnailClick(currentIndex === 0 ? images.length - 1 : currentIndex - 1)}
               aria-label="Previous image"
               className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
             >
@@ -115,7 +138,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
               </svg>
             </button>
             <button
-              onClick={() => handleThumbnailClick(activeIndex === images.length - 1 ? 0 : activeIndex + 1)}
+              onClick={() => handleThumbnailClick(currentIndex === images.length - 1 ? 0 : currentIndex + 1)}
               aria-label="Next image"
               className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
             >
@@ -127,12 +150,12 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
         )}
 
         {hasMultipleImages && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
-            {images.slice(0, 6).map((_, i) => (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex max-w-[80%] flex-wrap justify-center gap-1.5 md:hidden" aria-hidden="true">
+            {images.map((_, i) => (
               <span
                 key={i}
                 className={`block h-1.5 w-1.5 rounded-full transition-colors ${
-                  i === activeIndex ? 'bg-[#c9a96e]' : 'bg-white/30'
+                  i === currentIndex ? 'bg-[#c9a96e]' : 'bg-white/30'
                 }`}
               />
             ))}
@@ -141,22 +164,29 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
       </div>
 
       {images?.length > 1 && (
-        <div className="flex gap-2 overflow-hidden">
-          {images.slice(0, 6).map((img, i) => {
+        <div
+          ref={thumbnailStripRef}
+          role="group"
+          aria-label="Product image thumbnails"
+          className="no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain snap-x snap-proximity px-0.5 py-1"
+        >
+          {images.map((img, i) => {
             const colorLabel = imageColorMap[img];
             return (
-              <div key={i} className="flex flex-1 flex-col items-center gap-1">
+              <div key={i} className="flex w-20 shrink-0 snap-start flex-col items-center gap-1 md:w-[calc((100%_-_2.5rem)/6)]">
                 <button
+                  type="button"
                   onClick={() => handleThumbnailClick(i)}
-                  aria-label={colorLabel ? `View ${colorLabel}` : `View image ${i + 1}`}
-                  className={`relative w-full overflow-hidden transition-all duration-200 focus-visible:outline-none ${
-                    i === activeIndex && !activeOverride
+                  aria-label={`View image ${i + 1}${colorLabel ? `, ${colorLabel}` : ''}`}
+                  aria-pressed={img === displayImage}
+                  className={`relative w-full overflow-hidden transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] focus-visible:opacity-100 ${
+                    img === displayImage
                       ? 'ring-1 ring-[#c9a96e] ring-offset-1 ring-offset-[#08080f]'
                       : 'opacity-50 hover:opacity-80'
                   }`}
                   style={{ aspectRatio: '1/1', backgroundColor: '#08080f' }}
                 >
-                  <Image src={img} alt={colorLabel || `${productName} ${i + 1}`} fill className="object-cover" sizes="12vw" />
+                  <Image src={img} alt={colorLabel || `${productName} ${i + 1}`} fill className="object-cover" sizes="(max-width: 767px) 80px, 120px" draggable={false} />
                 </button>
                 {colorLabel && (
                   <span
