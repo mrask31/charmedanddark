@@ -6,6 +6,16 @@ import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/pr
 import { useState, useRef } from "react";
 import ProductBadge from '@/components/shop/ProductBadge';
 import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
+import { productCardTitle } from '@/lib/product-card-title';
+
+// A small display-only lift for these four dark lifestyle photographs. Studio
+// views, garment prints and future replacement photographs retain their exposure.
+const DARK_HOMEWARE_PHOTOS = [
+  'processed-image_698bb6fa-1254-4e25-888e-70b643b94da6.png',
+  'processed-image_443f1a2f-b270-4842-87b4-00063bbb8ed5.png',
+  'processed-image_ee69ae45-e8b5-4279-be0e-dd869148940b.png',
+  'processed-image_e28bb861-6a1d-478a-9a9b-e61c57c52e8a.png',
+];
 
 function ImageCarousel({ images, productName, isSoldOut, slug }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -49,6 +59,7 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
           fill
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           alt={productName}
+          style={!isSoldOut && DARK_HOMEWARE_PHOTOS.some((file) => images[activeIndex].includes(file)) ? { filter: 'brightness(1.12)' } : undefined}
           className={`h-full w-full object-cover transition duration-300 group-hover:scale-105 ${
             isSoldOut ? "grayscale" : ""
           }`}
@@ -98,11 +109,13 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
               <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {images.length > 6 ? <span className="absolute bottom-2 right-2 rounded-full border border-white/15 bg-black/75 px-2.5 py-1 text-[11px] tabular-nums text-[#f5f0e8]" aria-label={`Image ${activeIndex + 1} of ${images.length}`}>
+            {activeIndex + 1} of {images.length}
+          </span> : <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5" aria-label={`Image ${activeIndex + 1} of ${images.length}`}>
             {images.map((_, i) => (
               <span key={i} className={`block h-1.5 w-1.5 rounded-full transition-colors ${i === activeIndex ? "bg-[#c9a96e]" : "bg-white/30"}`} />
             ))}
-          </div>
+          </div>}
         </>
       )}
     </div>
@@ -145,7 +158,7 @@ export default function ProductCard({ product, isMember }) {
   };
 
   return (
-    <div className="group relative">
+    <div className="group relative" data-product-card={product.slug || product.handle}>
       <ProductBadge badge={product.badge} />
       {isOnSale && !isSoldOut && (
         <span
@@ -178,7 +191,7 @@ export default function ProductCard({ product, isMember }) {
 
       <Link href={`/shop/${product.slug}`} className="block">
         <div className="mt-4 space-y-2">
-          <h3 className="font-serif text-lg text-[#F5F0E8]">{product.name}</h3>
+          <h3 className="font-serif text-base leading-snug text-[#f5f0e8] sm:text-lg">{productCardTitle(product)}</h3>
 
           {!isSoldOut && (
             <div className="space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -192,15 +205,15 @@ export default function ProductCard({ product, isMember }) {
                 <div className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</div>
               )}
 
-              <SanctuaryPrice price={publicPrice} currency={product.currency} isMember={isMember} from={product.priceRange?.max > product.priceRange?.min} />
+              <SanctuaryPrice price={publicPrice} currency={product.currency} isMember={isMember} from={product.priceRange?.max > product.priceRange?.min} compact />
 
               {product.variantSummary?.length > 0 && (
-                <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-400">
                   {product.variantSummary.map((v) => `${v.count} ${v.count === 1 ? v.type : v.type + 's'} available`).join(' · ')}
                 </p>
               )}
               {!product.variantSummary?.length && product.hasShopifyOptions && (
-                <p className="mt-1 text-[11px] uppercase tracking-[0.15em]" style={{ color: '#6B6B6B', fontWeight: 300 }}>Options available</p>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-400">Options available</p>
               )}
             </div>
           )}

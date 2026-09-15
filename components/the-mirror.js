@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 export default function TheMirror() {
   const [mode, setMode] = useState('self')
@@ -42,11 +43,12 @@ export default function TheMirror() {
   }
 
   return (
-    <section className="bg-black px-8 py-32 lg:px-16">
-      <div className="mx-auto max-w-2xl border border-zinc-800 p-12 text-center lg:p-16">
+    <section className="bg-black px-5 py-10 sm:px-8 sm:py-14 lg:px-16">
+      <div className="mx-auto max-w-2xl border border-zinc-800 px-5 py-8 text-center sm:p-10 lg:p-12">
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0', marginBottom: '2rem' }}>
           <button
+            aria-pressed={mode === 'self'}
             onClick={() => { setMode('self'); setReading(null); setInput('') }}
             style={{
               padding: '8px 20px',
@@ -65,6 +67,7 @@ export default function TheMirror() {
             For Yourself
           </button>
           <button
+            aria-pressed={mode === 'gift'}
             onClick={() => { setMode('gift'); setReading(null); setInput('') }}
             style={{
               padding: '8px 20px',
@@ -98,6 +101,7 @@ export default function TheMirror() {
         <div className="mt-10">
           <input
             type="text"
+            aria-label={mode === 'self' ? 'Your mood' : 'Describe your friend'}
             placeholder={placeholder}
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -153,7 +157,7 @@ export default function TheMirror() {
                   {reading.mode === 'gift' ? 'For them' : 'The prescription'}
                 </p>
                 {reading.products.map((product) => (
-                  <a
+                  <Link
                     key={product.id || product.handle}
                     href={`/shop/${product.handle}`}
                     style={{
@@ -196,7 +200,7 @@ export default function TheMirror() {
                     }}>
                       {product.priceVaries ? 'From ' : ''}{product.price != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: product.currencyCode || 'USD' }).format(Number(product.price)) : ''} — View →
                     </div>
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}

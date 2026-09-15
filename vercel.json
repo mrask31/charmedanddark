@@ -8,5 +8,6 @@
       "path": "/api/cron/promotions/lifecycle",
       "schedule": "*/5 * * * *"
     }
-  ]
+  ],
+  "buildCommand": "npm run test:commerce && npm run build"
 }

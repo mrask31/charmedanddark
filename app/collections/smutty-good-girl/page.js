@@ -1,3 +1,5 @@
+import { getDiscoveryCollection } from '@/lib/discovery-server';
+import { productCardTitle } from '@/lib/product-card-title';
 import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
@@ -21,11 +23,14 @@ function formatPrice(value, currency = 'USD') {
   }).format(Number(value));
 }
 
-export const metadata = {
-  title: 'Smutty Good Girl Collection',
-  alternates: { canonical: 'https://www.charmedanddark.com/collections/smutty-good-girl' },
-  description: 'Bookish drinkware, totes, and everyday essentials for dark-romance readers, fictional-boyfriend collectors, and anyone with a suspiciously long TBR.',
-};
+export async function generateMetadata() {
+  const collection = await getDiscoveryCollection('smutty-good-girl');
+  return {
+    title: collection.seo?.title || collection.title,
+    description: collection.seo?.description || collection.description,
+    alternates: { canonical: 'https://www.charmedanddark.com/collections/smutty-good-girl' },
+  };
+}
 
 export const revalidate = 0;
 
@@ -114,7 +119,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
 
                 <div className="px-1">
                   <h2 className="font-serif text-xl leading-tight text-[#f7f1f3] transition-colors group-hover:text-[#d7a0b5] sm:text-2xl">
-                    {product.name || product.title}
+                    {productCardTitle(product)}
                   </h2>
                   {isSoldOut ? (
                     <p className="mt-2 text-sm font-light text-[#b8aeb2]" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -130,9 +135,6 @@ export default async function SmuttyGoodGirlCollectionPage() {
                         {isOnSale && (
                           <span className="text-[9px] uppercase tracking-[0.14em] text-[#d7a0b5]">{salePercentage}% off</span>
                         )}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-[0.14em] text-[#d7a0b5]">
-                        Member benefits confirmed in cart
                       </div>
                     </div>
                   )}

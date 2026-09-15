@@ -1,3 +1,4 @@
+import { getDiscoveryCollection } from '@/lib/discovery-server';
 import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
@@ -23,11 +24,14 @@ function getImage(product) {
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: 'Kiss Lock Bags',
-  alternates: { canonical: 'https://www.charmedanddark.com/collections/kiss-lock-bags' },
-  description: 'Vintage-inspired gothic kiss lock bags. Small statement pieces that carry the whole mood — one bag at a time.',
-};
+export async function generateMetadata() {
+  const collection = await getDiscoveryCollection('kiss-lock-bags');
+  return {
+    title: collection.seo?.title || collection.title,
+    description: collection.seo?.description || collection.description,
+    alternates: { canonical: 'https://www.charmedanddark.com/collections/kiss-lock-bags' },
+  };
+}
 
 export default async function KissLockBagsPage() {
   const products = await fetchBagProducts();
@@ -220,9 +224,6 @@ export default async function KissLockBagsPage() {
                             {salePercentage}% off
                           </span>
                         )}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#c9a96e' }}>
-                        Member benefits confirmed in cart
                       </div>
                     </div>
                   )}
