@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SanctuaryPrice from "@/components/shop/SanctuaryPrice";
+import { productCardTitle } from '@/lib/product-card-title';
 import Image from "next/image";
 import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/product-display";
 
@@ -110,7 +111,7 @@ export function HomepageProductSection({
               </div>
 
               <div className="mt-3">
-                <h3 className="text-sm leading-relaxed text-[#f5f0e8] sm:text-base">{product.name || product.title}</h3>
+                <h3 className="font-serif text-base leading-snug text-[#f5f0e8] sm:text-lg">{productCardTitle(product)}</h3>
                 {isSoldOut ? (
                   <p className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-zinc-500">Notify me when available</p>
                 ) : (

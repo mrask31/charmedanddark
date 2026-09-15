@@ -1,5 +1,13 @@
 # Shop discovery review — September 15, 2026
 
+## Integration with the approved homepage redesign
+
+After a browser review, the merchant approved combining a simpler Shop experience with the existing homepage preview. The homepage keeps its hero, visual category entrances, signature products, and bookish feature. Shared cards now use concise, explicitly curated display names; Shopify product names, SEO metadata, alt text, variants, and cart labels remain unchanged.
+
+Shop has one category control: desktop buttons and a native mobile selector. The duplicate category links are removed. Explore shows up to four items in each section, including the four current Smutty Good Girl products. Each section has a View all destination with its full family count. `/shop?view=all`, category filters, and search expose the full catalog. The shared footer completes the page. Product-link preservation checks now inspect the explicit full-catalog view as well as the curated landing page.
+
+The browser confirmed 102 products and all four S.G.G. items in the preceding candidate after refreshing stale preview data. The integration adds regression coverage for section limits, full-catalog/search access, family totals including S.G.G., concise title distinctions, and unchanged canonical data. Candidate build and browser results are recorded in PR 51. The redesign still requires the merchant's explicit production release approval.
+
 The existing production branch is main at 8dba471efb63f0a306411c8d812cb96154f9dc03. The redesign stays on feat/catalog-discovery-seasonal (PR 51); the merchant has not approved production release.
 
 ## Missing products

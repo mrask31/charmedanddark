@@ -116,7 +116,7 @@ for (const item of report.feed) {
 check(promotionsResponse.status === 200, '/api/promotions/active', 'Promotions endpoint available');
 try { report.promotions = JSON.parse(promotionsResponse.body); } catch { check(false, '/api/promotions/active', 'Promotions response is valid JSON'); }
 
-const corePaths = ['/', '/shop', '/collections/kiss-lock-bags', '/collections/smutty-good-girl', '/drops', '/journal', '/shop/celestial-kisslock-bag-in-linen-blended-fabric', '/shop/unisex-softstyle-t-shirt', '/shop/bones-and-brew-summer-unisex-tee-1'];
+const corePaths = ['/', '/shop', '/shop?view=all', '/collections/kiss-lock-bags', '/collections/smutty-good-girl', '/drops', '/journal', '/shop/celestial-kisslock-bag-in-linen-blended-fabric', '/shop/unisex-softstyle-t-shirt', '/shop/bones-and-brew-summer-unisex-tee-1'];
 const productPaths = values['all-products'] ? unique([...report.sitemap, ...(baseline?.sitemap || [])].map(pathOf).filter((path) => path?.startsWith('/shop/'))) : [];
 const queue = unique([...corePaths, ...productPaths]);
 await Promise.all(Array.from({ length: 3 }, async () => {
@@ -129,8 +129,10 @@ if (baseline) {
   }
   const feedIds = new Set(report.feed.map((item) => item.id));
   for (const item of baseline.feed || []) check(feedIds.has(item.id), '/api/google-feed', `Preserved feed ID: ${item.id}`);
-  const currentShop = report.pages.find((page) => page.path === '/shop');
-  for (const path of baseline.pages?.find((page) => page.path === '/shop')?.productLinks || []) check(currentShop?.productLinks.includes(path), '/shop', `Preserved shop product link: ${path}`);
+  // The merchant-approved /shop introduction is curated; verify the complete catalog separately.
+  const currentShop = report.pages.find((page) => page.path === '/shop?view=all');
+  const previousShop = baseline.pages?.find((page) => page.path === '/shop?view=all') || baseline.pages?.find((page) => page.path === '/shop');
+  for (const path of previousShop?.productLinks || []) check(currentShop?.productLinks.includes(path), '/shop?view=all', `Preserved shop product link: ${path}`);
 }
 const failures = report.checks.filter((item) => !item.pass);
 report.result = { passed: report.checks.length - failures.length, failed: failures.length, pages: report.pages.length, sitemapUrls: report.sitemap.length, feedItems: report.feed.length };

@@ -1,4 +1,5 @@
 import { getDiscoveryCollection } from '@/lib/discovery-server';
+import { productCardTitle } from '@/lib/product-card-title';
 import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
@@ -118,7 +119,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
 
                 <div className="px-1">
                   <h2 className="font-serif text-xl leading-tight text-[#f7f1f3] transition-colors group-hover:text-[#d7a0b5] sm:text-2xl">
-                    {product.name || product.title}
+                    {productCardTitle(product)}
                   </h2>
                   {isSoldOut ? (
                     <p className="mt-2 text-sm font-light text-[#b8aeb2]" style={{ fontFamily: 'Inter, sans-serif' }}>

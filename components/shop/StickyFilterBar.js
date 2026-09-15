@@ -2,105 +2,27 @@
 
 import { SHOP_FILTERS } from "@/lib/shop-browse";
 
-export default function StickyFilterBar({
-  activeFilter,
-  onFilterChange,
-  sortOption,
-  onSortChange,
-  hasOnSale = false,
-  searchQuery = "",
-  onSearchChange,
-  resultCount = 0,
-}) {
-  const filters = [SHOP_FILTERS[0], ...(hasOnSale ? [{ id: "ON_SALE", label: "Sale" }] : []), ...SHOP_FILTERS.slice(1)];
+export default function StickyFilterBar({ activeFilter, onFilterChange, sortOption, onSortChange, hasOnSale = false, searchQuery = "", onSearchChange, resultCount = 0, displayedCount = resultCount, featured = false }) {
+  const filters = [{ id: 'FEATURED', label: 'Explore' }, ...SHOP_FILTERS, ...(hasOnSale ? [{ id: 'ON_SALE', label: 'Sale' }] : [])];
+  const sortOptions = ['Featured', 'Price: Low to High', 'Price: High to Low', 'Newest'];
+  const selectClass = 'min-h-11 w-full min-w-0 rounded-none border border-white/20 bg-[#101014] px-3 text-sm text-[#f5f0e8] focus-visible:outline-2 focus-visible:outline-[#c9a96e]';
 
-  const sortOptions = [
-    "Featured",
-    "Price: Low to High",
-    "Price: High to Low",
-    "Newest",
-  ];
-
-  return (
-    <div
-      className="sticky top-[72px] z-40 bg-black/95 backdrop-blur-sm"
-      style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-    >
-      <style>{`.filter-scroll::-webkit-scrollbar { display: none }`}</style>
-
-      {/* Row 1: category filter pills */}
-      <div
-        role="group"
-        aria-label="Product categories"
-        className="filter-scroll mx-auto max-w-7xl"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          overflowX: 'auto',
-          scrollbarWidth: 'none',
-          WebkitOverflowScrolling: 'touch',
-          width: '100%',
-        }}
-      >
-        {filters.map((filter) => (
-          <button
-            key={filter.id}
-            type="button"
-            className="focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[#c9a96e]"
-            aria-pressed={activeFilter === filter.id}
-            aria-controls="shop-results"
-            onClick={() => onFilterChange(filter.id)}
-            style={{
-              flexShrink: 0,
-              whiteSpace: 'nowrap',
-              padding: '14px 16px',
-              fontSize: '11px',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              fontFamily: 'Inter, sans-serif',
-              border: 'none',
-              background: 'transparent',
-              color: activeFilter === filter.id ? '#c9a96e' : 'rgba(255,255,255,0.65)',
-              borderBottom: activeFilter === filter.id ? '2px solid #c9a96e' : '2px solid transparent',
-              cursor: 'pointer',
-            }}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Row 2: sort dropdown */}
-      <div
-        className="mx-auto max-w-7xl"
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 16px',
-        }}
-      >
-        <label className="mr-auto flex w-full basis-full items-center gap-3 text-xs text-zinc-300 sm:w-auto sm:min-w-0 sm:flex-1 sm:basis-auto">
-          <span className="sr-only">Search products</span>
-          <input type="search" value={searchQuery} onChange={(e) => onSearchChange(e.target.value)} placeholder="Search the shop" className="min-w-0 w-full sm:max-w-xs border border-zinc-700 bg-black px-3 py-2 text-sm text-white placeholder:text-zinc-400 focus:border-[#c9a96e] focus:outline-none" />
-        </label>
-        <span role="status" aria-live="polite" className="text-xs text-zinc-400">{resultCount} products</span>
-        <label htmlFor="shop-sort" className="text-xs uppercase tracking-[0.2em] text-zinc-400">Sort</label>
-        <select
-          id="shop-sort"
-          value={sortOption}
-          onChange={(e) => onSortChange(e.target.value)}
-          className="border-0 bg-transparent text-xs uppercase tracking-[0.2em] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c9a96e]"
-        >
-          {sortOptions.map((option) => (
-            <option key={option} value={option} className="bg-black">
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
+  return <div className="sticky top-[72px] z-40 border-b border-white/10 bg-[#08080a]/95 backdrop-blur-sm">
+    <div role="group" aria-label="Product categories" className="mx-auto hidden max-w-7xl overflow-x-auto px-5 md:flex lg:px-10">
+      {filters.map((filter) => <button key={filter.id} type="button" aria-pressed={activeFilter === filter.id} aria-controls="shop-results" onClick={() => onFilterChange(filter.id)} className={`min-h-12 shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[#c9a96e] ${activeFilter === filter.id ? 'border-[#c9a96e] text-[#d4b984]' : 'border-transparent text-[#c4bdb3] hover:text-white'}`}>{filter.label}</button>)}
     </div>
-  );
+    <div className="mx-auto grid max-w-7xl grid-cols-2 items-center gap-3 px-5 py-3 sm:px-8 md:flex md:flex-wrap lg:px-10">
+      <label className="min-w-0 md:hidden"><span className="sr-only">Browse the shop</span>
+        <select value={activeFilter} onChange={(event) => onFilterChange(event.target.value)} className={selectClass}>{filters.map((filter) => <option key={filter.id} value={filter.id}>{filter.label}</option>)}</select>
+      </label>
+      <label className="col-span-2 row-start-2 min-w-0 md:mr-auto md:max-w-sm md:flex-1">
+        <span className="sr-only">Search products</span>
+        <input type="search" value={searchQuery} onChange={(event) => onSearchChange(event.target.value)} placeholder="Find your next favorite" className="min-h-11 w-full min-w-0 rounded-none border border-white/20 bg-transparent px-3 text-sm text-white placeholder:text-zinc-400 focus-visible:outline-2 focus-visible:outline-[#c9a96e]" />
+      </label>
+      <label className="col-start-2 row-start-1 min-w-0 md:w-44"><span className="sr-only">Sort</span>
+        <select id="shop-sort" value={sortOption} onChange={(event) => onSortChange(event.target.value)} className={selectClass}>{sortOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select>
+      </label>
+      <span role="status" aria-live="polite" className="col-span-2 text-xs text-[#c4bdb3]">{featured ? `${displayedCount} featured · ${resultCount} in the shop` : `${resultCount} ${resultCount === 1 ? 'product' : 'products'}`}</span>
+    </div>
+  </div>;
 }

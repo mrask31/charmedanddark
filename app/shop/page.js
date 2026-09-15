@@ -1,6 +1,7 @@
 import { getProducts, isShopifyCatalogEnabled } from "@/lib/products";
 import legacyMemberships from "@/data/commerce-collection-migration.json";
 import ShopPageClient from "./page-new";
+import { Footer } from "@/components/footer";
 
 // Always fetch fresh data — no caching
 export const revalidate = 0;
@@ -18,5 +19,5 @@ export default async function ShopPage({ searchParams }) {
     ...product,
     collections: Object.entries(legacyMemberships).filter(([, handles]) => handles.includes(product.slug || product.handle)).map(([handle]) => ({ handle })),
   }));
-  return <ShopPageClient products={products} initialFilter={query?.category} initialQuery={query?.q} initialCollection={query?.collection} />;
+  return <><ShopPageClient key={JSON.stringify([query?.category, query?.q, query?.collection, query?.view])} products={products} initialFilter={query?.category} initialQuery={query?.q} initialCollection={query?.collection} initialView={query?.view} /><Footer /></>;
 }

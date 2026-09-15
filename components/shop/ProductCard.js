@@ -6,6 +6,7 @@ import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/pr
 import { useState, useRef } from "react";
 import ProductBadge from '@/components/shop/ProductBadge';
 import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
+import { productCardTitle } from '@/lib/product-card-title';
 
 function ImageCarousel({ images, productName, isSoldOut, slug }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -178,7 +179,7 @@ export default function ProductCard({ product, isMember }) {
 
       <Link href={`/shop/${product.slug}`} className="block">
         <div className="mt-4 space-y-2">
-          <h3 className="font-serif text-lg text-[#F5F0E8]">{product.name}</h3>
+          <h3 className="font-serif text-base leading-snug text-[#f5f0e8] sm:text-lg">{productCardTitle(product)}</h3>
 
           {!isSoldOut && (
             <div className="space-y-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>
