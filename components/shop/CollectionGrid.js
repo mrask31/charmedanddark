@@ -3,10 +3,10 @@
 import { useState, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import { filterCollectionProducts } from '@/lib/discovery';
-import { useAuth } from '@/context/AuthContext';
+import { useSanctuaryAccess } from '@/hooks/useSanctuaryAccess';
 
 export default function CollectionGrid({ products }) {
-  const { isMember } = useAuth();
+  const { isMember } = useSanctuaryAccess();
   const [type, setType] = useState('');
   const [size, setSize] = useState('');
   const [color, setColor] = useState('');

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/product-display";
 import { useState, useRef } from "react";
 import ProductBadge from '@/components/shop/ProductBadge';
+import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
 
 function ImageCarousel({ images, productName, isSoldOut, slug }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -108,7 +109,7 @@ function ImageCarousel({ images, productName, isSoldOut, slug }) {
   );
 }
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, isMember }) {
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifyStatus, setNotifyStatus] = useState(null);
   const [showNotifyForm, setShowNotifyForm] = useState(false);
@@ -191,13 +192,15 @@ export default function ProductCard({ product }) {
                 <div className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</div>
               )}
 
+              <SanctuaryPrice price={publicPrice} currency={product.currency} isMember={isMember} from={product.priceRange?.max > product.priceRange?.min} compact />
+
               {product.variantSummary?.length > 0 && (
                 <p className="mt-1 text-xs leading-relaxed text-zinc-400">
                   {product.variantSummary.map((v) => `${v.count} ${v.count === 1 ? v.type : v.type + 's'} available`).join(' · ')}
                 </p>
               )}
               {!product.variantSummary?.length && product.hasShopifyOptions && (
-                <p className="mt-1 text-xs text-zinc-400">Options available</p>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-400">Options available</p>
               )}
             </div>
           )}

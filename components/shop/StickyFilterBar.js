@@ -1,5 +1,7 @@
 "use client";
 
+import { SHOP_FILTERS } from "@/lib/shop-browse";
+
 export default function StickyFilterBar({
   activeFilter,
   onFilterChange,
@@ -10,16 +12,7 @@ export default function StickyFilterBar({
   onSearchChange,
   resultCount = 0,
 }) {
-  const filters = [
-    { id: "ALL", label: "ALL" },
-    ...(hasOnSale ? [{ id: "ON_SALE", label: "SALE" }] : []),
-    { id: "SGG", label: "SMUTTY GOOD GIRL" },
-    { id: "ACCESSORIES", label: "ACCESSORIES" },
-    { id: "RITUAL", label: "CANDLES & RITUAL" },
-    { id: "HOME", label: "HOME" },
-    { id: "APPAREL", label: "APPAREL" },
-    { id: "WALL_ART", label: "WALL ART" },
-  ];
+  const filters = [SHOP_FILTERS[0], ...(hasOnSale ? [{ id: "ON_SALE", label: "Sale" }] : []), ...SHOP_FILTERS.slice(1)];
 
   const sortOptions = [
     "Featured",
@@ -60,7 +53,7 @@ export default function StickyFilterBar({
             style={{
               flexShrink: 0,
               whiteSpace: 'nowrap',
-              padding: '12px 16px',
+              padding: '14px 16px',
               fontSize: '11px',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',

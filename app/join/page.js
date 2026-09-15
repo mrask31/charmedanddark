@@ -74,6 +74,9 @@ async function handleJoinSubmit(email, password, firstName, birthday, setStatus,
       'We could not complete your Sanctuary entry right now. Please try again.'
     )
 
+    // Membership is written after sign-up emits SIGNED_IN. Recheck any existing cart now.
+    window.dispatchEvent(new Event('sanctuary-membership-updated'))
+
     // Required: Subscribe to Klaviyo Sanctuary Members list
     await parseApiResponse(
       await fetch('/api/klaviyo/sanctuary', {
@@ -132,7 +135,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
       <div style={{ textAlign: 'center' }}>
         <p style={{ color: '#c9a96e', fontSize: '1.5rem' }}>🖤</p>
         <h2 style={{ color: '#e8e4dc', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
-          You're in. Welcome to the Sanctuary. 🖤
+          You’re in. Welcome to the Sanctuary. 🖤
         </h2>
         <p style={{ color: 'rgba(232,228,220,0.7)', marginBottom: '0.5rem' }}>
           Your 10% member discount is now active. Sign in to unlock it on every order.
@@ -244,7 +247,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
           </select>
         </div>
         <p style={{ fontSize: '0.75rem', color: 'rgba(232,228,220,0.3)', marginTop: '0.35rem' }}>
-          We'll send you something special on your birthday 🖤
+          We’ll send you something special on your birthday 🖤
         </p>
       </div>
 

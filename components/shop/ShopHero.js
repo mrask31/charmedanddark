@@ -1,6 +1,6 @@
 export default function ShopHero() {
   return (
-    <section className="relative h-[50vh] min-h-[400px] w-full overflow-hidden bg-black">
+    <section className="relative h-[34vh] min-h-[240px] max-h-[360px] w-full overflow-hidden bg-black">
       <div className="absolute inset-0">
         <img
           src="/images/shop/hero.jpg"
@@ -14,8 +14,8 @@ export default function ShopHero() {
         <h1 className="font-serif text-5xl italic text-white md:text-6xl lg:text-7xl">
           The Atelier
         </h1>
-        <p className="mt-4 text-sm uppercase tracking-[0.3em] text-[#C9A84C] md:text-base">
-          Curated Darkness for the Modern Mystic
+        <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#ded8cf] md:text-base">
+          Gothic goods for everyday living. Find what feels like you.
         </p>
       </div>
     </section>

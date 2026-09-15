@@ -132,6 +132,18 @@ export function CartProvider({ children }) {
   }, [user?.id, requestCart]);
 
   useEffect(() => {
+    function handleMembershipUpdate() {
+      epochRef.current += 1;
+      setValidated(false);
+      if (!loadedRef.current) return;
+      if (busyRef.current) authRefreshRef.current = true;
+      else requestCart(itemsRef.current).catch(() => {});
+    }
+    window.addEventListener('sanctuary-membership-updated', handleMembershipUpdate);
+    return () => window.removeEventListener('sanctuary-membership-updated', handleMembershipUpdate);
+  }, [requestCart]);
+
+  useEffect(() => {
     function handleStorage(event) {
       if (event.key !== STORAGE_KEY || !event.newValue) return;
       if (busyRef.current) return; // The shared lock rebases this request when it acquires ownership.

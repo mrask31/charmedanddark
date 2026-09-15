@@ -43,7 +43,7 @@ export default async function Home({ searchParams }) {
   const heroProducts = [groups[0][0], groups[3][0], groups[2][0]].filter(Boolean);
   const bookishFeature = everydayPieces(bookish).find((product) => product.imageUrls?.[0]);
   const destinations = [
-    { label: 'Kisslock Bags', description: 'A little statement. Everywhere you go.', handle: 'kiss-lock-bags', product: groups[0][0] },
+    { label: 'Bags', description: 'A little statement. Everywhere you go.', handle: 'bags', product: groups[0][0] },
     { label: 'Clothing', description: 'Your everyday, with a darker edge.', handle: 'gothic-clothing', product: groups[1][0] },
     { label: 'Home & Décor', description: 'Make your space feel like you.', handle: 'gothic-home-decor', product: groups[2][0] },
     { label: 'Candles & Ritual', description: 'Settle into the softer hours.', handle: 'candles-ritual', product: groups[3][0] },

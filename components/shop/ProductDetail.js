@@ -12,6 +12,8 @@ import ProductReturnsSummary from '@/components/shop/ProductReturnsSummary';
 import ProductBadge from '@/components/shop/ProductBadge';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
+import { formatProductPrice } from '@/lib/product-display';
+import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 function getPromotionPricing(product, priceOverride = null, compareOverride = undefined) {
@@ -30,6 +32,29 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
   const [dismissedOverride, setDismissedOverride] = useState(null);
   const activeOverride = overrideImage && dismissedOverride !== overrideImage ? overrideImage : null;
   const fadeTimeoutRef = useRef(null);
+  const thumbnailStripRef = useRef(null);
+  const overrideIndex = activeOverride ? images?.indexOf(activeOverride) ?? -1 : -1;
+  const currentIndex = overrideIndex >= 0 ? overrideIndex : activeIndex;
+
+  useEffect(() => {
+    const strip = thumbnailStripRef.current;
+    const thumbnail = strip?.querySelector('[aria-pressed="true"]');
+    if (!thumbnail) return;
+
+    const stripBounds = strip.getBoundingClientRect();
+    const thumbnailBounds = thumbnail.getBoundingClientRect();
+    const leftOverflow = thumbnailBounds.left - stripBounds.left - 4;
+    const rightOverflow = thumbnailBounds.right - stripBounds.right + 4;
+    const offset = leftOverflow < 0 ? leftOverflow : rightOverflow > 0 ? rightOverflow : 0;
+    if (offset) {
+      strip.scrollBy({
+        left: offset,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+    }
+  }, [currentIndex, activeOverride]);
+
+  useEffect(() => () => clearTimeout(fadeTimeoutRef.current), []);
 
   function handleThumbnailClick(index) {
     if (index === activeIndex && !activeOverride) return;
@@ -55,10 +80,10 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     touchStartX.current = null;
     if (Math.abs(diff) < 40) return;
-    if (diff > 0 && activeIndex < (images?.length || 1) - 1) {
-      handleThumbnailClick(activeIndex + 1);
-    } else if (diff < 0 && activeIndex > 0) {
-      handleThumbnailClick(activeIndex - 1);
+    if (diff > 0 && currentIndex < (images?.length || 1) - 1) {
+      handleThumbnailClick(currentIndex + 1);
+    } else if (diff < 0 && currentIndex > 0) {
+      handleThumbnailClick(currentIndex - 1);
     }
   }
 
@@ -106,7 +131,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
         {hasMultipleImages && (
           <>
             <button
-              onClick={() => handleThumbnailClick(activeIndex === 0 ? images.length - 1 : activeIndex - 1)}
+              onClick={() => handleThumbnailClick(currentIndex === 0 ? images.length - 1 : currentIndex - 1)}
               aria-label="Previous image"
               className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
             >
@@ -115,7 +140,7 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
               </svg>
             </button>
             <button
-              onClick={() => handleThumbnailClick(activeIndex === images.length - 1 ? 0 : activeIndex + 1)}
+              onClick={() => handleThumbnailClick(currentIndex === images.length - 1 ? 0 : currentIndex + 1)}
               aria-label="Next image"
               className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 opacity-70 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]"
             >
@@ -127,12 +152,12 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
         )}
 
         {hasMultipleImages && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
-            {images.slice(0, 6).map((_, i) => (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex max-w-[80%] flex-wrap justify-center gap-1.5 md:hidden" aria-hidden="true">
+            {images.map((_, i) => (
               <span
                 key={i}
                 className={`block h-1.5 w-1.5 rounded-full transition-colors ${
-                  i === activeIndex ? 'bg-[#c9a96e]' : 'bg-white/30'
+                  i === currentIndex ? 'bg-[#c9a96e]' : 'bg-white/30'
                 }`}
               />
             ))}
@@ -141,22 +166,29 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
       </div>
 
       {images?.length > 1 && (
-        <div className="flex gap-2 overflow-hidden">
-          {images.slice(0, 6).map((img, i) => {
+        <div
+          ref={thumbnailStripRef}
+          role="group"
+          aria-label="Product image thumbnails"
+          className="no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain snap-x snap-proximity px-0.5 py-1"
+        >
+          {images.map((img, i) => {
             const colorLabel = imageColorMap[img];
             return (
-              <div key={i} className="flex flex-1 flex-col items-center gap-1">
+              <div key={i} className="flex w-20 shrink-0 snap-start flex-col items-center gap-1 md:w-[calc((100%_-_2.5rem)/6)]">
                 <button
+                  type="button"
                   onClick={() => handleThumbnailClick(i)}
-                  aria-label={colorLabel ? `View ${colorLabel}` : `View image ${i + 1}`}
-                  className={`relative w-full overflow-hidden transition-all duration-200 focus-visible:outline-none ${
-                    i === activeIndex && !activeOverride
+                  aria-label={`View image ${i + 1}${colorLabel ? `, ${colorLabel}` : ''}`}
+                  aria-pressed={img === displayImage}
+                  className={`relative w-full overflow-hidden transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e] focus-visible:opacity-100 ${
+                    img === displayImage
                       ? 'ring-1 ring-[#c9a96e] ring-offset-1 ring-offset-[#08080f]'
                       : 'opacity-50 hover:opacity-80'
                   }`}
                   style={{ aspectRatio: '1/1', backgroundColor: '#08080f' }}
                 >
-                  <Image src={img} alt={colorLabel || `${productName} ${i + 1}`} fill className="object-cover" sizes="12vw" />
+                  <Image src={img} alt={colorLabel || `${productName} ${i + 1}`} fill className="object-cover" sizes="(max-width: 767px) 80px, 120px" draggable={false} />
                 </button>
                 {colorLabel && (
                   <span
@@ -215,7 +247,7 @@ function ProductDetailsList({ description }) {
 // ============================================================================
 // RELATED PRODUCTS
 // ============================================================================
-function RelatedProducts({ products }) {
+function RelatedProducts({ products, isMember }) {
   if (!products?.length) return null;
 
   return (
@@ -298,14 +330,14 @@ function RelatedProducts({ products }) {
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     {pricing.isOnSale && (
                       <span className="text-[11px] line-through" style={{ color: '#514d49' }}>
-                        ${pricing.retailPrice.toFixed(2)}
+                        {formatProductPrice(pricing.retailPrice, p.currency)}
                       </span>
                     )}
                     <span className="text-[14px] font-light" style={{ color: pricing.isOnSale ? '#e8e4dc' : '#6b6760' }}>
-                      ${pricing.publicPrice.toFixed(2)}
+                      {p.priceRange?.max > p.priceRange?.min ? 'From ' : ''}{formatProductPrice(pricing.publicPrice, p.currency)}
                     </span>
                   </div>
-
+                  <SanctuaryPrice price={pricing.publicPrice} currency={p.currency} isMember={isMember} from={p.priceRange?.max > p.priceRange?.min} />
                 </div>
               )}
             </div>
@@ -331,6 +363,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const hasShopifyVariants = shopifyVariants?.variants?.length > 0;
   const activePricing = getPromotionPricing(product, selectedShopifyVariant?.price, selectedShopifyVariant ? selectedShopifyVariant.compareAtPrice : undefined);
   const basePrice = activePricing.publicPrice;
+  const priceCurrency = selectedShopifyVariant?.currency || product.currency || 'USD';
+  const hasPriceRange = !selectedShopifyVariant && product.priceRange?.max > product.priceRange?.min;
   const variantImage = colorImage || selectedShopifyVariant?.imageUrl || null;
 
   useEffect(() => {
@@ -394,10 +428,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <div className="flex flex-col gap-2" aria-live="polite">
                 {activePricing.isOnSale && <span className="w-fit px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] bg-[#c9a96e] text-[#08080f]">{activePricing.salePercentage}% OFF</span>}
                 <div className="flex items-baseline gap-3">
-                  {activePricing.isOnSale && <span className="text-sm text-zinc-400 line-through">${activePricing.retailPrice.toFixed(2)}</span>}
-                  <span className="text-xl text-[#e8e4dc]">{!selectedShopifyVariant && product.priceRange?.max > product.priceRange?.min ? 'From ' : ''}${basePrice.toFixed(2)}</span>
+                  {activePricing.isOnSale && <span className="text-sm text-zinc-400 line-through">{formatProductPrice(activePricing.retailPrice, priceCurrency)}</span>}
+                  <span className="text-xs text-zinc-400">Public</span>
+                  <span className="text-xl text-[#e8e4dc]">{hasPriceRange ? 'From ' : ''}{formatProductPrice(basePrice, priceCurrency)}</span>
                 </div>
-                <p className="text-xs text-zinc-300">{isMember ? 'Your eligible Sanctuary benefits are verified in your cart.' : 'Eligible discounts are confirmed in your cart.'}</p>
+                <SanctuaryPrice price={basePrice} currency={priceCurrency} isMember={isMember} from={hasPriceRange} />
                 {!isMember && !authLoading && <Link href="/join" className="text-xs text-[#c9a96e] underline underline-offset-4">Explore Sanctuary membership</Link>}
               </div>
 
@@ -480,16 +515,18 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
           </div>
         </div>
 
-        <RelatedProducts products={relatedProducts} />
+        <RelatedProducts products={relatedProducts} isMember={isMember} />
       </div>
 
       <MobileStickyATC
         productName={product.name}
         price={basePrice}
+        currency={priceCurrency}
+        from={hasPriceRange}
         retailPrice={activePricing.retailPrice}
         isOnSale={activePricing.isOnSale}
         salePercentage={activePricing.salePercentage}
-        isMember={false}
+        isMember={isMember}
         onAddToCart={handleStickyAdd}
         cartState="idle"
         needsSelection={!selectedShopifyVariant}
