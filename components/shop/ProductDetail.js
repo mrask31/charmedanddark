@@ -12,6 +12,8 @@ import ProductReturnsSummary from '@/components/shop/ProductReturnsSummary';
 import ProductBadge from '@/components/shop/ProductBadge';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
+import { formatProductPrice } from '@/lib/product-display';
+import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 function getPromotionPricing(product, priceOverride = null, compareOverride = undefined) {
@@ -245,7 +247,7 @@ function ProductDetailsList({ description }) {
 // ============================================================================
 // RELATED PRODUCTS
 // ============================================================================
-function RelatedProducts({ products }) {
+function RelatedProducts({ products, isMember }) {
   if (!products?.length) return null;
 
   return (
@@ -328,14 +330,14 @@ function RelatedProducts({ products }) {
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     {pricing.isOnSale && (
                       <span className="text-[11px] line-through" style={{ color: '#514d49' }}>
-                        ${pricing.retailPrice.toFixed(2)}
+                        {formatProductPrice(pricing.retailPrice, p.currency)}
                       </span>
                     )}
                     <span className="text-[14px] font-light" style={{ color: pricing.isOnSale ? '#e8e4dc' : '#6b6760' }}>
-                      ${pricing.publicPrice.toFixed(2)}
+                      {p.priceRange?.max > p.priceRange?.min ? 'From ' : ''}{formatProductPrice(pricing.publicPrice, p.currency)}
                     </span>
                   </div>
-
+                  <SanctuaryPrice price={pricing.publicPrice} currency={p.currency} isMember={isMember} from={p.priceRange?.max > p.priceRange?.min} />
                 </div>
               )}
             </div>
@@ -361,6 +363,8 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
   const hasShopifyVariants = shopifyVariants?.variants?.length > 0;
   const activePricing = getPromotionPricing(product, selectedShopifyVariant?.price, selectedShopifyVariant ? selectedShopifyVariant.compareAtPrice : undefined);
   const basePrice = activePricing.publicPrice;
+  const priceCurrency = selectedShopifyVariant?.currency || product.currency || 'USD';
+  const hasPriceRange = !selectedShopifyVariant && product.priceRange?.max > product.priceRange?.min;
   const variantImage = colorImage || selectedShopifyVariant?.imageUrl || null;
 
   useEffect(() => {
@@ -424,10 +428,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <div className="flex flex-col gap-2" aria-live="polite">
                 {activePricing.isOnSale && <span className="w-fit px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] bg-[#c9a96e] text-[#08080f]">{activePricing.salePercentage}% OFF</span>}
                 <div className="flex items-baseline gap-3">
-                  {activePricing.isOnSale && <span className="text-sm text-zinc-400 line-through">${activePricing.retailPrice.toFixed(2)}</span>}
-                  <span className="text-xl text-[#e8e4dc]">{!selectedShopifyVariant && product.priceRange?.max > product.priceRange?.min ? 'From ' : ''}${basePrice.toFixed(2)}</span>
+                  {activePricing.isOnSale && <span className="text-sm text-zinc-400 line-through">{formatProductPrice(activePricing.retailPrice, priceCurrency)}</span>}
+                  <span className="text-xs text-zinc-400">Public</span>
+                  <span className="text-xl text-[#e8e4dc]">{hasPriceRange ? 'From ' : ''}{formatProductPrice(basePrice, priceCurrency)}</span>
                 </div>
-                <p className="text-xs text-zinc-300">{isMember ? 'Your eligible Sanctuary benefits are verified in your cart.' : 'Eligible discounts are confirmed in your cart.'}</p>
+                <SanctuaryPrice price={basePrice} currency={priceCurrency} isMember={isMember} from={hasPriceRange} />
                 {!isMember && !authLoading && <Link href="/join" className="text-xs text-[#c9a96e] underline underline-offset-4">Explore Sanctuary membership</Link>}
               </div>
 
@@ -510,16 +515,18 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
           </div>
         </div>
 
-        <RelatedProducts products={relatedProducts} />
+        <RelatedProducts products={relatedProducts} isMember={isMember} />
       </div>
 
       <MobileStickyATC
         productName={product.name}
         price={basePrice}
+        currency={priceCurrency}
+        from={hasPriceRange}
         retailPrice={activePricing.retailPrice}
         isOnSale={activePricing.isOnSale}
         salePercentage={activePricing.salePercentage}
-        isMember={false}
+        isMember={isMember}
         onAddToCart={handleStickyAdd}
         cartState="idle"
         needsSelection={!selectedShopifyVariant}
