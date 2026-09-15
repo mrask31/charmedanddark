@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/product-display";
+import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
 
 /**
  * Reusable homepage product section.
@@ -123,9 +124,7 @@ export function HomepageProductSection({
                     ) : (
                       <span className="text-sm text-zinc-400">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                     )}
-                    <div className="text-[10px] uppercase tracking-wider text-[#B89C6D]">
-                      Member benefits confirmed in cart
-                    </div>
+                    <SanctuaryPrice price={publicPrice} currency={product.currency} from={product.priceRange?.max > product.priceRange?.min} />
                   </div>
                 )}
               </div>

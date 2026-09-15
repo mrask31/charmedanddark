@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { posthog } from '@/components/providers/posthog-provider';
 import { useProductPromotion } from '@/components/shop/ProductPromotionContext';
+import { formatProductPrice } from '@/lib/product-display';
+import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
 
 /**
  * Mobile Sticky Add To Cart Bar
@@ -14,6 +16,8 @@ import { useProductPromotion } from '@/components/shop/ProductPromotionContext';
 export default function MobileStickyATC({
   productName,
   price,
+  currency = 'USD',
+  from = false,
   retailPrice = null,
   isOnSale,
   salePercentage,
@@ -63,7 +67,6 @@ export default function MobileStickyATC({
 
   if (isSoldOut) return null;
 
-  const displayPrice = price?.toFixed(2);
   const buttonLabel =
     cartState === 'loading' ? 'Adding...'
     : cartState === 'success' ? 'Added ✓'
@@ -109,26 +112,22 @@ export default function MobileStickyATC({
                 className="text-[11px] line-through"
                 style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
               >
-                ${derivedRetailPrice.toFixed(2)}
+                {formatProductPrice(derivedRetailPrice, currency)}
               </span>
             )}
             <span
               className="text-sm"
-              style={{ color: isMember ? '#c9a96e' : '#e8e4dc', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+              style={{ color: '#e8e4dc', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
             >
-              ${displayPrice}
+              Public {from ? 'from ' : ''}{formatProductPrice(price, currency)}
             </span>
             {effectiveIsOnSale && effectiveSalePercentage && !isMember && (
               <span className="text-[9px] uppercase tracking-[0.12em]" style={{ color: '#c9a96e' }}>
                 {effectiveSalePercentage}% off
               </span>
             )}
-            {isMember && (
-              <span className="text-[10px] uppercase tracking-wider" style={{ color: '#c9a96e', opacity: 0.7 }}>
-                Benefits verified in cart
-              </span>
-            )}
           </div>
+          <SanctuaryPrice price={price} currency={currency} isMember={isMember} from={from} compact />
         </div>
 
         <button
