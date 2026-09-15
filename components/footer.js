@@ -5,6 +5,7 @@ const navLinks = [
   { label: "About", href: "/about" },
   { label: "Drops", href: "/drops" },
   { label: "Last Chance", href: "/last-chance" },
+  { label: "Deceased", href: "/deceased" },
   { label: "The Sanctuary", href: "/join" },
   { label: "The Mirror", href: "/mirror" },
   { label: "Journal", href: "/journal" },

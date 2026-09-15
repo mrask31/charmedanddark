@@ -1,5 +1,15 @@
 # Shop discovery review — September 15, 2026
 
+## Return navigation, clothing variety and seasonal story
+
+The merchant approved the Fall homepage feature and Deceased collection archive, and reported losing their place and filters after visiting a product. Shop now reads its category, search, collection, view and sort directly from the URL. Collection grids persist product type, size, color, availability and sort in the URL too. A product click records the current card position on that specific browser-history entry, replacing the old global scroll value. Returning to that entry restores the view and card position; a fresh navigation to Shop has no old position attached.
+
+Featured Clothing uses a stable mix of tees, hoodies and tanks across Shop and the Clothing collection. Explicit price and newest sorting remain authoritative, unavailable products stay below available ones, and no products are removed. Regression tests cover complete browse-state reconstruction, view-specific positions, stable clothing variety, catalog preservation and seasonal status.
+
+The homepage now introduces Fall after the category cards, using the approved Autumn Mourning Society and Autumn Skull photography. `/collections/fall-2026` exposes the published Fall items. Drops uses "Fall has arrived. More is stirring." when Fall items are orderable. `/deceased`, linked from Drops and the footer, preserves public Summerween photography and points to existing drop announcements. It explains that the next Summerween collection will have new designs, rather than promising restocks. The current preview still has Bones & Brews in Last Chance, so the archive honestly shows a final farewell until no Summerween products remain orderable. No Shopify product status, sales-channel publication or fulfillment setting is changed by this work.
+
+Candidate build and browser proof are recorded in PR 51. All work remains in preview pending merchant approval of production release.
+
 ## Integration with the approved homepage redesign
 
 After a browser review, the merchant approved combining a simpler Shop experience with the existing homepage preview. The homepage keeps its hero, visual category entrances, signature products, and bookish feature. Shared cards now use concise, explicitly curated display names; Shopify product names, SEO metadata, alt text, variants, and cart labels remain unchanged.

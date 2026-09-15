@@ -9,6 +9,9 @@ import { productIsAvailable } from "@/lib/product-display";
 import { getActivePromotions, PROMOTION_ENGINE_ENABLED } from "@/lib/promotions";
 import { PromotionHero } from "@/components/promotions/PromotionHero";
 import { PreviewWrapper } from "@/components/promotions/PreviewWrapper";
+import { getProducts } from '@/lib/products';
+import { availableFallProducts, summerweenSeason } from '@/lib/seasonal-collections';
+import { HomepageFallFeature } from '@/components/homepage-fall-feature';
 
 export const revalidate = 60;
 export const metadata = {
@@ -31,12 +34,13 @@ function everydayPieces(products) {
 }
 
 export default async function Home({ searchParams }) {
-  const [bags, candles, darkHome, apparel, bookish] = await Promise.all([
+  const [bags, candles, darkHome, apparel, bookish, catalog] = await Promise.all([
     getMerchandisingProducts('homepage-best-sellers'),
     getMerchandisingProducts('homepage-candles'),
     getMerchandisingProducts('homepage-dark-home'),
     getMerchandisingProducts('homepage-apparel'),
     getMerchandisingProducts('smutty-good-girl'),
+    getProducts(),
   ]);
   const groups = [bags, apparel, darkHome, candles].map(everydayPieces);
   const signaturePieces = groups.map((products) => products[0]).filter(Boolean);
@@ -82,6 +86,7 @@ export default async function Home({ searchParams }) {
             ))}
           </nav>
         </section>
+        <HomepageFallFeature products={availableFallProducts(catalog)} summerweenRetired={summerweenSeason(catalog).retired} />
         {homepagePromotion && <PromotionHero promotion={homepagePromotion} />}
         <HomepageProductSection title="A few pieces to make your own" products={signaturePieces} viewAllHref="/shop" ctaLabel="Explore all pieces" intro="A first look at the little details that make an ordinary day feel more like you." />
         {bookishFeature && (

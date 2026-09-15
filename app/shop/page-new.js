@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from 'next/navigation';
 import ShopHero from "@/components/shop/ShopHero";
 import StickyFilterBar from "@/components/shop/StickyFilterBar";
 import SectionHeader from "@/components/shop/SectionHeader";
@@ -9,41 +10,25 @@ import ProductCard from "@/components/shop/ProductCard";
 import { productPricing } from "@/lib/product-display";
 import { SHOP_FILTERS, SHOP_SECTIONS, normalizeShopFilter, filterShopProducts, shopSectionPreviews } from "@/lib/shop-browse";
 import { useSanctuaryAccess } from "@/hooks/useSanctuaryAccess";
+import { shopStateFromParams } from '@/lib/browse-state';
+import { useBrowseReturn, updateBrowseParams } from '@/hooks/useBrowseReturn';
 
-export default function ShopPageClient({ products, initialFilter, initialQuery, initialCollection, initialView }) {
-  const [activeFilter, setActiveFilter] = useState(normalizeShopFilter(initialFilter));
-  const [searchQuery, setSearchQuery] = useState(typeof initialQuery === "string" ? initialQuery : "");
-  const [collectionFilter, setCollectionFilter] = useState(typeof initialCollection === "string" ? initialCollection : "");
-  const [sortOption, setSortOption] = useState("Featured");
-  const [view, setView] = useState(initialView === 'all' ? 'all' : 'featured');
+export default function ShopPageClient({ products }) {
+  const params = useSearchParams();
+  const state = shopStateFromParams(params);
+  const activeFilter = normalizeShopFilter(state.category);
+  const { query: searchQuery, collection: collectionFilter, sort: sortOption, view } = state;
+  const { listRef, rememberProduct } = useBrowseReturn(params.toString());
   const { isMember } = useSanctuaryAccess();
   const hasOnSale = useMemo(() => products.some((p) => !p.hidden && productPricing(p).isOnSale), [products]);
 
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    activeFilter === 'ALL' ? url.searchParams.delete('category') : url.searchParams.set('category', activeFilter);
-    searchQuery ? url.searchParams.set('q', searchQuery) : url.searchParams.delete('q');
-    collectionFilter ? url.searchParams.set('collection', collectionFilter) : url.searchParams.delete('collection');
-    view === 'all' ? url.searchParams.set('view', 'all') : url.searchParams.delete('view');
-    window.history.replaceState(null, '', url);
-  }, [activeFilter, searchQuery, collectionFilter, view]);
-
-  useEffect(() => {
-    const key = 'charmed-shop-scroll';
-    const saved = sessionStorage.getItem(key);
-    if (saved) requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: Number(saved) || 0, behavior: 'instant' })));
-    const handleScroll = () => sessionStorage.setItem(key, String(Math.round(window.scrollY)));
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const changeFilter = (filter) => {
-    setActiveFilter(filter === 'FEATURED' ? 'ALL' : filter);
-    setView(filter === 'FEATURED' ? 'featured' : 'all');
-    setCollectionFilter('');
-    if (filter === 'FEATURED') { setSearchQuery(''); setSortOption('Featured'); }
+    updateBrowseParams({ category: ['FEATURED', 'ALL'].includes(filter) ? '' : filter,
+      view: filter === 'FEATURED' ? '' : 'all', collection: '',
+      ...(filter === 'FEATURED' ? { q: '', sort: '' } : {}),
+    });
   };
-  const resetFilters = () => { changeFilter('ALL'); setSearchQuery(''); setSortOption('Featured'); };
+  const resetFilters = () => updateBrowseParams({ category: '', view: 'all', collection: '', q: '', sort: '' });
   const shown = useMemo(() => filterShopProducts(products, { category: activeFilter, query: searchQuery, collection: collectionFilter, sort: sortOption }), [products, activeFilter, searchQuery, collectionFilter, sortOption]);
   const sections = useMemo(() => shopSectionPreviews(shown), [shown]);
   const browseSections = view === 'featured' && activeFilter === 'ALL' && !searchQuery.trim() && !collectionFilter && sortOption === 'Featured';
@@ -54,11 +39,11 @@ export default function ShopPageClient({ products, initialFilter, initialQuery, 
     {items.map((product) => <ProductCard key={product.id} product={product} isMember={isMember} />)}
   </div>;
 
-  return <main className="min-h-screen bg-black">
+  return <main ref={listRef} onClickCapture={rememberProduct} className="min-h-screen bg-black">
     <ShopHero />
-    <StickyFilterBar activeFilter={browseSections ? 'FEATURED' : activeFilter} onFilterChange={changeFilter} sortOption={sortOption} onSortChange={setSortOption} hasOnSale={hasOnSale} searchQuery={searchQuery} onSearchChange={setSearchQuery} resultCount={shown.length} displayedCount={displayedCount} featured={browseSections} />
+    <StickyFilterBar activeFilter={browseSections ? 'FEATURED' : activeFilter} onFilterChange={changeFilter} sortOption={sortOption} onSortChange={(sort) => updateBrowseParams({ sort: sort === 'Featured' ? '' : sort })} hasOnSale={hasOnSale} searchQuery={searchQuery} onSearchChange={(q) => updateBrowseParams({ q })} resultCount={shown.length} displayedCount={displayedCount} featured={browseSections} />
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14 lg:px-10" id="shop-results">
-      {collectionFilter && <div className="mb-8 flex items-center gap-4 text-sm text-zinc-300"><span>Collection: {collectionFilter.replaceAll('-', ' ')}</span><button type="button" onClick={() => setCollectionFilter('')} className="min-h-11 underline">Clear collection</button></div>}
+      {collectionFilter && <div className="mb-8 flex items-center gap-4 text-sm text-zinc-300"><span>Collection: {collectionFilter.replaceAll('-', ' ')}</span><button type="button" onClick={() => updateBrowseParams({ collection: '' })} className="min-h-11 underline">Clear collection</button></div>}
       {browseSections && <div className="mb-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm">
         <p className="text-[#c4bdb3]">A few favorites from each corner of the shop.</p>
         <Link href="/shop?view=all" className="inline-flex min-h-11 items-center text-[#d4b984] underline underline-offset-4">Shop all {shown.length} pieces <span aria-hidden="true" className="ml-2">→</span></Link>

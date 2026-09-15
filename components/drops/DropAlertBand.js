@@ -12,6 +12,7 @@ export function isValidEmail(email) {
 
 export default function DropAlertBand({ variant = 'drops' }) {
   const isHome = variant === 'home';
+  const isArchive = variant === 'archive';
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -71,13 +72,13 @@ export default function DropAlertBand({ variant = 'drops' }) {
               className={isHome ? 'font-serif text-3xl text-[#f5f0e8]' : 'text-[11px] uppercase tracking-[0.3em]'}
               style={{ color: '#c9a96e' }}
             >
-              {isHome ? 'Stay a little closer.' : 'STAY IN THE WINDOW'}
+              {isArchive ? 'BE HERE FOR THE RETURN' : isHome ? 'Stay a little closer.' : 'STAY IN THE WINDOW'}
             </h2>
             <p
               className="max-w-md text-sm font-light sm:text-base"
               style={{ color: '#e8e4dc', fontWeight: 300, fontFamily: 'Inter, sans-serif' }}
             >
-              {isHome ? 'Sign up for new collections and the latest from Charmed & Dark.' : "Get notified before each drop opens. No spam—just a quiet signal when it's time."}
+              {isArchive ? 'Join our drop announcements for Summerween’s return and other new Charmed & Dark collections.' : isHome ? 'Sign up for new collections and the latest from Charmed & Dark.' : "Get notified before each drop opens. No spam—just a quiet signal when it's time."}
             </p>
           </div>
 

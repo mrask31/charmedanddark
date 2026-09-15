@@ -12,12 +12,12 @@ export const metadata = {
   description: "Explore gothic clothing, kisslock bags, book totes, candles, drinkware, and home décor. Shop Smutty Good Girl and everyday favorites from Charmed & Dark.",
 };
 
-export default async function ShopPage({ searchParams }) {
-  const [catalogProducts, query] = await Promise.all([getProducts(), searchParams]);
+export default async function ShopPage() {
+  const catalogProducts = await getProducts();
 
   const products = isShopifyCatalogEnabled() ? catalogProducts : catalogProducts.map((product) => ({
     ...product,
     collections: Object.entries(legacyMemberships).filter(([, handles]) => handles.includes(product.slug || product.handle)).map(([handle]) => ({ handle })),
   }));
-  return <><ShopPageClient key={JSON.stringify([query?.category, query?.q, query?.collection, query?.view])} products={products} initialFilter={query?.category} initialQuery={query?.q} initialCollection={query?.collection} initialView={query?.view} /><Footer /></>;
+  return <><ShopPageClient products={products} /><Footer /></>;
 }

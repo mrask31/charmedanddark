@@ -31,6 +31,7 @@ export default async function CollectionPage({ params }) {
       <h2 className="font-serif text-2xl">{collection.products.length ? (isFarewell ? 'Summerween’s Final Haunt' : 'Summerween is here') : 'Summerween returns next summer'}</h2>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300">{collection.products.length ? (isFarewell ? 'This season’s designs are taking their final bow. These items are made to order. Summerween returns next summer with a new collection of designs.' : 'Halloween spirit, summer style. Explore the current collection of made-to-order Summerween designs.') : 'This season has closed. A new collection of Summerween designs will arrive next summer. Explore what is new or sign up for drop announcements.'}</p>
       <Link href="/drops#drop-alerts" className="mt-4 inline-block py-2 text-sm text-[#c9a96e] underline">Get future drop announcements</Link>
+      <Link href="/deceased" className="ml-6 mt-4 inline-block py-2 text-sm text-[#c9a96e] underline">The Summerween archive</Link>
     </aside>}
     {collection.products.length ? <CollectionGrid products={collection.products} /> : <p className="my-12 text-zinc-300">There are no items available in this collection right now. <Link href="/shop" className="underline">Explore the shop</Link>.</p>}
     <nav aria-label="More to explore" className="mt-12 flex flex-wrap gap-6 text-sm text-[#c9a96e]"><Link href="/shop">Shop all</Link><Link href="/drops">New & upcoming drops</Link><Link href="/last-chance">Last Chance</Link></nav>

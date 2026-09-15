@@ -146,7 +146,7 @@ export default function ProductCard({ product, isMember }) {
   };
 
   return (
-    <div className="group relative">
+    <div className="group relative" data-product-card={product.slug || product.handle}>
       <ProductBadge badge={product.badge} />
       {isOnSale && !isSoldOut && (
         <span

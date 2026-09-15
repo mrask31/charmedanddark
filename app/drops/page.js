@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getProducts } from '@/lib/products';
 import { getMerchandisingProducts } from '@/lib/catalog-merchandising';
-import { productIsAvailable } from '@/lib/product-display';
+import { availableFallProducts, summerweenSeason } from '@/lib/seasonal-collections';
 import CollectionGrid from '@/components/shop/CollectionGrid';
 import SmuttyGoodGirlDrop from '@/components/drops/SmuttyGoodGirlDrop';
 import DropAlertBand from '@/components/drops/DropAlertBand';
@@ -10,15 +10,15 @@ import { Footer } from '@/components/footer';
 export const revalidate = 60;
 export const metadata = {
   title: 'New & Upcoming Gothic Drops',
-  description: 'Discover new Charmed & Dark releases, preview the upcoming fall attire, and sign up for seasonal collection announcements.',
+  description: 'Discover the Fall collection, new Charmed & Dark releases, seasonal farewells, and announcements for the next designs.',
   alternates: { canonical: 'https://www.charmedanddark.com/drops' },
 };
 
 export default async function DropsPage() {
   const [products, smuttyGoodGirl] = await Promise.all([getProducts(), getMerchandisingProducts('smutty-good-girl')]);
   // Only products published to this storefront can reach this list. Drafts stay private.
-  const fall = products.filter((p) => !p.hidden && productIsAvailable(p) &&
-    p.tags?.some((tag) => ['fall 2026', 'collection:fall-2026'].includes(tag.toLowerCase())));
+  const fall = availableFallProducts(products);
+  const { retired } = summerweenSeason(products);
   return <><main className="bg-[#08080f] pb-16">
     <section className="mx-auto max-w-7xl px-6 pb-12 pt-16 lg:px-12">
       <p className="text-xs uppercase tracking-[0.3em] text-[#c9a96e]">Drops</p>
@@ -26,16 +26,20 @@ export default async function DropsPage() {
       <p className="mt-6 max-w-2xl leading-relaxed text-zinc-300">Discover what has just arrived, take a first look at upcoming collections, and find out which designs are taking their final bow.</p>
       <nav aria-label="Explore drops" className="mt-8 flex flex-wrap gap-4 text-sm">
         <a href="#just-dropped" className="border border-[#c9a96e] px-5 py-3 text-[#c9a96e]">Shop new releases</a>
-        <a href="#coming-soon" className="border border-zinc-600 px-5 py-3">Coming soon</a>
+        <a href="#coming-soon" className="border border-zinc-600 px-5 py-3">The Fall Collection</a>
         <Link href="/last-chance" className="px-5 py-3 text-[#c9a96e] underline">Last Chance</Link>
+        <Link href="/deceased" className="px-5 py-3 text-[#c9a96e] underline">Deceased</Link>
       </nav>
     </section>
     <section id="coming-soon" className="scroll-mt-28 border-y border-[#c9a96e]/30 bg-[#17121a] px-6 py-12 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <p className="text-xs uppercase tracking-widest text-[#c9a96e]">Coming soon</p>
-        <h2 className="mt-4 font-serif text-4xl">Fall is gathering.</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed text-zinc-300">Our next collection of fall attire is on its way. Get the announcement when new designs arrive.</p>
-        <a href="#drop-alerts" className="mt-6 inline-block border border-[#c9a96e] px-6 py-3 text-sm text-[#c9a96e]">Get drop announcements</a>
+        <p className="text-xs uppercase tracking-widest text-[#c9a96e]">{fall.length ? 'Available now' : 'The next chapter'}</p>
+        <h2 className="mt-4 font-serif text-4xl">{fall.length ? 'Fall has arrived. More is stirring.' : 'Fall is gathering.'}</h2>
+        <p className="mt-4 max-w-2xl leading-relaxed text-zinc-300">{fall.length ? 'Longer nights. Darker layers. The first Fall pieces are here, with more designs to come.' : 'Get the announcement when the next Fall designs arrive.'}</p>
+        <div className="mt-6 flex flex-wrap gap-4">
+          {fall.length > 0 && <Link href="/collections/fall-2026" className="inline-block border border-[#c9a96e] px-6 py-3 text-sm text-[#c9a96e]">Shop the Fall Collection</Link>}
+          <a href="#drop-alerts" className="inline-block px-2 py-3 text-sm text-[#c9a96e] underline">Get drop announcements</a>
+        </div>
       </div>
     </section>
     <section id="just-dropped" className="mx-auto max-w-7xl scroll-mt-28 px-6 py-12 lg:px-12">
@@ -44,9 +48,12 @@ export default async function DropsPage() {
       <div className="mt-12"><SmuttyGoodGirlDrop products={smuttyGoodGirl} /></div>
     </section>
     <section className="mx-auto max-w-7xl px-6 pb-12 lg:px-12">
-      <h2 className="font-serif text-3xl">Summerween’s Final Haunt</h2>
-      <p className="mt-4 max-w-2xl leading-relaxed text-zinc-300">This season’s designs are preparing to leave. Summerween returns next summer with new designs.</p>
-      <Link href="/last-chance" className="mt-5 inline-block py-3 text-[#c9a96e] underline">Explore Last Chance</Link>
+      <h2 className="font-serif text-3xl">{retired ? 'Summerween is gone. The spirit remains.' : 'Summerween’s Final Haunt'}</h2>
+      <p className="mt-4 max-w-2xl leading-relaxed text-zinc-300">{retired ? 'This chapter has been laid to rest. Summerween returns next summer with an entirely new collection. New designs. Familiar spirits.' : 'This season’s designs are taking their final bow. Summerween returns next summer with all-new designs.'}</p>
+      <div className="mt-5 flex flex-wrap gap-6">
+        {!retired && <Link href="/last-chance" className="inline-block py-3 text-[#c9a96e] underline">Explore Last Chance</Link>}
+        <Link href="/deceased" className="inline-block py-3 text-[#c9a96e] underline">Visit Deceased — the collection archive</Link>
+      </div>
     </section>
     <DropAlertBand />
   </main><Footer /></>;
