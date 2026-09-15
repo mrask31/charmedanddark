@@ -46,9 +46,11 @@ test('Clothing opens with varied garments, stays stable, preserves every product
 
 test('seasonal features use published membership and farewell copy stays accurate while Summerween remains orderable', () => {
   const fall = { id: 'fall', tags: ['Fall 2026'], availableForSale: true };
-  const summer = { id: 'summer', collections: [{ handle: 'summerween' }], availableForSale: true };
+  const summer = { id: 'summer', collections: [{ handle: 'summerween' }], tags: ['design-year:2026'], availableForSale: true };
   assert.deepEqual(availableFallProducts([fall, summer, { ...fall, id: 'hidden', hidden: true }]), [fall]);
   assert.equal(summerweenSeason([fall, summer]).retired, false);
   assert.equal(summerweenSeason([fall, { ...summer, hidden: true }]).retired, true);
   assert.equal(summerweenSeason([fall]).retired, true);
+  assert.equal(summerweenSeason([fall, { ...summer, tags: ['design-year:2027'] }]).retired, true);
+  assert.equal(summerweenSeason([{ ...summer, tags: [], handle: 'bones-brews-summerween-skeleton-graphic-t-shirt' }]).retired, false);
 });

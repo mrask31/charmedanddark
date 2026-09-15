@@ -55,6 +55,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
   return (
     <section
       id="drop-alerts"
+      className="scroll-mt-28"
       style={{
         backgroundColor: isHome ? 'transparent' : '#0e0e1a',
         borderTop: isHome ? 'none' : '1px solid #c9a96e',
