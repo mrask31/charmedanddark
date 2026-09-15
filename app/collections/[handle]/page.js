@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { getDiscoveryCollection } from '@/lib/discovery-server';
 import CollectionGrid from '@/components/shop/CollectionGrid';
 import { Footer } from '@/components/footer';
+import { summerweenSeason } from '@/lib/seasonal-collections';
+import { lastChanceProducts } from '@/lib/discovery';
 
 export const revalidate = 60;
 export async function generateMetadata({ params }) {
@@ -17,7 +19,8 @@ export default async function CollectionPage({ params }) {
   const collection = await getDiscoveryCollection(handle);
   if (!collection) notFound();
   const summerween = handle === 'summerween';
-  const isFarewell = collection.products.some((p) => p.tags?.includes('lifecycle:last-chance'));
+  const isFarewell = lastChanceProducts(collection.products).length > 0;
+  const summerweenRetired = summerween && summerweenSeason(collection.products).retired;
   const schema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Shop', item: 'https://www.charmedanddark.com/shop' },
     { '@type': 'ListItem', position: 2, name: collection.label, item: `https://www.charmedanddark.com/collections/${handle}` },
@@ -28,8 +31,8 @@ export default async function CollectionPage({ params }) {
     <h1 className="font-serif text-4xl text-[#f5f0e8] sm:text-5xl">{collection.title}</h1>
     <p className="mt-5 max-w-3xl text-base leading-relaxed text-zinc-300">{collection.description}</p>
     {summerween && <aside className="mt-8 border border-[#c9a96e]/40 bg-[#17131b] p-6">
-      <h2 className="font-serif text-2xl">{collection.products.length ? (isFarewell ? 'Summerween’s Final Haunt' : 'Summerween is here') : 'Summerween returns next summer'}</h2>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300">{collection.products.length ? (isFarewell ? 'This season’s designs are taking their final bow. These items are made to order. Summerween returns next summer with a new collection of designs.' : 'Halloween spirit, summer style. Explore the current collection of made-to-order Summerween designs.') : 'This season has closed. A new collection of Summerween designs will arrive next summer. Explore what is new or sign up for drop announcements.'}</p>
+      <h2 className="font-serif text-2xl">{summerweenRetired ? 'The season rests. The spirit remains.' : (isFarewell ? 'Summerween’s Final Haunt' : 'Summerween is here')}</h2>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300">{summerweenRetired ? 'This chapter of Summerween has closed. Bones & Brews is staying year-round, and Summerween returns next summer with an entirely new collection.' : (isFarewell ? 'This season’s designs are taking their final bow. These items are made to order. Summerween returns next summer with a new collection of designs.' : 'Halloween spirit, summer style. Explore the current collection of made-to-order Summerween designs.')}</p>
       <Link href="/drops#drop-alerts" className="mt-4 inline-block py-2 text-sm text-[#c9a96e] underline">Get future drop announcements</Link>
       <Link href="/deceased" className="ml-6 mt-4 inline-block py-2 text-sm text-[#c9a96e] underline">The Summerween archive</Link>
     </aside>}

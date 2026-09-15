@@ -16,6 +16,7 @@ test('Last Chance requires explicit retirement membership, including sellable ze
   const rows = [{ id: '2026', qty: 0, availableForSale: true, tags: ['lifecycle:last-chance'] },
     { id: '2027', availableForSale: true, collections: [{ handle: 'summerween' }], tags: ['design-year:2027'] },
     { id: 'sold', qty: 1, availableForSale: false, tags: ['lifecycle:last-chance'] },
+    { id: 'survivor', handle: 'bones-brews-summerween-skeleton-graphic-t-shirt', availableForSale: true, collections: [{ handle: 'summerween' }], tags: ['design-year:2026', 'lifecycle:last-chance'] },
     { id: 'hidden', hidden: true, availableForSale: true, tags: ['lifecycle:last-chance'] }];
   assert.deepEqual(lastChanceProducts(rows).map(p => p.id), ['2026']);
 });

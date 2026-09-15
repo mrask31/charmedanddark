@@ -1,12 +1,22 @@
 # Shop discovery review — September 15, 2026
 
+## Mobile refinements and the Summerween survivor
+
+Following the merchant's mobile screenshot review, Shop places mobile search and result count in normal page flow. Only the 68px category/sort row remains sticky below the header. Desktop controls keep their current layout. Carousels with more than six images show an accurate image counter; smaller galleries retain their dots. Four specifically identified dark homeware lifestyle images receive a subtle 12% display brightness lift, with no source asset or product-design changes.
+
+The white floating up-arrow in the phone screenshots is absent from the repository and inspected preview DOM. It appears to be browser UI; no site control was moved or added to imitate a fix.
+
+The merchant confirmed Bones & Brews stays year-round. Removed only `lifecycle:last-chance` from Shopify product 8650244882466, preserving ACTIVE status, all seven variants, and its Summerween origin. The Last Chance smart collection uses that tag. Preview classification also excludes this named survivor from retiring designs, including stale responses carrying its former tag. Its availability no longer keeps the 2026 archive open. Deceased features “The one that refused to die,” “Bones & Brews lives on,” and a direct product link. The archive photograph uses its original color/exposure. Homepage, Drops, Last Chance, and Summerween collection wording follow the corrected seasonal status; Summerween collection metadata overrides outdated retirement copy.
+
+Build/browser verification is recorded in PR 51. Website changes remain in preview; the Shopify retirement-tag correction is applied to the active catalog.
+
 ## Return navigation, clothing variety and seasonal story
 
 The merchant approved the Fall homepage feature and Deceased collection archive, and reported losing their place and filters after visiting a product. Shop now reads its category, search, collection, view and sort directly from the URL. Collection grids persist product type, size, color, availability and sort in the URL too. A product click records the current card position on that specific browser-history entry, replacing the old global scroll value. Returning to that entry restores the view and card position; a fresh navigation to Shop has no old position attached.
 
 Featured Clothing uses a stable mix of tees, hoodies and tanks across Shop and the Clothing collection. Explicit price and newest sorting remain authoritative, unavailable products stay below available ones, and no products are removed. Regression tests cover complete browse-state reconstruction, view-specific positions, stable clothing variety, catalog preservation and seasonal status.
 
-The homepage now introduces Fall after the category cards, using the approved Autumn Mourning Society and Autumn Skull photography. `/collections/fall-2026` exposes the published Fall items. Drops uses "Fall has arrived. More is stirring." when Fall items are orderable. `/deceased`, linked from Drops and the footer, preserves public Summerween photography and points to existing drop announcements. It explains that the next Summerween collection will have new designs, rather than promising restocks. The current preview still has Bones & Brews in Last Chance, so the archive honestly shows a final farewell until no Summerween products remain orderable. No Shopify product status, sales-channel publication or fulfillment setting is changed by this work.
+The homepage introduces Fall after the category cards, using the approved Autumn Mourning Society and Autumn Skull photography. `/collections/fall-2026` exposes the published Fall items. Drops uses "Fall has arrived. More is stirring." when Fall items are orderable. `/deceased`, linked from Drops and the footer, preserves public Summerween photography and points to existing drop announcements. It explains that the next Summerween collection will have new designs. The initial final-farewell state has been superseded by the merchant's year-round Bones & Brews correction above. No Shopify product status, sales-channel publication or fulfillment setting is changed by this work.
 
 Candidate build and browser proof are recorded in PR 51. All work remains in preview pending merchant approval of production release.
 

@@ -52,5 +52,8 @@ test('seasonal features use published membership and farewell copy stays accurat
   assert.equal(summerweenSeason([fall, { ...summer, hidden: true }]).retired, true);
   assert.equal(summerweenSeason([fall]).retired, true);
   assert.equal(summerweenSeason([fall, { ...summer, tags: ['design-year:2027'] }]).retired, true);
-  assert.equal(summerweenSeason([{ ...summer, tags: [], handle: 'bones-brews-summerween-skeleton-graphic-t-shirt' }]).retired, false);
+  const survivor = { ...summer, handle: 'bones-brews-summerween-skeleton-graphic-t-shirt' };
+  assert.equal(summerweenSeason([survivor]).retired, true);
+  assert.equal(summerweenSeason([{ ...survivor, tags: [] }]).retired, true);
+  assert.deepEqual(summerweenSeason([survivor, summer]).remaining, [summer]);
 });

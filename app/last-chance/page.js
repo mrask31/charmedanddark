@@ -6,7 +6,7 @@ import { Footer } from '@/components/footer';
 import { summerweenSeason } from '@/lib/seasonal-collections';
 
 export const revalidate = 60;
-export const metadata = { title: 'Last Chance — Retiring Designs', description: 'Discover retiring designs and seasonal farewells at Charmed & Dark. Shop the Summerween collection before this season closes.', alternates: { canonical: 'https://www.charmedanddark.com/last-chance' } };
+export const metadata = { title: 'Last Chance — Retiring Designs', description: 'Discover retiring designs and seasonal farewells at Charmed & Dark, and remember past collections in the Deceased archive.', alternates: { canonical: 'https://www.charmedanddark.com/last-chance' } };
 export default async function LastChancePage() {
   const catalog = await getProducts();
   const products = lastChanceProducts(catalog);
