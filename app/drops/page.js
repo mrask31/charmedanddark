@@ -35,7 +35,7 @@ export default async function DropsPage() {
       <div className="mx-auto max-w-7xl">
         <p className="text-xs uppercase tracking-widest text-[#c9a96e]">{fall.length ? 'Available now' : 'The next chapter'}</p>
         <h2 className="mt-4 font-serif text-4xl">{fall.length ? 'Fall has arrived. More is stirring.' : 'Fall is gathering.'}</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed text-zinc-300">{fall.length ? 'Longer nights. Darker layers. The first Fall pieces are here, with more designs to come.' : 'Get the announcement when the next Fall designs arrive.'}</p>
+        <p className="mt-4 max-w-2xl leading-relaxed text-zinc-300">{fall.length ? 'Longer nights. Darker layers. The first Fall pieces are here, with more arriving very soon.' : 'More Fall pieces are arriving very soon. Join our drop alerts for the announcement.'}</p>
         <div className="mt-6 flex flex-wrap gap-4">
           {fall.length > 0 && <Link href="/collections/fall-2026" className="inline-block border border-[#c9a96e] px-6 py-3 text-sm text-[#c9a96e]">Shop the Fall Collection</Link>}
           <a href="#drop-alerts" className="inline-block px-2 py-3 text-sm text-[#c9a96e] underline">Get drop announcements</a>
@@ -44,7 +44,7 @@ export default async function DropsPage() {
     </section>
     <section id="just-dropped" className="mx-auto max-w-7xl scroll-mt-28 px-6 py-12 lg:px-12">
       <h2 className="font-serif text-4xl">Just Dropped</h2>
-      {fall.length > 0 && <section className="mt-8" aria-labelledby="fall-first-look"><h3 id="fall-first-look" className="font-serif text-2xl">A first look at fall</h3><p className="mt-3 text-zinc-300">Available to order now, with more designs to come.</p><CollectionGrid products={fall} /></section>}
+      {fall.length > 0 && <section className="mt-8" aria-labelledby="fall-first-look"><h3 id="fall-first-look" className="font-serif text-2xl">A first look at fall</h3><p className="mt-3 text-zinc-300">Available to order now, with more pieces arriving very soon.</p><CollectionGrid products={fall} /></section>}
       <div className="mt-12"><SmuttyGoodGirlDrop products={smuttyGoodGirl} /></div>
     </section>
     <section className="mx-auto max-w-7xl px-6 pb-12 lg:px-12">
