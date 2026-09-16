@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: ["/", "/api/google-feed"],
-      disallow: ["/api/", "/sanctuary/grimoire"],
+      disallow: ["/api/"],
     },
     sitemap: "https://www.charmedanddark.com/sitemap.xml",
   };

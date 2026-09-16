@@ -4,8 +4,9 @@ import CardsSection from '@/components/about/CardsSection';
 import CtaBlock from '@/components/about/CtaBlock';
 
 export const metadata = {
-  title: 'About',
-  description: 'A boutique for the modern shadow—crafted for quiet, beauty, and ritual.',
+  alternates: { canonical: 'https://www.charmedanddark.com/about' },
+  title: 'About Our Gothic Boutique',
+  description: 'Discover Charmed & Dark, an elegant gothic boutique offering distinctive clothing, bags, candles, and home décor for everyday living.',
 };
 
 export default function AboutPage() {

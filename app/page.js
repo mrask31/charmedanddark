@@ -22,7 +22,7 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Charmed & Dark",
-    images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Charmed & Dark" }],
+    images: [{ url: "/icon.png", width: 1024, height: 1024, alt: "Charmed & Dark" }],
     title: "Charmed & Dark — Gothic Goods for Everyday Living",
     description: "Distinctive bags, expressive apparel, and atmospheric pieces for your home.",
     url: "https://www.charmedanddark.com",
@@ -64,6 +64,13 @@ export default async function Home({ searchParams }) {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'WebSite',
+        '@id': 'https://www.charmedanddark.com/#website',
+        url: 'https://www.charmedanddark.com', name: 'Charmed & Dark',
+        alternateName: 'Charmed and Dark',
+        publisher: { '@id': 'https://www.charmedanddark.com/#organization' },
+      }) }} />
       <main id="main-content" className="bg-[#08080a] text-[#f5f0e8]">
         <Hero products={heroProducts} />
         <section aria-labelledby="home-categories" className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
