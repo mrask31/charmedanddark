@@ -14,6 +14,7 @@ import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
 import { formatProductPrice } from '@/lib/product-display';
 import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
+import { isHeavyShippingProduct } from '@/lib/shipping-policy';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
 function getPromotionPricing(product, priceOverride = null, compareOverride = undefined) {
@@ -470,7 +471,10 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               <div data-atc-section data-cart-return-focus tabIndex={-1} role="region" aria-label="Product purchase options">
                 {hasShopifyVariants ? <AddToCart shopifyVariants={shopifyVariants} product={product} initialVariant={initialVariant} onVariantChange={setSelectedShopifyVariant} onColorSelect={setColorImage} /> : <p role="status" className="text-sm text-zinc-300">We could not load the purchase options. Please refresh this page to try again.</p>}
               </div>
-              <p className="text-xs text-zinc-300 text-center">Shipping options and delivery estimates are shown at checkout.</p>
+              {isHeavyShippingProduct(product) ? <aside aria-label="Heavy item shipping" className="rounded border border-[#c9a96e]/30 p-3 text-sm leading-relaxed text-zinc-300">
+                <p className="font-medium text-[#c9a96e]">Heavy &amp; oversized shipping: $39.99 per order</p>
+                <p className="mt-1">We know shipping costs add up. This rate helps cover the extra packaging and handling your item needs. Pay $39.99 total shipping when your order contains only designated heavy items, even if you buy several. If you also buy regular items, their standard shipping tier is added.</p>
+              </aside> : <p className="text-xs text-zinc-300 text-center">Shipping options and delivery estimates are shown at checkout.</p>}
 
               <ProductReturnsSummary />
 
