@@ -30,6 +30,11 @@ export default async function CollectionPage({ params }) {
     <nav aria-label="Breadcrumb" className="mb-8 text-sm text-zinc-400"><Link href="/shop" className="underline">Shop</Link><span aria-hidden="true"> / </span><span aria-current="page">{collection.label}</span></nav>
     <h1 className="font-serif text-4xl text-[#f5f0e8] sm:text-5xl">{collection.title}</h1>
     <p className="mt-5 max-w-3xl text-base leading-relaxed text-zinc-300">{collection.description}</p>
+    {handle === 'fall-2026' && <aside className="mt-8 border border-[#c9a96e]/40 bg-[#181314] p-6" aria-labelledby="fall-coming-soon">
+      <h2 id="fall-coming-soon" className="font-serif text-2xl text-[#f5f0e8]">More Fall pieces are arriving very soon.</h2>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300">This is just the beginning. Explore the first pieces now, and join our drop alerts to hear when the next additions arrive.</p>
+      <Link href="/drops#drop-alerts" className="mt-4 inline-block py-2 text-sm text-[#c9a96e] underline">Let me know when they arrive</Link>
+    </aside>}
     {summerween && <aside className="mt-8 border border-[#c9a96e]/40 bg-[#17131b] p-6">
       <h2 className="font-serif text-2xl">{summerweenRetired ? 'The season rests. The spirit remains.' : (isFarewell ? 'Summerween’s Final Haunt' : 'Summerween is here')}</h2>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300">{summerweenRetired ? 'This chapter of Summerween has closed. Bones & Brews is staying year-round, and Summerween returns next summer with an entirely new collection.' : (isFarewell ? 'This season’s designs are taking their final bow. These items are made to order. Summerween returns next summer with a new collection of designs.' : 'Halloween spirit, summer style. Explore the current collection of made-to-order Summerween designs.')}</p>
