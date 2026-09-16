@@ -1,7 +1,11 @@
 import { formatProductPrice, sanctuaryPricePreview } from '@/lib/product-display';
 
 /** A visible member-price preview; charging and eligibility stay in Shopify/cart. */
-export default function SanctuaryPrice({ price, currency = 'USD', isMember = null, from = false, compact = false }) {
+export default function SanctuaryPrice({ price, memberBasePrice = null, currency = 'USD', isMember = null, from = false, compact = false }) {
+  // Shopify allocates order discounts over bundle components; cent rounding is confirmed in cart.
+  if (memberBasePrice != null) return <p className={`text-[#c9a96e] ${compact ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+    {compact ? 'Sanctuary savings available at checkout' : 'Sanctuary members receive the better eligible offer at checkout. Savings do not stack.'}
+  </p>;
   const memberPrice = sanctuaryPricePreview(price, currency);
   if (memberPrice == null) return null;
 

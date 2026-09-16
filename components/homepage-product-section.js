@@ -125,7 +125,7 @@ export function HomepageProductSection({
                     ) : (
                       <span className="text-base text-[#ded8cf]">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</span>
                     )}
-                    <SanctuaryPrice price={publicPrice} currency={product.currency} from={product.priceRange?.max > product.priceRange?.min} compact />
+                    <SanctuaryPrice memberBasePrice={product.memberBasePrice} price={publicPrice} currency={product.currency} from={product.priceRange?.max > product.priceRange?.min} compact />
                   </div>
                 )}
               </div>

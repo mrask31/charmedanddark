@@ -4,11 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
 import { getMerchandisingProducts } from '@/lib/catalog-merchandising';
+import BundlePreview from '@/components/shop/BundlePreview';
 import { productIsAvailable, productPricing } from '@/lib/product-display';
 
 async function fetchProducts() {
   const products = await getMerchandisingProducts('smutty-good-girl');
-  return [...products].sort((a, b) => Number(productIsAvailable(b)) - Number(productIsAvailable(a)));
+  return [...products].sort((a, b) => Number(productIsAvailable(b)) - Number(productIsAvailable(a)) || Number(Boolean(b.bundleOffer)) - Number(Boolean(a.bundleOffer)));
 }
 
 function getImage(product) {
@@ -89,7 +90,9 @@ export default async function SmuttyGoodGirlCollectionPage() {
             return (
               <Link key={slug} href={`/shop/${slug}`} className="group flex flex-col gap-4">
                 <div className="relative aspect-[3/4] overflow-hidden border border-[#d7a0b5]/15 bg-[#100c12] transition-all duration-200 group-hover:border-[#d7a0b5]/50 group-hover:shadow-[0_0_35px_rgba(215,160,181,0.09)]">
-                  {imageUrl ? (
+                  {product.bundleOffer ? (
+                    <BundlePreview images={product.imageUrls} components={product.bundleOffer.components} />
+                  ) : imageUrl ? (
                     <Image
                       src={imageUrl}
                       alt={product.name || product.title}
@@ -104,7 +107,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
                   )}
                   {!isSoldOut && (
                     <span className="absolute left-3 top-3 z-10 border border-[#d7a0b5]/30 bg-[#08080f]/85 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.2em] text-[#d7a0b5] backdrop-blur-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      Just Dropped
+                      {product.bundleOffer ? 'Reading Bundle' : 'Just Dropped'}
                     </span>
                   )}
                   {isOnSale && !isSoldOut && (
