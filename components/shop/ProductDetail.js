@@ -14,6 +14,7 @@ import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
 import { formatProductPrice } from '@/lib/product-display';
 import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
+import BundlePreview from '@/components/shop/BundlePreview';
 import { isHeavyShippingProduct } from '@/lib/shipping-policy';
 
 const APPAREL_CATEGORIES = ['T-Shirt', 'Tank Top', 'Hoodie', 'Hats'];
@@ -27,7 +28,7 @@ function getPromotionPricing(product, priceOverride = null, compareOverride = un
 // ============================================================================
 // PRODUCT GALLERY
 // ============================================================================
-function ProductGallery({ images, productName, overrideImage, shopifyVariants }) {
+function ProductGallery({ images, productName, overrideImage, shopifyVariants, bundleOffer }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fading, setFading] = useState(false);
   const [dismissedOverride, setDismissedOverride] = useState(null);
@@ -111,7 +112,9 @@ function ProductGallery({ images, productName, overrideImage, shopifyVariants })
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {displayImage ? (
+        {bundleOffer && currentIndex === 0 && !activeOverride ? (
+          <BundlePreview images={images} components={bundleOffer.components} priority />
+        ) : displayImage ? (
           <Image
             src={displayImage}
             alt={productName}
@@ -338,7 +341,7 @@ function RelatedProducts({ products, isMember }) {
                       {p.priceRange?.max > p.priceRange?.min ? 'From ' : ''}{formatProductPrice(pricing.publicPrice, p.currency)}
                     </span>
                   </div>
-                  <SanctuaryPrice price={pricing.publicPrice} currency={p.currency} isMember={isMember} from={p.priceRange?.max > p.priceRange?.min} />
+                  <SanctuaryPrice memberBasePrice={p.memberBasePrice} price={pricing.publicPrice} currency={p.currency} isMember={isMember} from={p.priceRange?.max > p.priceRange?.min} />
                 </div>
               )}
             </div>
@@ -401,13 +404,14 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
         <div className="flex flex-col items-start gap-10 md:flex-row lg:gap-16">
           <div className="w-full overflow-hidden md:w-[60%]" ref={galleryRef}>
             <ProductGallery
+              bundleOffer={product.bundleOffer}
               images={product.imageUrls}
               productName={product.name}
-              overrideImage={variantImage}
+              overrideImage={product.bundleOffer ? null : variantImage}
               shopifyVariants={shopifyVariants}
             />
             <div className="mt-10 hidden md:block">
-              <ProductDetailsList description={product.description} />
+              <ProductDetailsList description={product.descriptionHtml || product.description} />
             </div>
           </div>
 
@@ -430,10 +434,11 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                 {activePricing.isOnSale && <span className="w-fit px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] bg-[#c9a96e] text-[#08080f]">{activePricing.salePercentage}% OFF</span>}
                 <div className="flex items-baseline gap-3">
                   {activePricing.isOnSale && <span className="text-sm text-zinc-400 line-through">{formatProductPrice(activePricing.retailPrice, priceCurrency)}</span>}
-                  <span className="text-xs text-zinc-400">Public</span>
+                  <span className="text-xs text-zinc-400">{product.bundleOffer ? 'Bundle price' : 'Public'}</span>
                   <span className="text-xl text-[#e8e4dc]">{hasPriceRange ? 'From ' : ''}{formatProductPrice(basePrice, priceCurrency)}</span>
                 </div>
-                <SanctuaryPrice price={basePrice} currency={priceCurrency} isMember={isMember} from={hasPriceRange} />
+                <SanctuaryPrice memberBasePrice={selectedShopifyVariant?.memberBasePrice ?? product.memberBasePrice} price={basePrice} currency={priceCurrency} isMember={isMember} from={hasPriceRange} />
+                {product.bundleOffer && <p className="text-xs text-[#d7a0b5]">Automatic bundle savings · no code needed</p>}
                 {!isMember && !authLoading && <Link href="/join" className="text-xs text-[#c9a96e] underline underline-offset-4">Explore Sanctuary membership</Link>}
               </div>
 
@@ -458,7 +463,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
                 return (
                   <div
-                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml || product.description }}
                     className="text-[15px] font-light leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-4 [&_li]:mb-1 [&_br]:block [&_a]:underline [&_a]:underline-offset-2"
                     style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
                   />
@@ -489,7 +494,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
                       Full Details
                     </summary>
                     <div
-                      dangerouslySetInnerHTML={{ __html: product.description }}
+                      dangerouslySetInnerHTML={{ __html: product.descriptionHtml || product.description }}
                       className="mt-3 text-[14px] font-light leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-4 [&_li]:mb-1 [&_br]:block [&_a]:underline [&_a]:underline-offset-2"
                       style={{ color: '#6b6760', fontFamily: 'Inter, sans-serif' }}
                     />
@@ -514,7 +519,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
             </div>
 
             <div className="mt-8 md:hidden">
-              <ProductDetailsList description={product.description} />
+              <ProductDetailsList description={product.descriptionHtml || product.description} />
             </div>
           </div>
         </div>
@@ -524,6 +529,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
 
       <MobileStickyATC
         productName={product.name}
+        memberBasePrice={selectedShopifyVariant?.memberBasePrice ?? product.memberBasePrice}
         price={basePrice}
         currency={priceCurrency}
         from={hasPriceRange}

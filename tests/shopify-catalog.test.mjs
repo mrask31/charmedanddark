@@ -49,6 +49,28 @@ function useStorefront(t, handler) {
 }
 const response = (data) => new Response(JSON.stringify({ data }), { status: 200 });
 
+test('bundle offer consistently maps listing, selected variant, savings and member basis', () => {
+  const original = product('bundle', {
+    priceRange: { minVariantPrice: money(63.97), maxVariantPrice: money(63.97) },
+    variants: connection([variant('bundle', { price: money(63.97) })]),
+    bundleOffer: { value: JSON.stringify({ version: 1, currency: 'USD', regularPrice: 63.97, discountAmount: 5.98,
+      discountId: 'gid://shopify/DiscountAutomaticNode/123', components: [{label:'Candle'}, {label:'Mug'}, {label:'Journal'}] }) },
+  });
+  const mapped = mapShopifyProduct(original);
+  assert.equal(mapped.price, 57.99);
+  assert.equal(mapped.priceRange.max, 57.99);
+  assert.equal(mapped.compareAtPrice, 63.97);
+  assert.equal(mapped.memberBasePrice, 63.97);
+  assert.equal(mapped.shopifyVariants.variants[0].price, 57.99);
+  assert.equal(mapped.shopifyVariantId, original.variants.edges[0].node.id, 'cart retains the native bundle parent ID');
+  assert.equal(original.variants.edges[0].node.price.amount, '63.97', 'raw Shopify response is not mutated');
+  for (const invalid of ['broken JSON', JSON.stringify({})]) {
+    assert.equal(mapShopifyProduct({...original, bundleOffer: {value:invalid}}).price, 63.97);
+  }
+  assert.equal(mapShopifyProduct({...original, priceRange:{minVariantPrice:money(69.99),maxVariantPrice:money(69.99)}}).bundleOffer, null, 'changed base price cannot retain a stale offer');
+  assert.equal(mapShopifyProduct({...original, variants:connection([variant('one'),variant('two')])}).bundleOffer, null, 'fixed offer cannot spill onto new size variants');
+});
+
 test('default variant remains purchasable at zero reported quantity with its Shopify price and SEO', () => {
   const mapped = mapShopifyProduct(product('1', {
     variants: connection([variant('1', { compareAtPrice: money(30) })]),

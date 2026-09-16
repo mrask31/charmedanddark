@@ -16,6 +16,7 @@ import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
 export default function MobileStickyATC({
   productName,
   price,
+  memberBasePrice = null,
   currency = 'USD',
   from = false,
   retailPrice = null,
@@ -127,7 +128,7 @@ export default function MobileStickyATC({
               </span>
             )}
           </div>
-          <SanctuaryPrice price={price} currency={currency} isMember={isMember} from={from} compact />
+          <SanctuaryPrice memberBasePrice={memberBasePrice} price={price} currency={currency} isMember={isMember} from={from} compact />
         </div>
 
         <button

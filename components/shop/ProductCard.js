@@ -6,6 +6,7 @@ import { productIsAvailable, productPricing, formatProductPrice } from "@/lib/pr
 import { useState, useRef } from "react";
 import ProductBadge from '@/components/shop/ProductBadge';
 import SanctuaryPrice from '@/components/shop/SanctuaryPrice';
+import BundlePreview from '@/components/shop/BundlePreview';
 import { productCardTitle } from '@/lib/product-card-title';
 
 // A small display-only lift for these four dark lifestyle photographs. Studio
@@ -169,7 +170,9 @@ export default function ProductCard({ product, isMember }) {
         </span>
       )}
 
-      {images.length > 0 ? (
+      {product.bundleOffer ? (
+        <Link href={`/shop/${product.slug}`} className="block aspect-[3/4] overflow-hidden"><BundlePreview images={images} components={product.bundleOffer.components} /></Link>
+      ) : images.length > 0 ? (
         <ImageCarousel images={images} productName={product.name} isSoldOut={isSoldOut} slug={product.slug} />
       ) : (
         <Link href={`/shop/${product.slug}`} className="block">
@@ -205,7 +208,7 @@ export default function ProductCard({ product, isMember }) {
                 <div className="text-sm text-white">{product.priceRange?.max > product.priceRange?.min ? "From " : ""}{formatProductPrice(publicPrice, product.currency)}</div>
               )}
 
-              <SanctuaryPrice price={publicPrice} currency={product.currency} isMember={isMember} from={product.priceRange?.max > product.priceRange?.min} compact />
+              <SanctuaryPrice memberBasePrice={product.memberBasePrice} price={publicPrice} currency={product.currency} isMember={isMember} from={product.priceRange?.max > product.priceRange?.min} compact />
 
               {product.variantSummary?.length > 0 && (
                 <p className="mt-1 text-xs leading-relaxed text-zinc-400">
