@@ -35,7 +35,7 @@ export const metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'Charmed & Dark',
-    images: [{ url: '/og-default.svg', width: 1200, height: 630, alt: 'Charmed & Dark' }],
+    images: [{ url: '/icon.png', width: 1024, height: 1024, alt: 'Charmed & Dark' }],
   },
   robots: { index: true, follow: true },
   icons: {
@@ -60,9 +60,10 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
+              '@id': 'https://www.charmedanddark.com/#organization',
               name: 'Charmed & Dark',
               url: 'https://www.charmedanddark.com',
-              logo: 'https://www.charmedanddark.com/logo.png',
+              logo: 'https://www.charmedanddark.com/icon.png',
               sameAs: [
                 'https://instagram.com/charmedanddark',
               ],

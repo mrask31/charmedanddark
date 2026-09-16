@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
+  robots: { index: false, follow: false },
   title: "The Grimoire",
   description:
     "A private ledger of your readings, rituals, and quiet rewards.",

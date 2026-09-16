@@ -65,6 +65,13 @@ export default async function ProductPage({ params, searchParams }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildProductJsonLd(product, shopifyVariants)).replace(/</g, '\\u003c') }}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Shop', item: `${SITE_URL}/shop` },
+          { '@type': 'ListItem', position: 3, name: product.name, item: `${SITE_URL}/shop/${product.slug}` },
+        ],
+      }).replace(/</g, '\\u003c') }} />
     </>
   );
 }

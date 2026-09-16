@@ -67,7 +67,8 @@ export async function generateMetadata({ params }) {
 
   if (!post) {
     return {
-      title: "Post Not Found | Charmed & Dark",
+      title: "Post Not Found",
+      robots: { index: false, follow: true },
       description: "This journal entry does not exist.",
     };
   }
@@ -80,7 +81,7 @@ export async function generateMetadata({ params }) {
     : [];
 
   return {
-    title: `${post.title} | Charmed & Dark Journal`,
+    title: { absolute: `${post.title} | Charmed & Dark Journal` },
     description,
     keywords,
     alternates: {
@@ -207,7 +208,7 @@ export default async function JournalEntry({ params }) {
               ...(post.featured_image_url && {
                 logo: {
                   "@type": "ImageObject",
-                  url: "https://www.charmedanddark.com/images/logo.png",
+                  url: "https://www.charmedanddark.com/icon.png",
                 },
               }),
             },

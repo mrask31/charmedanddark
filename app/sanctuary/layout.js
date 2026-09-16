@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: 'https://www.charmedanddark.com/sanctuary' },
   title: "The Sanctuary",
   description:
     "A private realm for members—quiet by design. Unlock Sanctuary Price, keep your Grimoire, and return to The Mirror.",
