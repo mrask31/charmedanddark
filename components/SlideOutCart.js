@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { posthog } from '@/components/providers/posthog-provider';
 import { getAttributionProps } from '@/lib/attribution';
+import { heavyShippingEstimate } from '@/lib/shipping-policy';
 
 const money = (amount, currency = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
 
@@ -67,6 +68,7 @@ export default function SlideOutCart() {
 
   if (!isOpen) return null;
   const pricesReady = validated && !pending;
+  const shippingEstimate = pricesReady ? heavyShippingEstimate(cart) : null;
   return (
     <>
       <div className="fixed inset-0 bg-black/60 z-40" aria-hidden="true" onClick={() => setIsOpen(false)} />
@@ -118,7 +120,13 @@ export default function SlideOutCart() {
             {pricesReady && cart ? <>
               <div className="flex justify-between text-sm text-zinc-300"><span>Subtotal</span><span>{money(cart.subtotal, cart.currency)}</span></div>
               {cart.discounts.map((discount, i) => <div key={i} className="flex justify-between text-xs text-[#c9a96e]"><span>{discount.title}</span><span>−{money(discount.amount, discount.currency)}</span></div>)}
-              <div className="flex justify-between text-base text-white"><span>Estimated total</span><span>{money(cart.total, cart.currency)}</span></div>
+              {!shippingEstimate && <div className="flex justify-between text-base text-white"><span>Estimated total</span><span>{money(cart.total, cart.currency)}</span></div>}
+              {shippingEstimate && <div className="border-t border-zinc-700 pt-3 space-y-2" aria-label="US shipping estimate">
+                <p className="text-xs text-zinc-400">US shipping estimate</p>
+                {shippingEstimate.hasRegularItems && <div className="flex justify-between gap-3 text-sm text-zinc-300"><span>Standard shipping</span><span>{shippingEstimate.standard === null ? 'At checkout' : money(shippingEstimate.standard)}</span></div>}
+                <div className="flex justify-between gap-3 text-sm text-zinc-300"><span>Heavy &amp; oversized shipping</span><span>{money(shippingEstimate.heavy)}</span></div>
+                <p className="text-xs leading-relaxed text-zinc-300">We know shipping costs add up. The $39.99 heavy-item charge helps cover extra packaging and handling and applies once per order, even with multiple heavy items. {shippingEstimate.hasRegularItems ? 'Standard shipping is added for your regular items, based on the full merchandise subtotal.' : 'There is no additional standard shipping charge for this heavy-only order.'}</p>
+              </div>}
               {cart.memberDiscountApplied && <p className="text-xs text-[#c9a96e]">Your Sanctuary discount is applied to eligible items.</p>}
             </> : <p className="text-sm text-zinc-300">We’ll confirm your current total before checkout.</p>}
             <p className="text-zinc-400 text-xs">Shipping, taxes and final discounts are confirmed at checkout.</p>
