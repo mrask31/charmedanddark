@@ -407,7 +407,7 @@ export default function ProductDetail({ product, relatedProducts, shopifyVariant
               bundleOffer={product.bundleOffer}
               images={product.imageUrls}
               productName={product.name}
-              overrideImage={variantImage}
+              overrideImage={product.bundleOffer ? null : variantImage}
               shopifyVariants={shopifyVariants}
             />
             <div className="mt-10 hidden md:block">
