@@ -94,8 +94,8 @@ export async function generateMetadata({ params }) {
       siteName: "Charmed & Dark",
       images: ogImages,
       type: "article",
-      publishedTime: post.publish_date,
-      modifiedTime: post.updated_at || post.publish_date,
+      publishedTime: post.publish_date || post.created_at,
+      modifiedTime: post.updated_at || post.publish_date || post.created_at,
       authors: [post.author || "Charmed & Dark"],
       section: post.category,
     },
@@ -130,7 +130,7 @@ export default async function JournalEntry({ params }) {
   }).filter((product, index, list) => list.findIndex((item) => item.id === product.id) === index);
   const productLinks = buildProductLinks(products);
 
-  const publishDate = new Date(post.publish_date).toLocaleDateString("en-US", {
+  const publishDate = new Date(post.publish_date || post.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -162,7 +162,7 @@ export default async function JournalEntry({ params }) {
         <div className="flex items-center gap-4 text-zinc-400 text-sm uppercase tracking-wider mb-12 pb-8 border-b border-white/10">
           <span>By {post.author}</span>
           <span>•</span>
-          <time dateTime={post.publish_date}>{publishDate}</time>
+          <time dateTime={post.publish_date || post.created_at}>{publishDate}</time>
         </div>
 
         <div className="prose prose-invert max-w-none">
@@ -194,8 +194,8 @@ export default async function JournalEntry({ params }) {
             headline: post.title,
             description: post.meta_description || post.excerpt,
             ...(post.featured_image_url && { image: post.featured_image_url }),
-            datePublished: post.publish_date,
-            dateModified: post.updated_at || post.publish_date,
+            datePublished: post.publish_date || post.created_at,
+            dateModified: post.updated_at || post.publish_date || post.created_at,
             author: {
               "@type": "Organization",
               name: post.author || "Charmed & Dark",
@@ -205,12 +205,10 @@ export default async function JournalEntry({ params }) {
               "@type": "Organization",
               name: "Charmed & Dark",
               url: "https://www.charmedanddark.com",
-              ...(post.featured_image_url && {
-                logo: {
-                  "@type": "ImageObject",
-                  url: "https://www.charmedanddark.com/icon.png",
-                },
-              }),
+              logo: {
+                "@type": "ImageObject",
+                url: "https://www.charmedanddark.com/icon.png",
+              },
             },
             mainEntityOfPage: {
               "@type": "WebPage",
