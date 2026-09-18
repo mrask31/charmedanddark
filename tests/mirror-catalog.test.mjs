@@ -57,3 +57,13 @@ test('SGG relevance never restores hidden or unavailable products', () => {
     { ...catalog[1], hidden: true }, { ...catalog[3], availableForSale: false },
   ]), []);
 });
+
+test('shopping budgets filter actual prices, including strict and inclusive ceilings', () => {
+  const priced = [{ ...catalog[1], price: 40 }, { ...catalog[3], price: 25 }, { ...catalog[0], price: null }];
+  assert.deepEqual(choose('gift under $40', priced), [catalog[3].id]);
+  assert.deepEqual(choose('gift up to $40', priced), [catalog[1].id, catalog[3].id]);
+  assert.deepEqual(choose('gift under $10', priced), []);
+});
+test('excluded item types are removed rather than treated as requests', () => {
+  assert.deepEqual(choose('sexy, no mugs'), [catalog[1].id]);
+});

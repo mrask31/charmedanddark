@@ -105,7 +105,7 @@ export default async function Home({ searchParams }) {
               <div className="flex flex-col justify-center px-5 py-9 sm:px-8 md:px-12 md:py-14">
                 <p className="text-xs uppercase tracking-[0.18em] text-[#d4b984]">The featured collection · Smutty Good Girl</p>
                 <h2 id="featured-collection" className="mt-4 font-serif text-4xl italic leading-tight sm:text-5xl">For your next<br />late-night chapter.</h2>
-                <p className="mt-4 max-w-md text-base leading-relaxed text-[#d0c8bd]">Drinkware, totes, and everyday essentials for smut readers for the good girls who read bad books.</p>
+                <p className="mt-4 max-w-md text-base leading-relaxed text-[#d0c8bd]">Drinkware, totes, and everyday essentials for smut readers—the good girls who read bad books.</p>
                 <Link href="/collections/smutty-good-girl" className="mt-6 inline-flex min-h-12 w-fit items-center gap-4 border border-[#c9a96e] px-5 py-3 text-sm text-[#f5f0e8] transition-colors hover:bg-[#c9a96e] hover:text-black">Explore Smutty Good Girl <span aria-hidden="true">→</span></Link>
               </div>
             </div>

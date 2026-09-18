@@ -41,6 +41,12 @@ export default function ShopPageClient({ products }) {
 
   return <main ref={listRef} onClickCapture={rememberProduct} className="min-h-screen bg-black">
     <ShopHero />
+    <aside className="mx-auto max-w-7xl px-5 pb-6 sm:px-8 lg:px-10" aria-label="Shopping assistance">
+      <div className="flex flex-col gap-3 border-l border-[#b89c6d]/50 bg-[#11100e] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div><p className="font-serif text-xl text-[#f5f0e8]">Not sure what calls to you?</p><p className="mt-1 text-sm text-[#c4bdb3]">Describe a piece, a person, or a feeling. Let The Mirror help you find it.</p></div>
+        <Link href="/mirror" className="inline-flex min-h-11 shrink-0 items-center text-sm text-[#d4b984] underline underline-offset-4">Ask The Mirror <span aria-hidden="true" className="ml-2">→</span></Link>
+      </div>
+    </aside>
     <StickyFilterBar activeFilter={browseSections ? 'FEATURED' : activeFilter} onFilterChange={changeFilter} sortOption={sortOption} onSortChange={(sort) => updateBrowseParams({ sort: sort === 'Featured' ? '' : sort })} hasOnSale={hasOnSale} searchQuery={searchQuery} onSearchChange={(q) => updateBrowseParams({ q })} resultCount={shown.length} displayedCount={displayedCount} featured={browseSections} />
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14 lg:px-10" id="shop-results">
       {collectionFilter && <div className="mb-8 flex items-center gap-4 text-sm text-zinc-300"><span>Collection: {collectionFilter.replaceAll('-', ' ')}</span><button type="button" onClick={() => updateBrowseParams({ collection: '' })} className="min-h-11 underline">Clear collection</button></div>}
