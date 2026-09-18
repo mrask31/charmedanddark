@@ -1,13 +1,24 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { POST as subscribeToKlaviyo } from '@/app/api/klaviyo/subscribe/route';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { email, source, utm_campaign, utm_source, utm_medium } = await request.json();
+    const { email, source, utm_campaign, utm_source, utm_medium, consent } = await request.json();
 
-    if (!email || !email.includes('@')) {
+    if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
     }
+
+    if (consent !== true) {
+      return NextResponse.json({ error: 'Please agree to receive marketing emails.' }, { status: 400 });
+    }
+    // Wait for the provider to accept the request; never report a dropped background job as success.
+    const providerResponse = await subscribeToKlaviyo(new Request('https://internal.invalid/api/klaviyo/subscribe', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: source || 'website', consent: true }),
+    }));
+    if (!providerResponse.ok) return providerResponse;
 
     const normalizedEmail = email.toLowerCase().trim();
 
@@ -33,22 +44,7 @@ export async function POST(request) {
         { onConflict: 'email' }
       );
 
-    if (error) throw error;
-
-    // Also send to Klaviyo (fire-and-forget, don't block the response)
-    try {
-      const klaviyoUrl = new URL('/api/klaviyo/subscribe', request.url);
-      fetch(klaviyoUrl.toString(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: normalizedEmail,
-          source: source || 'website',
-        }),
-      }).catch((err) => console.error('Klaviyo sync failed:', err.message));
-    } catch (klaviyoErr) {
-      console.error('Klaviyo call setup failed:', klaviyoErr.message);
-    }
+    if (error) console.error('Subscriber audit storage failed:', error.code);
 
     return NextResponse.json({ success: true, alreadySubscribed: alreadyExists });
   } catch (err) {

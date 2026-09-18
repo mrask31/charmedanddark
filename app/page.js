@@ -129,7 +129,12 @@ export default async function Home({ searchParams }) {
             <Link href="/drops" className="inline-flex min-h-11 items-center gap-3 text-base text-[#f5f0e8]">Discover new &amp; upcoming drops <span aria-hidden="true">→</span></Link>
             <Link href="/last-chance" className="inline-flex min-h-11 items-center text-sm text-[#c4bdb3] underline underline-offset-4">Last Chance: retiring designs</Link>
           </div>
-          <DropAlertBand variant="home" />
+          <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10" aria-labelledby="home-journal">
+          <h2 id="home-journal" className="font-serif text-3xl">Ideas for your darker everyday</h2>
+          <p className="mt-3 text-[#c4bdb3]">Explore gothic styling, home décor, and thoughtful gifts for readers in our Journal.</p>
+          <Link href="/journal" className="mt-4 inline-flex min-h-11 items-center text-[#d4b984] underline underline-offset-4">Explore the Journal →</Link>
+        </section>
+        <DropAlertBand variant="home" />
         </div>
         <PreviewWrapper searchParams={searchParams} products={signaturePieces} />
       </main>

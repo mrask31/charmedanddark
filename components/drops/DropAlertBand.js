@@ -31,10 +31,10 @@ export default function DropAlertBand({ variant = 'drops' }) {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/mailchimp/subscribe', {
+      const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim(), source: isHome ? 'homepage' : 'drop-alerts', consent: true }),
       });
 
       const result = await response.json();
@@ -73,13 +73,13 @@ export default function DropAlertBand({ variant = 'drops' }) {
               className={isHome ? 'font-serif text-3xl text-[#f5f0e8]' : 'text-[11px] uppercase tracking-[0.3em]'}
               style={{ color: '#c9a96e' }}
             >
-              {isArchive ? 'BE HERE FOR THE RETURN' : isHome ? 'Stay a little closer.' : 'STAY IN THE WINDOW'}
+              {isArchive ? 'BE HERE FOR THE RETURN' : isHome ? 'Your everyday, a little darker.' : 'STAY IN THE WINDOW'}
             </h2>
             <p
               className="max-w-md text-sm font-light sm:text-base"
               style={{ color: '#e8e4dc', fontWeight: 300, fontFamily: 'Inter, sans-serif' }}
             >
-              {isArchive ? 'Join our drop announcements for Summerween’s return and other new Charmed & Dark collections.' : isHome ? 'Sign up for new collections and the latest from Charmed & Dark.' : "Get notified before each drop opens. No spam—just a quiet signal when it's time."}
+              {isArchive ? 'Join our drop announcements for Summerween’s return and other new Charmed & Dark collections.' : isHome ? 'Get new-drop alerts, gothic styling ideas, and reading-night inspiration from Charmed & Dark.' : "Get notified before each drop opens. No spam—just a quiet signal when it's time."}
             </p>
           </div>
 
@@ -128,6 +128,8 @@ export default function DropAlertBand({ variant = 'drops' }) {
           </form>
         </div>
 
+        <p className="mt-4 text-xs leading-relaxed text-zinc-400">By signing up, you agree to receive Charmed &amp; Dark marketing emails. Unsubscribe anytime. No account needed.</p>
+        <p className="mt-2 text-sm text-zinc-300">Want member pricing too? <a href="/join" className="text-[#c9a96e] underline underline-offset-4">Join the free Sanctuary</a> and sign in for 10% member savings. Newsletter signup alone does not create a membership.</p>
         {/* Feedback messages */}
         {success && (
           <p
@@ -137,7 +139,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
             role="status"
             aria-live="polite"
           >
-            {isHome ? 'You’re on the list. Thank you for making yourself at home.' : 'You’re on the list. We’ll signal you when the window opens.'}
+            {isHome ? 'Thanks for signing up. Check your inbox for any confirmation email.' : 'Thanks for signing up. Check your inbox for any confirmation email.'}
           </p>
         )}
         {error && (

@@ -275,7 +275,7 @@ function JoinForm({ inputId = 'join-email', buttonLabel = 'Enter the Sanctuary' 
         </a>
       </div>
       <p className="text-xs" style={{ color: 'rgba(232, 228, 220, 0.4)' }}>
-        Free to join. Purchases are separate.
+        Free membership. No subscription fee. Create an account and sign in to use your member pricing. Purchases are separate.
       </p>
     </form>
   )
@@ -356,13 +356,13 @@ export default function JoinPage() {
             className="mt-6 max-w-xl text-base font-light md:text-lg"
             style={{ color: '#e8e4dc', fontWeight: 300, fontFamily: 'Inter, sans-serif' }}
           >
-            The world is loud. Your home should be quiet.
+            A free account. A darker kind of belonging. Member savings on the pieces you love.
           </p>
           <ul
             className="mt-6 space-y-2 text-sm font-light"
             style={{ color: 'rgba(232, 228, 220, 0.55)', fontFamily: 'Inter, sans-serif' }}
           >
-            <li>10% off always (Sanctuary Price)</li>
+            <li>10% member savings — sign in to apply your Sanctuary price</li>
             <li>Early access to every new drop before the public</li>
             <li>Save your Mirror readings privately in your Grimoire</li>
           </ul>
@@ -383,7 +383,7 @@ export default function JoinPage() {
             {[
               {
                 title: 'Sanctuary Pricing',
-                body: 'Two prices appear across the House. Members unlock the Sanctuary Price automatically.',
+                body: 'The public price is available to everyone. Create a free Sanctuary account and sign in to apply your 10% member savings in the cart.',
               },
               {
                 title: 'Early Drop Windows',

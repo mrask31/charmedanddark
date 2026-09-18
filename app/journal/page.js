@@ -1,11 +1,12 @@
 import { supabase } from '@/lib/supabase/client';
 import JournalHero from '@/components/journal/JournalHero';
+import EmailSignupCTA from '@/components/EmailSignupCTA';
 import PostGrid from '@/components/journal/PostGrid';
 
 export const metadata = {
-  title: 'Journal',
+  title: 'Gothic Style, Home Décor & Bookish Gift Guides',
   alternates: { canonical: 'https://www.charmedanddark.com/journal' },
-  description: 'Quiet reflections, ritual notes, and gothic musings.',
+  description: 'Explore gothic outfit ideas, dark home décor, gifts for romance readers, and reading-night inspiration in the Charmed & Dark Journal.',
 };
 
 export const revalidate = 3600; // ISR — revalidate every hour
@@ -76,6 +77,7 @@ export default async function JournalPage() {
           />
         </div>
       )}
+      <div className="mx-auto max-w-3xl px-4 py-12"><EmailSignupCTA /></div>
     </div>
   );
 }
