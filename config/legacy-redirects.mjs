@@ -2,6 +2,14 @@
 // Keep explicit product mappings ahead of the generic /shop/ols/products rule.
 // Do not add broad redirects for missing products or individual blog articles.
 export const legacyProductHandles = {
+  // September 18: current successors for retired Printify product URLs.
+  // The Secret Society bottle successor is explicitly sold as 32 oz.
+  'smutty-good-girl-reading-fuel-accent-coffee-mug-15oz': 'smutty-good-girl-reading-fuel-gothic-mug-15-oz',
+  'the-charmed-dark-signature-hoodie': 'charmed-dark-signature-gothic-pullover-hoodie',
+  'the-crimson-reliquary-unisex-tee': 'crimson-reliquary-gothic-skull-rose-t-shirt',
+  'the-crimson-reliquary-crop-tank': 'crimson-reliquary-gothic-ribbed-racer-tank',
+  's-g-g-secret-society-water-bottle-20oz': 'sgg-secret-society-gothic-water-bottle-32-oz',
+  // Hexes & Heat has no matching successor; preserve its genuine 404.
   'xn-the-obsidian-twist-glossy-black-spiral-taper-candles-pair-cs61b': '2-pack-17-halloween-handmade-black-home-decor-taper-candles',
   'xn-the-blood-moon-spiral-solid-crimson-taper-set-4-pack-ps38a': 'christmas-red-handmade-spiral-taper-holiday-candles-set-4',
   'xn-the-midnight-coffin-vanity-tray-matte-black-trinket-dish-vz69a': 'black-gothic-coffin-shaped-gothic-trinket-tray',
