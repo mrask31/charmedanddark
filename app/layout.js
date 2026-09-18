@@ -26,6 +26,7 @@ const inter = Inter({
 
 export const metadata = {
   metadataBase: new URL('https://www.charmedanddark.com'),
+  other: { 'p:domain_verify': 'a439856674f68c326bf75fa89924eec4' },
   title: {
     default: 'Charmed & Dark | Premium Gothic Lifestyle',
     template: '%s | Charmed & Dark',
@@ -66,6 +67,7 @@ export default function RootLayout({ children }) {
               logo: 'https://www.charmedanddark.com/icon.png',
               sameAs: [
                 'https://instagram.com/charmedanddark',
+                'https://www.pinterest.com/charmedanddark/',
               ],
               description: 'Premium gothic lifestyle brand.',
             }),
