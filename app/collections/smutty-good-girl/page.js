@@ -61,7 +61,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
             Smutty Good Girl
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base font-light leading-relaxed text-[#c8bcc1] md:text-lg" style={{ fontFamily: 'Inter, sans-serif' }}>
-            Sweet on the outside. Unhinged between chapters. Bookish drinkware, totes, and everyday essentials for readers who prefer their stories dark, dramatic, and morally questionable.
+            Sweet on the outside. Unhinged between chapters. Bookish drinkware, totes, and everyday essentials for adult smut readers with explicit books and delightfully questionable fictional tastes. Every genre welcome.
           </p>
           <p className="mx-auto mt-5 max-w-xl text-xs uppercase tracking-[0.2em] text-[#8d747e]" style={{ fontFamily: 'Inter, sans-serif' }}>
             Good girls read bad books.
