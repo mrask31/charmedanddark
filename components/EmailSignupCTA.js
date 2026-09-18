@@ -27,6 +27,7 @@ export default function EmailSignupCTA() {
         body: JSON.stringify({
           email: email.toLowerCase().trim(),
           source: "journal",
+          consent: true,
         }),
       });
 
@@ -34,11 +35,11 @@ export default function EmailSignupCTA() {
         const data = await response.json();
         
         if (data.alreadySubscribed) {
-          setStatus("error");
-          setMessage("Already subscribed");
+          setStatus("success");
+          setMessage("Thanks for signing up. Check your inbox for any confirmation email.");
         } else {
           setStatus("success");
-          setMessage("You're in. Check your inbox.");
+          setMessage("Thanks for signing up. Check your inbox for any confirmation email.");
           setEmail("");
         }
       } else {
@@ -55,15 +56,17 @@ export default function EmailSignupCTA() {
   return (
     <div className="bg-black border border-white/10 p-8">
       <h3 className="font-serif text-2xl uppercase tracking-widest mb-4">
-        Join the Journal
+        Keep your next chapter close
       </h3>
       <p className="text-zinc-400 mb-6">
-        Receive new posts and exclusive content directly to your inbox.
+        Get gothic styling guides, bookish gift ideas, and new-drop alerts from Charmed & Dark.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="email"
+          aria-label="Email address for the Charmed & Dark newsletter"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
@@ -91,6 +94,8 @@ export default function EmailSignupCTA() {
             {message}
           </p>
         )}
+        <p className="text-xs leading-relaxed text-zinc-400">By subscribing, you agree to receive marketing emails. Unsubscribe anytime. No account needed.</p>
+        <p className="text-sm text-zinc-300">For 10% member savings, <a href="/join" className="text-[#B89C6D] underline">join the free Sanctuary</a> separately and sign in when shopping.</p>
       </form>
     </div>
   );

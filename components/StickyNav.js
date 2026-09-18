@@ -73,6 +73,7 @@ export function StickyNav() {
           </div>
           <Link href="/drops" className={navLinkClass}>Drops</Link>
           <Link href="/last-chance" className={navLinkClass}>Last Chance</Link>
+          <Link href="/journal" className={navLinkClass}>Journal</Link>
           <Link href="/about" className={navLinkClass}>About</Link>
           <Link href="/join" className={navLinkClass}>Join</Link>
           <button onClick={() => setIsOpen(true)} className="relative text-xs uppercase tracking-widest text-zinc-400 transition-colors duration-160 hover:text-white">

@@ -5,15 +5,40 @@ const NEWSLETTER_LIST_ID = process.env.KLAVIYO_NEWSLETTER_LIST_ID;
 
 export async function POST(request) {
   try {
-    const { email, firstName, source } = await request.json();
+    const { email, firstName, source, consent } = await request.json();
 
-    if (!email || !email.includes("@")) {
+    if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return NextResponse.json({ error: "Valid email required" }, { status: 400 });
     }
 
     if (!KLAVIYO_API_KEY || !NEWSLETTER_LIST_ID) {
       console.error("Klaviyo env vars not configured");
       return NextResponse.json({ error: "Service not configured" }, { status: 503 });
+    }
+
+    // Explicit newsletter opt-in uses the subscription endpoint, which honors list double opt-in.
+    // Legacy account callers below keep their existing list-only behavior.
+    if (consent === true) {
+      const response = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
+        method: 'POST',
+        headers: { Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`, 'Content-Type': 'application/json', revision: '2026-07-15' },
+        body: JSON.stringify({ data: {
+          type: 'profile-subscription-bulk-create-job',
+          attributes: {
+            custom_source: `Charmed & Dark ${String(source || 'website').slice(0, 80)} signup`,
+            profiles: { data: [{ type: 'profile', attributes: {
+              email: email.toLowerCase().trim(),
+              subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } },
+            } }] },
+          },
+          relationships: { list: { data: { type: 'list', id: NEWSLETTER_LIST_ID } } },
+        } }),
+      });
+      if (!response.ok) {
+        console.error('Newsletter provider rejected subscription:', response.status);
+        return NextResponse.json({ error: 'We could not complete your signup. Please try again.' }, { status: 503 });
+      }
+      return NextResponse.json({ success: true });
     }
 
     // Create or update profile in Klaviyo

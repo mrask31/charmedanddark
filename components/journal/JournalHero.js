@@ -36,11 +36,11 @@ export default function JournalHero({ featured }) {
             key={i}
             className="absolute rounded-full bg-white"
             style={{
-              width: Math.random() * 2 + 1 + 'px',
-              height: Math.random() * 2 + 1 + 'px',
-              top: Math.random() * 100 + '%',
-              left: Math.random() * 100 + '%',
-              opacity: Math.random() * 0.1 + 0.1,
+              width: (1 + (i % 3)) + 'px',
+              height: (1 + (i % 3)) + 'px',
+              top: ((i * 37 + 11) % 100) + '%',
+              left: ((i * 61 + 7) % 100) + '%',
+              opacity: 0.1 + (i % 5) * 0.02,
             }}
           />
         ))}
@@ -78,7 +78,7 @@ export default function JournalHero({ featured }) {
           className="mt-4 font-serif text-4xl italic text-white sm:text-5xl md:text-6xl lg:text-[72px]"
           style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
         >
-          Quiet Reflections
+          Gothic Living & Bookish Finds
         </h1>
 
         {/* Subtext */}
@@ -86,7 +86,7 @@ export default function JournalHero({ featured }) {
           className="mt-6 max-w-2xl text-base font-light md:text-lg"
           style={{ color: '#e8e4dc', fontWeight: 300, fontFamily: 'Inter, sans-serif' }}
         >
-          Gothic musings, ritual notes, and tales from the sanctuary.
+          Practical styling ideas, dark home inspiration, and thoughtful gifts for readers. Make your everyday feel a little more like you.
         </p>
 
         {/* Gold divider */}
