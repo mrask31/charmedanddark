@@ -10,10 +10,10 @@ export default function TheMirror() {
   const [loading, setLoading] = useState(false)
 
   const placeholder = mode === 'self'
-    ? 'Sexy, spicy reader, cozy — or name an item...'
-    : 'Describe your friend...'
+    ? 'A black bag under $50, a gift for a smut reader...'
+    : 'Their style, interests, and your budget...'
 
-  const buttonLabel = mode === 'self' ? 'Receive Reading' : 'Find Their Gift'
+  const buttonLabel = mode === 'self' ? 'Find My Pieces' : 'Find Their Gift'
 
   const handleReading = async () => {
     if (!input.trim() || loading) return
@@ -26,6 +26,7 @@ export default function TheMirror() {
         body: JSON.stringify({ mood: input, mode }),
       })
       const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Could not find matches');
       setReading(data)
     } catch (err) {
       setReading({
@@ -49,6 +50,7 @@ export default function TheMirror() {
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0', marginBottom: '2rem' }}>
           <button
             aria-pressed={mode === 'self'}
+            disabled={loading}
             onClick={() => { setMode('self'); setReading(null); setInput('') }}
             style={{
               padding: '8px 20px',
@@ -68,6 +70,7 @@ export default function TheMirror() {
           </button>
           <button
             aria-pressed={mode === 'gift'}
+            disabled={loading}
             onClick={() => { setMode('gift'); setReading(null); setInput('') }}
             style={{
               padding: '8px 20px',
@@ -94,14 +97,15 @@ export default function TheMirror() {
 
         <p className="mt-6 text-sm text-zinc-400">
           {mode === 'self'
-            ? 'Share a mood, a reading obsession, or the kind of piece you want.'
-            : 'Describe someone dark. We\'ll find what suits them.'}
+            ? 'Tell us what you have in mind. An item, a style, a gift, a budget—or just a mood.'
+            : 'Tell us about their style, interests, and your budget.'}
         </p>
 
         <div className="mt-10">
           <input
             type="text"
-            aria-label={mode === 'self' ? 'Your mood' : 'Describe your friend'}
+            maxLength={300}
+            aria-label={mode === 'self' ? 'What are you looking for?' : 'Describe your friend'}
             placeholder={placeholder}
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -111,16 +115,19 @@ export default function TheMirror() {
           />
         </div>
 
+        <div className="mt-4 flex flex-wrap justify-center gap-2" aria-label="Ideas to try">
+          {['A gift for a smut reader under $40', 'A black bag', 'Cozy gothic clothing'].map((idea) => <button key={idea} type="button" disabled={loading} onClick={() => { setInput(idea); setReading(null); }} className="min-h-11 border border-zinc-700 px-3 py-2 text-xs text-zinc-300 hover:border-[#B89C6D]">{idea}</button>)}
+        </div>
         <button
           onClick={handleReading}
           disabled={loading || !input.trim()}
           className="mt-10 bg-[#B89C6D] px-8 py-4 text-xs uppercase tracking-widest text-black transition-opacity duration-160 hover:opacity-90 disabled:opacity-40"
         >
-          {loading ? 'Reading...' : buttonLabel}
+          {loading ? 'Finding your pieces…' : buttonLabel}
         </button>
 
         {reading && (
-          <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+          <div role="status" aria-live="polite" style={{ marginTop: '2rem', textAlign: 'center' }}>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', marginBottom: '1.5rem' }} />
 
             <p style={{
@@ -144,6 +151,7 @@ export default function TheMirror() {
               {reading.prescription}
             </p>
 
+            {(!reading.products || reading.products.length === 0) && <p className="mb-5 text-sm text-zinc-300">No close matches this time. Try another item or a wider budget, or <Link href="/shop" className="text-[#d4b984] underline">browse the shop</Link>.</p>}
             {reading.products && reading.products.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
                 <p style={{
@@ -154,8 +162,9 @@ export default function TheMirror() {
                   marginBottom: '4px',
                   fontFamily: 'Inter, sans-serif',
                 }}>
-                  {reading.mode === 'gift' ? 'For them' : 'The prescription'}
+                  {reading.mode === 'gift' ? 'For them' : 'Your matches'}
                 </p>
+                <p className="text-xs text-zinc-400">Prices shown before shipping and tax. Check each product for sizes and options.</p>
                 {reading.products.map((product) => (
                   <Link
                     key={product.id || product.handle}

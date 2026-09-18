@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import SignupConfirmation from '@/components/SignupConfirmation';
 
 /**
  * Basic email format validation.
@@ -20,6 +21,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (loading || success) return;
     setError(null);
     setSuccess(false);
 
@@ -44,7 +46,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
       }
 
       setSuccess(true);
-      setEmail('');
+      setEmail(email.trim());
     } catch (err) {
       setError('Failed to subscribe. Please try again.');
     } finally {
@@ -84,7 +86,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
           </div>
 
           {/* Right side — form */}
-          <form
+          {success ? <SignupConfirmation email={email} onReset={() => { setSuccess(false); setEmail(''); }} /> : <form
             onSubmit={handleSubmit}
             className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center"
             aria-label="Drop alerts subscription form"
@@ -97,6 +99,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
               type="email"
               autoComplete="email"
               required
+              disabled={loading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -115,7 +118,7 @@ export default function DropAlertBand({ variant = 'drops' }) {
             />
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || success}
               className="w-full rounded-full px-6 py-3 text-sm font-medium transition-colors hover:bg-[#c9a96e]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0e0e1a] disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
               style={{
                 border: '1px solid #c9a96e',
@@ -125,23 +128,12 @@ export default function DropAlertBand({ variant = 'drops' }) {
             >
               {loading ? 'SENDING…' : isHome ? 'KEEP ME IN THE KNOW' : 'NOTIFY ME'}
             </button>
-          </form>
+          </form>}
         </div>
 
         <p className="mt-4 text-xs leading-relaxed text-zinc-400">By signing up, you agree to receive Charmed &amp; Dark marketing emails. Unsubscribe anytime. No account needed.</p>
         <p className="mt-2 text-sm text-zinc-300">Want member pricing too? <a href="/join" className="text-[#c9a96e] underline underline-offset-4">Join the free Sanctuary</a> and sign in for 10% member savings. Newsletter signup alone does not create a membership.</p>
         {/* Feedback messages */}
-        {success && (
-          <p
-            id="alert-success"
-            className="mt-4 text-sm"
-            style={{ color: '#c9a96e' }}
-            role="status"
-            aria-live="polite"
-          >
-            {isHome ? 'Thanks for signing up. Check your inbox for any confirmation email.' : 'Thanks for signing up. Check your inbox for any confirmation email.'}
-          </p>
-        )}
         {error && (
           <p
             id="alert-error"

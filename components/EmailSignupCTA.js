@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SignupConfirmation from "@/components/SignupConfirmation";
 
 export default function EmailSignupCTA() {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ export default function EmailSignupCTA() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (status === "loading" || status === "success") return;
 
     // Validate email contains @ symbol
     if (!email.includes("@")) {
@@ -32,16 +34,9 @@ export default function EmailSignupCTA() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        
-        if (data.alreadySubscribed) {
-          setStatus("success");
-          setMessage("Thanks for signing up. Check your inbox for any confirmation email.");
-        } else {
-          setStatus("success");
-          setMessage("Thanks for signing up. Check your inbox for any confirmation email.");
-          setEmail("");
-        }
+        await response.json();
+        setEmail(email.trim());
+        setStatus("success");
       } else {
         const data = await response.json();
         setStatus("error");
@@ -62,7 +57,7 @@ export default function EmailSignupCTA() {
         Get gothic styling guides, bookish gift ideas, and new-drop alerts from Charmed & Dark.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {status === "success" ? <SignupConfirmation email={email} onReset={() => { setEmail(""); setStatus("idle"); setMessage(""); }} /> : <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="email"
           aria-label="Email address for the Charmed & Dark newsletter"
@@ -86,7 +81,7 @@ export default function EmailSignupCTA() {
         </button>
 
         {message && (
-          <p
+          <p role="alert"
             className={`text-sm ${
               status === "success" ? "text-[#B89C6D]" : "text-red-400"
             }`}
@@ -96,7 +91,7 @@ export default function EmailSignupCTA() {
         )}
         <p className="text-xs leading-relaxed text-zinc-400">By subscribing, you agree to receive marketing emails. Unsubscribe anytime. No account needed.</p>
         <p className="text-sm text-zinc-300">For 10% member savings, <a href="/join" className="text-[#B89C6D] underline">join the free Sanctuary</a> separately and sign in when shopping.</p>
-      </form>
+      </form>}
     </div>
   );
 }
