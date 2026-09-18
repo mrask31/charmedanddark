@@ -10,7 +10,7 @@ export default function TheMirror() {
   const [loading, setLoading] = useState(false)
 
   const placeholder = mode === 'self'
-    ? 'Your mood, in a few words...'
+    ? 'Sexy, spicy reader, cozy — or name an item...'
     : 'Describe your friend...'
 
   const buttonLabel = mode === 'self' ? 'Receive Reading' : 'Find Their Gift'
@@ -94,7 +94,7 @@ export default function TheMirror() {
 
         <p className="mt-6 text-sm text-zinc-400">
           {mode === 'self'
-            ? 'A quiet reading: one validation, one prescription.'
+            ? 'Share a mood, a reading obsession, or the kind of piece you want.'
             : 'Describe someone dark. We\'ll find what suits them.'}
         </p>
 

@@ -30,7 +30,7 @@ export default function SmuttyGoodGirlDrop({ products = [] }) {
             className="mt-5 max-w-xl text-base font-light"
             style={{ color: 'rgba(232,228,220,0.72)', fontFamily: 'Inter, sans-serif', lineHeight: 1.8 }}
           >
-            Bookish essentials for good girls with questionable reading habits. Built for dark-romance readers, fictional-boyfriend collectors, and suspiciously long TBR lists.
+            Bookish essentials for good girls with questionable reading habits. For adult readers who like their books explicit, their fictional tastes questionable, and their TBR lists suspiciously long. Across genres, without apology.
           </p>
           <p className="mt-4 text-xs uppercase tracking-[0.2em]" style={{ color: '#997785', fontFamily: 'Inter, sans-serif' }}>
             Sweet on the outside. Unhinged between chapters.

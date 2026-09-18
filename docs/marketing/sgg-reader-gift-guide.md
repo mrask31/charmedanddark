@@ -1,10 +1,12 @@
-# Gifts for Dark Romance Readers: The Smutty Good Girl Guide
+# Gifts for Smut Readers: The Smutty Good Girl Guide
 
-Buying a book for a romance reader can be surprisingly difficult. They may already own it, have it waiting on their e-reader, or have strong opinions about a particular trope. A useful reading accessory lets you celebrate their favorite pastime without guessing what belongs on their bookshelf.
+Buying a book for a smut reader can be surprisingly difficult. They may already own it, have it waiting on their e-reader, or have strong opinions about a particular trope. A useful reading accessory lets you celebrate their favorite pastime without guessing what belongs on their bookshelf.
 
 Our [Smutty Good Girl collection](/collections/smutty-good-girl), or S.G.G., brings a playful gothic sensibility to those everyday reading essentials. Think book totes, drinkware, a reading journal, and comfortable touches for the corner where “one more chapter” becomes an evening.
 
-Here is how to choose a gift that fits the reader, whether they love dark romance, spicy contemporary stories, or a little fantasy with their romantic tension.
+S.G.G. is for adult readers who enjoy sexually explicit books and unapologetically questionable fictional tastes. It is about what they like on the page, not a single genre: erotica, contemporary stories, fantasy, and dark romance can all have a place on that shelf. Dark romance is one possibility, not the definition.
+
+Here is how to choose a gift that celebrates their reading habits without guessing their next five-star read.
 
 ## Start with how they read
 
@@ -48,13 +50,13 @@ For an apparel gift, check the recipient's preferred fit and the individual size
 
 ## A few questions before you choose
 
-**What can I buy a romance reader besides books?**
+**What can I buy a smut reader besides books?**
 
 Start with something they will use: a tote, mug, reading journal, or blanket. Match the choice to where and how they read.
 
-**Is dark romance the same as spicy romance?**
+**Is S.G.G. only for dark romance readers?**
 
-Not necessarily. “Spicy” usually describes sexual content, while dark romance can involve darker themes or relationship dynamics. Reader preferences vary, so avoid assuming that enjoying one means enjoying every kind of romance.
+No. S.G.G. celebrates adult readers of sexually explicit stories across genres. Dark romance describes a particular kind of story and its themes; it does not describe every book with explicit scenes. Match a gift to the individual reader, without assuming their preferred genre or fictional tastes.
 
 **Do I need a membership to shop S.G.G.?**
 

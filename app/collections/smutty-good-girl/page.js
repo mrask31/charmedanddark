@@ -61,7 +61,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
             Smutty Good Girl
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base font-light leading-relaxed text-[#c8bcc1] md:text-lg" style={{ fontFamily: 'Inter, sans-serif' }}>
-            Sweet on the outside. Unhinged between chapters. Bookish drinkware, totes, and everyday essentials for readers who prefer their stories dark, dramatic, and morally questionable.
+            Sweet on the outside. Unhinged between chapters. Bookish drinkware, totes, and everyday essentials for adult smut readers with explicit books and delightfully questionable fictional tastes. Every genre welcome.
           </p>
           <p className="mx-auto mt-5 max-w-xl text-xs uppercase tracking-[0.2em] text-[#8d747e]" style={{ fontFamily: 'Inter, sans-serif' }}>
             Good girls read bad books.
@@ -71,7 +71,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
 
       <section className="px-6 pb-10 sm:px-8 lg:px-16">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-7 gap-y-3 border border-[#d7a0b5]/15 bg-[#d7a0b5]/[0.03] px-6 py-4 text-center">
-          {['Dark romance approved', 'Bookish gift ready', 'Secure checkout', 'Sanctuary member benefits'].map((item) => (
+          {['For smut readers', 'Bookish gift ready', 'Secure checkout', 'Sanctuary member benefits'].map((item) => (
             <span key={item} className="text-[10px] uppercase tracking-[0.18em] text-[#a98b96]" style={{ fontFamily: 'Inter, sans-serif' }}>
               {item}
             </span>
