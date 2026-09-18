@@ -1,0 +1,39 @@
+name: Link three reviewed draft products
+on:
+  push:
+    branches: [crew/printful-api-probe]
+    paths:
+      - .github/workflows/printful-link-next-batch.yml
+      - scripts/printful-link-next-batch.mjs
+      - scripts/printful-next-batch-mappings.json
+permissions:
+  contents: read
+concurrency:
+  group: printful-link-next-batch
+  cancel-in-progress: false
+jobs:
+  link:
+    if: github.ref == 'refs/heads/crew/printful-api-probe'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    environment: printful-api-probe
+    steps:
+      - name: Retrieve fixed source at immutable run commit
+        env:
+          LINK_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$LINK_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          mkdir -p scripts
+          for name in printful-migration-token-preflight.mjs printful-link-next-batch.mjs printful-link-next-batch.test.mjs printful-next-batch-mappings.json; do
+            curl --fail --silent --show-error --proto '=https' --tlsv1.2 --max-time 30 "https://raw.githubusercontent.com/mrask31/charmedanddark/$LINK_COMMIT/scripts/$name" --output "scripts/$name"
+          done
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Validate exact draft and catalog gates
+        run: node --test scripts/printful-link-next-batch.test.mjs
+      - name: Link only20 reviewed variants across three drafts
+        env:
+          PRINTFUL_MIGRATION_API_TOKEN: ${{ secrets.PRINTFUL_MIGRATION_API_TOKEN }}
+        run: node scripts/printful-link-next-batch.mjs

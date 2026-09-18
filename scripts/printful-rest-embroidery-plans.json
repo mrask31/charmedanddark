@@ -1,0 +1,198 @@
+[
+  {
+    "catalogId": 266,
+    "files": [
+      {
+        "artSourcePixels": [
+          1894,
+          316
+        ],
+        "bbox": [
+          120,
+          150,
+          1380,
+          360
+        ],
+        "dpi": 300,
+        "effectiveDpi": 450.9523809523809,
+        "height": 525,
+        "key": "beanie-white",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/production/beanie-white.png",
+        "placement": "embroidery_front",
+        "printedInches": [
+          4.2,
+          0.7
+        ],
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-beanie-white-sept11.png?v=1789148020",
+        "width": 1500
+      }
+    ],
+    "key": "beanie-white",
+    "model": "1501KC",
+    "options": [
+      {
+        "id": "embroidery_type",
+        "value": "flat"
+      },
+      {
+        "id": "thread_colors",
+        "value": [
+          "#000000"
+        ]
+      }
+    ],
+    "shopifyId": "8650242228258",
+    "technique": "EMBROIDERY",
+    "variantIds": [
+      8938
+    ]
+  },
+  {
+    "catalogId": 266,
+    "files": [
+      {
+        "artSourcePixels": [
+          1010,
+          656
+        ],
+        "bbox": [
+          415,
+          45,
+          1085,
+          480
+        ],
+        "dpi": 300,
+        "effectiveDpi": 452.4137931034483,
+        "height": 525,
+        "key": "beanie-black",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/production/beanie-black.png",
+        "placement": "embroidery_front",
+        "printedInches": [
+          2.2333333333333334,
+          1.45
+        ],
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-beanie-black-sept11.png?v=1789148024",
+        "width": 1500
+      }
+    ],
+    "key": "beanie-black",
+    "model": "1501KC",
+    "options": [
+      {
+        "id": "embroidery_type",
+        "value": "flat"
+      },
+      {
+        "id": "thread_colors",
+        "value": [
+          "#FFFFFF"
+        ]
+      }
+    ],
+    "shopifyId": "8650242228258",
+    "technique": "EMBROIDERY",
+    "variantIds": [
+      8936
+    ]
+  },
+  {
+    "catalogId": 952,
+    "files": [
+      {
+        "artSourcePixels": [
+          932,
+          884
+        ],
+        "bbox": [
+          589,
+          45,
+          1301,
+          720
+        ],
+        "dpi": 300,
+        "effectiveDpi": 392.8888888888889,
+        "height": 765,
+        "key": "sigil-cap",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/production/sigil-cap.png",
+        "placement": "embroidery_front_large",
+        "printedInches": [
+          2.3733333333333335,
+          2.25
+        ],
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-sigil-cap-sept11.png?v=1789148028",
+        "width": 1890
+      }
+    ],
+    "key": "sigil",
+    "model": "31-069",
+    "options": [
+      {
+        "id": "embroidery_type",
+        "value": "flat"
+      },
+      {
+        "id": "thread_colors_front_large",
+        "value": [
+          "#000000"
+        ]
+      }
+    ],
+    "shopifyId": "8650242719778",
+    "technique": "EMBROIDERY",
+    "variantIds": [
+      24385,
+      24379
+    ]
+  },
+  {
+    "catalogId": 422,
+    "files": [
+      {
+        "artSourcePixels": [
+          1190,
+          1191
+        ],
+        "bbox": [
+          600,
+          15,
+          1170,
+          585
+        ],
+        "dpi": 300,
+        "effectiveDpi": 626.8421052631579,
+        "height": 600,
+        "key": "summerween-trucker",
+        "path": "/workspace/scratch/94d0eb68aad8/migration-artwork/rest-sept11/production/summerween-trucker.png",
+        "placement": "embroidery_front_large",
+        "printedInches": [
+          1.9,
+          1.9
+        ],
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-rest-production-summerween-trucker-sept11.png?v=1789148034",
+        "width": 1770
+      }
+    ],
+    "key": "trucker",
+    "model": "112",
+    "options": [
+      {
+        "id": "embroidery_type",
+        "value": "flat"
+      },
+      {
+        "id": "thread_colors_front_large",
+        "value": [
+          "#000000",
+          "#FFFFFF",
+          "#A67843",
+          "#E25C27"
+        ]
+      }
+    ],
+    "shopifyId": "8650244390946",
+    "technique": "EMBROIDERY",
+    "variantIds": [
+      11417
+    ]
+  }
+]

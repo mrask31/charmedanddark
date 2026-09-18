@@ -1,0 +1,52 @@
+# Read-only catalog reconciliation; no order or product writes.
+name: Printful read-only catalog audit
+
+on:
+  push:
+    branches:
+      - crew/printful-api-probe
+    paths:
+      - .github/workflows/printful-readonly-catalog-audit.yml
+      - scripts/printful-catalog-audit.mjs
+      - scripts/printful-catalog-audit.test.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: printful-read-only-catalog-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Reconcile known migration products
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: printful-api-probe
+    steps:
+      - name: Fetch reviewed audit files at the immutable run commit
+        shell: bash
+        env:
+          AUDIT_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$AUDIT_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          mkdir -p scripts
+          for name in printful-catalog-audit.mjs printful-catalog-audit.test.mjs; do
+            curl --fail --silent --show-error --proto '=https' --tlsv1.2 --max-time 30 \
+              "https://raw.githubusercontent.com/mrask31/charmedanddark/$AUDIT_COMMIT/scripts/$name" \
+              --output "scripts/$name"
+          done
+      - name: Set up Node 24 without installing dependencies
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Test read-only boundaries without credentials
+        shell: bash
+        run: node --test scripts/printful-catalog-audit.test.mjs
+      - name: Read known product sync and artwork status
+        shell: bash
+        env:
+          PRINTFUL_API_TOKEN: ${{ secrets.PRINTFUL_API_TOKEN }}
+          PRINTFUL_STORE_ID: ${{ vars.PRINTFUL_STORE_ID }}
+        run: node scripts/printful-catalog-audit.mjs

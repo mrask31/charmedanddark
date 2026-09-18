@@ -1,0 +1,401 @@
+[
+  {
+    "key": "obsidian",
+    "shopifyId": "8650217816098",
+    "catalogId": 692,
+    "model": "18600",
+    "variantIds": [
+      17296
+    ],
+    "area": {
+      "width": 2250,
+      "height": 1500,
+      "dpi": 150
+    },
+    "file": {
+      "width": 4500,
+      "height": 3000,
+      "dpi": 300
+    },
+    "placement": "front",
+    "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-obsidian-production-front-300dpi.png?v=1789145057",
+    "mappings": [
+      {
+        "id": 5495050022,
+        "externalId": "47506876039202",
+        "variantId": 17295,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "S",
+        "sku": "CND-OBS-G18600-BLK-S",
+        "price": "54.99"
+      },
+      {
+        "id": 5495050023,
+        "externalId": "47506876071970",
+        "variantId": 17296,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "M",
+        "sku": "CND-OBS-G18600-BLK-M",
+        "price": "54.99"
+      },
+      {
+        "id": 5495050024,
+        "externalId": "47506876104738",
+        "variantId": 17297,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "L",
+        "sku": "CND-OBS-G18600-BLK-L",
+        "price": "54.99"
+      },
+      {
+        "id": 5495050025,
+        "externalId": "47506876137506",
+        "variantId": 17298,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "XL",
+        "sku": "CND-OBS-G18600-BLK-XL",
+        "price": "54.99"
+      },
+      {
+        "id": 5495050026,
+        "externalId": "47506876170274",
+        "variantId": 17299,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "2XL",
+        "sku": "CND-OBS-G18600-BLK-2XL",
+        "price": "56.99"
+      },
+      {
+        "id": 5495050027,
+        "externalId": "47506876203042",
+        "variantId": 17300,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "3XL",
+        "sku": "CND-OBS-G18600-BLK-3XL",
+        "price": "58.99"
+      }
+    ],
+    "files": [
+      {
+        "type": "front",
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-obsidian-production-front-300dpi.png?v=1789145057",
+        "width": 4500,
+        "height": 3000,
+        "dpi": 300
+      }
+    ],
+    "expectedCount": 6,
+    "retiredVariantIds": []
+  },
+  {
+    "key": "crown",
+    "shopifyId": "8650245734434",
+    "catalogId": 1635,
+    "model": "1019",
+    "variantIds": [
+      51613,
+      51637
+    ],
+    "area": {
+      "width": 2634,
+      "height": 2988,
+      "dpi": 300
+    },
+    "file": {
+      "width": 2634,
+      "height": 2988,
+      "dpi": 300
+    },
+    "placement": "front_dtf",
+    "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-crown-production-front-300dpi.png?v=1789145068",
+    "mappings": [
+      {
+        "id": 5495050145,
+        "externalId": "47506931253282",
+        "variantId": 51611,
+        "color": "Solid Black Blend",
+        "shopifyColor": "Black",
+        "size": "XS",
+        "sku": "CND-CROWN-BC1019-BLK-XS",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050146,
+        "externalId": "47506931286050",
+        "variantId": 51612,
+        "color": "Solid Black Blend",
+        "shopifyColor": "Black",
+        "size": "S",
+        "sku": "CND-CROWN-BC1019-BLK-S",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050147,
+        "externalId": "47506931318818",
+        "variantId": 51613,
+        "color": "Solid Black Blend",
+        "shopifyColor": "Black",
+        "size": "M",
+        "sku": "CND-CROWN-BC1019-BLK-M",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050148,
+        "externalId": "47506931351586",
+        "variantId": 51614,
+        "color": "Solid Black Blend",
+        "shopifyColor": "Black",
+        "size": "L",
+        "sku": "CND-CROWN-BC1019-BLK-L",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050149,
+        "externalId": "47506931384354",
+        "variantId": 51615,
+        "color": "Solid Black Blend",
+        "shopifyColor": "Black",
+        "size": "XL",
+        "sku": "CND-CROWN-BC1019-BLK-XL",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050150,
+        "externalId": "47506931417122",
+        "variantId": 51616,
+        "color": "Solid Black Blend",
+        "shopifyColor": "Black",
+        "size": "2XL",
+        "sku": "CND-CROWN-BC1019-BLK-2XL",
+        "price": "38.99"
+      },
+      {
+        "id": 5495050151,
+        "externalId": "47506931449890",
+        "variantId": 51635,
+        "color": "Solid White Blend",
+        "shopifyColor": "White",
+        "size": "XS",
+        "sku": "CND-CROWN-BC1019-WHT-XS",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050152,
+        "externalId": "47506931482658",
+        "variantId": 51636,
+        "color": "Solid White Blend",
+        "shopifyColor": "White",
+        "size": "S",
+        "sku": "CND-CROWN-BC1019-WHT-S",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050153,
+        "externalId": "47506931515426",
+        "variantId": 51637,
+        "color": "Solid White Blend",
+        "shopifyColor": "White",
+        "size": "M",
+        "sku": "CND-CROWN-BC1019-WHT-M",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050154,
+        "externalId": "47506931548194",
+        "variantId": 51638,
+        "color": "Solid White Blend",
+        "shopifyColor": "White",
+        "size": "L",
+        "sku": "CND-CROWN-BC1019-WHT-L",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050155,
+        "externalId": "47506931580962",
+        "variantId": 51639,
+        "color": "Solid White Blend",
+        "shopifyColor": "White",
+        "size": "XL",
+        "sku": "CND-CROWN-BC1019-WHT-XL",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050156,
+        "externalId": "47506931613730",
+        "variantId": 51640,
+        "color": "Solid White Blend",
+        "shopifyColor": "White",
+        "size": "2XL",
+        "sku": "CND-CROWN-BC1019-WHT-2XL",
+        "price": "38.99"
+      }
+    ],
+    "files": [
+      {
+        "type": "front_dtf",
+        "placement": "front_dtf",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-crown-production-front-300dpi.png?v=1789145068",
+        "width": 2634,
+        "height": 2988,
+        "dpi": 300
+      }
+    ],
+    "expectedCount": 12,
+    "retiredVariantIds": []
+  },
+  {
+    "key": "moon",
+    "shopifyId": "8650227351586",
+    "catalogId": 636,
+    "model": "4062",
+    "variantIds": [
+      16096,
+      16121
+    ],
+    "area": {
+      "width": 1500,
+      "height": 1500,
+      "dpi": 150
+    },
+    "file": {
+      "width": 3000,
+      "height": 3000,
+      "dpi": 300
+    },
+    "placement": "front",
+    "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-moon-production-front-300dpi.png?v=1789145062",
+    "mappings": [
+      {
+        "id": 5495050048,
+        "externalId": "47506888228898",
+        "variantId": 16119,
+        "color": "White",
+        "shopifyColor": "White",
+        "size": "XS",
+        "sku": "CND-MM-AS4062-WHT-XS",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050049,
+        "externalId": "47506888261666",
+        "variantId": 16120,
+        "color": "White",
+        "shopifyColor": "White",
+        "size": "S",
+        "sku": "CND-MM-AS4062-WHT-S",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050050,
+        "externalId": "47506888294434",
+        "variantId": 16121,
+        "color": "White",
+        "shopifyColor": "White",
+        "size": "M",
+        "sku": "CND-MM-AS4062-WHT-M",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050051,
+        "externalId": "47506888327202",
+        "variantId": 16122,
+        "color": "White",
+        "shopifyColor": "White",
+        "size": "L",
+        "sku": "CND-MM-AS4062-WHT-L",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050052,
+        "externalId": "47506888359970",
+        "variantId": 16123,
+        "color": "White",
+        "shopifyColor": "White",
+        "size": "XL",
+        "sku": "CND-MM-AS4062-WHT-XL",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050054,
+        "externalId": "47506888425506",
+        "variantId": 16094,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "XS",
+        "sku": "CND-MM-AS4062-BLK-XS",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050055,
+        "externalId": "47506888458274",
+        "variantId": 16095,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "S",
+        "sku": "CND-MM-AS4062-BLK-S",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050056,
+        "externalId": "47506888491042",
+        "variantId": 16096,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "M",
+        "sku": "CND-MM-AS4062-BLK-M",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050057,
+        "externalId": "47506888523810",
+        "variantId": 16097,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "L",
+        "sku": "CND-MM-AS4062-BLK-L",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050058,
+        "externalId": "47506888556578",
+        "variantId": 16098,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "XL",
+        "sku": "CND-MM-AS4062-BLK-XL",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050059,
+        "externalId": "47506888589346",
+        "variantId": 52335,
+        "color": "Black",
+        "shopifyColor": "Black",
+        "size": "2XL",
+        "sku": "CND-MM-AS4062-BLK-2XL",
+        "price": "36.99"
+      }
+    ],
+    "files": [
+      {
+        "type": "front",
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-moon-production-front-300dpi.png?v=1789145062",
+        "width": 3000,
+        "height": 3000,
+        "dpi": 300
+      }
+    ],
+    "expectedCount": 11,
+    "retiredVariantIds": [
+      5495050053
+    ]
+  }
+]

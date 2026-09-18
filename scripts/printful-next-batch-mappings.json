@@ -1,0 +1,254 @@
+[
+  {
+    "key": "crimson-reliquary",
+    "shopifyId": "8648971616290",
+    "catalogId": 71,
+    "variantId": 4017,
+    "color": "Black",
+    "sides": [
+      "back"
+    ],
+    "files": [
+      {
+        "type": "back",
+        "placement": "back",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-crimson-reliquary-production-back-150dpi.png?v=1789143204"
+      }
+    ],
+    "model": "3001",
+    "mappings": [
+      {
+        "id": 5495049996,
+        "externalId": "47501846937634",
+        "variantId": 9527,
+        "color": "Black",
+        "size": "XS",
+        "sku": "CND-CRIM-BC3001-BLK-XS",
+        "price": "29.99"
+      },
+      {
+        "id": 5495049997,
+        "externalId": "47501846970402",
+        "variantId": 4016,
+        "color": "Black",
+        "size": "S",
+        "sku": "CND-CRIM-BC3001-BLK-S",
+        "price": "29.99"
+      },
+      {
+        "id": 5495049998,
+        "externalId": "47501847003170",
+        "variantId": 4017,
+        "color": "Black",
+        "size": "M",
+        "sku": "CND-CRIM-BC3001-BLK-M",
+        "price": "29.99"
+      },
+      {
+        "id": 5495049999,
+        "externalId": "47501847035938",
+        "variantId": 4018,
+        "color": "Black",
+        "size": "L",
+        "sku": "CND-CRIM-BC3001-BLK-L",
+        "price": "29.99"
+      },
+      {
+        "id": 5495050000,
+        "externalId": "47501847068706",
+        "variantId": 4019,
+        "color": "Black",
+        "size": "XL",
+        "sku": "CND-CRIM-BC3001-BLK-XL",
+        "price": "29.99"
+      },
+      {
+        "id": 5495050001,
+        "externalId": "47501847101474",
+        "variantId": 4020,
+        "color": "Black",
+        "size": "2XL",
+        "sku": "CND-CRIM-BC3001-BLK-2XL",
+        "price": "31.99"
+      },
+      {
+        "id": 5495050002,
+        "externalId": "47501847134242",
+        "variantId": 5295,
+        "color": "Black",
+        "size": "3XL",
+        "sku": "CND-CRIM-BC3001-BLK-3XL",
+        "price": "33.99"
+      }
+    ]
+  },
+  {
+    "key": "till-death",
+    "shopifyId": "8648970272802",
+    "catalogId": 586,
+    "variantId": 15125,
+    "color": "White",
+    "sides": [
+      "front",
+      "back"
+    ],
+    "files": [
+      {
+        "type": "front",
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-till-death-production-front-150dpi.png?v=1789143194"
+      },
+      {
+        "type": "back",
+        "placement": "back",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-till-death-production-back-150dpi.png?v=1789143215"
+      }
+    ],
+    "model": "1717",
+    "mappings": [
+      {
+        "id": 5495050009,
+        "externalId": "47501843267618",
+        "variantId": 15124,
+        "color": "White",
+        "size": "S",
+        "sku": "CND-TILD-CC1717-WHT-S",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050010,
+        "externalId": "47501843300386",
+        "variantId": 15125,
+        "color": "White",
+        "size": "M",
+        "sku": "CND-TILD-CC1717-WHT-M",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050011,
+        "externalId": "47501843333154",
+        "variantId": 15126,
+        "color": "White",
+        "size": "L",
+        "sku": "CND-TILD-CC1717-WHT-L",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050012,
+        "externalId": "47501843365922",
+        "variantId": 15127,
+        "color": "White",
+        "size": "XL",
+        "sku": "CND-TILD-CC1717-WHT-XL",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050013,
+        "externalId": "47501843398690",
+        "variantId": 15128,
+        "color": "White",
+        "size": "2XL",
+        "sku": "CND-TILD-CC1717-WHT-2XL",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050014,
+        "externalId": "47501843431458",
+        "variantId": 16335,
+        "color": "White",
+        "size": "3XL",
+        "sku": "CND-TILD-CC1717-WHT-3XL",
+        "price": "38.99"
+      }
+    ]
+  },
+  {
+    "key": "bones-brews",
+    "shopifyId": "8650244882466",
+    "catalogId": 71,
+    "variantId": 4017,
+    "color": "Black",
+    "sides": [
+      "front",
+      "back"
+    ],
+    "files": [
+      {
+        "type": "front",
+        "placement": "front",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-bones-brews-production-front-150dpi.png?v=1789143210"
+      },
+      {
+        "type": "back",
+        "placement": "back",
+        "url": "https://cdn.shopify.com/s/files/1/0861/2079/2098/files/cnd-bones-brews-production-back-150dpi.png?v=1789143221"
+      }
+    ],
+    "model": "3001",
+    "mappings": [
+      {
+        "id": 5495050126,
+        "externalId": "47506913656866",
+        "variantId": 9527,
+        "color": "Black",
+        "size": "XS",
+        "sku": "CND-BONES-BC3001-BLK-XS",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050127,
+        "externalId": "47506913689634",
+        "variantId": 4016,
+        "color": "Black",
+        "size": "S",
+        "sku": "CND-BONES-BC3001-BLK-S",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050128,
+        "externalId": "47506913722402",
+        "variantId": 4017,
+        "color": "Black",
+        "size": "M",
+        "sku": "CND-BONES-BC3001-BLK-M",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050129,
+        "externalId": "47506913755170",
+        "variantId": 4018,
+        "color": "Black",
+        "size": "L",
+        "sku": "CND-BONES-BC3001-BLK-L",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050130,
+        "externalId": "47506913787938",
+        "variantId": 4019,
+        "color": "Black",
+        "size": "XL",
+        "sku": "CND-BONES-BC3001-BLK-XL",
+        "price": "34.99"
+      },
+      {
+        "id": 5495050131,
+        "externalId": "47506913820706",
+        "variantId": 4020,
+        "color": "Black",
+        "size": "2XL",
+        "sku": "CND-BONES-BC3001-BLK-2XL",
+        "price": "36.99"
+      },
+      {
+        "id": 5495050132,
+        "externalId": "47506913853474",
+        "variantId": 5295,
+        "color": "Black",
+        "size": "3XL",
+        "sku": "CND-BONES-BC3001-BLK-3XL",
+        "price": "38.99"
+      }
+    ]
+  }
+]
