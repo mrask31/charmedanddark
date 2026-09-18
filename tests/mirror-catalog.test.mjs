@@ -27,3 +27,33 @@ test('model output cannot override facts, link unknown IDs, or duplicate a produ
   assert.deepEqual(resolveMirrorRecommendations([{ id: product.id }], [], 3), []);
   assert.deepEqual(resolveMirrorRecommendations('invalid', candidates, 3), []);
 });
+
+const catalog = [
+  { ...product, name: 'Midnight Bloom Tealight Holder', slug: 'midnight-bloom' },
+  { ...product, id: 'gid://shopify/Product/201', name: 'Smutty Good Girl Book Tote', slug: 'sgg-book-tote' },
+  { ...product, id: 'gid://shopify/Product/202', name: 'Velvet Dress', slug: 'velvet-dress' },
+  { ...product, id: 'gid://shopify/Product/203', name: 'S.G.G. Reading Fuel Mug', slug: 'reading-fuel' },
+];
+const choose = (mood, products = catalog, limit = 250) => getMirrorCandidates(products, { mood, limit, shopifyCatalogEnabled: true }).map(p => p.id);
+
+test('sexy and spicy reading moods select SGG before the catalog limit', () => {
+  for (const mood of ['Sexy', 'spicy reader', 'smut reader', 'S.G.G.']) {
+    assert.deepEqual(choose(mood), [catalog[1].id, catalog[3].id]);
+  }
+  assert.deepEqual(choose('sexy', catalog, 1), [catalog[1].id]);
+});
+test('explicit item requests override general mood and do not substitute unrelated decor', () => {
+  assert.deepEqual(choose('sexy outfit'), [catalog[2].id]);
+  assert.deepEqual(choose('spicy mug'), [catalog[3].id]);
+  assert.deepEqual(choose('sexy candle'), []);
+});
+test('exclusions and unrelated moods do not force SGG', () => {
+  assert.deepEqual(choose('cozy, no smut'), [catalog[0].id, catalog[2].id]);
+  assert.deepEqual(choose('not sexy'), [catalog[0].id, catalog[2].id]);
+  assert.equal(choose('calm').length, catalog.length);
+});
+test('SGG relevance never restores hidden or unavailable products', () => {
+  assert.deepEqual(choose('sexy', [
+    { ...catalog[1], hidden: true }, { ...catalog[3], availableForSale: false },
+  ]), []);
+});

@@ -71,7 +71,7 @@ export default async function SmuttyGoodGirlCollectionPage() {
 
       <section className="px-6 pb-10 sm:px-8 lg:px-16">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-7 gap-y-3 border border-[#d7a0b5]/15 bg-[#d7a0b5]/[0.03] px-6 py-4 text-center">
-          {['Dark romance approved', 'Bookish gift ready', 'Secure checkout', 'Sanctuary member benefits'].map((item) => (
+          {['For smut readers', 'Bookish gift ready', 'Secure checkout', 'Sanctuary member benefits'].map((item) => (
             <span key={item} className="text-[10px] uppercase tracking-[0.18em] text-[#a98b96]" style={{ fontFamily: 'Inter, sans-serif' }}>
               {item}
             </span>
