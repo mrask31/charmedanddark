@@ -33,3 +33,29 @@ test('loads one tag and counts each route visit once without customer identifier
     else process.env.NODE_ENV = previous;
   }
 });
+
+test('cart tracking reports only added units, honors opt-outs, and cannot break shopping', async () => {
+  const { trackPinterestAddToCart } = await import('../lib/pinterest-tracking.js');
+  const previous = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+  try {
+    const calls = [];
+    const win = { location: { hostname: 'www.charmedanddark.com', pathname: '/shop/blanket' }, navigator: {}, pintrk: (...args) => calls.push(args) };
+    const item = { catalogId: 'BLANKET-SKU', price: 24.99, quantity: 5, currency: 'USD' };
+    trackPinterestAddToCart(win, {}, item, 2);
+    assert.deepEqual(calls.at(-1), ['track', 'addtocart', { value: 49.98, currency: 'USD', order_quantity: 2,
+      line_items: [{ product_id: 'BLANKET-SKU', product_price: 24.99, product_quantity: 2 }] }]);
+    const count = calls.length;
+    for (const bad of [null, { ...item, price: NaN }, { ...item, catalogId: '' }, { ...item, currency: '' }]) trackPinterestAddToCart(win, {}, bad, 2);
+    trackPinterestAddToCart(win, {}, item, 6);
+    win.navigator.globalPrivacyControl = true;
+    trackPinterestAddToCart(win, {}, item, 2);
+    assert.equal(calls.length, count);
+    win.navigator.globalPrivacyControl = false;
+    win.pintrk = () => { throw new Error('blocked'); };
+    assert.doesNotThrow(() => trackPinterestAddToCart(win, {}, item, 2));
+  } finally {
+    if (previous === undefined) delete process.env.NODE_ENV;
+    else process.env.NODE_ENV = previous;
+  }
+});

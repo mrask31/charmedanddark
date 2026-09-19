@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { CART_STORAGE_VERSION, isVariantId, readSavedCart, rebaseBasket } from '@/lib/shopify/cart-input';
+import { trackPinterestAddToCart } from '@/lib/pinterest-tracking';
 import { buildCartAttributes } from '@/lib/attribution';
 
 const CartContext = createContext();
@@ -188,7 +189,13 @@ export function CartProvider({ children }) {
       quantity, price: Number(product.price), imageUrl: product.imageUrl || product.imageUrls?.[0], currency: product.currency || 'USD',
     }];
     setIsOpen(true);
-    return requestCart(next);
+    const result = await requestCart(next);
+    // Only a successful, fully reconciled addition is a conversion.
+    if (result?.cart && !result.needsReview) {
+      const confirmed = result.cart.items.find(item => item.shopifyVariantId === product.shopifyVariantId);
+      trackPinterestAddToCart(window, document, confirmed, quantity);
+    }
+    return result;
   }, [requestCart]);
 
   const updateQuantity = useCallback(async (cartKey, quantity) => {
