@@ -113,6 +113,10 @@ const CATEGORY_MAP = {
   "Decorative Tray": "Home & Garden > Decor > Decorative Trays",
   "Bookends": "Home & Garden > Decor > Bookends",
   "Ottoman": "Furniture > Ottomans",
+  "Journal": "Office Supplies > General Office Supplies > Paper Products > Notebooks & Notepads",
+  "Blankets": "Home & Garden > Linens & Bedding > Bedding > Blankets",
+  "Wall Decor": "Home & Garden > Decor > Artwork > Sculptures & Statues",
+  "Cheese Knife Set": "Home & Garden > Kitchen & Dining > Kitchen Tools & Utensils > Kitchen Knives",
   "Vase": "Home & Garden > Decor > Vases",
   "Ornament": "Home & Garden > Decor > Seasonal & Holiday Decorations > Holiday Ornaments",
   "Art Print": "Home & Garden > Decor > Artwork > Posters, Prints, & Visual Artwork",
@@ -159,7 +163,6 @@ export async function GET() {
       const productName = product.name || product.title;
       const handle = product.slug || product.handle;
       const primaryImage = product.imageUrls?.[0];
-      const additionalImages = (product.imageUrls || []).slice(1, 10);
       const productType = product.productType || product.category || '';
       const googleCategory = getGoogleCategory(productType, product.category);
       const needsApparelAttrs = isApparelOrAccessory(productType, googleCategory);
@@ -173,6 +176,10 @@ export async function GET() {
         const currency = variant.currency || product.currency || 'USD';
         const image = variant.imageUrl || primaryImage;
         if (!image?.startsWith('https://') || !Number.isFinite(currentPrice)) continue;
+        // A variant's main image may occur anywhere in the product gallery.
+        // Exclude it per variant, deduplicate the gallery, then apply the limit.
+        const additionalImages = [...new Set(product.imageUrls || [])]
+          .filter((url) => url?.startsWith('https://') && url !== image).slice(0, 10);
         const link = `${SITE_URL}/shop/${handle}?variant=${variantId.split('/').pop()}`;
         const fields = {
           id: itemId,
