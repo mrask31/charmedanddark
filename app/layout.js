@@ -9,6 +9,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { PHProvider } from "@/components/providers/posthog-provider";
 import { Suspense } from 'react';
 import { AttributionCapture } from "@/components/providers/attribution-capture";
+import { PinterestPageView } from "@/components/providers/pinterest-pageview";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -76,6 +77,7 @@ export default function RootLayout({ children }) {
         <div className="min-h-screen bg-black pb-[calc(4rem+env(safe-area-inset-bottom,0px))] text-white lg:pb-0">
           <PHProvider>
           <Suspense fallback={null}><AttributionCapture /></Suspense>
+          <PinterestPageView />
           <AuthProvider>
             <CartProvider>
               <StickyNav />
